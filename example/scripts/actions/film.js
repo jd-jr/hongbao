@@ -18,7 +18,7 @@ function fetchFilmList(type = 'all') {
         entity: 'allFilmList',
         [CALL_API]: {
           types: [ALL_FILM_REQUEST, ALL_FILM_SUCCESS, ALL_FILM_FAILURE],
-          jsonUrl: 'json/film/all.json',
+          jsonUrl: '/json/film/all.json',
           url: 'path/film/all',
           schema: FilmSchemas.ALL_FILM_LIST,
           paging: false
@@ -29,7 +29,7 @@ function fetchFilmList(type = 'all') {
         entity: 'popularityFilmList',
         [CALL_API]: {
           types: [POPULARITY_FILM_REQUEST, POPULARITY_FILM_SUCCESS, POPULARITY_FILM_FAILURE],
-          jsonUrl: 'json/film/popularity.json',
+          jsonUrl: '/json/film/popularity.json',
           url: 'path/film/popularity',
           schema: FilmSchemas.POPULARITY_FILM_LIST,
           paging: false

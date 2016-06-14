@@ -10,7 +10,7 @@ function fetchPersonList(pageNo) {
     entity: 'personPagination',
     [CALL_API]: {
       types: [PERSON_REQUEST, PERSON_SUCCESS, PERSON_FAILURE],
-      jsonUrl: `json/person/${pageNo}.json`,
+      jsonUrl: `/json/person/${pageNo}.json`,
       url: 'path/persons',
       options: {body: {pageNo}},
       schema: PersonSchemas.PERSON_LIST

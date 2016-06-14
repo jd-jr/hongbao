@@ -32,7 +32,7 @@ let webpackConfig = {
   output: {
     path: path.join(__dirname, 'dist'), //打包输出目录
     filename: '[name].[hash].bundle.js', //文件名称
-    publicPath: './' //生成文件基于上下文路径
+    publicPath: '/m-hongbao/' //生成文件基于上下文路径
   },
   module: {
     loaders: [

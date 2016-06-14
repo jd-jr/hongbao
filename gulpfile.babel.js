@@ -8,9 +8,9 @@ import md5File from 'md5-file';
 import chalk from 'chalk';
 import filePackage from 'file-package';
 import config from './webpack.config.babel';
+import exampleConfig from './webpack.example.config.babel';
 import productionConfig from './webpack.production.config.babel';
 
-const {webpackConfig, ip, port} = config;
 
 const $ = gulpLoadPlugins();
 
@@ -32,6 +32,21 @@ gulp.task('styles', () => {
     .pipe(gulp.dest('app/styles'));
 });
 
+gulp.task('styles:example', () => {
+  return gulp.src('example/sass/*.scss')
+    .pipe($.sass.sync({
+      outputStyle: 'expanded', // 展开的
+      precision: 10, //数字精读
+      includePaths: ['.']
+    }).on('error', $.sass.logError))
+    .pipe($.autoprefixer({
+      browsers: ['last 2 version', 'chrome >=30', 'Android >= 4.3'],
+      flexbox: 'no-2009',
+      remove: false // 是否自动删除过时的前缀
+    }))
+    .pipe(gulp.dest('example/styles'));
+});
+
 //复制替换文件，分开发和正式环境
 //备选插件 https://www.npmjs.com/package/gulp-copy-rex
 //开发环境
@@ -49,7 +64,8 @@ gulp.task('copy:prod', () => {
   const paths = [
     {src: 'app/scripts/config/index.prod.js', dest: 'app/scripts/config/index.js'},
     {src: 'app/scripts/store/configureStore.prod.js', dest: 'app/scripts/store/index.js'},
-    {src: 'app/scripts/containers/Root.prod.js', dest: 'app/scripts/containers/Root.js'}
+    {src: 'app/scripts/containers/Root.prod.js', dest: 'app/scripts/containers/Root.js'},
+    {src: 'app/favicon.ico', dest: 'dist/favicon.ico'}
   ];
   return $.copy2(paths);
 });
@@ -67,10 +83,10 @@ gulp.task('copy-json', () => {
 
 /**
  * 压缩
- * 文件名格式（根据需要自定义）： filename-YYYYMMDDTHHmm
+ * 文件名格式（根据需要自定义）： fe-m-hongbao-YYYYMMDDTHHmm
  * 由于 gulp 压缩插件 gulp-zip 不能指定 package Root, 故采用 file-package 来压缩打包
  */
-const filePath = `filename-${moment().format('YYYYMMDDTHHmm')}`;
+const filePath = `fe-m-hongbao-${moment().format('YYYYMMDDTHHmm')}`;
 const fileName = `${filePath}.zip`;
 gulp.task('zip', () => {
   filePackage('dist', `zip/${fileName}`, {
@@ -105,21 +121,42 @@ gulp.task('clean', () => {
 });
 
 gulp.task('webpack:server', () => {
+  const {webpackConfig, ip, port} = config;
   // Start a webpack-dev-server
   const compiler = webpack(webpackConfig);
 
-  new WebpackDevServer(compiler, webpackConfig.devServer)
-    .listen(port, ip, (err) => {
-      if (err) {
-        throw new $.util.PluginError('webpack-dev-server', err);
-      }
-      // Server listening
-      $.util.log('[webpack-dev-server]', `http://${ip}:${port}/`);
+  const server = new WebpackDevServer(compiler, webpackConfig.devServer);
+  server.listen(port, ip, (err) => {
+    if (err) {
+      throw new $.util.PluginError('webpack-dev-server', err);
+    }
+    // Server listening
+    $.util.log('[webpack-dev-server]', `http://${ip}:${port}/m-hongbao/`);
 
-      // Chrome is google chrome on OS X, google-chrome on Linux and chrome on Windows.
-      // app 在 OS X 中是 google chrome, 在 Windows 为 chrome ,在 Linux 为 google-chrome
-      opn(port === '80' ? `http://${ip}` : `http://${ip}:${port}/`, {app: 'google chrome'});
-    });
+    // Chrome is google chrome on OS X, google-chrome on Linux and chrome on Windows.
+    // app 在 OS X 中是 google chrome, 在 Windows 为 chrome ,在 Linux 为 google-chrome
+    opn(port === '80' ? `http://${ip}` : `http://${ip}:${port}/m-hongbao/`, {app: 'google chrome'});
+  });
+
+});
+
+gulp.task('webpack:example', () => {
+  const {webpackConfig, ip, port} = exampleConfig;
+  // Start a webpack-dev-server
+  const compiler = webpack(webpackConfig);
+
+  const server = new WebpackDevServer(compiler, webpackConfig.devServer);
+  server.listen(port, ip, (err) => {
+    if (err) {
+      throw new $.util.PluginError('webpack-dev-server', err);
+    }
+    // Server listening
+    $.util.log('[webpack-dev-server:example]', `http://${ip}:${port}/m-hongbao/`);
+
+    // Chrome is google chrome on OS X, google-chrome on Linux and chrome on Windows.
+    // app 在 OS X 中是 google chrome, 在 Windows 为 chrome ,在 Linux 为 google-chrome
+    opn(port === '80' ? `http://${ip}` : `http://${ip}:${port}/m-hongbao/`, {app: 'google chrome'});
+  });
 
 });
 
@@ -162,6 +199,12 @@ gulp.task('connect', () => {
     port: 8001,
     livereload: true
   });
+});
+
+//例子
+gulp.task('example', ['styles:example'], () => {
+  gulp.start(['webpack:example']);
+  gulp.watch('example/sass/**/*.scss', ['styles:example']);
 });
 
 // 编译打包，正式环境

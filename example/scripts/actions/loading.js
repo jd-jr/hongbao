@@ -10,7 +10,7 @@ function fetchLoading() {
     entity: 'loading',
     [CALL_API]: {
       types: [LOADING_REQUEST, LOADING_SUCCESS, LOADING_FAILURE],
-      jsonUrl: 'json/error.json',
+      jsonUrl: '/json/error.json',
       url: 'path/error',
       schema: LoadingSchemas.LOADING
     }

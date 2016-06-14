@@ -5,17 +5,12 @@ import ExtractTextPlugin  from 'extract-text-webpack-plugin';
 import precss from 'precss';
 import autoprefixer from 'autoprefixer';
 
-//线上环境
-/*const ip = 'static.jdpay.com';
- const port = 443; // https 默认端口号为443*/
-
-//测试环境
-const ip = 'hongbao.jdpay.com';
-const port = 8083;
+const ip = 'localhost';
+const port = 8088;
 
 const hotDevServer = 'webpack/hot/dev-server';
 // https://github.com/webpack/webpack-dev-server
-const webpackDevServer = `webpack-dev-server/client?${port === 443 ? 'https' : 'http'}://${ip}:${port}`;
+const webpackDevServer = `webpack-dev-server/client?http://${ip}:${port}/m-hongbao`;
 
 const appPath = path.resolve(__dirname, 'app');
 
@@ -33,7 +28,7 @@ let webpackConfig = {
     reasons: true //打印相关模块被引入
   },
   devServer: {
-    contentBase: './app',
+    contentBase: './example',
     // Set this as true if you want to access dev server from arbitrary url.
     // This is handy if you are using a html5 router.
     // 配置路径，重写 url
@@ -75,7 +70,7 @@ let webpackConfig = {
 
   // 入口文件 让webpack用哪个文件作为项目的入口
   entry: {
-    index: ['./app/scripts/index.js', webpackDevServer, hotDevServer],
+    index: ['./example/scripts/index.js', webpackDevServer, hotDevServer],
     //添加要打包在vendors里面的库，作为公共的js文件
     vendors: []
   },
@@ -106,6 +101,10 @@ let webpackConfig = {
       {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader', 'postcss-loader?pack=cleaner')
+      },
+      {
+        test: /\.json$/,
+        loader: 'json-loader'
       },
       // https://github.com/webpack/url-loader
       {
@@ -143,7 +142,7 @@ const entry = webpackConfig.entry;
 // 为 HtmlwebpackPlugin 设置配置项，与 entry 键对应，根据需要设置其参数值
 const htmlwebpackPluginConfig = {
   index: {
-    title: '实物红包'
+    title: '例子'
   }
 };
 

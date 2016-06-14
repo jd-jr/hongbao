@@ -42,6 +42,19 @@ class Film extends Component {
     const {activeTab} = this.state;
     const film = activeTab === 'all' ? allFilmList : popularityFilmList;
     const list = film.list;
+
+    if (!list) {
+      return (
+        <div className="page-loading">载入中，请稍后 ...</div>
+      );
+    } else if (list.length === 0) {
+      return (
+        <div>
+          <p>无记录</p>
+        </div>
+      );
+    }
+    
     return (
       <ul className="list-group">
         {

@@ -1,0 +1,65 @@
+.perfect {
+  color: #006666;
+  width: 600px;
+  margin: 50px;
+
+  //生成的 css 位于根目录中,而不是嵌套在 perfect 中
+  @at-root {
+    .link {
+      color: #1f7e9a;
+    }
+
+    .perfect-list {
+      > li {
+        padding: 10px;
+      }
+    }
+  }
+}
+
+.about {
+  width: 600px;
+  margin: 50px auto;
+  padding: 50px;
+  border: 1px solid #1f7e9a;
+  border-radius: 5px;
+  text-align: center;
+  > h4 {
+    margin-bottom: 20px;
+  }
+  .about-img {
+    margin-top: 20px;
+    > img + img {
+      margin-left: 50px;
+    }
+  }
+}
+
+//用绘制一个特殊的图标,待实现
+.perfect-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  background-color: #00b3ee;
+  border-radius: 50%;
+}
+
+.container-example {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.link-group > a {
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.link-group > a:last-child {
+  margin-right: 0;
+}
+
+.examples-btn-group {
+  .btn + .btn {
+    margin-left: 10px;
+  }
+}

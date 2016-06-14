@@ -30,11 +30,25 @@ gulp server
 gulp build
 ```
 
-### 启动打包后的服务
+### 启动打包后服务
 
 ```
 gulp connect
 ```
+
+### 例子
+
+```
+gulp  example
+```
+
+## 问题与建议
+
+http://gitlab.cbpmgt.com/fe-team/hongbao/issues
+
+## 版本追踪
+
+Please view [here](./VERSION.md)
 
 ## hongbao 目录结构
 

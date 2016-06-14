@@ -41,7 +41,7 @@ class PersonList extends Component {
         <div className="m-b-1">
           <Link className="btn btn-primary" to="/example/person/create">Add Person</Link>
         </div>
-        
+
         <table className="table">
           <thead className="thead-inverse">
           <tr>
@@ -54,11 +54,11 @@ class PersonList extends Component {
           </thead>
           <tbody>
           {
-            list.map((person) => {
+            list ? list.map((person) => {
               return (
                 <PersonItem key={person.id} person={person} personActions={personActions}/>
               );
-            })
+            }) : null
           }
           </tbody>
         </table>
