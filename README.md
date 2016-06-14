@@ -42,6 +42,10 @@ gulp connect
 gulp  example
 ```
 
+### 手机端调试
+
+在 url 后面加上参数 ?eruda=true 或者设置 sessionStorage.setItem('active-eruda', 'true')
+
 ## 问题与建议
 
 http://gitlab.cbpmgt.com/fe-team/hongbao/issues

@@ -54,7 +54,8 @@ gulp.task('copy:dev', () => {
   const paths = [
     {src: 'app/scripts/config/index.dev.js', dest: 'app/scripts/config/index.js'},
     {src: 'app/scripts/store/configureStore.dev.js', dest: 'app/scripts/store/index.js'},
-    {src: 'app/scripts/containers/Root.dev.js', dest: 'app/scripts/containers/Root.js'}
+    {src: 'app/scripts/containers/Root.dev.js', dest: 'app/scripts/containers/Root.js'},
+    {src: 'node_modules/eruda/dist/eruda.min.js', dest: 'app/eruda.min.js'},
   ];
   return $.copy2(paths);
 });
@@ -65,7 +66,8 @@ gulp.task('copy:prod', () => {
     {src: 'app/scripts/config/index.prod.js', dest: 'app/scripts/config/index.js'},
     {src: 'app/scripts/store/configureStore.prod.js', dest: 'app/scripts/store/index.js'},
     {src: 'app/scripts/containers/Root.prod.js', dest: 'app/scripts/containers/Root.js'},
-    {src: 'app/favicon.ico', dest: 'dist/favicon.ico'}
+    {src: 'app/favicon.ico', dest: 'dist/favicon.ico'},
+    {src: 'node_modules/eruda/dist/eruda.min.js', dest: 'dist/eruda.min.js'},
   ];
   return $.copy2(paths);
 });

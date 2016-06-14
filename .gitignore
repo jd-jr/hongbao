@@ -2,3 +2,8 @@
 node_modules
 dist
 zip
+
+# 一些不需要提交的 js 文件
+app/scripts/config/index.js
+app/scripts/containers/Root.js
+app/scripts/store/index.js

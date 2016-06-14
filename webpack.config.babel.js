@@ -152,7 +152,7 @@ for (let key in entry) {
     webpackConfig.plugins.push(
       new HtmlwebpackPlugin({
         title: htmlwebpackPluginConfig[key].title,
-        template: path.resolve(appPath, 'templates/layout.html'),
+        template: path.resolve(appPath, 'templates/layout-dev.html'),
         filename: `${key}.html`,
         //chunks这个参数告诉插件要引用entry里面的哪几个入口
         chunks: [key, 'vendors'],

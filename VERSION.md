@@ -7,4 +7,5 @@
   * es6 环境搭建
   * gulp 工程化
   * url 中不再包含 # ，利用 h5 特性处理 url，不用 hash
+  * 加入 eruda 支持在手机端 debug 调试
 
