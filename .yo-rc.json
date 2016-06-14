@@ -1,0 +1,6 @@
+{
+  "generator-webpack-react": {
+    "appPath": "app",
+    "appName": "hongbao"
+  }
+}
