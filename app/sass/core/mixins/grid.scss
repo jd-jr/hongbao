@@ -1,0 +1,93 @@
+// Grid 自定义函数
+// 这里采用 flex 布局实现，不再使用 float
+
+@mixin make-container($gutter: $grid-gutter-width) {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: ($gutter / 2);
+  padding-right: ($gutter / 2);
+}
+
+@mixin make-row($gutter: $grid-gutter-width) {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: ($gutter / -2);
+  margin-right: ($gutter / -2);
+}
+
+@mixin make-col($size, $columns: $grid-columns, $gutter: $grid-gutter-width) {
+  position: relative;
+  min-height: 1px;
+  padding-right: ($gutter / 2);
+  padding-left: ($gutter / 2);
+
+  flex: 0 0 percentage($size / $columns);
+  // Add a `max-width` to ensure content within each column does not blow out
+  // the width of the column. Applies to IE10+ and Firefox. Chrome and Safari
+  // do not appear to require this.
+  max-width: percentage($size / $columns);
+}
+
+@mixin make-col-offset($size, $columns: $grid-columns) {
+  margin-left: percentage($size / $columns);
+}
+
+@mixin make-col-push($size, $columns: $grid-columns) {
+  left: if($size > 0, percentage($size / $columns), auto);
+}
+
+@mixin make-col-pull($size, $columns: $grid-columns) {
+  right: if($size > 0, percentage($size / $columns), auto);
+}
+
+@mixin make-col-modifier($type, $size, $columns) {
+  // Work around the lack of dynamic mixin @include support (https://github.com/sass/sass/issues/626)
+  @if $type == push {
+    @include make-col-push($size, $columns);
+  } @else if $type == pull {
+    @include make-col-pull($size, $columns);
+  } @else if $type == offset {
+    @include make-col-offset($size, $columns);
+  }
+}
+
+// Framework grid generation
+//
+// Used only by Bootstrap to generate the correct number of grid classes given
+// any value of `$grid-columns`.
+
+@mixin make-grid-columns($columns: $grid-columns, $gutter: $grid-gutter-width) {
+  .col {
+    position: relative;
+    flex-basis: 0;
+    flex-grow: 1;
+    max-width: 100%;
+    min-height: 1px;
+    padding-right: ($gutter / 2);
+    padding-left: ($gutter / 2);
+  }
+
+  @for $i from 1 through $columns {
+    .col-#{$i} {
+      @include make-col($i, $columns, $gutter);
+    }
+  }
+
+  @each $modifier in (pull, push) {
+    @for $i from 0 through $columns {
+      .#{$modifier}-#{$i} {
+        @include make-col-modifier($modifier, $i, $columns)
+      }
+    }
+  }
+
+  // `$columns - 1` because offsetting by the width of an entire row isn't possible
+  @for $i from 0 through ($columns - 1) {
+    @if $i != 0 { // Avoid emitting useless .offset-xs-0
+      .offset-#{$i} {
+        @include make-col-modifier(offset, $i, $columns)
+      }
+    }
+  }
+}
+

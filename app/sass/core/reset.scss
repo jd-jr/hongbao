@@ -1,14 +1,328 @@
+/**!
+ * reset
+ * 参考 bootstrap
+ * 在 normalize.css 的基础上重新定义样式
+**/
+
+
+
 /**
- * 重置样式,待补充
+ * 重新设置盒模型为 border-box，让盒子宽度包括 padding border 和 margin
+ * 这样给元素添加 padding border 或者 margin 时，盒子宽度不会变化
+ * 设置为 border-box 后会更好的控制元素的宽度，以及百分比布局
 **/
 html {
-  font-size: 16px;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/**
+* 为 ie 版本设置 device-width
+* 因为 IE 10+ 在某些原因下不会正确设置 <meta name="viewport">
+**/
+@at-root {
+  @-ms-viewport { width: device-width; }
+}
+
+/**
+* 重置 html
+**/
+html {
+  //设置默认字体大小，其他元素采用 rem ，动态的根据 html 来计算其大小
+  font-size: $font-size-root;
+  // 在 ie11 和 edge 中，当鼠标离开滚动条时，会自动隐藏，这样用户体验可能不是很好，故显式开启，当有滚动条时，一直显式
+  -ms-overflow-style: scrollbar;
+  // 在 IOS 下点击高亮修改为完全透明
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 body {
-  font-size: 1rem;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $body-color;
+  background-color: $body-bg;
 }
 
+// 对于 tabindex 设为 -1 的元素，获取焦点时去掉外边虚框
+[tabindex="-1"]:focus {
+  outline: none !important;
+}
+
+
+//
+// 排版重置样式
+//
+
+// 去掉 `<h1>`-`<h6>` margin-top，并重置 margin-bottom
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: .5rem;
+}
+
+// 重置 p 元素
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+// 给 abbr 添加一个点边框
+abbr[title],
+abbr[data-original-title] {
+  cursor: help;
+  border-bottom: 1px dotted $abbr-border-color;
+}
+
+address {
+  margin-bottom: 1rem;
+  font-style: normal;
+  line-height: inherit;
+}
+
+ol,
+ul,
+dl {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+ol ol,
+ul ul,
+ol ul,
+ul ol {
+  margin-bottom: 0;
+}
+
+dt {
+  font-weight: $dt-font-weight;
+}
+
+dd {
+  margin-bottom: .5rem;
+  margin-left: 0;
+}
+
+blockquote {
+  margin: 0 0 1rem;
+}
+
+
+//
+// Links
+//
+
 a {
+  color: $link-color;
+  text-decoration: $link-decoration;
+
+  @include hover-focus {
+    color: $link-hover-color;
+    text-decoration: $link-hover-decoration;
+  }
+
+  &:focus {
+    @include tab-focus();
+  }
+}
+
+// 对于没有 href 或 tabindex 的 a 元素修改为样式跟普通元素一样
+a:not([href]):not([tabindex]) {
+  color: inherit;
+  text-decoration: none;
+
+  @include hover-focus {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+
+//
+// Code
+//
+
+pre {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  overflow: auto;
+}
+
+
+//
+// Figures
+//
+
+figure {
+  margin: 0 0 1rem;
+}
+
+
+//
+// 重置图片样式
+//
+
+img {
+  // 重置为垂直居中
+  vertical-align: middle;
+}
+
+
+// 对于包含属性 role="button" 默认设置为 pointer
+// see https://developer.mozilla.org/en-US/docs/Web/Events/click#Safari_Mobile
+
+[role="button"] {
   cursor: pointer;
+}
+
+
+/**
+* 在手机端点击事件有 300ms 的延迟
+* 在一些现代浏览器可以通过样式 touch-action: manipulation 来删除点击延迟
+* 下面这些元素不需要延迟
+* http://v4-alpha.getbootstrap.com/content/reboot/#click-delay-optimization-for-touch
+* https://developer.mozilla.org/zh-CN/docs/Web/CSS/touch-action
+* http://caniuse.com/#feat=css-touch-action
+* http://patrickhlauke.github.io/touch/tests/results/#suppressing-300ms-delay
+**/
+a,
+area,
+button,
+[role="button"],
+input,
+label,
+select,
+summary,
+textarea {
+  touch-action: manipulation;
+}
+
+
+//
+// Table 重置样式
+//
+
+table {
+  border-collapse: collapse;
+  background-color: $table-bg;
+}
+
+caption {
+  padding-top: $table-cell-padding;
+  padding-bottom: $table-cell-padding;
+  color: $text-muted;
+  text-align: left;
+  caption-side: bottom;
+}
+
+th {
+  text-align: left;
+}
+
+
+//
+// 重置 Forms 表单样式
+//
+
+label {
+  // Allow labels to use `margin` for spacing.
+  display: inline-block;
+  margin-bottom: .5rem;
+}
+
+// Work around a Firefox/IE bug where the transparent `button` background
+// results in a loss of the default `button` focus styles.
+//
+// Credit: https://github.com/suitcss/base/
+button:focus {
+  outline: 1px dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
+input,
+button,
+select,
+textarea {
+  margin: 0;
+  line-height: inherit;
+  // iOS adds rounded borders by default
+  border-radius: 0;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  // Apply a disabled cursor for radios and checkboxes.
+  //
+  // Note: Neither radios nor checkboxes can be readonly.
+  &:disabled {
+    cursor: $cursor-disabled;
+  }
+}
+
+
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"] {
+  // Remove the default appearance of temporal inputs to avoid a Mobile Safari
+  // bug where setting a custom line-height prevents text from being vertically
+  // centered within the input.
+  //
+  // Bug report: https://github.com/twbs/bootstrap/issues/11266
+  -webkit-appearance: listbox;
+}
+
+textarea {
+  // Textareas should really only resize vertically so they don't break their (horizontal) containers.
+  resize: vertical;
+}
+
+fieldset {
+  // Chrome and Firefox set a `min-width: min-content;` on fieldsets,
+  // so we reset that to ensure it behaves more like a standard block element.
+  // See https://github.com/twbs/bootstrap/issues/12359.
+  min-width: 0;
+  // Reset the default outline behavior of fieldsets so they don't affect page layout.
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+legend {
+  // Reset the entire legend element to match the `fieldset`
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: .5rem;
+  font-size: 1.5rem;
+  line-height: inherit;
+}
+
+input[type="search"] {
+  // This overrides the extra rounded corners on search inputs in iOS so that our
+  // `.form-control` class can properly style them. Note that this cannot simply
+  // be added to `.form-control` as it's not specific enough. For details, see
+  // https://github.com/twbs/bootstrap/issues/11586.
+  -webkit-appearance: none;
+}
+
+// todo: needed?
+output {
+  display: inline-block;
+  //  font-size: $font-size-base;
+  //  line-height: $line-height;
+  //  color: $input-color;
+}
+
+// Always hide an element with the `hidden` HTML attribute (from PureCSS).
+[hidden] {
+  display: none !important;
 }

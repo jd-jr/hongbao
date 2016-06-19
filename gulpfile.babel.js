@@ -203,10 +203,27 @@ gulp.task('connect', () => {
   });
 });
 
+//打包后,启动服务
+gulp.task('static-html', () => {
+  $.connect.server({
+    root: 'app',
+    port: 8002,
+    livereload: true
+  });
+
+  gulp.watch('app/sass/**/*.scss', ['styles']);
+});
+
 //例子
 gulp.task('example', ['styles:example'], () => {
   gulp.start(['webpack:example']);
   gulp.watch('example/sass/**/*.scss', ['styles:example']);
+});
+
+//mockjs server
+//https://www.npmjs.com/package/gulp-supervisor
+gulp.task('mockjs', () => {
+  $.supervisor('server/index.js');
 });
 
 // 编译打包，正式环境

@@ -1,0 +1,27 @@
+.#{$prefixCls} {
+  &footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    // 解决 ios 下底部会有1px空白
+    bottom: -1px;
+    padding: 1rem 0;
+
+    background: #fff;
+    color: #666;
+    font-size: 1.25rem;
+    border-top: 1px solid $gray-lightest;
+
+    .#{$prefixCls}active-btn {
+      color: $brand-primary;
+    }
+  }
+
+  &footer-fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    // 解决 ios 下底部会有1px空白
+    bottom: -1px;
+  }
+}

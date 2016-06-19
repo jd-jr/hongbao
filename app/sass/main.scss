@@ -1,5 +1,10 @@
+/**
+* 实物红包样式
+* 所有样式以 hb- 打头
+**/
 //变量
 @import "core/variables";
+@import "core/enable-effect";
 //函数
 @import "core/mixins";
 //基于 normalize 重置样式
@@ -8,9 +13,29 @@
 @import "core/reset";
 
 //组件
+@import "core/components/grid";
+@import "core/components/buttons";
+@import "core/components/text";
+@import "core/components/border";
+@import "core/components/pulls";
+@import "core/components/arrows";
+@import "core/components/font";
+@import "core/components/flex";
+@import "core/components/images";
+
 @import "core/components/loading";
 @import "core/components/react-animation";
 
+//实用工具类样式
+@import "core/utilities/spacing";
+@import "core/utilities/position";
+
 //各模块样式
 @import "modules/main";
+@import "modules/footer";
+@import "modules/layout";
+@import "modules/input";
+@import "modules/product-tag";
+
+
 

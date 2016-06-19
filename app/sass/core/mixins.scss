@@ -1,3 +1,12 @@
+@import "mixins/hover";
+@import "mixins/tab-focus";
 @import "mixins/border-radius";
 @import "mixins/box-shadow";
-@import "mixins/clearfix";
+@import "mixins/transition";
+@import "mixins/text-emphasis";
+@import "mixins/text-truncate";
+@import "mixins/text-hide";
+@import "mixins/grid";
+@import "mixins/buttons";
+@import "mixins/pulls";
+@import "mixins/image";

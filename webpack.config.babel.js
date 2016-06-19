@@ -54,8 +54,8 @@ let webpackConfig = {
     publicPath: '/m-hongbao/',
     // 代理设置
     proxy: {
-      '/path/*': {
-        target: 'http://localhost:8080',
+      '/redbag/*': {
+        target: 'http://localhost:3000',
         secure: false
       }
     }

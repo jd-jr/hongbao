@@ -1,65 +1,201 @@
-.perfect {
-  color: #006666;
-  width: 600px;
-  margin: 50px;
+//项目自定义重置
+html {
+  overflow-x: hidden;
+}
 
-  //生成的 css 位于根目录中,而不是嵌套在 perfect 中
-  @at-root {
-    .link {
-      color: #1f7e9a;
-    }
+ul {
+  list-style: none;
+}
 
-    .perfect-list {
-      > li {
-        padding: 10px;
+li {
+  padding-left: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+}
+
+.m-l-0-3 {
+  margin-left: 0.3rem;
+}
+
+.#{$prefixCls} {
+  &single {
+    background: #fff;
+    padding: 0.75rem;
+    border-radius: .3rem;
+    margin-bottom: .3rem;
+  }
+
+  &list {
+    background: #fff;
+    border-top: 1px solid $gray-lightest;
+    border-bottom: 1px solid $gray-lightest;
+    padding-left: 0;
+    > li {
+      border-bottom: 1px solid $gray-lightest;
+      padding: 0.75rem 1rem;
+      &:last-child {
+        border-bottom: 0;
       }
     }
   }
-}
 
-.about {
-  width: 600px;
-  margin: 50px auto;
-  padding: 50px;
-  border: 1px solid #1f7e9a;
-  border-radius: 5px;
-  text-align: center;
-  > h4 {
-    margin-bottom: 20px;
+  &figure {
+    display: inline-block;
+    text-align: center;
+    width: 5rem;
+    height: 5rem;
   }
-  .about-img {
-    margin-top: 20px;
-    > img + img {
-      margin-left: 50px;
+
+  &nav-btn-group {
+    background: #fff;
+    padding: .5rem 2rem;
+    text-align: center;
+    @at-root {
+      .#{$prefixCls}nav-btn-left {
+        @include border-left-radius(0.25rem);
+        border: 1px solid $brand-primary;
+        padding: 0.5rem;
+        color: $brand-primary;
+        &.active {
+          background: $brand-primary;
+          color: #fff;
+        }
+      }
+
+      .#{$prefixCls}nav-btn-right {
+        @include border-right-radius(0.25rem);
+        border: 1px solid $brand-primary;
+        padding: 0.5rem;
+        color: $brand-primary;
+        &.active {
+          background: $brand-primary;
+          color: #fff;
+        }
+      }
     }
   }
-}
 
-//用绘制一个特殊的图标,待实现
-.perfect-icon {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto;
-  background-color: #00b3ee;
-  border-radius: 50%;
-}
-
-.container-example {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-.link-group > a {
-  margin-right: 20px;
-  cursor: pointer;
-}
-
-.link-group > a:last-child {
-  margin-right: 0;
-}
-
-.examples-btn-group {
-  .btn + .btn {
-    margin-left: 10px;
+  &arrows-active {
+    position: relative;
+    &:before {
+      position: absolute;
+      height: 1.2rem;
+      width: 1.2rem;
+      top: -0.66rem;
+      background: inherit;
+    }
   }
+
+  // 以下计算位置不太准确，应该计算屏幕的宽度 * 5 / 24 + width/2 箭头宽度
+  &arrows-active-left:before {
+    left: 17%;
+  }
+  &arrows-active-right:before {
+    right: 17%;
+  }
+
+  &product-nav {
+    background: #fff;
+    padding: 0 1.5rem;
+    border-top: 1px solid $gray-lighter;
+    @at-root {
+      .#{$prefixCls}product-nav-btn {
+        padding: 1rem 0 0.9rem;
+        &.active {
+          border-bottom: 4px solid $brand-primary;
+          margin-bottom: -1px;
+        }
+      }
+    }
+  }
+
+  &product-swiper {
+    background: #fff;
+    border-bottom: 1px solid $gray-lighter;
+    padding-bottom: 1rem;
+  }
+
+  &swiper-img {
+    display: block;
+    margin: 0 auto;
+    width: auto;
+    max-height: 30rem;
+  }
+
+  &product-title {
+    background: #fff;
+    padding: 1.5rem;
+  }
+
+  &product-detail {
+    background: #fff;
+  }
+
+  &modal {
+    .rc-modal-dialog {
+      margin-left: 2rem;
+      margin-right: 2rem;
+    }
+    .rc-modal-content {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+    }
+    .rc-modal-body {
+      padding: 0;
+    }
+  }
+
+  &ellipse-arc-mask {
+    position: relative;
+    background: #d64f47;
+    @include border-radius(5px);
+    height: 100%;
+  }
+
+  &ellipse-arc-flat {
+    display: flex;
+    width: 100%;
+    height: 65%;
+    border-radius: 50%/20%;
+    @include border-top-radius(5px);
+    background: #dd554d;
+    position: absolute;
+    bottom: 35%;
+    box-shadow: 0 0 0.5rem #c94a43;
+    color: #fee1b4;
+    text-align: center;
+    padding: 1rem 2rem;
+  }
+
+  &btn-circle {
+    position: absolute;
+    width: 7rem;
+    height: 7rem;
+    background: #dcbc88;
+    border-radius: 50%;
+    left: 50%;
+    margin-left: -3.5rem;
+    bottom: 23%;
+    border: 1px solid #d0b17f;
+    color: #3b3b3b;
+    box-shadow: 0 0 0 0.5rem #dcbc88;
+    font-size: 2rem;
+    font-weight: bold;
+    display: flex;
+    cursor: pointer;
+  }
+
+  &ellipse-arc-sharp {
+    position: absolute;
+    bottom: 0;
+    background: greenyellow;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    border-radius: 9px/30px;
+  }
+
 }

@@ -1,0 +1,43 @@
+.#{$prefixCls} {
+  &input {
+    padding: 0 $input-padding-x;
+    font-size: $font-size-base;
+    color: $input-color;
+    background-color: $input-bg;
+    background-image: none;
+    border: 0;
+
+    &:focus {
+      outline: none;
+    }
+
+    // Placeholder
+    &::placeholder {
+      color: $input-color-placeholder;
+      // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
+      opacity: 1;
+    }
+  }
+
+  &textarea {
+    width: 100%;
+    padding: 0;
+    resize: none;
+    font-size: $font-size-xs;
+    color: $input-color;
+    background-color: $input-bg;
+    background-image: none;
+    border: 0;
+
+    &:focus {
+      outline: none;
+    }
+
+    // Placeholder
+    &::placeholder {
+      color: $input-color-placeholder;
+      // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
+      opacity: 1;
+    }
+  }
+}

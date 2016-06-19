@@ -1,0 +1,21 @@
+.#{$prefixCls} {
+  &product-tag {
+    border-radius: 2px;
+    padding: 0.1rem 0.5rem;
+    margin-left: 0.5rem;
+    color: #fff;
+  }
+  &product-tag-primary {
+    background: $brand-primary;
+  }
+  &product-tag-info {
+    background: $brand-info;
+  }
+  &product-tag-success {
+    background: $brand-success;
+  }
+
+  &product-info {
+    margin-top: 0.3rem;
+  }
+}

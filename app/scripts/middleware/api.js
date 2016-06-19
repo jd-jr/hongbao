@@ -25,11 +25,11 @@ export default store => next => action => {
    *
    [CALL_API]: {
       types: [ALL_FILM_REQUEST, ALL_FILM_SUCCESS, ALL_FILM_FAILURE],
-      jsonUrl: '/json/film/all.json',
       url: 'path/film/all',
       schema: FilmSchemas.ALL_FILM_LIST,
-      options: {} // 可选
-      paging: false
+      options: {}, // 可选
+      body: {}, // 可选，提交到后台参数
+      paging: true // 表示分页
     }
    */
   const callAPI = action[CALL_API];
@@ -38,8 +38,8 @@ export default store => next => action => {
   }
 
   let {url} = callAPI;
-  //paging 为 true 指分页,默认为 true
-  const {schema, types, options, paging = true, jsonUrl} = callAPI;
+  //paging 为 true 指分页
+  const {schema, types, options, body, paging} = callAPI;
 
   if (typeof url === 'function') {
     url = url(store.getState());
@@ -75,23 +75,29 @@ export default store => next => action => {
   next(actionWith({type: requestType}));
 
   // Fetch 一个请求，并返回结果, 返回成功处理逻辑需要根据后端返回的数据格式来解析
-  return callApi({url, options, jsonUrl}).then(
+  return callApi({url, options, body}).then(
     ({json, response}) => {
       let res;
       let data = json.data;
       if (!data) {
         data = {};
       }
+
       //把对象或数组转换为驼峰式
       const camelizedJson = camelizeKeys(data);
-      const {currentPage, totalPage, totalCount} = camelizedJson;
+      /**
+       * pageNum, 当前页
+       * pageCount, 总页码
+       * totalCount 总记录数
+       */
+      const {pageNum, pageCount, totalCount} = camelizedJson;
       if (typeof schema === 'string') {
         res = assign({}, {[schema]: camelizedJson});
       } else {
         // 用 normalize 把结果集序列化处理, 与 Schema 对应
         res = assign({},
           normalize(paging ? (camelizedJson.list || []) : camelizedJson, schema),
-          paging ? {currentPage, totalPage, totalCount, lastPage: currentPage >= totalPage} : {}
+          paging ? {pageNum, pageCount, totalCount, lastPage: pageNum >= pageCount} : {}
         );
       }
       //调用成功 action，并把结果数据返回
@@ -100,13 +106,6 @@ export default store => next => action => {
         type: successType
       }));
 
-      //如果想演示加载效果,可以延迟2秒处理数据
-      /*setTimeout(() => {
-       return next(actionWith({
-       res,
-       type: successType
-       }));
-       }, 2000);*/
     },
     (error) => {
       const message = errorHandler(error);

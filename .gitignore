@@ -7,3 +7,4 @@ zip
 app/scripts/config/index.js
 app/scripts/containers/Root.js
 app/scripts/store/index.js
+app/eruda.min.js

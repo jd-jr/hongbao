@@ -1,0 +1,55 @@
+.arrow-hollow-right {
+  &:before {
+    content: "";
+    display: inline-block;
+    border: 1px solid transparent;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    transform: rotate(45deg);
+    height: .7rem;
+    width: .7rem;
+    margin: 0 .5rem;
+  }
+}
+
+.arrow-hollow-top {
+  &:before {
+    content: "";
+    display: inline-block;
+    border-top: 1px solid #efefef;
+    border-left: 1px solid #efefef;
+    transform: rotate(45deg);
+    height: .7rem;
+    width: .7rem;
+  }
+}
+
+//实心箭头
+.arrow-primary {
+  border-color: $brand-primary;
+}
+
+.arrow-gray {
+  border-color: #ccc;
+}
+
+.arrow-top,
+.arrow-bottom {
+  display: inline-block;
+  border-style: solid;
+}
+
+.arrow-top {
+  border-top-width: .5rem;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.arrow-bottom {
+  border-bottom-width: .5rem;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+}
+

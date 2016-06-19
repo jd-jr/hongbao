@@ -1,0 +1,24 @@
+// 定义边框
+.border-left {
+  border-left: 1px solid transparent;
+}
+
+.border-right {
+  border-right: 1px solid transparent;
+}
+
+.border-top {
+  border-top: 1px solid transparent;
+}
+
+.border-bottom {
+  border-bottom: 1px solid transparent;
+}
+
+.border-base {
+  border-color: $border-color-base;
+}
+
+.border-second {
+  border-color: $border-color-second;
+}
