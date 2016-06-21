@@ -96,7 +96,7 @@ export default store => next => action => {
       } else {
         // 用 normalize 把结果集序列化处理, 与 Schema 对应
         res = assign({},
-          normalize(paging ? (camelizedJson.list || []) : camelizedJson, schema),
+          normalize(paging ? (camelizedJson.datas || []) : camelizedJson, schema),
           paging ? {pageNum, pageCount, totalCount, lastPage: pageNum >= pageCount} : {}
         );
       }

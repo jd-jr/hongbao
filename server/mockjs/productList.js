@@ -8,7 +8,7 @@ module.exports = mockjs.mock({
     pageSize: 20,
     totalCount: 20,
     pageCount: 1,
-    list: [{
+    datas: [{
       id: '1',
       skuId: '100934',
       skuName: '京东E卡',

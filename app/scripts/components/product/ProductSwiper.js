@@ -5,16 +5,17 @@ import ReactSwiper from '../../ui/ReactSwiper';
 class ProductSwiper extends Component {
 
   render() {
-    let {imageList} = this.props;
+    let {items} = this.props;
     const swiperOptions = {
       preloadImages: true,
       autoplay: 4000,
       autoplayDisableOnInteraction: false
     };
 
-    if (!imageList || imageList.length === 0) {
-      imageList = [];
-      imageList.push({
+    //例子数据
+    /*if (!items || items.length === 0) {
+      items = [];
+      items.push({
         id: 1,
         keyword: '111',
         imgUrl: 'http://img12.360buyimg.com/cms/jfs/t2812/46/1557908128/260742/4648595c/5742d02eN8d52b027.jpg'
@@ -27,17 +28,17 @@ class ProductSwiper extends Component {
         keyword: '333',
         imgUrl: 'http://img12.360buyimg.com/cms/jfs/t2854/361/1554492173/55832/bc292ea/5742d03bN2e6a95b2.jpg'
       });
-    }
+    }*/
 
     return (
       <ReactSwiper swiperOptions={swiperOptions} showPagination swiperClass="hb-product-swiper">
         {
-          imageList.map((item) => {
-            const {imgUrl, keyword, id} = item;
+          items && items.map((item) => {
+            const {src, title, id} = item;
             return (
               <div className="slider-item swiper-slide" key={id}>
                 <div className="slide-content">
-                  <img className="hb-swiper-img" src={imgUrl} title={keyword}/>
+                  <img className="hb-swiper-img" src={src} title={title}/>
                 </div>
               </div>
             );
@@ -49,6 +50,6 @@ class ProductSwiper extends Component {
 }
 
 ProductSwiper.propTypes = {
-  imageList: PropTypes.array,
+  items: PropTypes.array,
 };
 export default ProductSwiper;

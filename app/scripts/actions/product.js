@@ -32,7 +32,7 @@ export function getProductList(body = {}) {
     if (isFetching || lastPage) {
       return null;
     }
-    return dispatch(fetchProductList({...body, pageNum: nextPage}));
+    return dispatch(fetchProductList({...body, pageNum: nextPage, pageSize: 20}));
   };
 }
 
@@ -52,6 +52,9 @@ function fetchCategoryList() {
     [CALL_API]: {
       types: [CATEGORY_LIST_REQUEST, CATEGORY_LIST_SUCCESS, CATEGORY_LIST_FAILURE],
       url: 'item/category',
+      body: {
+        parentCategoryId: 0
+      },
       schema: ProductSchemas.CATEGORY_LIST
     }
   };

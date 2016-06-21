@@ -6,32 +6,46 @@ class MyHongbao extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      detail: null
+      detail: null,
+      type: props.type || 'receive'
     };
+    this.switchTab = this.switchTab.bind(this);
   }
 
   componentDidMount() {
+    const {type} = this.props;
+  }
 
+  switchTab(e, type) {
+    this.setState({
+      type
+    });
+    history.replaceState(null, null, `?type=${type}`);
   }
 
   render() {
+    const {type} = this.state;
     return (
       <div>
         <article className="hb-wrap-mb">
           <section className="hb-nav-btn-group row">
-            <div className="col-12 hb-nav-btn-left active">我收到的</div>
-            <div className="col-12 hb-nav-btn-right">我发出的</div>
+            <div className={`col-12 hb-nav-btn-left${type === 'receive' ? ' active' : ''}`}
+                 onTouchTap={(e) => this.switchTab(e, 'receive')}>我收到的
+            </div>
+            <div className={`col-12 hb-nav-btn-right${type === 'sponsor' ? ' active' : ''}`}
+                 onTouchTap={(e) => this.switchTab(e, 'sponsor')}>我发出的
+            </div>
           </section>
 
-          <section className="text-center m-t-3">
+          <section className="text-center m-t-2">
             <div>
               <img className="img-circle img-thumbnail hb-figure" alt=""/>
             </div>
-            <h3 className="m-t-2">老王共收到</h3>
+            <h3 className="m-t-1">老王共收到</h3>
             <div className="h1">1900.00</div>
 
             <div>
-              <button className="btn btn-primary btn-outline-primary">立即提现</button>
+              <button className="btn btn-primary btn-outline-primary hb-fillet-1">立即提现</button>
             </div>
           </section>
 
@@ -110,7 +124,8 @@ MyHongbao.contextTypes = {
 MyHongbao.propTypes = {
   hongbaoActions: PropTypes.object,
   sponsorPagination: PropTypes.object,
-  receivePagination: PropTypes.object
+  receivePagination: PropTypes.object,
+  type: PropTypes.string
 };
 
 export default MyHongbao;

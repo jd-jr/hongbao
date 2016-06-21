@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
+import {Link} from 'react-router';
 import Modal from 'reactjs-modal';
 import BottomNav from '../BottomNav';
-import {getSessionStorage, removeSessionStorage}  from '../../utils/sessionStorage';
 import prefect from '../../utils/perfect';
 import Loading from '../../ui/Loading';
 import callApi from '../../fetch';
@@ -10,14 +10,15 @@ import walletApi from 'jd-wallet-sdk';
 class CreateOrder extends Component {
   constructor(props) {
     super(props);
+    const {skuName, skuId, bizPrice} = props;
     this.state = {
       title: '',
-      bizPrice: null,
-      skuId: null,
-      skuName: '',
+      bizPrice,
+      skuId,
+      skuName,
       giftNum: 1,
       cash: 0,
-      selecting: true,
+      selecting: Boolean(!skuId),
       visible: false
     };
     this.selectProduct = this.selectProduct.bind(this);
@@ -25,21 +26,6 @@ class CreateOrder extends Component {
     this.wrapHongbao = this.wrapHongbao.bind(this);
     this.sponsor = this.sponsor.bind(this);
     this.loadingStatus = false;
-  }
-
-  componentWillMount() {
-    let productDetail = getSessionStorage('productDetail');
-    if (productDetail) {
-      this.productDetail = prefect.parseJSON(productDetail);
-      const {bizPrice, skuId, skuName} = this.productDetail;
-      this.setState({
-        bizPrice,
-        skuId,
-        skuName,
-        cash: bizPrice * 0.2,
-        selecting: false
-      });
-    }
   }
 
   handleChange(e, type) {
@@ -88,7 +74,14 @@ class CreateOrder extends Component {
 
     this.loadingStatus = true;
     const url = 'create';
-    const body = {skuId, giftNum, title};
+    const body = {
+      skuId,
+      giftNum,
+      title,
+      accountType: 'WALLET',
+      thirAccId: '123456',
+      customerId: '1234567890'
+    };
 
     callApi({url, body}).then(
       ({json, response}) => {
@@ -97,7 +90,7 @@ class CreateOrder extends Component {
         //调起分享
         const pathname = prefect.getPathname();
         walletApi.share({
-          url: `${pathname}/unpack/${identifier}`,
+          url: `${pathname}unpack/${identifier}`,
           title: '实物红包',
           desc: '实物红包',
           channel: 'WX',
@@ -105,7 +98,6 @@ class CreateOrder extends Component {
             if (status === 'SUCCESS') {
               //回到首页
               this.context.router.push('/');
-              removeSessionStorage('productDetail');
             }
           }
         });
@@ -129,7 +121,7 @@ class CreateOrder extends Component {
           <div className="hb-ellipse-arc-mask">
             <div className="hb-ellipse-arc-flat flex-items-middle flex-items-center">
               <div>
-                <h1>红包已包好</h1>
+                <h2>红包已包好</h2>
                 <h4>实物和现金红包</h4>
               </div>
             </div>
@@ -142,7 +134,11 @@ class CreateOrder extends Component {
   }
 
   render() {
-    const {giftNum, title, bizPrice, skuName, cash, selecting} = this.state;
+    let {giftNum, title, bizPrice, skuName, cash, selecting} = this.state;
+    if (bizPrice) {
+      bizPrice = (bizPrice / 100).toFixed(2);
+    }
+
     return (
       <div>
         <Loading loadingStatus={this.loadingStatus}/>
@@ -153,10 +149,10 @@ class CreateOrder extends Component {
               <div className="hb-single" onTouchTap={this.selectProduct}>
                 <span>发实物红包</span>
                 {
-                  this.productDetail ? (
-                    <span className="pull-right">{bizPrice}元</span>
-                  ) : (
+                  selecting ? (
                     <span className="pull-right arrow-hollow-right"></span>
+                  ) : (
+                    <span className="pull-right">{bizPrice}元</span>
                   )
                 }
               </div>
@@ -164,18 +160,20 @@ class CreateOrder extends Component {
             </div>
 
             {
-              this.productDetail ? (
+              !selecting ? (
                 <div className="hb-single m-t-1 m-b-1">
                   <div className="row flex-items-middle">
                     <div className="col-4">
-                      <img src="" alt=""/>
+                      <img className="img-fluid"
+                           src="//img30.360buyimg.com/cms/jfs/t2767/199/1633966269/88015/5c2f906b/57451706N0a0381dc.jpg"
+                           alt=""/>
                     </div>
                     <div className="col-16">
                       <div className="text-truncate">{skuName}</div>
-                      <div className="text-muted f-sm">￥{bizPrice}</div>
+                      <div className="text-muted f-sm">{bizPrice ? `￥ ${bizPrice}` : ''}</div>
                     </div>
                     <div className="col-4 border-left border-second text-center">
-                      <a href="#">更换</a>
+                      <Link to="/product">更换</Link>
                     </div>
                   </div>
                 </div>
@@ -226,7 +224,10 @@ class CreateOrder extends Component {
 }
 
 CreateOrder.contextTypes = {
-  router: PropTypes.object.isRequired
+  router: PropTypes.object.isRequired,
+  skuName: PropTypes.string,
+  skuId: PropTypes.string,
+  bizPrice: PropTypes.number,
 };
 
 export default CreateOrder;

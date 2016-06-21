@@ -15,7 +15,7 @@ class BottomNav extends Component {
   }
 
   myHongbao() {
-    this.context.router.push('');
+    this.context.router.push('/my');
   }
 
   render() {

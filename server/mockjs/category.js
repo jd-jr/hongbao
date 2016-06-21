@@ -5,22 +5,32 @@ module.exports = mockjs.mock({
   msg: '调用成功',
   data: [{
     id: '1',
-    name: '并肩同事',
+    categoryName: '并肩同事',
     status: 'ON',
     parentId: 'null'
   }, {
     id: '2',
-    name: '爸爸妈妈',
+    categoryName: '爸爸妈妈',
     status: 'ON',
     parentId: 'null'
   }, {
     id: '3',
-    name: '男女朋友',
+    categoryName: '男女朋友',
     status: 'ON',
     parentId: 'null'
   }, {
     id: '4',
-    name: '亲密爱人',
+    categoryName: '亲密爱人',
+    status: 'ON',
+    parentId: 'null'
+  }, {
+    id: '5',
+    categoryName: '我的专属',
+    status: 'ON',
+    parentId: 'null'
+  }, {
+    id: '6',
+    categoryName: '亲密朋友',
     status: 'ON',
     parentId: 'null'
   }]

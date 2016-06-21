@@ -103,6 +103,9 @@ h1, h2, h3, h4, h5, h6 {
     @at-root {
       .#{$prefixCls}product-nav-btn {
         padding: 1rem 0 0.9rem;
+        display: inline-block;
+        width: 25%;
+        text-align: center;
         &.active {
           border-bottom: 4px solid $brand-primary;
           margin-bottom: -1px;
@@ -122,6 +125,7 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 auto;
     width: auto;
     max-height: 30rem;
+    min-height: 10rem;
   }
 
   &product-title {
@@ -182,8 +186,7 @@ h1, h2, h3, h4, h5, h6 {
     border: 1px solid #d0b17f;
     color: #3b3b3b;
     box-shadow: 0 0 0 0.5rem #dcbc88;
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: 1.75rem;
     display: flex;
     cursor: pointer;
   }
@@ -196,6 +199,10 @@ h1, h2, h3, h4, h5, h6 {
     height: 100%;
     z-index: 10;
     border-radius: 9px/30px;
+  }
+
+  &fillet-1 {
+    border-radius: 1.25rem;
   }
 
 }

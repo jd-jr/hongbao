@@ -8,6 +8,7 @@ import MyHongbao from '../components/hongbao/MyHongbao';
 const entitykeys = ['sponsorPagination', 'receivePagination'];
 
 function mapStateToProps(state, ownProps) {
+  const {type} = ownProps.location.query;
   const {
     hongbao
   } = state;
@@ -27,7 +28,7 @@ function mapStateToProps(state, ownProps) {
     };
   });
 
-  let objects = {};
+  let objects = {type};
 
   lists.forEach((item) => {
     assign(objects, item);

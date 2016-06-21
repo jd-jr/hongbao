@@ -1674,7 +1674,7 @@ fieldset[disabled] a.btn {
 
 .btn-lg {
   padding: 1.125rem 1.5rem;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   border-radius: 0.3rem;
 }
 
@@ -1943,7 +1943,7 @@ a.text-danger:focus, a.text-danger:hover {
 }
 
 .f-lg {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
 }
 
 .h1 {
@@ -2567,6 +2567,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .hb-product-nav-btn {
   padding: 1rem 0 0.9rem;
+  display: inline-block;
+  width: 25%;
+  text-align: center;
 }
 
 .hb-product-nav-btn.active {
@@ -2585,6 +2588,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 auto;
   width: auto;
   max-height: 30rem;
+  min-height: 10rem;
 }
 
 .hb-product-title {
@@ -2647,8 +2651,7 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid #d0b17f;
   color: #3b3b3b;
   box-shadow: 0 0 0 0.5rem #dcbc88;
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 1.75rem;
   display: -ms-flexbox;
   display: flex;
   cursor: pointer;
@@ -2664,15 +2667,19 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 9px/30px;
 }
 
+.hb-fillet-1 {
+  border-radius: 1.25rem;
+}
+
 .hb-footer {
   position: fixed;
   left: 0;
   right: 0;
   bottom: -1px;
-  padding: 1rem 0;
+  padding: .875rem 0;
   background: #fff;
   color: #666;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   border-top: 1px solid #efefef;
 }
 
