@@ -87,6 +87,7 @@ class HongbaoDetail extends Component {
 
   renderModal() {
     const {unpackModal, user} = this.state;
+    const {face, nickname} = user || {};
     let modal;
     if (unpackModal) {
       modal = (
@@ -99,9 +100,9 @@ class HongbaoDetail extends Component {
             <div className="hb-ellipse-arc-flat text-center">
               <section className="m-t-2">
                 <div>
-                  <img className="img-circle img-thumbnail hb-figure" src={user.face} alt=""/>
+                  <img className="img-circle img-thumbnail hb-figure" src={face} alt=""/>
                 </div>
-                <div className="m-t-1">{user.nickname}</div>
+                <div className="m-t-1">{nickname}</div>
                 <div>发了一个实物红包</div>
               </section>
               <h2 className="m-t-2">我在京东钱包发起了个实物和现金红包，快来抢啊！</h2>

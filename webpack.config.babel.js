@@ -23,7 +23,7 @@ let webpackConfig = {
   // eslint 配置
   eslint: {
     emitError: true, // 验证失败，终止
-    configFile: '/Users/wangyanjun/gitworkspace/eslint-config/react-es6/.eslintrc'
+    configFile: '.eslintrc'
   },
   cache: true, //开启缓存,增量编译
   debug: true, //开启 debug 模式

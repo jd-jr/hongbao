@@ -2858,3 +2858,16 @@ h1, h2, h3, h4, h5, h6 {
 .hb-product-info {
   margin-top: 0.3rem;
 }
+
+.icon {
+  display: inline-block;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  vertical-align: text-top;
+}
+
+.icon-champion {
+  background-image: url("../images/champion.png");
+  width: 17.5px;
+  height: 14.5px;
+}

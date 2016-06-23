@@ -1,9 +1,11 @@
 .icon{
   display: inline-block;
   background-size: 100%;
-  width: 15px;
-  height: 15px;
+  background-repeat: no-repeat;
+  vertical-align: text-top;
 }
 .icon-champion {
   background-image: url("../images/champion.png");
+  width: 17.5px;
+  height: 14.5px;
 }

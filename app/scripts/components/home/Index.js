@@ -3,6 +3,7 @@ import {Link} from 'react-router';
 import BottomNav from '../BottomNav';
 import Loading from '../../ui/Loading';
 import callApi from '../../fetch';
+import {HONGBAO_TITLE} from '../../constants/common';
 
 class Home extends Component {
   constructor(props) {
@@ -40,6 +41,9 @@ class Home extends Component {
         return;
       }
       value = parseInt(value, 10);
+      if (value > 50) {
+        return;
+      }
     }
 
     this.setState({
@@ -78,7 +82,7 @@ class Home extends Component {
     const body = {
       skuId,
       giftNum,
-      title,
+      title: title || HONGBAO_TITLE,
       accountType: 'WALLET',
       thirAccId: '123456',
       customerId: '1234567890'
@@ -224,7 +228,7 @@ class Home extends Component {
             <div>
               <div className="hb-single">
                 <textarea value={title} onChange={(e) => this.handleChange(e, 'title')}
-                          className="hb-textarea" placeholder="我发起了个实物和现金红包，快来抢啊！"></textarea>
+                          className="hb-textarea" placeholder={HONGBAO_TITLE}></textarea>
               </div>
             </div>
           </section>

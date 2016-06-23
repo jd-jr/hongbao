@@ -13,3 +13,5 @@ export const HONGBAO_STATUS = ['NEED_PAY', 'OK', 'RECEIVE_COMPLETE', 'EXPIRED', 
 
 //有效的状态码，即能弹出领取红包的弹框
 export const HONGBAO_VALID_STATUS = ['OK', 'RECEIVE_COMPLETE', 'EXPIRED', 'HAS_RECEIVE'];
+
+export const HONGBAO_TITLE = '我发起个实物红包，快来试手气~！';

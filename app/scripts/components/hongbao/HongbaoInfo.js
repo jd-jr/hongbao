@@ -50,18 +50,18 @@ class HongbaoInfo extends Component {
                 <div className="col-4">
                   <img className="img-fluid img-circle" src={headpic} alt=""/>
                 </div>
-                <div className="col-15">
+                <div className="col-14">
                   <div className="text-truncate">{nickName}</div>
                   <div className="text-muted f-sm">{perfect.formatDate(giftGainedDate)}</div>
                 </div>
 
                 {
-                  giftType === '2' ? (
-                    <div className="col-5 text-right">
+                  giftType === 'CASH' ? (
+                    <div className="col-6 text-right">
                       {giftAmount}元
                     </div>
                   ) : (
-                    <div className="col-5 text-right">
+                    <div className="col-6 text-right">
                       <div>中奖啦</div>
                       <div className="text-warning"><i className="icon icon-champion"></i> 手气最佳</div>
                     </div>
