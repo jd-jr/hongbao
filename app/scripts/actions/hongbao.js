@@ -15,7 +15,7 @@ function fetchHongbaoList(body, type) {
         entity: 'sponsorPagination',
         [CALL_API]: {
           types: [SPONSOR_REQUEST, SPONSOR_SUCCESS, SPONSOR_FAILURE],
-          url: 'myputoutredbag/info',
+          url: 'putout/info',
           schema: HongbaoSchemas.SPONSOR_LIST,
           body,
           paging: true
@@ -26,7 +26,7 @@ function fetchHongbaoList(body, type) {
         entity: 'receivePagination',
         [CALL_API]: {
           types: [RECEIVE_REQUEST, RECEIVE_SUCCESS, RECEIVE_FAILURE],
-          url: 'myreciveredbag/info',
+          url: 'gaingift/info',
           schema: HongbaoSchemas.RECEIVE_LIST,
           body,
           paging: true

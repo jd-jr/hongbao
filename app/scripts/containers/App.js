@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
+import Modal from 'reactjs-modal';
 import {setSessionStorage, getSessionStorage} from '../utils/sessionStorage';
 import * as cacheActions from '../actions/caches';
 import * as indexActions from '../actions/index';
@@ -13,6 +14,7 @@ class App extends Component {
   constructor(props, context) {
     super(props, context);
     this.setClientInfo = this.setClientInfo.bind(this);
+    this.onClose = this.onClose.bind(this);
   }
 
   //跳转到设置客户端信息
@@ -79,6 +81,39 @@ class App extends Component {
     }
   }
 
+  onClose() {
+    const {indexActions} = this.props;
+    indexActions.resetErrorMessage();
+  }
+
+  // alert 窗口
+  alert() {
+    const {
+      errorMessage
+    } = this.props;
+
+    const footer = (
+      <div className="text-center">
+        <button className="btn btn-secondary" onClick={this.onClose}>
+          确认
+        </button>
+      </div>
+    );
+
+    return (
+      <Modal
+        visible={errorMessage !== null}
+        style={{width: '70%'}}
+        bodyStyle={{height: '5rem'}}
+        onClose={this.onClose}
+        title="温馨提示"
+        footer={footer}
+      >
+        <div className="text-center">{errorMessage}</div>
+      </Modal>
+    );
+  }
+
   render() {
     const {
       children, location, caches, cacheActions, errorMessage, indexActions
@@ -86,6 +121,7 @@ class App extends Component {
 
     return (
       <div>
+        {this.alert()}
         {children && React.cloneElement(children, {
           key: location.pathname,
           caches,

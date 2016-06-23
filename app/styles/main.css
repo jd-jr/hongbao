@@ -1391,32 +1391,32 @@ fieldset[disabled] a.btn {
 
 .btn-warning {
   color: #fff;
-  background-color: #f0ad4e;
-  border-color: #f0ad4e;
+  background-color: #fdb13f;
+  border-color: #fdb13f;
 }
 
 .btn-warning:hover, .btn-warning:focus, .btn-warning.focus {
   color: #fff;
-  background-color: #ec971f;
-  border-color: #eb9316;
+  background-color: #fc9c0d;
+  border-color: #fc9803;
 }
 
 .btn-warning:active, .btn-warning.active {
   color: #fff;
-  background-color: #ec971f;
-  border-color: #eb9316;
+  background-color: #fc9c0d;
+  border-color: #fc9803;
   background-image: none;
 }
 
 .btn-warning:active:hover, .btn-warning:active:focus, .btn-warning:active.focus, .btn-warning.active:hover, .btn-warning.active:focus, .btn-warning.active.focus {
   color: #fff;
-  background-color: #d58512;
-  border-color: #b06d0f;
+  background-color: #e38902;
+  border-color: #bb7102;
 }
 
 .btn-warning.disabled:focus, .btn-warning.disabled.focus, .btn-warning.disabled:hover, .btn-warning:disabled:focus, .btn-warning:disabled.focus, .btn-warning:disabled:hover {
-  background-color: #f0ad4e;
-  border-color: #f0ad4e;
+  background-color: #fdb13f;
+  border-color: #fdb13f;
 }
 
 .btn-danger {
@@ -1582,36 +1582,36 @@ fieldset[disabled] a.btn {
 }
 
 .btn-outline-warning {
-  color: #f0ad4e;
+  color: #fdb13f;
   background-image: none;
   background-color: transparent;
-  border-color: #f0ad4e;
+  border-color: #fdb13f;
 }
 
 .btn-outline-warning:hover, .btn-outline-warning:focus, .btn-outline-warning.focus {
   color: #fff;
-  background-color: #f0ad4e;
-  border-color: #f0ad4e;
+  background-color: #fdb13f;
+  border-color: #fdb13f;
 }
 
 .btn-outline-warning:active, .btn-outline-warning.active {
   color: #fff;
-  background-color: #f0ad4e;
-  border-color: #f0ad4e;
+  background-color: #fdb13f;
+  border-color: #fdb13f;
 }
 
 .btn-outline-warning:active:hover, .btn-outline-warning:active:focus, .btn-outline-warning:active.focus, .btn-outline-warning.active:hover, .btn-outline-warning.active:focus, .btn-outline-warning.active.focus {
   color: #fff;
-  background-color: #d58512;
-  border-color: #b06d0f;
+  background-color: #e38902;
+  border-color: #bb7102;
 }
 
 .btn-outline-warning.disabled:focus, .btn-outline-warning.disabled.focus, .btn-outline-warning:disabled:focus, .btn-outline-warning:disabled.focus {
-  border-color: #f8d9ac;
+  border-color: #fedaa4;
 }
 
 .btn-outline-warning.disabled:hover, .btn-outline-warning:disabled:hover {
-  border-color: #f8d9ac;
+  border-color: #fedaa4;
 }
 
 .btn-outline-danger {
@@ -1815,11 +1815,11 @@ a.text-info:focus, a.text-info:hover {
 }
 
 .text-warning {
-  color: #f0ad4e !important;
+  color: #fdb13f !important;
 }
 
 a.text-warning:focus, a.text-warning:hover {
-  color: #ec971f;
+  color: #fc9c0d;
 }
 
 .text-danger {
@@ -1968,6 +1968,11 @@ a.text-danger:focus, a.text-danger:hover {
 
 .h6 {
   font-size: 1rem;
+}
+
+.flex {
+  display: -ms-flexbox;
+  display: flex;
 }
 
 .flex-items-top {
@@ -2477,6 +2482,15 @@ h1, h2, h3, h4, h5, h6 {
   margin-left: 0.3rem;
 }
 
+.hb-link-block {
+  color: #333;
+}
+
+.hb-link-block:focus, .hb-link-block:hover {
+  color: #333;
+  text-decoration: none;
+}
+
 .hb-single {
   background: #fff;
   padding: 0.75rem;
@@ -2598,6 +2612,24 @@ h1, h2, h3, h4, h5, h6 {
 
 .hb-product-detail {
   background: #fff;
+  padding: 1rem;
+}
+
+.hb-product-detail img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hb-product-detail img:first-child {
+  margin-top: 0;
+}
+
+.hb-product-detail img + img {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .hb-modal .rc-modal-dialog {
@@ -2623,8 +2655,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hb-ellipse-arc-flat {
-  display: -ms-flexbox;
-  display: flex;
   width: 100%;
   height: 65%;
   border-radius: 50%/20%;
@@ -2669,6 +2699,41 @@ h1, h2, h3, h4, h5, h6 {
 
 .hb-fillet-1 {
   border-radius: 1.25rem;
+}
+
+.hb-radio {
+  border-radius: 50%;
+  background: #d64f48;
+  position: relative;
+  display: inline-block;
+  width: 1.2rem;
+  height: 1.2rem;
+  vertical-align: top;
+  margin-right: 0.3rem;
+}
+
+.hb-radio.checked:after {
+  position: absolute;
+  border-left: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  content: "";
+  width: 60%;
+  height: 30%;
+  -webkit-transform: translate(-50%, 70%) rotate(-45deg);
+          transform: translate(-50%, 70%) rotate(-45deg);
+}
+
+.hb-money {
+  font-weight: 200;
+  font-size: 3.5rem;
+}
+
+.hb-logo {
+  background: url("../images/wallet-logo.png") no-repeat;
+  display: inline-block;
+  background-size: 100%;
+  width: 61px;
+  height: 14px;
 }
 
 .hb-footer {

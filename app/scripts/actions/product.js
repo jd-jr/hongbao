@@ -37,7 +37,7 @@ export function getProductList(body = {}) {
 }
 
 //清空数据
-export function cleanPersonList() {
+export function clearProductList() {
   return {
     type: PRODUCT_CLEAR,
     entity: 'productPagination',
@@ -92,7 +92,7 @@ export function getProductDetail(skuId) {
   };
 }
 
-// 切换分类
+// 切换分类 分类ID 传null查询所有分类的商品
 export function switchCategory(activeCategory) {
   return {
     type: SWITCH_CATEGORY,
@@ -100,8 +100,8 @@ export function switchCategory(activeCategory) {
   }
 }
 
-// 价格排序
-export function priceOrder(order) {
+// 价格排序   desc 降序，asc 升序   null  该字段不参与排序
+export function switchPriceOrder(order) {
   return {
     type: PRICE_ORDER,
     order

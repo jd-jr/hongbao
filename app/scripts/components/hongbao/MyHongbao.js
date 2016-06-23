@@ -13,7 +13,15 @@ class MyHongbao extends Component {
   }
 
   componentDidMount() {
-    const {type} = this.props;
+    const {hongbaoActions} = this.props;
+    const {type} = this.state;
+    const body = {
+      requestNo: '444',
+      accountType: 'WALLET',
+      accountId: '33'
+    };
+
+    hongbaoActions.getHongbaoList(body, type);
   }
 
   switchTab(e, type) {
@@ -62,14 +70,16 @@ class MyHongbao extends Component {
 
           <section className="m-t-1">
             <ul className="hb-list arrow-hollow-top hb-arrows-active hb-arrows-active-right">
-              <li className="row flex-items-middle">
-                <div className="col-18">
-                  <div className="text-truncate">金刚狼</div>
-                  <div className="text-muted f-sm">2016.05.18</div>
-                </div>
-                <div className="col-6 text-right">
-                  0.24元
-                </div>
+              <li>
+                <Link className="hb-link-block row flex-items-middle" to="/hongbao/detail/received/99d877579e94e5cf">
+                  <div className="col-18">
+                    <div className="text-truncate">金刚狼</div>
+                    <div className="text-muted f-sm">2016.05.18</div>
+                  </div>
+                  <div className="col-6 text-right">
+                    0.24元
+                  </div>
+                </Link>
               </li>
               <li className="row flex-items-middle">
                 <div className="col-18">

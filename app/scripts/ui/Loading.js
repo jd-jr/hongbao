@@ -12,6 +12,11 @@ class Loading extends Component {
   }
 }
 
+Loading.defaultProps = {
+  loadingLabel: '加载中...',
+  loadingStatus: true
+};
+
 Loading.propTypes = {
   loadingLabel: PropTypes.string,
   loadingStatus: PropTypes.bool,

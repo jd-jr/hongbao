@@ -19,11 +19,14 @@ const product = combineReducers({
     paging: false
   }),
 
-  activeCategory: (state = 0, action) => {
-    if (action.type === SWITCH_CATEGORY) {
-      return action.activeCategory;
+  /*eslint-disable indent*/
+  activeCategory: (state = null, action) => {
+    switch (action.type) {
+      case SWITCH_CATEGORY:
+        return action.activeCategory;
+      default:
+        return state;
     }
-    return state;
   },
 
   priceOrder: (state = null, action) => {

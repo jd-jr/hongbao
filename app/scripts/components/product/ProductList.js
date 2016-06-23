@@ -5,6 +5,9 @@ class ProductList extends Component {
     super(props, context);
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchEnd = this.handleTouchEnd.bind(this);
+    this.handleSelectTab = this.handleSelectTab.bind(this);
+    this.handleOrder = this.handleOrder.bind(this);
+
     this.touchEnable = false; //是否可以移动
     this.touchMaxDistance = 0; //移动最大距离
     this.touchOffset = 0; // 移动的偏移量
@@ -38,6 +41,31 @@ class ProductList extends Component {
     }
   }
 
+  //切换标签
+  handleSelectTab(e, id) {
+    const {productActions, priceOrder} = this.props;
+    const {switchCategory, clearProductList, getProductList} = productActions;
+    switchCategory(id);
+    clearProductList();
+    getProductList({
+      category: id,
+      priceOrder
+    });
+  }
+
+  // 排序
+  handleOrder(e) {
+    const {productActions, priceOrder, activeCategory} = this.props;
+    const {switchPriceOrder, clearProductList, getProductList} = productActions;
+    const _priceOrder = priceOrder === 'asc' ? 'desc' : 'asc';
+    switchPriceOrder(_priceOrder);
+    clearProductList();
+    getProductList({
+      category: activeCategory,
+      priceOrder: _priceOrder
+    });
+  }
+
   handleTouchStart(e) {
     if (!this.touchEnable) {
       return;
@@ -66,16 +94,9 @@ class ProductList extends Component {
       }
     }
 
-    console.info(this.touchOffset);
-
     this.refs.categoryNav.style.transform = `translateX(-${this.touchOffset}px)`;
   }
 
-  loadProduct() {
-    const {
-      priceOrder
-    } = this.props;
-  }
 
   productDetail(e, url) {
     e.preventDefault();
@@ -86,7 +107,8 @@ class ProductList extends Component {
   renderCategory() {
     const {
       categoryList,
-      activeCategory
+      activeCategory,
+      priceOrder
     } = this.props;
 
     const list = categoryList.list;
@@ -104,9 +126,11 @@ class ProductList extends Component {
             {
               list && list.length > 0 ?
                 list.map((item, index) => {
+                  const {id} = item;
                   return (
-                    <span key={item.id}
-                          className={`hb-product-nav-btn${activeCategory === index ? ' active' : ''}`}>
+                    <span key={id}
+                          className={`hb-product-nav-btn${activeCategory === id ? ' active' : ''}`}
+                          onTouchTap={(e) => this.handleSelectTab(e, id)}>
                     {item.categoryName}
                   </span>
                   );
@@ -114,10 +138,10 @@ class ProductList extends Component {
             }
           </div>
         </div>
-        <div className="col-4 hb-product-nav-btn pos-r">
+        <div className="col-4 hb-product-nav-btn pos-r" onTouchTap={this.handleOrder}>
           <span>价格</span>
-          <span className="arrow-top arrow-gray pos-a m-l-0-3" style={{top: '0.9rem'}}></span>
-          <span className="arrow-bottom arrow-primary pos-a m-l-0-3" style={{bottom: '0.9rem'}}></span>
+          <span className={`arrow-top pos-a m-l-0-3 ${priceOrder === 'asc' ? 'arrow-primary' : 'arrow-gray'}`} style={{top: '0.9rem'}}></span>
+          <span className={`arrow-bottom pos-a m-l-0-3 ${priceOrder === 'desc' ? 'arrow-primary' : 'arrow-gray'}`} style={{bottom: '0.9rem'}}></span>
         </div>
       </div>
     );
@@ -131,16 +155,13 @@ class ProductList extends Component {
         <div className="col-4">
           <img className="img-fluid" src={indexImg} alt=""/>
         </div>
-        <div className="col-18">
+        <div className="col-17">
           <div className="text-truncate">{skuName}</div>
           <div className="f-sm hb-product-info">
             <span>¥ {bizPrice}</span>
-            <span className="hb-product-tag hb-product-tag-primary">火爆</span>
-            <span className="hb-product-tag hb-product-tag-info">新品</span>
-            <span className="hb-product-tag hb-product-tag-success">流行</span>
           </div>
         </div>
-        <div className="col-2 text-center">
+        <div className="col-3 text-center">
           <span className="arrow-hollow-right"></span>
         </div>
       </li>
@@ -199,7 +220,7 @@ ProductList.propTypes = {
   productActions: PropTypes.object,
   productPagination: PropTypes.object,
   categoryList: PropTypes.object,
-  activeCategory: PropTypes.number,
+  activeCategory: PropTypes.string,
   priceOrder: PropTypes.string,
 };
 

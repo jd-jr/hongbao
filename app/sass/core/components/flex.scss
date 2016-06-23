@@ -1,6 +1,10 @@
 // Flex 布局
 //
 
+.flex {
+  display: flex;
+}
+
 .flex-items-top { align-items: flex-start; }
 .flex-items-middle { align-items: center; }
 .flex-items-bottom { align-items: flex-end; }

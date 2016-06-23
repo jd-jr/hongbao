@@ -60,6 +60,7 @@ function callApi({url, body, options}) {
       response.json().then(json => ({json, response}))
     ).then(({json, response}) => {
       if (!response.ok || json.code !== 'RB000000') {
+        //if (!response.ok) {
         // 根据后台实际返回数据来定义错误格式
         let error = new Error(json.msg || '获取数据出错');
         error.json = json;

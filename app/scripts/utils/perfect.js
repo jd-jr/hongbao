@@ -42,9 +42,31 @@ const perfect = {
     return null;
   },
 
-  // 返回根路径
-  getPathname () {
-    return `${location.origin}/m-hongbao/`;
+  /**
+   * 返回 location.origin, 例如： http://duobao.jdpay.com:8082
+   * @returns {string}
+   */
+  getLocationOrigin () {
+    return location.origin;
+  },
+
+  /**
+   * 返回根路径，例如 http://duobao.jdpay.com:8082/m-duobao/
+   * @returns {*}
+   */
+  getLocationRoot () {
+    const pathname = location.pathname;
+    const origin = location.origin;
+    const root = pathname.match(/\/[\w\d-_]+\//)[0];
+    return origin + root;
+  },
+
+  /**
+   * 返回上下文路径，例如 /m-duobao/
+   * @returns {*}
+   */
+  getLocationContext () {
+    return location.pathname.match(/\/[\w\d-_]+\//)[0];
   },
 
   // 格式化 json 数据
@@ -75,11 +97,57 @@ const perfect = {
   },
 
   /**
-   * 标准创建时间,支持各种浏览器方式
-   * new Date(y, m, d, h, M, s, ms)
-   * @param input 支持 yyyy-MM-dd HH:mm:ss.SSS 或 yyyy-MM-dd HH:mm:ss:SSS 或者
-   * yyyy/MM/dd HH:mm:ss.SSS
-   * 2016-06-02 13:01:50.333  2016-06-02 13:01:50:333
+   * 时间格式转换 time ms
+   * @param time
+   * @param showMs 是否显示毫秒
+   * @returns {*}
+   */
+  /*eslint-disable prefer-template*/
+  formatDate (time, showMs = false) {
+    if (!time) {
+      return '';
+    }
+    let date = new Date(time);
+    // 在 ios 下需要显式的转换为字符串
+    if (date.toString() === 'Invalid Date') {
+      date = this.createDate(time);
+      if (date.toString() === 'Invalid Date') {
+        return '';
+      }
+    }
+    const today = new Date();
+    const H = date.getHours() <= 9 ? '0' + date.getHours() : date.getHours();
+    const M = date.getMinutes() <= 9 ? '0' + date.getMinutes() : date.getMinutes();
+    const S = date.getSeconds() <= 9 ? '0' + date.getSeconds() : date.getSeconds();
+    let MS = date.getMilliseconds();
+    if (MS <= 9) {
+      MS = '00' + MS;
+    } else if (MS <= 99) {
+      MS = '0' + MS;
+    }
+
+    function getDateStr(obj) {
+      const year = obj.getFullYear();
+      const month = (obj.getMonth() + 1) <= 9 ? '0' + (obj.getMonth() + 1) : obj.getMonth();
+      const date = obj.getDate() <= 9 ? '0' + obj.getDate() : obj.getDate();
+      const dateStr = year + month + date;
+      return dateStr;
+    }
+
+    if (date.toDateString() === today.toDateString()) {
+      return showMs ? `今天${H}:${M}:${S}.${MS}` : `今天${H}:${M}:${S}`;
+    } else if (getDateStr(today) - getDateStr(date) > 0 && getDateStr(today) - getDateStr(date) <= 1) {
+      return showMs ? `昨天${H}:${M}:${S}.${MS}` : `昨天${H}:${M}:${S}`;
+    }
+    return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日';
+  },
+
+  /**
+   * 标准创建时间格式 new Date(y, m, d, h, M, s, ms)
+   * 如果对于时间格式比较复杂的情况，可参考 Moment 库 http://momentjs.com/
+   *
+   * @param input 支持 yyyy-MM-dd HH:mm:ss.SSS 或 yyyy-MM-dd HH:mm:ss:SSS 或 yyyy/MM/dd HH:mm:ss.SSS
+   * 2016-06-02 13:01:50.333  2016-06-02 13:01:50:333 2016/06/02 13:01:50:333
    * @returns {Date}
    */
   createDate (input) {

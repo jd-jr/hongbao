@@ -8,7 +8,7 @@ class ProductPage extends Component {
   render() {
     const {
       children, location, productActions, productPagination, categoryList,
-      activeCategory, priceOrder, productDetail, skuId
+      activeCategory, priceOrder, productDetail, skuId, view
     } = this.props;
 
     return (
@@ -21,7 +21,8 @@ class ProductPage extends Component {
           activeCategory,
           priceOrder,
           productDetail,
-          skuId
+          skuId,
+          view
         })}
       </div>
     );
@@ -35,23 +36,24 @@ ProductPage.propTypes = {
   productActions: PropTypes.object,
   productPagination: PropTypes.object,
   categoryList: PropTypes.object,
-  activeCategory: PropTypes.number,
+  activeCategory: PropTypes.string,
   priceOrder: PropTypes.string,
   productDetail: PropTypes.object,
   skuId: PropTypes.string,
+  view: PropTypes.string,
 };
 
 // 商品记录
 const entitykeys = ['productPagination', 'categoryList'];
 
 function mapStateToProps(state, ownProps) {
-  const {skuId} = ownProps.params;
+  const {skuId, view} = ownProps.params;
   const {
     product,
-    activeCategory,
-    priceOrder,
     entity: {productDetail}
   } = state;
+
+  const {activeCategory, priceOrder} = product;
 
   const lists = entitykeys.map(key => {
     const entityList = product[key];
@@ -72,7 +74,8 @@ function mapStateToProps(state, ownProps) {
     activeCategory,
     priceOrder,
     productDetail: productDetail || {},
-    skuId
+    skuId,
+    view
   };
 
   lists.forEach((item) => {
