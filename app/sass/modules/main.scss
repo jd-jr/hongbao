@@ -88,11 +88,12 @@ h1, h2, h3, h4, h5, h6 {
 
   &arrows-active {
     position: relative;
+    background: #fff;
     &:before {
       position: absolute;
       height: 1.2rem;
       width: 1.2rem;
-      top: -0.66rem;
+      top: -0.56rem;
       background: inherit;
     }
   }
@@ -113,7 +114,7 @@ h1, h2, h3, h4, h5, h6 {
       .#{$prefixCls}product-nav-btn {
         padding: 1rem 0 0.9rem;
         display: inline-block;
-        width: 25%;
+        width: 30%;
         text-align: center;
         &.active {
           border-bottom: 4px solid $brand-primary;
@@ -261,4 +262,53 @@ h1, h2, h3, h4, h5, h6 {
     width: 61px;
     height: 14px;
   }
+
+  &luck-link {
+    color: #fee1b4;
+    position: absolute;
+    bottom: 2rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  &iscroll {
+    margin-top: 3.6rem;
+  }
+
+  &mask {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  &no-items {
+    width: 7rem;
+    height: 7rem;
+    display: block;
+    margin: 0 auto;
+  }
+
+  &img-text-thumb {
+    border: 1px solid $gray-lighter;
+    width: 4rem;
+    float: right;
+    img {
+      display: block;
+      width: 100%;
+      padding: 0.1rem;
+      padding-bottom: 0;
+      border-bottom: 1px solid $gray-lighter;
+    }
+    .label-text {
+      text-align: center;
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+.weixin-share-guide {
+  padding: 3.5rem;
 }

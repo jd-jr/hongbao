@@ -102,3 +102,16 @@
 .text-link {
   color: $link-color;
 }
+
+
+@include text-background-variant('.bg-muted', $text-muted);
+
+@include text-background-variant('.bg-primary', $brand-primary);
+
+@include text-background-variant('.bg-success', $brand-success);
+
+@include text-background-variant('.bg-info', $brand-info);
+
+@include text-background-variant('.bg-warning', $brand-warning);
+
+@include text-background-variant('.bg-danger', $brand-danger);

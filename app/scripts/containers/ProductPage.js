@@ -36,7 +36,10 @@ ProductPage.propTypes = {
   productActions: PropTypes.object,
   productPagination: PropTypes.object,
   categoryList: PropTypes.object,
-  activeCategory: PropTypes.string,
+  activeCategory: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ]),
   priceOrder: PropTypes.string,
   productDetail: PropTypes.object,
   skuId: PropTypes.string,

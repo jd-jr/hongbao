@@ -1,12 +1,18 @@
 import React, {Component, PropTypes} from 'react';
+import iScroll from 'iscroll/build/iscroll-probe';
+import ReactIScroll from 'reactjs-iscroll';
+
+//图片
+import noItems from '../../../images/no_items.png';
 
 class ProductList extends Component {
   constructor(props, context) {
     super(props, context);
     this.handleTouchStart = this.handleTouchStart.bind(this);
-    this.handleTouchEnd = this.handleTouchEnd.bind(this);
+    this.handleTouchMove = this.handleTouchMove.bind(this);
     this.handleSelectTab = this.handleSelectTab.bind(this);
     this.handleOrder = this.handleOrder.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
 
     this.touchEnable = false; //是否可以移动
     this.touchMaxDistance = 0; //移动最大距离
@@ -75,7 +81,7 @@ class ProductList extends Component {
     this.startX = touchObj.clientX;
   }
 
-  handleTouchEnd(e) {
+  handleTouchMove(e) {
     const nativeEvent = e.nativeEvent;
     const touchObj = nativeEvent.changedTouches[0];
     let offset = this.startX - touchObj.clientX;
@@ -97,11 +103,36 @@ class ProductList extends Component {
     this.refs.categoryNav.style.transform = `translateX(-${this.touchOffset}px)`;
   }
 
-
   productDetail(e, url) {
     e.preventDefault();
     e.stopPropagation();
     this.context.router.push(url);
+  }
+
+  //调用 IScroll refresh 后回调函数
+  handleRefresh(downOrUp, callback) {
+    const {
+      productPagination, productActions, activeCategory, priceOrder
+    } = this.props;
+    const {clearProductList, getProductList} = productActions;
+
+    const {lastPage} = productPagination;
+    if (downOrUp === 'up') { // 加载更多
+      getProductList({
+        category: activeCategory,
+        priceOrder
+      }).then(() => {
+        callback();
+      });
+    } else { // 刷新
+      clearProductList();
+      getProductList({
+        category: activeCategory,
+        priceOrder
+      }).then(() => {
+        callback();
+      });
+    }
   }
 
   renderCategory() {
@@ -112,6 +143,10 @@ class ProductList extends Component {
     } = this.props;
 
     const list = categoryList.list;
+    /*list.unshift({
+     id: 'all',
+     categoryName:
+     });*/
     const len = list ? list.length : 0;
     if (len > 4) { //开启移动
       this.touchEnable = true;
@@ -120,9 +155,14 @@ class ProductList extends Component {
 
     return (
       <div className="row text-nowrap">
-        <div className="col-20" style={{overflow: 'hidden'}}>
+        <div className="col-3">
+          <span className={`hb-product-nav-btn${activeCategory === null ? ' active' : ''}`}
+                onTouchTap={(e) => this.handleSelectTab(e, null)}
+                style={{width: '100%'}}>全部</span>
+        </div>
+        <div className="col-17" style={{overflow: 'hidden'}}>
           <div ref="categoryNav" onTouchStart={this.handleTouchStart}
-               onTouchEnd={this.handleTouchEnd}>
+               onTouchMove={this.handleTouchMove}>
             {
               list && list.length > 0 ?
                 list.map((item, index) => {
@@ -140,8 +180,10 @@ class ProductList extends Component {
         </div>
         <div className="col-4 hb-product-nav-btn pos-r" onTouchTap={this.handleOrder}>
           <span>价格</span>
-          <span className={`arrow-top pos-a m-l-0-3 ${priceOrder === 'asc' ? 'arrow-primary' : 'arrow-gray'}`} style={{top: '0.9rem'}}></span>
-          <span className={`arrow-bottom pos-a m-l-0-3 ${priceOrder === 'desc' ? 'arrow-primary' : 'arrow-gray'}`} style={{bottom: '0.9rem'}}></span>
+          <span className={`arrow-top pos-a m-l-0-3 ${priceOrder === 'asc' ? 'arrow-primary' : 'arrow-gray'}`}
+                style={{top: '0.9rem'}}></span>
+          <span className={`arrow-bottom pos-a m-l-0-3 ${priceOrder === 'desc' ? 'arrow-primary' : 'arrow-gray'}`}
+                style={{bottom: '0.9rem'}}></span>
         </div>
       </div>
     );
@@ -173,7 +215,7 @@ class ProductList extends Component {
       productPagination
     } = this.props;
 
-    const list = productPagination.list;
+    const {list, isFetching, lastPage} = productPagination;
 
     if (!list) {
       return (
@@ -181,20 +223,26 @@ class ProductList extends Component {
       );
     } else if (list.length === 0) {
       return (
-        <div className="m-t-3 text-center text-muted">
-          没有商品
+        <div className="m-t-3">
+          <img className="hb-no-items" src={noItems}/>
+          <p className="m-t-2 text-center text-muted">暂无商品</p>
         </div>
       );
     }
 
     return (
-      <ul className="hb-list">
-        {
-          list ? list.map((item) => {
-            return this.renderProductItem(item);
-          }) : null
-        }
-      </ul>
+      <ReactIScroll iScroll={iScroll}
+                    handleRefresh={this.handleRefresh}
+                    pullUp={!lastPage}
+                    className="hb-iscroll">
+        <ul className="hb-list">
+          {
+            list ? list.map((item) => {
+              return this.renderProductItem(item);
+            }) : null
+          }
+        </ul>
+      </ReactIScroll>
     );
   }
 
@@ -220,7 +268,10 @@ ProductList.propTypes = {
   productActions: PropTypes.object,
   productPagination: PropTypes.object,
   categoryList: PropTypes.object,
-  activeCategory: PropTypes.string,
+  activeCategory: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ]),
   priceOrder: PropTypes.string,
 };
 

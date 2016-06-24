@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import Modal from 'reactjs-modal';
 import callApi from '../../fetch';
 import HongbaoInfo from './HongbaoInfo';
-import {HONGBAO_VALID_STATUS} from '../../constants/common';
+import {HONGBAO_VALID_STATUS, HONGBAO_TITLE} from '../../constants/common';
 
 class HongbaoDetail extends Component {
   constructor(props, context) {
@@ -14,6 +14,7 @@ class HongbaoDetail extends Component {
       user: null //用户信息
     };
     this.unpack = this.unpack.bind(this);
+    this.hongbaoDetail = this.hongbaoDetail.bind(this);
   }
 
   componentDidMount() {
@@ -74,10 +75,7 @@ class HongbaoDetail extends Component {
 
     callApi({url, body}).then(
       ({json, response}) => {
-        this.setState({
-          unpacked: true,
-          unpackModal: false
-        });
+        this.context.router.replace(`/hongbao/detail/view/${id}`);
       },
       (error) => {
 
@@ -85,9 +83,39 @@ class HongbaoDetail extends Component {
     );
   }
 
+  hongbaoDetail() {
+    const {id} = this.props;
+    this.context.router.replace(`/hongbao/detail/view/${id}`);
+  }
+
+  modalBody() {
+    const {user, hongbaoStatus} = this.state;
+    const {face, nickname, title} = user || {};
+    return (
+      <div className="hb-ellipse-arc-mask">
+        <div className="hb-ellipse-arc-flat text-center">
+          <section className="m-t-2">
+            <div>
+              <img className="img-circle img-thumbnail hb-figure" src={face} alt=""/>
+            </div>
+            <div className="m-t-1">{nickname}</div>
+            <div>发了一个实物红包</div>
+          </section>
+          <h2 className="m-t-2">{hongbaoStatus === 'OK' ? (title || HONGBAO_TITLE) : '手慢了，红包派完了'}</h2>
+        </div>
+        {hongbaoStatus === 'OK' ?
+          (<div className="hb-btn-circle flex-items-middle flex-items-center" onTouchTap={this.unpack}>開</div>)
+          : null}
+
+        <div className="hb-luck-link" onTouchTap={this.hongbaoDetail}>
+          看看大家的手气
+        </div>
+      </div>
+    );
+  }
+
   renderModal() {
-    const {unpackModal, user} = this.state;
-    const {face, nickname} = user || {};
+    const {unpackModal} = this.state;
     let modal;
     if (unpackModal) {
       modal = (
@@ -96,19 +124,7 @@ class HongbaoDetail extends Component {
           className="hb-modal"
           bodyStyle={{height: '35rem'}}
         >
-          <div className="hb-ellipse-arc-mask">
-            <div className="hb-ellipse-arc-flat text-center">
-              <section className="m-t-2">
-                <div>
-                  <img className="img-circle img-thumbnail hb-figure" src={face} alt=""/>
-                </div>
-                <div className="m-t-1">{nickname}</div>
-                <div>发了一个实物红包</div>
-              </section>
-              <h2 className="m-t-2">我在京东钱包发起了个实物和现金红包，快来抢啊！</h2>
-            </div>
-            <div className="hb-btn-circle flex-items-middle flex-items-center" onTouchTap={this.unpack}>開</div>
-          </div>
+          {this.modalBody()}
         </Modal>
       );
     }

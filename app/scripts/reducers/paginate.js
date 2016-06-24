@@ -42,9 +42,9 @@ function paginate({types, paging = true, clearType, customTypes}) {
         const {pageNum, pageCount, lastPage, result, entities} = action.res;
         // action 中定义的 entity 与 schema 中一致,利用 normalize 会生成 entities 和 ids 的
         const {entity} = action;
-        if (entities[entity] === undefined) {
+        /*f (entities[entity] === undefined) {
           console.error('action 中的实体名称必须要跟 reducer 和 Schema 一致或者后台返回的数据格式不正确');
-        }
+        }*/
         return merge({}, state, paging ? {
           entity: merge({}, state.entity, entities[entity]), //合并
           ids: union(state.ids, result),

@@ -10,3 +10,10 @@
     }
   }
 }
+
+@mixin text-background-variant($parent, $bg-color, $color: #fff) {
+  #{$parent} {
+    background-color: $bg-color;
+    color: $color;
+  }
+}

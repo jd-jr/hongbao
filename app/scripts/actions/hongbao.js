@@ -1,6 +1,7 @@
 import {
   SPONSOR_REQUEST, SPONSOR_SUCCESS, SPONSOR_FAILURE, SPONSOR_CLEAR,
-  RECEIVE_REQUEST, RECEIVE_SUCCESS, RECEIVE_FAILURE, RECEIVE_CLEAR
+  RECEIVE_REQUEST, RECEIVE_SUCCESS, RECEIVE_FAILURE, RECEIVE_CLEAR,
+  USER_INFO_REQUEST, USER_INFO_SUCCESS, USER_INFO_FAILURE
 } from '../constants/HongbaoActionTypes';
 
 import HongbaoSchemas from '../models/HongbaoSchemas';
@@ -52,3 +53,22 @@ export function getHongbaoList(body = {}, type) {
   };
 }
 
+// 用户信息
+function fetchUserInfo(body) {
+  return {
+    entity: 'userInfo',
+    unSchema: true,
+    [CALL_API]: {
+      types: [USER_INFO_REQUEST, USER_INFO_SUCCESS, USER_INFO_FAILURE],
+      url: 'user/info/index',
+      schema: 'userInfo',
+      body
+    }
+  };
+}
+
+export function getUserInfo(body) {
+  return (dispatch, getState) => {
+    return dispatch(fetchUserInfo(body));
+  };
+}

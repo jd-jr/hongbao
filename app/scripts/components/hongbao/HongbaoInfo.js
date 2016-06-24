@@ -87,15 +87,72 @@ class HongbaoInfo extends Component {
    * @type {Array}
    */
   /*eslint-disable indent*/
-  renderProgress({goodsNum, giftNum, giftGainedNum, status}) {
+  renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate}) {
     switch (status) {
+      case 'OK': //领取中
+        return (
+          <div className="m-l-1 text-muted">
+            已领取{giftGainedNum}/{goodsNum + giftNum}，共{goodsNum}个奖品、{giftNum}个现金红包
+          </div>
+        );
       case 'RECEIVE_COMPLETE':
         return (
-          <div className="m-l-1">共{goodsNum}个奖品、{giftNum}个现金红包</div>
+          <div className="m-l-1 text-muted">共{goodsNum}个奖品，{giftNum}个现金红包。
+            {perfect.formatMillisecond(finishedDate - createdDate)}抢光
+          </div>
+        );
+      case 'EXPIRED':
+        return (
+          <div className="m-l-1 text-muted">共{goodsNum}个奖品，{giftNum}个现金红包。该红包已过期</div>
         );
       default:
         return null;
     }
+  }
+
+  //发起者和领取者
+  renderSelfInfo(selfInfo, status) {
+    //领取者
+    selfInfo = {
+      giftType: '2CASH',
+      giftAmount: '349'
+    };
+
+    //领取者
+    if (selfInfo) {
+      const {giftType, giftAmount} = selfInfo;
+      if (giftType === 'CASH') { //现金
+        return (
+          <div>
+            <div className="text-center text-primary">
+              <span className="hb-money">{(giftAmount / 100).toFixed(2)}</span> <span>元</span>
+            </div>
+            <a href="#">收到的钱可在钱包余额中提现，去看看！</a>
+          </div>
+        );
+      } else if (status === 'EXPIRED') {
+        return (
+          <div>
+            <div className="text-center text-muted">
+              <span className="hb-money">中奖啦</span>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div>
+          <div className="text-center text-primary">
+            <span className="hb-money">中奖啦</span>
+          </div>
+          <div>
+            <button className="btn btn-primary btn-outline-primary btn-arc">立即领奖</button>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
   }
 
   render() {
@@ -116,16 +173,11 @@ class HongbaoInfo extends Component {
      status  String  红包状态
      */
     let {
-      skuId, skuName, skuIcon, createdDate, ownerHeadpic, ownerNickname,
-      title, giftAmount, goodsNum, giftNum, giftGainedNum, status, selfInfo
+      skuId, skuName, skuIcon, createdDate, finishedDate, ownerHeadpic, ownerNickname,
+      title, goodsNum, giftNum, giftGainedNum, status, selfInfo
     } = hongbaoInfo;
 
-
     title = title || '我发起了个实物和现金红包，快来抢啊！';
-    //领取者
-    selfInfo = {};
-    giftAmount = 100;
-
 
     if (!skuId) {
       return (
@@ -155,17 +207,14 @@ class HongbaoInfo extends Component {
             </div>
             <h3 className="m-t-2">{ownerNickname}的红包</h3>
             <p className="text-muted">{title}</p>
-            <div>
-              <div className="text-center text-primary">
-                <span className="h1">{(giftAmount / 100).toFixed(2)}</span> <span>元</span>
-              </div>
-              <a href="#">收到的钱可在钱包余额中提现，去看看！</a>
-            </div>
+            {
+              this.renderSelfInfo(selfInfo, status)
+            }
           </div>
         </section>
 
         <section className="m-t-3">
-          {this.renderProgress({goodsNum, giftNum, giftGainedNum, status})}
+          {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
           {this.renderGainedList()}
         </section>
 

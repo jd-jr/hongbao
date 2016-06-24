@@ -184,6 +184,29 @@ const perfect = {
   },
 
   /**
+   * 格式化时间
+   * @param time 毫秒
+   */
+  formatMillisecond(millisecond) {
+    let minute;
+    let second;
+    second = Math.ceil(millisecond / 1000);
+    if (second < 0) {
+      return '1小时';
+    }
+
+    if (second < 60) {
+      return `${second}秒钟`;
+    }
+    minute = Math.ceil(second / 60);
+    if (minute < 60) {
+      return `${minute}分钟`;
+    }
+
+    return '1小时';
+  },
+
+  /**
    * 判断样式在浏览器中是否支持
    * @param styleProp
    * @returns {boolean}
