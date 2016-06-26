@@ -18,7 +18,7 @@
     "history": "^2.1.2",
     "humps": "^1.1.0",
     "isomorphic-fetch": "^2.2.1",
-    "jd-wallet-sdk": "file:///Users/wangyanjun/gitjdworkspace/jd-wallet-sdk-npm",
+    "jd-wallet-sdk": "file:///Users/ngnice/projects/javascript/react-projects/jd-wallet-sdk-npm",
     "lodash": "^4.13.1",
     "normalize.css": "^4.1.1",
     "normalizr": "^2.1.0",

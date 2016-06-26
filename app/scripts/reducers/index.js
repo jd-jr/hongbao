@@ -5,6 +5,7 @@ import caches from './caches';
 import product from './product';
 import hongbao from './hongbao';
 import hongbaoDetail from './hongbaoDetail';
+import address from './address';
 
 import {RESET_ERROR_MESSAGE, SET_ERROR_MESSAGE} from '../constants/IndexActionTypes';
 
@@ -28,5 +29,6 @@ export default combineReducers({
   caches,
   product,
   hongbao,
-  hongbaoDetail
+  hongbaoDetail,
+  address
 });

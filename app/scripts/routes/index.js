@@ -8,7 +8,10 @@ import Product from '../components/product/Product';
 import HongbaoDetailPage from '../containers/HongbaoDetailPage';
 import MyHongbaoPage from '../containers/MyHongbaoPage';
 import InitiatePage from '../containers/InitiatePage';
-
+import UserAddressList from '../components/userAddressList/'
+import AddAddress from '../components/addAddress/'
+import EditAddress from '../components/editAddress/'
+import SelectCity from '../components/selectCity/'
 // 注意嵌套路由应该是相对路径，不能写成据对路径
 export default (
   <Route path="/" component={App}>
@@ -23,6 +26,10 @@ export default (
     <Route path="hongbao/detail/:id" component={HongbaoDetailPage}/>
     <Route path="hongbao/detail/:view/:id" component={HongbaoDetailPage}/>
     <Route path="my" component={MyHongbaoPage}/>
+    <Route path="myaddress" component={UserAddressList}/>
+    <Route path="addaddress" component={AddAddress}/>
+    <Route path="editaddress" component={EditAddress}/>
+    <Route path="selectcity" component={SelectCity}/>
   </Route>
 );
 

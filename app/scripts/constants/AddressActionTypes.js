@@ -1,0 +1,5 @@
+//用户地址操作
+
+export const INIT_USER_ADD_LIST = 'INIT_USER_ADD_LIST';
+export const SET_DEFAULT_ADDRESS = 'SET_DEFAULT_ADDRESS';
+export const DELETE_ADDRESS = 'DELETE_ADDRESS';
