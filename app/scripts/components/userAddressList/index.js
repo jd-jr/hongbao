@@ -6,7 +6,8 @@
 import React, {Component, PropTypes} from 'react'
 import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
-import * as actions from '../../actions/userAddressList.js'
+import { assign } from  'lodash'
+import * as actions from '../../actions/userAddressList'
 
 import callApi from '../../fetch/'
 
@@ -34,7 +35,8 @@ class UserAddressList extends Component {
 
   }
   goAddAddress(){
-    console.log(this.context)
+    const { resetTmpUserAddress } = this.props;
+    resetTmpUserAddress()
     this.context.router.push({
       pathname:'addaddress'
     })
@@ -57,7 +59,29 @@ class UserAddressList extends Component {
     })
   }
   editAddress(index, item){
-
+    const {initTmpUserAddress} = this.props;
+    var tmp = assign({}, item, {
+      name:{
+        val:item.name,
+        valid: 1
+      },
+      mobile:{
+        val:item.mobile,
+        valid: 1
+      },
+      fullAddress:{
+        val:item.fullAddress,
+        valid: 1
+      },
+      addressDetail:{
+        val:item.addressDetail,
+        valid: 1
+      },
+    })
+    initTmpUserAddress(tmp)
+    this.context.router.push({
+      pathname:'editaddress/'+index
+    })
   }
   deleteAddress(index, item){
     const { deleteUserAddress } = this.props;

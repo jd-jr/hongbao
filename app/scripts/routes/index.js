@@ -28,7 +28,7 @@ export default (
     <Route path="my" component={MyHongbaoPage}/>
     <Route path="myaddress" component={UserAddressList}/>
     <Route path="addaddress" component={AddAddress}/>
-    <Route path="editaddress" component={EditAddress}/>
+    <Route path="editaddress/:index" component={EditAddress}/>
     <Route path="selectcity" component={SelectCity}/>
   </Route>
 );

@@ -1,4 +1,4 @@
-import {INIT_USER_ADD_LIST, SET_DEFAULT_ADDRESS, DELETE_ADDRESS} from '../constants/AddressActionTypes';
+import {INIT_USER_ADD_LIST, SET_DEFAULT_ADDRESS, DELETE_ADDRESS, ADD_USER_ADDRESS, UPDATE_USER_ADDRESS} from '../constants/AddressActionTypes';
 
 
 export default function address(state = [], action) {
@@ -21,6 +21,23 @@ export default function address(state = [], action) {
     case DELETE_ADDRESS:
       var newState = state.concat();
       newState.splice(action.index, 1);
+      return newState;
+      break;
+    case ADD_USER_ADDRESS:
+      var newState = state.concat()
+      newState.unshift(action.state)
+      return newState;
+      break;
+    case UPDATE_USER_ADDRESS:
+      var newState = state.concat()
+      var id = action.state.id;
+      newState.map(function (item, index) {
+        if (item.id == id) {
+          return action.state;
+        } else {
+          return item;
+        }
+      })
       return newState;
       break;
     default:
