@@ -1,9 +1,8 @@
 import 'isomorphic-fetch';
 import assign from 'lodash/assign';
-import {URL_ROOT} from '../config';
+import {URL_ROOT, JD_LOGIN_URL, QB_LOGIN_URL} from '../config';
 import perfect from '../utils/perfect';
-import {JD_LOGIN_URL, QB_LOGIN_URL} from '../config';
-
+import {getSessionStorage} from '../utils/sessionStorage';
 // 定义 fetch 默认选项， 看 https://github.com/github/fetch
 const defaultOptions = {
   method: 'post',
@@ -32,14 +31,18 @@ function checkStatus(response) {
  * @param url
  * @param body //往后台传递的 json 参数
  * @param options // 可选参数项
+ * @param loginVerify // 是否在该方法中校验登录
  * @returns {Promise.<TResult>}
  */
-function callApi({url, body, options, loginVerify}) {
+function callApi({url, body = {}, options, loginVerify = true}) {
   if (!url) {
     let error = new Error('请传入 url');
     error.errorCode = 0;
     return Promise.reject(error);
   }
+
+  let clientInfo = getSessionStorage('clientInfo');
+  clientInfo = perfect.parseJSON(clientInfo) || {};
 
   const protocol = location.protocol;
   let fullUrl;
@@ -50,10 +53,8 @@ function callApi({url, body, options, loginVerify}) {
   }
 
   let _options = assign({}, defaultOptions, options);
-
-  if (typeof body === 'object') {
-    _options.body = perfect.stringifyJSON(body);
-  }
+  let _body = assign({}, {auth: clientInfo.auth}, body);
+  _options.body = perfect.stringifyJSON(_body);
 
   return fetch(fullUrl, _options)
     .then(checkStatus)
@@ -62,14 +63,18 @@ function callApi({url, body, options, loginVerify}) {
     ).then(({json, response}) => {
       //未登录
       if (response.ok && json.code === 'RBF100300') {
-        let activeUrl = location.href;
-        if (activeUrl.indexOf('?') !== -1) {
-          activeUrl += '&from=login';
-        } else {
-          activeUrl += '?from=login';
+        if (loginVerify) {
+          let activeUrl = location.href;
+          if (activeUrl.indexOf('?') !== -1) {
+            activeUrl += '&from=login';
+          } else {
+            activeUrl += '?from=login';
+          }
+          location.href = JD_LOGIN_URL + encodeURIComponent(QB_LOGIN_URL + activeUrl);
         }
-        console.info(JD_LOGIN_URL + encodeURIComponent(QB_LOGIN_URL + activeUrl));
-        location.href = JD_LOGIN_URL + encodeURIComponent(QB_LOGIN_URL + activeUrl);
+        let error = new Error(json.msg);
+        error.errorCode = json.code;
+        return Promise.reject(error);
       } else if (!response.ok || json.code !== 'RB000000') {
         //if (!response.ok) {
         // 根据后台实际返回数据来定义错误格式

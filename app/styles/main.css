@@ -1920,7 +1920,7 @@ a.text-danger:focus, a.text-danger:hover {
   border-right: 1px solid #ccc;
   -webkit-transform: rotate(45deg);
           transform: rotate(45deg);
-  height: .7rem;
+  height: .77rem;
   width: .7rem;
   margin: 0 .5rem;
 }
@@ -2745,6 +2745,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 1.2rem;
   vertical-align: top;
   margin-right: 0.3rem;
+  text-align: center;
 }
 
 .hb-radio.checked:after {
@@ -2759,16 +2760,30 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hb-money {
-  font-weight: 200;
-  font-size: 3.5rem;
+  font-weight: 100;
+  font-size: 3rem;
 }
 
 .hb-logo {
-  background: url("../images/wallet-logo.png") no-repeat;
+  background: url("../images/wallet-logo-gray.png") no-repeat;
   display: inline-block;
   background-size: 100%;
-  width: 61px;
-  height: 14px;
+  width: 62px;
+  height: 17px;
+}
+
+.hb-help {
+  position: fixed;
+  right: 1rem;
+  bottom: 10rem;
+}
+
+.hb-help-icon {
+  background: url("../images/help.png") no-repeat;
+  display: inline-block;
+  background-size: 100%;
+  width: 30px;
+  height: 30px;
 }
 
 .hb-luck-link {
@@ -2819,7 +2834,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .weixin-share-guide {
-  padding: 3.5rem;
+  padding: 1rem 2rem;
+  z-index: 2000;
 }
 
 .hb-footer {

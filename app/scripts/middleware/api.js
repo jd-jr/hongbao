@@ -39,7 +39,7 @@ export default store => next => action => {
 
   let {url} = callAPI;
   //paging 为 true 指分页
-  const {schema, types, options, body, paging} = callAPI;
+  const {schema, types, options, body, paging, loginVerify} = callAPI;
 
   if (typeof url === 'function') {
     url = url(store.getState());
@@ -75,7 +75,7 @@ export default store => next => action => {
   next(actionWith({type: requestType}));
 
   // Fetch 一个请求，并返回结果, 返回成功处理逻辑需要根据后端返回的数据格式来解析
-  return callApi({url, options, body}).then(
+  return callApi({url, options, body, loginVerify}).then(
     ({json, response}) => {
       let res;
       let data = json.data;

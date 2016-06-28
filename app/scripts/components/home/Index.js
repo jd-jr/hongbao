@@ -1,14 +1,39 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
+import base64 from 'js-base64';
 import BottomNav from '../BottomNav';
+import Help from '../Help';
 import Loading from '../../ui/Loading';
 import callApi from '../../fetch';
 import {HONGBAO_TITLE} from '../../constants/common';
+import perfect from '../../utils/perfect'
+const {Base64} = base64;
+
+//FIXME 测试数据
+const accountIds = [
+  'otEnCjuXgorSu0yCkWLZC4cuh5D0',
+  'otEnCjrz_3PMW-DZx_s2VnoKx6Cc',
+  'otEnCjmW191iFeVOb5Ft2uZXBeMo',
+  'otEnCju_FqhkHHdoCSvEF0y8PZ5I',
+  'otEnCjml8gOGmIfUBCX73kwHOOPY',
+  'otEnCjl9xilxOMUWliE9651mUGg8',
+  'otEnCjr7J1-9mhlGUyxQVtNxBGL0',
+  'otEnCjo1dD0xg37IJkONGYUKRAq4',
+  'otEnCjuG5nFAJt9q-8NmQx-Op7jc',
+  'otEnCjmfmUsNJnSvLQTB2B1K_dgI'];
 
 class Home extends Component {
   constructor(props) {
     super(props);
-    const {skuName, skuId, bizPrice, indexImg} = props;
+    let {detail} = props;
+    if (detail) {
+      detail = decodeURIComponent(detail);
+      detail = Base64.decode(detail);
+      detail = perfect.parseJSON(detail);
+    }
+
+    const {skuName, skuId, bizPrice, indexImg} = (detail || {});
     this.state = {
       title: '',
       bizPrice: bizPrice || 0,
@@ -20,12 +45,14 @@ class Home extends Component {
       visible: false,
       payDataReady: false,
       loadingStatus: false,
-      checked: true
+      checked: true, //同意条款
+      mystery: false // 是否为神秘奖品
     };
     this.selectProduct = this.selectProduct.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.payBefore = this.payBefore.bind(this);
     this.handleChecked = this.handleChecked.bind(this);
+    this.handleMystery = this.handleMystery.bind(this);
   }
 
   componentWillMount() {
@@ -72,6 +99,13 @@ class Home extends Component {
     });
   }
 
+  handleMystery() {
+    const {mystery} = this.state;
+    this.setState({
+      mystery: !mystery
+    });
+  }
+
   //选择商品
   selectProduct() {
     this.context.router.push('/product');
@@ -106,10 +140,12 @@ class Home extends Component {
       skuId,
       giftNum,
       title: title || HONGBAO_TITLE,
-      accountType: 'WALLET',
-      thirAccId: '123456',
-      customerId: '1234567890'
+      accountType: 'WECHAT',
     };
+
+    if (!deviceEnv.inJdWallet) {
+      body.thirdAccId = accountIds[Math.floor(Math.random() * 10)]
+    }
 
     // 红包 id
     let identifier;
@@ -119,10 +155,7 @@ class Home extends Component {
         identifier = json.data;
         const url = 'pay';
         const body = {
-          identifier,
-          auth: '11111',
-          customerId: '333',
-          jdPin: '333'
+          identifier
         };
         return callApi({url, body});
       },
@@ -144,7 +177,9 @@ class Home extends Component {
         return Promise.reject(error);
       }
     ).catch((error) => {
-      indexActions.setErrorMessage(error.message || '支付失败，请稍后重试');
+      if (error && error.errorCode !== 'RBF100300') {
+        indexActions.setErrorMessage(error.message || '支付失败，请稍后重试');
+      }
       this.setState({
         loadingStatus: false
       });
@@ -193,7 +228,7 @@ class Home extends Component {
   }
 
   render() {
-    let {giftNum, title, bizPrice, skuName, indexImg, selecting, checked, loadingStatus} = this.state;
+    let {giftNum, title, bizPrice, skuName, indexImg, selecting, checked, loadingStatus, mystery} = this.state;
 
     bizPrice = (bizPrice / 100).toFixed(2);
 
@@ -219,19 +254,25 @@ class Home extends Component {
 
             {
               !selecting ? (
-                <div className="hb-single m-t-1 m-b-1">
-                  <div className="row flex-items-middle">
-                    <div className="col-4">
-                      <img className="img-fluid" src={indexImg} alt=""/>
-                    </div>
-                    <div className="col-16">
-                      <div className="text-truncate">{skuName}</div>
-                      <div className="text-muted f-sm">{bizPrice ? `￥${bizPrice}` : ''}</div>
-                    </div>
-                    <div className="col-4 border-left border-second text-center">
-                      <Link to="/product">更换</Link>
+                <div className="m-t-1 m-b-1">
+                  <div className="hb-single">
+                    <div className="row flex-items-middle">
+                      <div className="col-4">
+                        <img className="img-fluid" src={indexImg} alt=""/>
+                      </div>
+                      <div className="col-16">
+                        <div className="text-truncate">{skuName}</div>
+                        <div className="text-muted f-sm">{bizPrice ? `￥${bizPrice}` : ''}</div>
+                      </div>
+                      <div className="col-4 border-left border-second text-center">
+                        <Link to="/product">更换</Link>
+                      </div>
                     </div>
                   </div>
+                  <p className="f-xs m-l-1 text-muted">
+                    <i className={`hb-radio${mystery ? ' checked' : ''}`} onTouchTap={this.handleMystery}></i>
+                    隐藏实物图片和名称，给小伙伴们发神秘奖品
+                  </p>
                 </div>
               ) : null
             }
@@ -275,6 +316,7 @@ class Home extends Component {
           </section>
         </article>
 
+        <Help/>
         <BottomNav type="sponsor"/>
       </div>
     );
@@ -282,10 +324,7 @@ class Home extends Component {
 }
 
 Home.propTypes = {
-  skuName: PropTypes.string,
-  skuId: PropTypes.string,
-  bizPrice: PropTypes.string,
-  indexImg: PropTypes.string,
+  detail: PropTypes.string,
   indexActions: PropTypes.object,
   setClientInfo: PropTypes.func,
 };

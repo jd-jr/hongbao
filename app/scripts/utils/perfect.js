@@ -126,20 +126,14 @@ const perfect = {
       MS = '0' + MS;
     }
 
-    function getDateStr(obj) {
-      const year = obj.getFullYear();
-      const month = (obj.getMonth() + 1) <= 9 ? '0' + (obj.getMonth() + 1) : obj.getMonth();
-      const date = obj.getDate() <= 9 ? '0' + obj.getDate() : obj.getDate();
-      const dateStr = year + month + date;
-      return dateStr;
-    }
+    const hms = showMs ? ` ${H}:${M}:${S}.${MS}` : ` ${H}:${M}:${S}`;
+    let month = date.getMonth() + 1;
+    month = month <= 9 ? '0' + month : month;
 
-    if (date.toDateString() === today.toDateString()) {
-      return showMs ? `今天${H}:${M}:${S}.${MS}` : `今天${H}:${M}:${S}`;
-    } else if (getDateStr(today) - getDateStr(date) > 0 && getDateStr(today) - getDateStr(date) <= 1) {
-      return showMs ? `昨天${H}:${M}:${S}.${MS}` : `昨天${H}:${M}:${S}`;
-    }
-    return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日';
+    let day = date.getDate();
+    day = day <= 9 ? '0' + day : day;
+
+    return month + '-' + day + hms;
   },
 
   /**
