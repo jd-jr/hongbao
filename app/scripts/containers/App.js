@@ -108,6 +108,10 @@ class App extends Component {
         onClose={this.onClose}
         title="温馨提示"
         footer={footer}
+        animation
+        maskAnimation
+        preventTouchmove
+        closable={false}
       >
         <div className="text-center">{errorMessage}</div>
       </Modal>

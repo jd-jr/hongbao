@@ -32,7 +32,7 @@ export function getProductList(body = {}) {
     if (isFetching || lastPage) {
       return null;
     }
-    return dispatch(fetchProductList({...body, pageNum: nextPage, pageSize: 20}));
+    return dispatch(fetchProductList({...body, pageNum: nextPage, pageSize: 10}));
   };
 }
 

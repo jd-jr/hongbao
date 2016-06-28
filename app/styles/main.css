@@ -1697,6 +1697,10 @@ fieldset[disabled] a.btn {
   border-radius: 0 !important;
 }
 
+.btn-arc {
+  border-radius: 1.5rem;
+}
+
 input[type="submit"].btn-block,
 input[type="reset"].btn-block,
 input[type="button"].btn-block {
@@ -1840,6 +1844,36 @@ a.text-danger:focus, a.text-danger:hover {
 
 .text-link {
   color: #0074ff;
+}
+
+.bg-muted {
+  background-color: #999;
+  color: #fff;
+}
+
+.bg-primary {
+  background-color: #d64f48;
+  color: #fff;
+}
+
+.bg-success {
+  background-color: #81c16d;
+  color: #fff;
+}
+
+.bg-info {
+  background-color: #00b8ec;
+  color: #fff;
+}
+
+.bg-warning {
+  background-color: #fdb13f;
+  color: #fff;
+}
+
+.bg-danger {
+  background-color: #d9534f;
+  color: #fff;
 }
 
 .border-left {
@@ -2555,13 +2589,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .hb-arrows-active {
   position: relative;
+  background: #fff;
 }
 
 .hb-arrows-active:before {
   position: absolute;
   height: 1.2rem;
   width: 1.2rem;
-  top: -0.66rem;
+  top: -0.56rem;
   background: inherit;
 }
 
@@ -2582,7 +2617,7 @@ h1, h2, h3, h4, h5, h6 {
 .hb-product-nav-btn {
   padding: 1rem 0 0.9rem;
   display: inline-block;
-  width: 25%;
+  width: 30%;
   text-align: center;
 }
 
@@ -2734,6 +2769,57 @@ h1, h2, h3, h4, h5, h6 {
   background-size: 100%;
   width: 61px;
   height: 14px;
+}
+
+.hb-luck-link {
+  color: #fee1b4;
+  position: absolute;
+  bottom: 2rem;
+  width: 100%;
+  text-align: center;
+}
+
+.hb-iscroll {
+  margin-top: 3.6rem;
+}
+
+.hb-mask {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.hb-no-items {
+  width: 7rem;
+  height: 7rem;
+  display: block;
+  margin: 0 auto;
+}
+
+.hb-img-text-thumb {
+  border: 1px solid #eee;
+  width: 4rem;
+  float: right;
+}
+
+.hb-img-text-thumb img {
+  display: block;
+  width: 100%;
+  padding: 0.1rem;
+  padding-bottom: 0;
+  border-bottom: 1px solid #eee;
+}
+
+.hb-img-text-thumb .label-text {
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.weixin-share-guide {
+  padding: 3.5rem;
 }
 
 .hb-footer {

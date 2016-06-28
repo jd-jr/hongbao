@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import Modal from 'reactjs-modal';
 import prefect from '../../utils/perfect';
 import walletApi from 'jd-wallet-sdk';
+import {HONGBAO_TITLE} from '../../constants/common';
 
 class Initiate extends Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class Initiate extends Component {
     const {identifier, title, skuName} = this.props;
     walletApi.share({
       url: `${urlRoot}hongbao/detail/${identifier}`,
-      title: '我在京东钱包发起了个实物现金红包，快来抢啊！',
+      title: title || HONGBAO_TITLE,
       desc: skuName,
       channel: 'WX',
       callback: (status) => {

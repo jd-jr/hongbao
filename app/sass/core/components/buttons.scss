@@ -173,6 +173,11 @@ fieldset[disabled] a.btn {
   border-radius: 0 !important;
 }
 
+//圆弧
+.btn-arc {
+  border-radius: 1.5rem;
+}
+
 // Specificity overrides
 input[type="submit"],
 input[type="reset"],

@@ -10,7 +10,8 @@ const entitykeys = ['sponsorPagination', 'receivePagination'];
 function mapStateToProps(state, ownProps) {
   const {type} = ownProps.location.query;
   const {
-    hongbao
+    hongbao,
+    entity: {userInfo}
   } = state;
 
   const lists = entitykeys.map(key => {
@@ -28,7 +29,10 @@ function mapStateToProps(state, ownProps) {
     };
   });
 
-  let objects = {type};
+  let objects = {
+    type,
+    userInfo: userInfo || {}
+  };
 
   lists.forEach((item) => {
     assign(objects, item);

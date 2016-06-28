@@ -24,8 +24,15 @@ class Home extends Component {
     };
     this.selectProduct = this.selectProduct.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.pay = this.pay.bind(this);
+    this.payBefore = this.payBefore.bind(this);
     this.handleChecked = this.handleChecked.bind(this);
+  }
+
+  componentWillMount() {
+    const fromLogin = location.href.indexOf('from=login');
+    if (fromLogin !== -1) {
+      this.pay();
+    }
   }
 
   handleChange(e, type) {
@@ -42,6 +49,13 @@ class Home extends Component {
       }
       value = parseInt(value, 10);
       if (value > 50) {
+        this.setState({
+          giftNum: 50
+        });
+        return;
+      }
+    } else if (type === 'title') {
+      if (value.length > 30) {
         return;
       }
     }
@@ -63,11 +77,20 @@ class Home extends Component {
     this.context.router.push('/product');
   }
 
-  //支付
-  pay(e) {
+  payBefore(e) {
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
 
+    const {setClientInfo} = this.props;
+    setClientInfo((status) => {
+      if (status) {
+        this.pay();
+      }
+    });
+  }
+
+  //支付
+  pay() {
     const {indexActions} = this.props;
     const {skuId, giftNum, title, loadingStatus} = this.state;
     if (loadingStatus) {
@@ -227,7 +250,7 @@ class Home extends Component {
 
             <div>
               <div className="hb-single">
-                <textarea value={title} onChange={(e) => this.handleChange(e, 'title')}
+                <textarea maxLength="30" value={title} onChange={(e) => this.handleChange(e, 'title')}
                           className="hb-textarea" placeholder={HONGBAO_TITLE}></textarea>
               </div>
             </div>
@@ -239,7 +262,7 @@ class Home extends Component {
 
           <section className="m-t-2">
             <button className="btn btn-block btn-primary btn-lg" disabled={selecting}
-                    onTouchTap={this.pay}>发起实物红包
+                    onTouchTap={this.payBefore}>发起实物红包
             </button>
             <p className="text-center f-sm m-t-2 text-muted">
               <i className={`hb-radio${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>
@@ -263,8 +286,8 @@ Home.propTypes = {
   skuId: PropTypes.string,
   bizPrice: PropTypes.string,
   indexImg: PropTypes.string,
-  id: PropTypes.string,
   indexActions: PropTypes.object,
+  setClientInfo: PropTypes.func,
 };
 
 Home.contextTypes = {

@@ -23,13 +23,14 @@ class Product extends Component {
 
   selectProduct() {
     const {productDetail} = this.props;
-    const {skuName, skuId, bizPrice} = productDetail;
+    const {skuName, skuId, bizPrice, indexImg} = productDetail;
     this.context.router.push({
       pathname: '/',
       query: {
         skuName,
         skuId,
-        bizPrice
+        bizPrice,
+        indexImg
       }
     });
   }
