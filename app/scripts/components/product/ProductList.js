@@ -143,10 +143,6 @@ class ProductList extends Component {
     } = this.props;
 
     const list = categoryList.list;
-    /*list.unshift({
-     id: 'all',
-     categoryName:
-     });*/
     const len = list ? list.length : 0;
     if (len > 4) { //开启移动
       this.touchEnable = true;
@@ -155,7 +151,7 @@ class ProductList extends Component {
 
     return (
       <div className="row text-nowrap">
-        <div className="col-3">
+        <div className="col-3" style={{paddingRight: '0'}}>
           <span className={`hb-product-nav-btn${activeCategory === null ? ' active' : ''}`}
                 onTouchTap={(e) => this.handleSelectTab(e, null)}
                 style={{width: '100%'}}>全部</span>

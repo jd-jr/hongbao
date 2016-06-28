@@ -8,20 +8,9 @@ import Loading from '../../ui/Loading';
 import callApi from '../../fetch';
 import {HONGBAO_TITLE} from '../../constants/common';
 import perfect from '../../utils/perfect'
-const {Base64} = base64;
+import {setSessionStorage, removeSessionStorage} from '../../utils/sessionStorage';
 
-//FIXME 测试数据
-const accountIds = [
-  'otEnCjuXgorSu0yCkWLZC4cuh5D0',
-  'otEnCjrz_3PMW-DZx_s2VnoKx6Cc',
-  'otEnCjmW191iFeVOb5Ft2uZXBeMo',
-  'otEnCju_FqhkHHdoCSvEF0y8PZ5I',
-  'otEnCjml8gOGmIfUBCX73kwHOOPY',
-  'otEnCjl9xilxOMUWliE9651mUGg8',
-  'otEnCjr7J1-9mhlGUyxQVtNxBGL0',
-  'otEnCjo1dD0xg37IJkONGYUKRAq4',
-  'otEnCjuG5nFAJt9q-8NmQx-Op7jc',
-  'otEnCjmfmUsNJnSvLQTB2B1K_dgI'];
+const {Base64} = base64;
 
 class Home extends Component {
   constructor(props) {
@@ -140,11 +129,11 @@ class Home extends Component {
       skuId,
       giftNum,
       title: title || HONGBAO_TITLE,
-      accountType: 'WECHAT',
+      accountType: perfect.getAccountType()
     };
 
     if (!deviceEnv.inJdWallet) {
-      body.thirdAccId = accountIds[Math.floor(Math.random() * 10)]
+      body.thirdAccId = 'otEnCjuXgorSu0yCkWLZC4cuh5D0'
     }
 
     // 红包 id
@@ -170,6 +159,11 @@ class Home extends Component {
           payDataReady: true,
           loadingStatus: false
         }, () => {
+          if (this.state.mystery) {
+            setSessionStorage('mysterious', 'true');
+          } else {
+            removeSessionStorage('mysterious');
+          }
           this.refs.h5PayForm.submit();
         });
       },
@@ -178,7 +172,7 @@ class Home extends Component {
       }
     ).catch((error) => {
       if (error && error.errorCode !== 'RBF100300') {
-        indexActions.setErrorMessage(error.message || '支付失败，请稍后重试');
+        indexActions.setErrorMessage(error.message);
       }
       this.setState({
         loadingStatus: false

@@ -69,22 +69,21 @@ class ReceiveHongbao extends Component {
   }
 
   /*eslint-disable indent*/
-  getStatus({status, giftAmount, giftType}) {
-    if (giftType === '1CASH') {
+  getStatus({status, giftAmount, giftType, skuIcon}) {
+    if (giftType === 'CASH') {
       return (
         <div>
           {(giftAmount / 100).toFixed(2)}元
         </div>
       );
     }
-    status = 'RECEIVE_COMPLETE';
 
     switch (status) {
       case 'RECEIVE_COMPLETE':
         return (
           <div className="hb-img-text-thumb">
             <img
-              src="http://wx.qlogo.cn/mmopen/PiajxSqBRaEIYD5HN4ue4hkrr1p1DLzZxxXA5Nwf2UZWHkmyPGnV4x8An3ISaL668th37Ocic9vx7YX9WIaglcWA/0"
+              src={skuIcon}
               alt=""/>
             <div className="label-text bg-primary">未领取</div>
           </div>
@@ -113,17 +112,17 @@ class ReceiveHongbao extends Component {
   }
 
   renderItem(item) {
-    const {id, skuIcon, createdDate, giftAmount, status, giftType, giftNum, goodNum, thirdAccountUserInfoDtoList} = item;
-    const {dd} = thirdAccountUserInfoDtoList;
+    const {id, skuIcon, createdDate, giftAmount, status, giftType, thirdAccountUserInfoDtoList} = item;
+    const {nickName} = thirdAccountUserInfoDtoList || {};
     return (
       <li key={id}>
         <Link className="hb-link-block row flex-items-middle" to="/hongbao/detail/view/99d877579e94e5cf">
           <div className="col-18">
-            <div className="text-truncate">金刚狼</div>
+            <div className="text-truncate">{nickName}</div>
             <div className="text-muted f-sm">{perfect.formatDate(createdDate)}</div>
           </div>
           <div className="col-6 text-right">
-            {this.getStatus({status, giftAmount, giftType})}
+            {this.getStatus({status, giftAmount, giftType, skuIcon})}
           </div>
         </Link>
       </li>
@@ -174,6 +173,14 @@ class ReceiveHongbao extends Component {
 
     return (
       <div>
+        <section className="hb-single m-a-1">
+          <a className="hb-link-block" href="http://weixin.qq.com/q/cnX8k1Pl9kWPlzPHnllw">
+            <i className="hb-logo-concern"></i>
+            <span>关注京东钱包提现，查看中奖及后续物流信息！</span>
+            <span className="pull-right arrow-hollow-right"></span>
+          </a>
+        </section>
+
         <section className="text-center m-t-2">
           <div>
             <img className="img-circle img-thumbnail hb-figure" src={headpic} alt=""/>

@@ -3,13 +3,14 @@ import Modal from 'reactjs-modal';
 import prefect from '../../utils/perfect';
 import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import {HONGBAO_TITLE} from '../../constants/common';
+import {HONGBAO_TITLE, HONGBAO_MYSTIC} from '../../constants/common';
+import {getSessionStorage, removeSessionStorage} from '../../utils/sessionStorage';
 import weixinShareGuide from '../../../images/weixin-share-guide.png';
 
 class Initiate extends Component {
   constructor(props) {
     super(props);
-    const {status, imgUrl} = this.props;
+    const {status, skuIcon} = this.props;
     this.state = {
       success: status === 'true',
       visible: true,
@@ -22,9 +23,10 @@ class Initiate extends Component {
 
     //设置分享图片
     if (deviceEnv.inJdWallet) {
-      walletApi.shareIconURL('http://m.360buyimg.com/n3/g10/M00/07/0B/rBEQWVE0bLEIAAAAAAF3sUhUmykAABb6gP3LW8AAXfJ011.jpg', 'hongbao');
+      walletApi.shareIconURL(skuIcon, 'hongbao');
     }
   }
+
 
   //发红包
   sponsor() {
@@ -38,15 +40,25 @@ class Initiate extends Component {
     }
   }
 
+  componentWillUnmout() {
+    removeSessionStorage('mysterious');
+  }
+
   share() {
     //调起分享
     const urlRoot = prefect.getLocationRoot();
-    const {identifier, title, skuName, imgUrl} = this.props;
+    let {identifier, title, skuName, skuIcon} = this.props;
+    const mysterious = getSessionStorage('mysterious');
+    //FIXME 待设置神秘图片
+    if (mysterious === 'true') {
+      title = HONGBAO_MYSTIC;
+      skuIcon = '';
+    }
     walletApi.share({
       url: `${urlRoot}unpack/${identifier}`,
       title: title || HONGBAO_TITLE,
       desc: skuName,
-      imgUrl,
+      imgUrl: skuIcon,
       channel: 'WX',
       debug: true,
       callback: (status) => {
@@ -137,7 +149,7 @@ Initiate.propTypes = {
   title: PropTypes.string,
   identifier: PropTypes.string,
   status: PropTypes.string,
-  imgUrl: PropTypes.string,
+  skuIcon: PropTypes.string,
 };
 
 Initiate.contextTypes = {

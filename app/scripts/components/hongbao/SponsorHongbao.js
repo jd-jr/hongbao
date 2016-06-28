@@ -123,6 +123,13 @@ class SponsorHongbao extends Component {
 
     return (
       <div>
+        <section className="hb-single m-a-1">
+          <a className="hb-link-block" href="http://weixin.qq.com/q/cnX8k1Pl9kWPlzPHnllw">
+            <i className="hb-logo-concern"></i>
+            <span className="m-l-1">关注京东钱包提现，查看中奖及后续物流信息！</span>
+            <span className="pull-right arrow-hollow-right"></span>
+          </a>
+        </section>
         <section className="text-center m-t-2">
           <div>
             <img className="img-circle img-thumbnail hb-figure" src={headpic} alt=""/>

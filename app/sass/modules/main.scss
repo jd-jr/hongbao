@@ -117,8 +117,7 @@ h1, h2, h3, h4, h5, h6 {
         width: 30%;
         text-align: center;
         &.active {
-          border-bottom: 4px solid $brand-primary;
-          margin-bottom: -1px;
+          border-bottom: 2px solid $brand-primary;
         }
       }
     }
@@ -287,7 +286,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   &iscroll {
-    margin-top: 3.6rem;
+    margin-top: 3.65rem;
   }
 
   &mask {
@@ -321,6 +320,15 @@ h1, h2, h3, h4, h5, h6 {
       text-align: center;
       font-size: $font-size-sm;
     }
+  }
+
+  &logo-concern {
+    display: inline-block;
+    background: url("../images/wallet-logo-concern.png") no-repeat;
+    width: 17.5px;
+    height: 18px;
+    background-size: 100%;
+    vertical-align: top;
   }
 }
 

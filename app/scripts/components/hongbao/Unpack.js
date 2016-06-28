@@ -160,7 +160,11 @@ class Unpack extends Component {
           </section>
           {hongbaoTitle}
         </div>
-        <div className="hb-btn-circle flex-items-middle flex-items-center" onTouchTap={this.unpack}>開</div>
+        {
+          hongbaoStatus !== 'RECEIVE_COMPLETE' ? (
+            <div className="hb-btn-circle flex-items-middle flex-items-center" onTouchTap={this.unpack}>開</div>
+          ) : null
+        }
         <div className="hb-luck-link" onTouchTap={this.hongbaoDetail}>
           看看大家的手气
         </div>

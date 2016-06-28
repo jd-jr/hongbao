@@ -1,3 +1,4 @@
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 const win = window;
 const doc = document;
 
@@ -220,6 +221,13 @@ const perfect = {
       }
     }
     return false;
+  },
+
+  getAccountType() {
+    if (deviceEnv.inJdWallet) {
+      return 'WALLET';
+    }
+    return 'WECHAT';
   }
 };
 

@@ -57,9 +57,6 @@ class HongbaoDetail extends Component {
   onTouchStart(e) {
     if (this.timeouter) {
       clearTimeout(this.timeouter);
-      this.setState({
-        showFoot: false
-      });
     }
     const el = e.changedTouches[0];
     const pageY = el.pageY;
@@ -78,17 +75,12 @@ class HongbaoDetail extends Component {
   }
 
   onTouchEnd(e) {
-    const el = e.changedTouches[0];
-    const pageY = el.pageY;
-    const offset = pageY - this.pageY;
-    if (offset < -20) {
-      //4秒后隐藏
-      this.timeouter = setTimeout(() => {
-        this.setState({
-          showFoot: false
-        });
-      }, 4000);
-    }
+    //4秒后隐藏
+    this.timeouter = setTimeout(() => {
+      this.setState({
+        showFoot: false
+      });
+    }, 4000);
   }
 
   loadMore() {
@@ -115,10 +107,6 @@ class HongbaoDetail extends Component {
             {list.map((item) => {
               let {giftRecordId, nickName, headpic, giftAmount, giftGainedDate, giftType} = item;
               giftAmount = (giftAmount / 100).toFixed(2);
-
-              //测试数据
-              nickName = nickName || '匿名';
-              headpic = headpic || 'http://img12.360buyimg.com/n2/jfs/t2812/46/1557908128/260742/4648595c/5742d02eN8d52b027.jpg';
 
               return (
                 <li key={giftRecordId} className="row flex-items-middle">

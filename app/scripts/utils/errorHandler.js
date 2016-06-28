@@ -13,9 +13,9 @@ const errorCode = {
 };
 
 const errorMapping = {
-  'Failed to fetch': '无网络连接，请检查您的网络！',
-  'Network request failed': '无网络连接，请检查您的网络！',
-  failed: '无网络连接，请检查您的网络！'
+  'Failed to fetch': '服务器累了，请稍后重试，谢谢您的合作！', //无网络连接，请检查您的网络！
+  'Network request failed': '服务器累了，请稍后重试，谢谢您的合作！', //无网络连接，请检查您的网络！
+  failed: '服务器累了，请稍后重试，谢谢您的合作！'
 };
 
 export default function (error, errorMsg) {

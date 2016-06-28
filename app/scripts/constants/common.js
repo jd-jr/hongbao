@@ -17,3 +17,5 @@ export const HONGBAO_VALID_STATUS = ['OK', 'RECEIVE_COMPLETE', 'EXPIRED', 'HAS_R
 export const HONGBAO_INVALID_STATUS = ['NEED_PAY', 'FAIL', 'REDBAG_NOT_FOUND'];
 
 export const HONGBAO_TITLE = '我发起个实物红包，快来试手气~！';
+
+export const HONGBAO_MYSTIC = '京东钱包实物红包，神秘奖品等您来抢~';

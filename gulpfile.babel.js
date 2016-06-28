@@ -47,10 +47,10 @@ gulp.task('styles:example', () => {
     .pipe(gulp.dest('example/styles'));
 });
 
-//复制替换文件，分开发和正式环境
+//复制替换文件，分开发、正式环境和本地服务环境
 //备选插件 https://www.npmjs.com/package/gulp-copy-rex
-//开发环境
-gulp.task('copy:dev', () => {
+//服务环境
+gulp.task('copy:server', () => {
   const paths = [
     {src: 'app/scripts/config/index.dev.js', dest: 'app/scripts/config/index.js'},
     {src: 'app/scripts/store/configureStore.dev.js', dest: 'app/scripts/store/index.js'},
@@ -60,8 +60,20 @@ gulp.task('copy:dev', () => {
   return $.copy2(paths);
 });
 
+//开发环境
+gulp.task('copy:dev', ['clean'], () => {
+  const paths = [
+    {src: 'app/scripts/config/index.dev.js', dest: 'app/scripts/config/index.js'},
+    {src: 'app/scripts/store/configureStore.prod.js', dest: 'app/scripts/store/index.js'},
+    {src: 'app/scripts/containers/Root.prod.js', dest: 'app/scripts/containers/Root.js'},
+    {src: 'app/favicon.ico', dest: 'dist/favicon.ico'},
+    {src: 'node_modules/eruda/dist/eruda.min.js', dest: 'dist/eruda.min.js'},
+  ];
+  return $.copy2(paths);
+});
+
 //正式环境,打包使用
-gulp.task('copy:prod', () => {
+gulp.task('copy:prod', ['clean'], () => {
   const paths = [
     {src: 'app/scripts/config/index.prod.js', dest: 'app/scripts/config/index.js'},
     {src: 'app/scripts/store/configureStore.prod.js', dest: 'app/scripts/store/index.js'},
@@ -181,10 +193,10 @@ gulp.task('webpack:build', () => {
 
 
 //开发环境，启动服务
-gulp.task('server', ['styles', 'copy:dev'], () => {
+gulp.task('server', ['styles', 'copy:server'], () => {
   gulp.start(['webpack:server']);
   gulp.watch('app/sass/**/*.scss', ['styles']);
-  gulp.watch(['app/scripts/config/index.dev.js', 'app/scripts/containers/Root.dev.js', 'app/scripts/store/configureStore.dev.js'], ['copy:dev']);
+  gulp.watch(['app/scripts/config/index.dev.js', 'app/scripts/containers/Root.dev.js', 'app/scripts/store/configureStore.dev.js'], ['copy:server']);
 });
 
 //生产环境，启动服务
@@ -227,7 +239,12 @@ gulp.task('mockjs', () => {
 });
 
 // 编译打包，正式环境
-gulp.task('build', ['clean', 'styles', 'copy:prod'], () => {
+gulp.task('build', ['styles', 'copy:prod'], () => {
+  gulp.start(['webpack:build']);
+});
+
+// 编译打包，测试环境
+gulp.task('build:dev', ['styles', 'copy:dev'], () => {
   gulp.start(['webpack:build']);
 });
 
