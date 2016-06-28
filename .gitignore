@@ -2,6 +2,7 @@
 node_modules
 dist
 zip
+app/styles
 
 # 一些不需要提交的 js 文件
 app/scripts/config/index.js

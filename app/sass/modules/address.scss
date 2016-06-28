@@ -1,0 +1,294 @@
+.text-red{
+  color: #ef5457;
+}
+.#{$prefixCls} {
+  &hidden{
+    display: none !important;
+  }
+  &f-16{
+    font-size:$font-size-lg;
+  }
+  &f-12{
+    font-size:$font-size-sm;
+  }
+  &gray-l-t{
+    color: $gray-light;
+  }
+  &bd-t{
+    border-top:1px solid #ddd;
+  }
+  &bd-b{
+    border-bottom:1px solid #ddd;
+  }
+  &bd-l{
+    border-left:1px solid #ddd;
+  }
+  &bd-r{
+    border-right:1px solid #ddd;
+  }
+
+  &bg-white{
+    background: #fff;
+  }
+  &address-panel{
+    background: #eaeaea;
+
+    .item{
+      padding:0.75rem;
+      margin-top:0.5rem;
+    }
+    .opt-item{
+      padding:0.5rem 0.5rem 0.75rem;
+      position: relative;
+    }
+    .goods-state{
+
+    }
+    .address-text{
+      margin-top:0.3rem;
+    }
+    .line-v{
+      width:1px;
+      position: absolute;
+      right:17.5%;
+      top:11px;
+      height:12px;
+      background: $thumbnail-border-color;
+    }
+  }
+
+}
+
+/*圆形选择*/
+.slt-radio-panel {
+  position: relative;
+}
+
+.slt-radio-panel > label {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  position: absolute;
+  top:5px;
+  left:1.2rem;
+  border: 1px solid #999;
+  margin:0;
+  flex: 0 0 25px;
+  max-width: 25px;
+  -webkit-transform: scale(0.7);
+  -moz-transform: scale(0.7);
+  -ms-transform: scale(0.7);
+  -o-transform: scale(0.7);
+  transform: scale(0.7);
+
+}
+
+
+.slt-radio-panel  label.checked:after {
+  background: #ef5557;
+}
+
+
+
+.slt-radio-panel > label:after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 2px rgba(236, 235, 235, 0。7);
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.tip-mask{
+  position: fixed;
+  top:0;left: 0;
+  right:0;
+  bottom:0;
+  background: rgba(0,0,0,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index:100;
+
+  .tip-alert{
+    width:70%;
+    border-radius: 4px;
+    background: #fff;
+
+  }
+  .tip-item{
+    padding:8px 0;
+  }
+
+  .title{
+    margin: 0;
+  }
+  .sub-title{
+    margin-bottom: 8px;
+  }
+  .tip-msg{
+    padding: 12px 0;
+  }
+  .btn-panel{
+    a{
+      display: inline-block;
+      width:50%;
+      text-align: center;
+    }
+
+  }
+}
+
+//新增地址样式
+
+textarea:focus,
+input:focus{
+  outline:none;
+}
+::-webkit-input-placeholder{
+  color: #999;
+  opacity: 1;
+}
+.fl{
+  float: left;
+}
+.fr{
+  float: right;
+}
+.mg-t-10 {
+  margin-top: 10px;
+}
+.error-icon{
+  color: #ef5557;
+  position: absolute;
+  top:-3px;
+  right:12px;
+  font-size:32px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+
+.address-row {
+  padding: 14px;
+}
+.wg-address-panel{
+  background: #fff;
+  padding-left:14px;
+}
+.wg-address-item{
+
+  position: relative;
+  border-bottom:1px solid #eee;
+  padding: 10px 14px 10px 0;
+}
+.wg-address-item:last-of-type{
+  border-bottom: none;
+}
+.wg-address-item:after{
+  content: '';
+  display: table;
+  clear: both;
+
+}
+.item-title{
+  display: inline-block;
+  width:25%;
+  font-size:14px;
+}
+.item-input{
+  width:72%;
+  display: inline-block;
+}
+.item-input>input,
+.item-input .input{
+  width:100%;
+  font-size:14px;
+  color: #333;
+}
+.item-input textarea{
+  padding-left:6px;
+  margin-top:-3px;
+  margin-left:-2px;
+  resize: none;
+  font-size:14px;
+  width:100%;
+  color: #333;
+}
+.item-input textarea.placeholder{
+  color: #999;
+}
+
+.wg-address-item .arrow-hollow-right{
+  position: absolute;
+  top:14px;
+  right: 10px;
+}
+.arrow-hollow-right:before {
+  content: "";
+  display: inline-block;
+  border: 1px solid transparent;
+  border-top: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  height: .7rem;
+  width: .7rem;
+  margin: 0 .5rem;
+}
+
+
+.sure-btn{
+  display: block;
+  margin: 20px 14px;
+  background: #f15353;
+  padding:10px 0;
+  border-radius: 5px;
+  color: #fff !important;
+  font-size: 16px;
+  text-align: center;
+}
+
+//选择省市区县
+textarea:focus,
+input:focus{
+  outline:none;
+}
+::-webkit-input-placeholder{
+  color: #999;
+  opacity: 1;
+}
+.fl{
+  float: left;
+}
+.fr{
+  float: right;
+}
+.mg-t-10 {
+  margin-top: 10px;
+}
+
+
+.address-list-panel{
+  background: #fff;
+  padding-left:10px;
+}
+.address-list-panel>.item{
+  padding:10px 2px;
+  border-bottom:1px solid #eee;
+
+}
+.address-list-panel>.item:last-of-type{
+  border-bottom:none;
+}

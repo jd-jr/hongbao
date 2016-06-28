@@ -9,9 +9,11 @@ import HongbaoDetailPage from '../containers/HongbaoDetailPage';
 import MyHongbaoPage from '../containers/MyHongbaoPage';
 import InitiatePage from '../containers/InitiatePage';
 import UnpackPage from '../containers/UnpackPage';
-import routeSetting from './routeSetting';
 
-const {enterHandler} = routeSetting;
+import UserAddressList from '../components/userAddressList/'
+import AddAddress from '../components/addAddress/'
+import EditAddress from '../components/editAddress/'
+import SelectCity from '../components/selectCity/'
 
 // 注意嵌套路由应该是相对路径，不能写成据对路径
 export default (
@@ -27,5 +29,9 @@ export default (
     <Route path="unpack/:id" component={UnpackPage}/>
     <Route path="hongbao/detail/:id/:thirdAccId" component={HongbaoDetailPage}/>
     <Route path="my" component={MyHongbaoPage}/>
+    <Route path="myaddress" component={UserAddressList}/>
+    <Route path="addaddress" component={AddAddress}/>
+    <Route path="editaddress/:index" component={EditAddress}/>
+    <Route path="selectcity" component={SelectCity}/>
   </Route>
 );
