@@ -1,10 +1,15 @@
-
+.text-red{
+  color: #ef5457;
+}
 .#{$prefixCls} {
   &hidden{
     display: none !important;
   }
   &f-16{
     font-size:$font-size-lg;
+  }
+  &f-12{
+    font-size:$font-size-sm;
   }
   &gray-l-t{
     color: $gray-light;
@@ -37,7 +42,7 @@
       position: relative;
     }
     .goods-state{
-      color: #ef5557;
+
     }
     .address-text{
       margin-top:0.3rem;
@@ -102,7 +107,45 @@
   transition: all 0.3s ease;
 }
 
+.tip-mask{
+  position: fixed;
+  top:0;left: 0;
+  right:0;
+  bottom:0;
+  background: rgba(0,0,0,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index:100;
 
+  .tip-alert{
+    width:70%;
+    border-radius: 4px;
+    background: #fff;
+
+  }
+  .tip-item{
+    padding:8px 0;
+  }
+
+  .title{
+    margin: 0;
+  }
+  .sub-title{
+    margin-bottom: 8px;
+  }
+  .tip-msg{
+    padding: 12px 0;
+  }
+  .btn-panel{
+    a{
+      display: inline-block;
+      width:50%;
+      text-align: center;
+    }
+
+  }
+}
 
 //新增地址样式
 
@@ -125,6 +168,15 @@ input:focus{
 }
 .error-icon{
   color: #ef5557;
+  position: absolute;
+  top:-3px;
+  right:12px;
+  font-size:32px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 

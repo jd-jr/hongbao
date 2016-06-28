@@ -29,15 +29,18 @@ export default function address(state = [], action) {
       return newState;
       break;
     case UPDATE_USER_ADDRESS:
-      var newState = state.concat()
-      var id = action.state.id;
-      newState.map(function (item, index) {
-        if (item.id == id) {
-          return action.state;
+      var newState = state.concat();
+      var _index = action.state.index;
+      newState = newState.map(function (item, index) {
+        console.log(index==_index, '-------')
+        if (_index == index) {
+          console.log(action.state.addedAddress,'1111')
+          return action.state.addedAddress;
         } else {
           return item;
         }
       })
+      console.log(newState, 'sdfssss')
       return newState;
       break;
     default:

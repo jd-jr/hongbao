@@ -7,7 +7,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import * as actions from '../../actions/userAddressList'
 import className from 'classnames'
-import {assign} from 'lodash'
+import {assign, keys} from 'lodash'
 import callApi from '../../fetch/'
 
 //require('./style.css');
@@ -22,11 +22,16 @@ class EditAddress extends Component {
   }
 
   componentWillMount() {
-    const {tmpUserAddress, params} =this.props;
 
+    const {tmpUserAddress, params} =this.props;
+    //将临时存储数据放到当前的state上
+    //好处就是在输入不合法的时候 我们只是更新state不去更新store
     this.setState(tmpUserAddress, function () {
       console.log(this.state, tmpUserAddress, 'nice')
     });
+    this.setState({
+      tmpFullAddress: tmpUserAddress.fullAddress.val.replace(tmpUserAddress.addressDetail.val, '')
+    })
 
   }
 
@@ -40,14 +45,14 @@ class EditAddress extends Component {
 
   //将输入的值设置到state上
   setValue(type, e) {
-    console.log(e.target.value, '=====')
+    var that = this;
     this.setState({
       [type]: {
         val: e.target.value,
         valid: -1
       }
-    }, ()=> {
-      console.log(this.state)
+    }, function (){
+      console.log(that.state)
     })
 
   }
@@ -172,7 +177,8 @@ class EditAddress extends Component {
   //更新操作
   sureAction() {
     var addressEntity = this.generateParams();
-    const {updateUserAddress} = this.props;
+    const {updateUserAddress, params} = this.props;
+    var index = params.index;
     var that = this;
     if(!this.checkCanSub()){
       alert('信息不完整或有误');
@@ -187,9 +193,27 @@ class EditAddress extends Component {
       }
     }).then(function (res) {
       var id = res.json.data;
+
       if (id) {
         var addedAddress = assign({}, addressEntity)
-        updateUserAddress(addedAddress)
+        updateUserAddress({index,addedAddress})
+        //设置新增地址的货源状态
+        callApi({
+          url: 'user/address/areastock',
+          body: {
+            jdPin: "duobaodao3",
+            addressId: addressEntity.id,
+            skuId: '10001'//需要从store中获取
+          }
+        }).then(function (res) {
+          var stock = res.json.data;
+          addedAddress.stock = stock;
+          updateUserAddress({index: 0, addedAddress})
+        }, function () {
+          //请求失败按照无货处理
+          addedAddress.stock = false;
+          updateUserAddress({index: 0, addedAddress})
+        })
       }
       that.context.router.push({
         pathname: 'myaddress'
@@ -200,20 +224,29 @@ class EditAddress extends Component {
 
   generateParams() {
     const {tmpUserAddress} = this.props;
-    console.log(tmpUserAddress, 'sdf')
     var _ret = {
       addressDefault: false,
       name: tmpUserAddress.name.val,
       mobile: tmpUserAddress.mobile.val,
-      fullAddress: tmpUserAddress.fullAddress.val + tmpUserAddress.addressDetail.val,
+      fullAddress: this.state.tmpFullAddress + tmpUserAddress.addressDetail.val,
       addressDetail: tmpUserAddress.addressDetail.val
     };
-
-    return assign({}, tmpUserAddress,_ret)
+    for(var k in tmpUserAddress){
+      var _val = tmpUserAddress[k];
+      console.log(keys(_val), 'keys')
+      if( k != null && !(({}).toString.call(_val) == '[object Object]')){
+        _ret[k] = _val;
+      }
+    }
+    delete _ret.stock;
+    delete _ret.tmpFullAddress;
+    console.log(_ret, 'sdf')
+    return assign({},_ret, tmpUserAddress.sltInfo)
   }
 
   render() {
     var state = this.state;
+    var props = this.props.tmpUserAddress;
 
     return (
       <div>
@@ -228,7 +261,7 @@ class EditAddress extends Component {
             <i className={className({
               "error-icon ":true,
               "hb-hidden":(!this.state.name.valid==0)
-            })}>x</i>
+            })}>+</i>
           </div>
           <div className="wg-address-item">
             <span className=" item-title">手机号码</span>
@@ -241,12 +274,12 @@ class EditAddress extends Component {
             <i className={className({
               "error-icon ":true,
               "hb-hidden":(!this.state.mobile.valid==0)
-            })}>x</i>
+            })}>+</i>
           </div>
           <div className="wg-address-item" onClick={this.goSltCity.bind(this)}>
             <span className=" item-title">所在省市</span>
             <div className=" item-input">
-              <input type="text" disabled placeholder="请选择所在省市" value={state.fullAddress.val}/>
+              <input type="text" disabled placeholder="请选择所在省市" value={this.state.tmpFullAddress}/>
             </div>
             <i className="arrow-hollow-right"></i>
           </div>
@@ -262,7 +295,7 @@ class EditAddress extends Component {
             <i className={className({
               "error-icon ":true,
               "hb-hidden":(!this.state.addressDetail.valid==0)
-            })}>x</i>
+            })}>+</i>
           </div>
         </div>
 

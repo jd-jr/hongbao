@@ -16,8 +16,8 @@ class AddAddress extends Component {
     super(props);
     this.state = {}
     this.addressEntity = {}
-    this.style ={
-      color:'#999'
+    this.style = {
+      color: '#999'
     }
   }
 
@@ -145,7 +145,7 @@ class AddAddress extends Component {
         }
       })
       this.style = {
-        color:'#333'
+        color: '#333'
       }
     } else if (curValue == '' && isInput == false) {
       this.setState({
@@ -155,25 +155,27 @@ class AddAddress extends Component {
         }
       })
       this.style = {
-        color:'#999'
+        color: '#999'
       }
     }
 
   }
-  checkCanSub(){
+
+  checkCanSub() {
     var t = this.props.tmpUserAddress;
-    if( t.name.valid==1 && t.mobile.valid ==1 && t.fullAddress.valid == 1 && t.addressDetail.valid ==1 ){
+    if (t.name.valid == 1 && t.mobile.valid == 1 && t.fullAddress.valid == 1 && t.addressDetail.valid == 1) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
+
   //新增操作
   sureAction() {
     var addressEntity = this.generateParams();
-    const {addUserAddress} = this.props;
+    const {addUserAddress, updateUserAddress} = this.props;
     var that = this;
-    if(!this.checkCanSub()){
+    if (!this.checkCanSub()) {
       alert('信息不完整或有误');
       return;
     }
@@ -188,13 +190,34 @@ class AddAddress extends Component {
       if (id) {
         var addedAddress = assign({}, addressEntity, {id})
         addUserAddress(addedAddress)
+        //设置新增地址的货源状态
+        callApi({
+          url: 'user/address/areastock',
+          body: {
+            jdPin: "duobaodao3",
+            addressId: id,
+            skuId: '10001'//需要从store中获取
+          }
+        }).then(function (res) {
+          var stock = res.json.data;
+          addedAddress.stock = stock;
+          updateUserAddress({index: 0, addedAddress})
+
+        }, function () {
+          //请求失败按照无货处理
+          addedAddress.stock = false;
+          updateUserAddress({index: 0, addedAddress})
+        })
       }
+
+
       that.context.router.push({
         pathname: 'myaddress'
       })
     })
 
   }
+
 
   generateParams() {
     const {tmpUserAddress} = this.props;
@@ -226,7 +249,7 @@ class AddAddress extends Component {
             <i className={className({
               "error-icon ":true,
               "hb-hidden":(!this.state.name.valid==0)
-            })}>x</i>
+            })}>+</i>
           </div>
           <div className="wg-address-item">
             <span className=" item-title">手机号码</span>
@@ -239,7 +262,7 @@ class AddAddress extends Component {
             <i className={className({
               "error-icon ":true,
               "hb-hidden":(!this.state.mobile.valid==0)
-            })}>x</i>
+            })}>+</i>
           </div>
           <div className="wg-address-item" onClick={this.goSltCity.bind(this)}>
             <span className=" item-title">所在省市</span>
@@ -260,7 +283,7 @@ class AddAddress extends Component {
             <i className={className({
               "error-icon ":true,
               "hb-hidden":(!this.state.addressDetail.valid==0)
-            })}>x</i>
+            })}>+</i>
           </div>
         </div>
 

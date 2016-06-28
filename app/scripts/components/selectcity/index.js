@@ -107,7 +107,7 @@ class SelectCity extends Component{
   }
 
   render(){
-    var list = this.state.list;
+    var list = this.state.list||[];
     var that = this;
     console.log(list, 'list')
     return (
