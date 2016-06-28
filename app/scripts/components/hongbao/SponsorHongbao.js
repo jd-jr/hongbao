@@ -16,7 +16,7 @@ class SponsorHongbao extends Component {
     const body = {
       requestNo: '444',
       accountType: 'WALLET',
-      accountId: '123456'
+      accountId: 'otEnCjr7J1-9mhlGUyxQVtNxBGL0'
     };
 
     hongbaoActions.getHongbaoList(body, 'sponsor');
@@ -70,7 +70,7 @@ class SponsorHongbao extends Component {
             <img className="img-fluid" src={skuIcon} alt=""/>
           </div>
           <div className="col-14">
-            <div className="text-truncate">取微信群名（可能取不到）</div>
+            <div className="text-truncate">拼手气</div>
             <div className="text-muted f-sm">{perfect.formatDate(createdDate)}</div>
           </div>
           <div className="col-6 text-right">
@@ -84,7 +84,8 @@ class SponsorHongbao extends Component {
     );
   }
 
-  render() {
+  //渲染列表
+  renderList() {
     const {
       sponsorPagination
     } = this.props;
@@ -104,27 +105,38 @@ class SponsorHongbao extends Component {
     }
 
     return (
+      <ul className="hb-list">
+        {
+          list ? list.map((item) => {
+            return this.renderItem(item);
+          }) : null
+        }
+      </ul>
+    );
+  }
+
+  render() {
+    const {userInfo} = this.props;
+    const {giftAndThirdAccUserInfoDto, redbagAssemblyRetDto} = userInfo;
+    let {nickName, headpic} = (giftAndThirdAccUserInfoDto || {});
+    let {putOutNum, putOutAmount} = (redbagAssemblyRetDto || {});
+
+    return (
       <div>
         <section className="text-center m-t-2">
           <div>
-            <img className="img-circle img-thumbnail hb-figure" alt=""/>
+            <img className="img-circle img-thumbnail hb-figure" src={headpic} alt=""/>
           </div>
-          <h3 className="m-t-1">老王共发出</h3>
-          <div className="h1">1900.00</div>
+          <h3 className="m-t-1">{nickName}共发出</h3>
+          <div className="h1">{(putOutAmount / 100).toFixed(2)}</div>
 
           <div className="h3 text-muted">
-            已发出<span className="text-primary">19</span>个红包
+            已发出<span className="text-primary">{putOutNum}</span>个红包
           </div>
         </section>
 
         <section className="m-t-1">
-          <ul className="hb-list">
-            {
-              list ? list.map((item) => {
-                return this.renderItem(item);
-              }) : null
-            }
-          </ul>
+          {this.renderList()}
         </section>
       </div>
     );
@@ -137,7 +149,8 @@ SponsorHongbao.contextTypes = {
 
 SponsorHongbao.propTypes = {
   hongbaoActions: PropTypes.object,
-  sponsorPagination: PropTypes.object
+  sponsorPagination: PropTypes.object,
+  userInfo: PropTypes.object,
 };
 
 export default SponsorHongbao;

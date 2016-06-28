@@ -1,32 +1,158 @@
 import React, {Component, PropTypes} from 'react';
-import Modal from 'reactjs-modal';
-import callApi from '../../fetch';
-import HongbaoInfo from './HongbaoInfo';
-import {HONGBAO_VALID_STATUS, HONGBAO_TITLE} from '../../constants/common';
+import {Link} from 'react-router';
+import Loading from '../../ui/Loading';
+import perfect from '../../utils/perfect';
+import ScrollLoad from '../../ui/ScrollLoad';
 
 class HongbaoDetail extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      unpackModal: false, //拆红包弹框
-      hongbaoStatus: null, //红包状态
-      unpacked: props.view === 'view', //拆红包之后或者不需要弹出拆红包弹框
-      user: null //用户信息
+      showFoot: false
     };
-    this.unpack = this.unpack.bind(this);
-    this.hongbaoDetail = this.hongbaoDetail.bind(this);
+
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.loadMore = this.loadMore.bind(this);
+    this.timeouter = null;
   }
 
   componentDidMount() {
-    const {unpacked} = this.state;
-    if (!unpacked) {
-      this.validateHongbao();
+    //加载红包详情
+    const {hongbaoDetailAction, id, thirdAccId} = this.props;
+    let body = {
+      identifier: id,
+      accountType: 'WECHAT',
+      thirdAccId: 'otEnCjuG5nFAJt9q-8NmQx-Op7jc'
+    };
+    hongbaoDetailAction.getHongbaoDetail(body);
+
+    body = {
+      identifier: id
+    };
+    hongbaoDetailAction.getParticipantList(body);
+
+    //滚动窗口显示底部 banner，停止隐藏
+    window.addEventListener('touchstart', this.onTouchStart, false);
+    window.addEventListener('touchmove', this.onTouchMove, false);
+    window.addEventListener('touchend', this.onTouchEnd, false);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const {hongbaoInfo, participantPagination} = nextProps;
+    const {list} = participantPagination;
+    if (hongbaoInfo.skuId && list && list.length > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('touchstart', this.onTouchStart, false);
+    window.removeEventListener('touchmove', this.onTouchMove, false);
+    window.removeEventListener('touchend', this.onTouchEnd, false);
+  }
+
+  onTouchStart(e) {
+    if (this.timeouter) {
+      clearTimeout(this.timeouter);
+      this.setState({
+        showFoot: false
+      });
+    }
+    const el = e.changedTouches[0];
+    const pageY = el.pageY;
+    this.pageY = pageY;
+  }
+
+  onTouchMove(e) {
+    const el = e.changedTouches[0];
+    const pageY = el.pageY;
+    const offset = pageY - this.pageY;
+    if (offset < -20) {//向下滑动
+      this.setState({
+        showFoot: true
+      });
+    }
+  }
+
+  onTouchEnd(e) {
+    const el = e.changedTouches[0];
+    const pageY = el.pageY;
+    const offset = pageY - this.pageY;
+    if (offset < -20) {
+      //4秒后隐藏
+      this.timeouter = setTimeout(() => {
+        this.setState({
+          showFoot: false
+        });
+      }, 4000);
+    }
+  }
+
+  loadMore() {
+    //加载红包详情
+    const {hongbaoDetailAction, id, thirdAccId} = this.props;
+    const body = {
+      identifier: id
+    };
+    hongbaoDetailAction.getParticipantList(body);
+  }
+
+  //渲染获取者列表
+  renderGainedList() {
+    const {participantPagination} = this.props;
+    const {list, isFetching, lastPage} = participantPagination;
+
+    if (list && list.length > 0) {
+      return (
+        <ScrollLoad loadMore={this.loadMore}
+                    hasMore={!lastPage}
+                    isLoading={isFetching}
+                    loader={<div className=""></div>}>
+          <ul className="hb-list">
+            {list.map((item) => {
+              let {giftRecordId, nickName, headpic, giftAmount, giftGainedDate, giftType} = item;
+              giftAmount = (giftAmount / 100).toFixed(2);
+
+              //测试数据
+              nickName = nickName || '匿名';
+              headpic = headpic || 'http://img12.360buyimg.com/n2/jfs/t2812/46/1557908128/260742/4648595c/5742d02eN8d52b027.jpg';
+
+              return (
+                <li key={giftRecordId} className="row flex-items-middle">
+                  <div className="col-4">
+                    <img className="img-fluid img-circle" src={headpic} alt=""/>
+                  </div>
+                  <div className="col-13">
+                    <div className="text-truncate">{nickName}</div>
+                    <div className="text-muted f-sm">{perfect.formatDate(giftGainedDate)}</div>
+                  </div>
+
+                  {
+                    giftType === 'CASH' ? (
+                      <div className="col-7 text-right">
+                        {giftAmount}元
+                      </div>
+                    ) : (
+                      <div className="col-7 text-right">
+                        <div>中奖啦</div>
+                        <div className="text-warning"><i className="icon icon-champion"></i> 手气最佳</div>
+                      </div>
+                    )
+                  }
+                </li>
+              );
+            })}
+          </ul>
+        </ScrollLoad>
+      );
     }
   }
 
   /**
-   * 检测红包是否可以领取
-   * 红包状态对应的返回结果字段 json.data，状态有以下几种
+   * 根据红包状态码显示不同的进度条
    NEED_PAY 需要支付
    OK 可以
    RECEIVE_COMPLETE 红包被领取完成
@@ -34,117 +160,138 @@ class HongbaoDetail extends Component {
    FAIL 其他未知状态
    HAS_RECEIVE 已经领取过
    REDBAG_NOT_FOUND  红包不存在
+   * @type {Array}
    */
-  validateHongbao() {
-    const url = 'prepare/receive';
-    const {id} = this.props;
-    // id 表示红包 id
-    const body = {
-      identifier: id
-    };
-
-    callApi({url, body}).then(
-      ({json, response}) => {
-        const {status, user} = json.data;
-        if (HONGBAO_VALID_STATUS.indexOf(status) === -1) {
-          alert(1);
-        } else {
-          this.setState({
-            unpackModal: true,
-            hongbaoStatus: status,
-            user
-          });
-        }
-      },
-      (error) => {
-
-      }
-    );
-  }
-
-  // 拆开红包
-  unpack() {
-    const url = 'receive';
-    const {id} = this.props;
-    // id 表示红包 id
-    const body = {
-      identifier: id,
-      accountType: 'WALLET',
-      thirdAccId: Math.ceil(Math.random() * 1000000)
-    };
-
-    callApi({url, body}).then(
-      ({json, response}) => {
-        this.context.router.replace(`/hongbao/detail/view/${id}`);
-      },
-      (error) => {
-
-      }
-    );
-  }
-
-  hongbaoDetail() {
-    const {id} = this.props;
-    this.context.router.replace(`/hongbao/detail/view/${id}`);
-  }
-
-  modalBody() {
-    const {user, hongbaoStatus} = this.state;
-    const {face, nickname, title} = user || {};
-    return (
-      <div className="hb-ellipse-arc-mask">
-        <div className="hb-ellipse-arc-flat text-center">
-          <section className="m-t-2">
-            <div>
-              <img className="img-circle img-thumbnail hb-figure" src={face} alt=""/>
-            </div>
-            <div className="m-t-1">{nickname}</div>
-            <div>发了一个实物红包</div>
-          </section>
-          <h2 className="m-t-2">{hongbaoStatus === 'OK' ? (title || HONGBAO_TITLE) : '手慢了，红包派完了'}</h2>
-        </div>
-        {hongbaoStatus === 'OK' ?
-          (<div className="hb-btn-circle flex-items-middle flex-items-center" onTouchTap={this.unpack}>開</div>)
-          : null}
-
-        <div className="hb-luck-link" onTouchTap={this.hongbaoDetail}>
-          看看大家的手气
-        </div>
-      </div>
-    );
-  }
-
-  renderModal() {
-    const {unpackModal} = this.state;
-    let modal;
-    if (unpackModal) {
-      modal = (
-        <Modal
-          visible={unpackModal}
-          className="hb-modal"
-          bodyStyle={{height: '35rem'}}
-        >
-          {this.modalBody()}
-        </Modal>
-      );
+  /*eslint-disable indent*/
+  renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate}) {
+    const momeyText = giftNum - goodsNum > 0 ? `，${giftNum - goodsNum}个现金红包` : '';
+    switch (status) {
+      case 'OK': //领取中
+      case 'PAY_SUCC':
+        return (
+          <div className="m-l-1 text-muted">
+            已领取{giftGainedNum}/{giftNum}，共{goodsNum}个奖品{momeyText}。
+          </div>
+        );
+      case 'RECEIVE_COMPLETE':
+        return (
+          <div className="m-l-1 text-muted">共{goodsNum}个奖品{momeyText}。
+            {perfect.formatMillisecond(finishedDate - createdDate)}抢光
+          </div>
+        );
+      case 'EXPIRED':
+        return (
+          <div className="m-l-1 text-muted">共{goodsNum}个奖品{momeyText}。该红包已过期</div>
+        );
+      default:
+        return null;
     }
-    return modal;
+  }
+
+  //发起者和领取者
+  renderSelfInfo(selfInfo, status) {
+    //领取者
+    if (selfInfo) {
+      const {giftType, giftAmount} = selfInfo;
+      if (giftType === 'CASH') { //现金
+        return (
+          <div>
+            <div className="text-center text-primary">
+              <span className="hb-money">{(giftAmount / 100).toFixed(2)}</span> <span>元</span>
+            </div>
+            <div>
+              <Link to="/" className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</Link>
+            </div>
+          </div>
+        );
+      } else if (status === 'EXPIRED') {
+        return (
+          <div>
+            <div className="text-center text-muted">
+              <span className="hb-money">中奖啦</span>
+            </div>
+          </div>
+        );
+      }
+
+      return null;
+    }
+
+    return null;
   }
 
   render() {
-    const {unpacked} = this.state;
+    const {hongbaoInfo} = this.props;
 
-    if (unpacked) {
-      const {participantPagination, hongbaoInfo, hongbaoDetailAction, id} = this.props;
-      const infoProp = {participantPagination, hongbaoInfo, hongbaoDetailAction, id};
+    /**
+     skuId  String  商品SKU
+     skuName  String  商品名称
+     skuIcon  String  商品主图
+     createdDate  Long  红包创建时间
+     ownerHeadpic  String  红包发起者头像
+     ownerNickname  String  红包发起者昵称
+     title  String  红包标题
+     giftAmount  Long  本人领取的红包金额
+     goodsNum  Long  红包实物个数
+     giftNum  Long  红包礼品总个数
+     giftGainedNum  Long  红包礼品已领取个数
+     status  String  红包状态
+     */
+    let {
+      skuId, skuName, skuIcon, createdDate, finishedDate, ownerHeadpic, ownerNickname,
+      title, goodsNum, giftNum, giftGainedNum, status, selfInfo
+    } = hongbaoInfo;
+
+    title = title || '我发起了个实物和现金红包，快来抢啊！';
+
+    if (!skuId) {
       return (
-        <HongbaoInfo {...infoProp}/>
+        <Loading/>
       );
     }
 
     return (
       <article>
-        {this.renderModal()}
+        <section>
+          <div className="hb-single m-t-1 m-b-1">
+            <Link className="hb-link-block row flex-items-middle" to={`/product/detail/${skuId}`}>
+              <div className="col-4">
+                <img className="img-fluid" src={skuIcon} alt=""/>
+              </div>
+              <div className="col-16">
+                <div className="text-truncate">{skuName}</div>
+                <div className="text-muted f-sm">发起时间：{perfect.formatDate(createdDate)}</div>
+              </div>
+            </Link>
+          </div>
+
+          <div className="text-center m-t-3">
+            <div>
+              <img className="img-circle img-thumbnail hb-figure"
+                   src={ownerHeadpic} alt=""/>
+            </div>
+            <h3 className="m-t-2">{ownerNickname}的红包</h3>
+            <p className="text-muted">{title}</p>
+            {
+              this.renderSelfInfo(selfInfo, status)
+            }
+          </div>
+        </section>
+
+        <section className="m-t-3">
+          {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
+          {this.renderGainedList()}
+          <p className="text-center">
+            <i className="hb-logo"></i>
+          </p>
+        </section>
+        {
+          this.state.showFoot ? (
+            <div className="hb-footer text-center">
+              <Link className="hb-active-btn" to="/">发起实物红包</Link>
+            </div>
+          ) : null
+        }
       </article>
     );
   }
@@ -156,7 +303,7 @@ HongbaoDetail.contextTypes = {
 
 HongbaoDetail.propTypes = {
   id: PropTypes.string,
-  view: PropTypes.string,
+  thirdAccId: PropTypes.string,
   hongbaoInfo: PropTypes.object,
   participantPagination: PropTypes.object,
   hongbaoDetailAction: PropTypes.object,

@@ -62,7 +62,8 @@ function fetchUserInfo(body) {
       types: [USER_INFO_REQUEST, USER_INFO_SUCCESS, USER_INFO_FAILURE],
       url: 'user/info/index',
       schema: 'userInfo',
-      body
+      body,
+      loginVerify: false
     }
   };
 }

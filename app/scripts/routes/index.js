@@ -8,10 +8,13 @@ import Product from '../components/product/Product';
 import HongbaoDetailPage from '../containers/HongbaoDetailPage';
 import MyHongbaoPage from '../containers/MyHongbaoPage';
 import InitiatePage from '../containers/InitiatePage';
+import UnpackPage from '../containers/UnpackPage';
+
 import UserAddressList from '../components/userAddressList/'
 import AddAddress from '../components/addAddress/'
 import EditAddress from '../components/editAddress/'
 import SelectCity from '../components/selectCity/'
+
 // 注意嵌套路由应该是相对路径，不能写成据对路径
 export default (
   <Route path="/" component={App}>
@@ -23,8 +26,8 @@ export default (
       <Route path="detail/:view/:skuId" component={Product}/>
     </Route>
     <Route path="initiate" component={InitiatePage}/>
-    <Route path="hongbao/detail/:id" component={HongbaoDetailPage}/>
-    <Route path="hongbao/detail/:view/:id" component={HongbaoDetailPage}/>
+    <Route path="unpack/:id" component={UnpackPage}/>
+    <Route path="hongbao/detail/:id/:thirdAccId" component={HongbaoDetailPage}/>
     <Route path="my" component={MyHongbaoPage}/>
     <Route path="myaddress" component={UserAddressList}/>
     <Route path="addaddress" component={AddAddress}/>
@@ -32,11 +35,3 @@ export default (
     <Route path="selectcity" component={SelectCity}/>
   </Route>
 );
-
-//进入
-function enter() {
-}
-
-//离开
-function leave() {
-}

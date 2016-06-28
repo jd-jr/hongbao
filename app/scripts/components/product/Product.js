@@ -1,5 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import ProductSwiper from './ProductSwiper';
+import base64 from 'js-base64';
+import perfect from '../../utils/perfect'
+const {Base64} = base64;
 
 class Product extends Component {
   constructor(props, context) {
@@ -24,13 +27,13 @@ class Product extends Component {
   selectProduct() {
     const {productDetail} = this.props;
     const {skuName, skuId, bizPrice, indexImg} = productDetail;
-    this.context.router.push({
+    let detail = perfect.stringifyJSON({skuName, skuId, bizPrice, indexImg});
+    detail = Base64.encode(detail);
+    detail = encodeURIComponent(detail);
+    this.context.router.replace({
       pathname: '/',
       query: {
-        skuName,
-        skuId,
-        bizPrice,
-        indexImg
+        detail
       }
     });
   }
