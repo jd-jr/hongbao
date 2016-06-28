@@ -235,19 +235,6 @@ input:focus{
   top:14px;
   right: 10px;
 }
-.arrow-hollow-right:before {
-  content: "";
-  display: inline-block;
-  border: 1px solid transparent;
-  border-top: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-  -webkit-transform: rotate(45deg);
-  transform: rotate(45deg);
-  height: .7rem;
-  width: .7rem;
-  margin: 0 .5rem;
-}
-
 
 .sure-btn{
   display: block;
