@@ -94,6 +94,7 @@ class UserAddressList extends Component {
     if (item.addressDefault) {
       return;
     }
+    // TODO: 替换所有的jdPin 参数
     callApi({
       url: 'user/address/setdefault',
       body: {
@@ -228,8 +229,11 @@ class UserAddressList extends Component {
       this.generateOrder(item)
         .then(function (){
           that.context.router.push({
-            pathname:'/m-hongbao'
+            pathname:''
           })
+        }, function(err){
+          // TODO: 接口出错 没有同一提示吗?
+          alert(err)
         })
     } else {
       //提示
@@ -241,29 +245,29 @@ class UserAddressList extends Component {
     this.state.sureAction();
     this.toggleActionTipState();
   }
+  // TODO: gifRecordId 换成真实的参数
   generateOrder(item){
     var params = {
-      "giftRecordId":"9",
+      "gifRecordId":3181,
       "receiverName":item.name,
       "receiverPhone":item.mobile,
-      "receiverEmail":item.email,
+      "receiverEmail":item.email||'',
       "receiverProvinceCode":item.provinceId,
       "receiverProvinceName":item.provinceName,
 
       "receiverCityName":"收货人市区编码",
       "receiverCountryCode":"收货人区县编码",
       "receiverCountryName":"收货人区县名称",
-      "receiverAddresss":"收货人详细地址",
       "receiverZipCode":""
     }
     item.cityName&&(params.receiverCityName=item.cityName);
-    item.cityId&&(params.receiverCityName=item.cityId);
+    item.cityId&&(params.receiverCityCode=item.cityId);
     item.countyId&&(params.receiverCountryCode=item.countyId);
     item.countyName&&(params.receiverCountryName=item.countyName);
     item.townId&&(params.receiverTownCode=item.townId);
     item.townName&&(params.receiverTownName=item.townName);
 
-    item.fullAddress&&(params.receiverAddresss=item.fullAddress);
+    item.fullAddress&&(params.receiverAddress=item.fullAddress);
 
     return callApi({
       url:'giftRecordOrder/createOrderAddress',

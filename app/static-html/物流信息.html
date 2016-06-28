@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>订单跟踪</title>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="实物红包">
+  <meta name="description" content="实物红包">
+  <meta name="viewport"
+        content="width=device-width,initial-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="favicon.ico">
+
+  <link rel="stylesheet" href="../styles/main.css">
+  <style>
+    .order-info-panel{
+      padding: 15px 0 15px 20px;
+      background: #fff;
+    }
+    .new-order-flow {
+      margin-top: 20px;
+
+      border-left: 1px solid #ccc;
+    }
+
+    .new-order-arr {
+      position: absolute;
+      top: -4px;
+      left: -5px;
+      width: 9px;
+      height: 9px;
+      background: url(../img/icon.png) 0 -425px no-repeat;
+    }
+    .new-of-storey{
+      margin-left:-30px;
+    }
+    .new-of-storey li {
+      position: relative;
+      padding: 15px 10px;
+      border-bottom: 1px dotted #e8e5e5;
+    }
+
+    .new-of-storey li span {
+      display: block;
+      font-size: 14px;
+      color: #6e6e6e;
+    }
+
+    .new-of-storey li .icon {
+      position: absolute;
+      top: 42%;
+      left: -15px;
+      width: 9px;
+      height: 9px;
+      border-radius: 5px;
+      background-color: #ccc;
+    }
+
+    .new-of-storey li .icon.on {
+      background-color: #e4393c;
+    }
+
+    .new-order-map {
+      text-align: center;
+    }
+
+    .new-order .new-btn-area .new-tbl-cell {
+      background: none;
+    }
+
+    .new-order-details .new-btn-type-v1 {
+      position: absolute;
+      right: 10px;
+      width: 70px;
+      height: 22px;
+      line-height: 23px;
+      font-size: 12px;
+    }
+
+
+  </style>
+</head>
+<body>
+<div class="order-info-panel">
+  <div class="new-order-flow new-p-re">
+
+    <ul class="new-of-storey">
+      <li>
+        <span class="icon on"></span>
+        <span>感谢您在京东购物，欢迎您再次光临！&nbsp;&nbsp;张晓蕾</span>
+        <span>2015-11-09 17:36:50</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>您的订单在【京东集团自提点】上架完成，请上门自提&nbsp;&nbsp;张晓蕾</span>
+        <span>2015-11-08 08:52:52</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>您的订单在【北京马驹桥分拣中心】发货完成，准备送往【京东集团自提点】&nbsp;&nbsp;燕瑞民</span>
+        <span>2015-11-07 15:59:27</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>您的订单在【北京马驹桥分拣中心】分拣完成&nbsp;&nbsp;钟立琼</span>
+        <span>2015-11-07 14:03:17</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>打包成功&nbsp;&nbsp;京东打包员</span>
+        <span>2015-11-07 14:02:09</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>扫描员已经扫描&nbsp;&nbsp;张延城</span>
+        <span>2015-11-07 14:02:09</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>您的订单已经拣货完成&nbsp;&nbsp;岩温香</span>
+        <span>2015-11-07 13:45:07</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>您的订单已经打印完毕&nbsp;&nbsp;杨丽娜</span>
+        <span>2015-11-07 13:27:51</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>您的订单预计11月8日送达自提点&nbsp;&nbsp;系统</span>
+        <span>2015-11-07 12:02:24</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>您的订单已经进入京东北京1号库准备出库&nbsp;&nbsp;系统</span>
+        <span>2015-11-07 12:02:23</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>您的订单由于送货时间未到不能出库&nbsp;&nbsp;系统</span>
+        <span>2015-11-06 13:43:10</span>
+      </li>
+      <li>
+        <span class="icon"></span>
+        <span>您提交了订单，请等待系统确认&nbsp;&nbsp;客户</span>
+        <span>2015-11-06 13:24:13</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>
