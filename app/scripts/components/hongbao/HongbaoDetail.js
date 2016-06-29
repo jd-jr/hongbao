@@ -15,6 +15,7 @@ class HongbaoDetail extends Component {
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    this.refund = this.refund.bind(this);
     this.timeouter = null;
   }
 
@@ -24,7 +25,7 @@ class HongbaoDetail extends Component {
     let body = {
       identifier: id,
       accountType: 'WECHAT',
-      thirdAccId: 'otEnCjuG5nFAJt9q-8NmQx-Op7jc'
+      thirdAccId
     };
     hongbaoDetailAction.getHongbaoDetail(body);
 
@@ -90,6 +91,17 @@ class HongbaoDetail extends Component {
       identifier: id
     };
     hongbaoDetailAction.getParticipantList(body);
+  }
+
+  refund() {
+    const url = '';
+    const body = {};
+
+    callApi({url, body}).then(
+      ({json, response}) => {
+
+      }
+    );
   }
 
   //渲染获取者列表
@@ -179,33 +191,52 @@ class HongbaoDetail extends Component {
   //发起者和领取者
   renderSelfInfo(selfInfo, status) {
     //领取者
-    if (selfInfo) {
-      const {giftType, giftAmount} = selfInfo;
-      if (giftType === 'CASH') { //现金
-        return (
-          <div>
-            <div className="text-center text-primary">
-              <span className="hb-money">{(giftAmount / 100).toFixed(2)}</span> <span>元</span>
-            </div>
-            <div>
-              <Link to="/" className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</Link>
-            </div>
-          </div>
-        );
-      } else if (status === 'EXPIRED') {
-        return (
-          <div>
-            <div className="text-center text-muted">
-              <span className="hb-money">中奖啦</span>
-            </div>
-          </div>
-        );
-      }
+    /*    if (!selfInfo) {
+     const {giftType, giftAmount} = selfInfo;
+     if (giftType === 'CASH') { //现金
+     return (
+     <div>
+     <div className="text-center text-primary">
+     <span className="hb-money">{(giftAmount / 100).toFixed(2)}</span> <span>元</span>
+     </div>
+     <div>
+     <Link to="/my" className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</Link>
+     </div>
+     </div>
+     );
+     }
 
-      return null;
-    }
+     if (status === 'EXPIRED') {
+     return (
+     <div>
+     <div className="text-center text-muted">
+     <span className="hb-money">中奖啦</span>
+     </div>
+     </div>
+     );
+     }
 
-    return null;
+     return (
+     <div>
+     <div className="text-center">
+     <span className="hb-money text-primary">中奖啦</span>
+     </div>
+     <div>
+     <Link to="/myaddress" className="btn btn-primary btn-sm btn-arc">立即领奖</Link>
+     </div>
+     </div>
+     );
+     } else if (status === '') { //创建奖品者
+     <div>
+     <Link to="/myaddress" className="btn btn-primary btn-sm btn-arc">申请退款</Link>
+     </div>
+     }*/
+
+    return (
+      <div>
+        <button onTouchTap={this.refund} className="btn btn-primary btn-outline-primary btn-sm btn-arc">申请退款</button>
+      </div>
+    );
   }
 
   render() {
@@ -242,7 +273,7 @@ class HongbaoDetail extends Component {
       <article>
         <section>
           <div className="hb-single m-t-1 m-b-1">
-            <Link className="hb-link-block row flex-items-middle" to={`/product/detail/${skuId}`}>
+            <Link className="hb-link-block row flex-items-middle" to={`/product/detail/view/${skuId}`}>
               <div className="col-4">
                 <img className="img-fluid" src={skuIcon} alt=""/>
               </div>

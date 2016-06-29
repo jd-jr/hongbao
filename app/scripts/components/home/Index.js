@@ -114,7 +114,7 @@ class Home extends Component {
 
   //支付
   pay() {
-    const {indexActions} = this.props;
+    const {indexActions, thirdAccId} = this.props;
     const {skuId, giftNum, title, loadingStatus} = this.state;
     if (loadingStatus) {
       return;
@@ -133,7 +133,7 @@ class Home extends Component {
     };
 
     if (!deviceEnv.inJdWallet) {
-      body.thirdAccId = 'otEnCjuXgorSu0yCkWLZC4cuh5D0'
+      body.thirdAccId = thirdAccId
     }
 
     // 红包 id
@@ -321,6 +321,7 @@ Home.propTypes = {
   detail: PropTypes.string,
   indexActions: PropTypes.object,
   setClientInfo: PropTypes.func,
+  thirdAccId: PropTypes.string,
 };
 
 Home.contextTypes = {

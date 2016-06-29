@@ -25,7 +25,11 @@ class Product extends Component {
   }
 
   selectProduct() {
-    const {productDetail} = this.props;
+    const {productDetail, view} = this.props;
+    if (view === 'view') {
+      this.context.router.goBack();
+      return;
+    }
     const {skuName, skuId, bizPrice, indexImg} = productDetail;
     let detail = perfect.stringifyJSON({skuName, skuId, bizPrice, indexImg});
     detail = Base64.encode(detail);
@@ -73,15 +77,12 @@ class Product extends Component {
           </section>
         </article>
 
-        {
-          view !== 'view' ? (
-            <footer className="hb-footer-fixed">
-              <button className="btn btn-block btn-primary btn-lg btn-flat" onTouchTap={this.selectProduct}>
-                确认商品
-              </button>
-            </footer>
-          ) : null
-        }
+        <footer className="hb-footer-fixed">
+          <button className="btn btn-block btn-primary btn-lg btn-flat" onTouchTap={this.selectProduct}>
+            {view === 'view' ? '返回' : '确认商品'}
+          </button>
+        </footer>
+
       </div>
     );
   }

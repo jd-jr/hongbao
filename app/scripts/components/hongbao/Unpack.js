@@ -3,19 +3,6 @@ import Modal from 'reactjs-modal';
 import callApi from '../../fetch';
 import {HONGBAO_INVALID_STATUS, HONGBAO_TITLE} from '../../constants/common';
 
-//FIXME 测试数据
-const accountIds = [
-  'otEnCjuXgorSu0yCkWLZC4cuh5D0',
-  'otEnCjrz_3PMW-DZx_s2VnoKx6Cc',
-  'otEnCjmW191iFeVOb5Ft2uZXBeMo',
-  'otEnCju_FqhkHHdoCSvEF0y8PZ5I',
-  'otEnCjml8gOGmIfUBCX73kwHOOPY',
-  'otEnCjl9xilxOMUWliE9651mUGg8',
-  'otEnCjr7J1-9mhlGUyxQVtNxBGL0',
-  'otEnCjo1dD0xg37IJkONGYUKRAq4',
-  'otEnCjuG5nFAJt9q-8NmQx-Op7jc',
-  'otEnCjmfmUsNJnSvLQTB2B1K_dgI'];
-
 class Unpack extends Component {
   constructor(props, context) {
     super(props, context);
@@ -27,8 +14,6 @@ class Unpack extends Component {
     this.unpack = this.unpack.bind(this);
     this.hongbaoDetail = this.hongbaoDetail.bind(this);
 
-    //FIXME 测试数据
-    this.thirdAccId = null;
   }
 
   componentDidMount() {
@@ -51,20 +36,23 @@ class Unpack extends Component {
    */
   validateHongbao() {
     const url = 'prepare/receive';
-    const {id} = this.props;
-    this.thirdAccId = accountIds[Math.floor(Math.random() * 10)];
+    const {id, thirdAccId, indexActions} = this.props;
     // id 表示红包 id
     const body = {
       identifier: id,
       accountType: 'WECHAT',
-      thirdAccId: this.thirdAccId
+      thirdAccId
     };
 
     callApi({url, body}).then(
       ({json, response}) => {
         const {status, user} = json.data;
         if (HONGBAO_INVALID_STATUS.indexOf(status) !== -1) {
-          console.error('错误');
+          if (status === 'NEED_PAY') {
+            indexActions.setErrorMessage('该红包还未支付！');
+          } else {
+            indexActions.setErrorMessage('改红包不存在或已被删除');
+          }
         } else {
           this.setState({
             unpackModal: true,
@@ -82,23 +70,23 @@ class Unpack extends Component {
   // 拆开红包
   unpack() {
     const {hongbaoStatus} = this.state;
-    const {id} = this.props;
+    const {id, thirdAccId} = this.props;
     if (hongbaoStatus === 'HAS_RECEIVE') {
       //FIXME 线上环境换成 replace
-      this.context.router.push(`/hongbao/detail/${id}/${this.thirdAccId}`);
+      this.context.router.push(`/hongbao/detail/${id}/${thirdAccId}`);
       return;
     }
     const url = 'receive';
     const body = {
       identifier: id,
       accountType: 'WECHAT',
-      thirdAccId: this.thirdAccId
+      thirdAccId
     };
 
     callApi({url, body}).then(
       ({json, response}) => {
         //FIXME 线上环境换成 replace
-        this.context.router.push(`/hongbao/detail/${id}/${this.thirdAccId}`);
+        this.context.router.push(`/hongbao/detail/${id}/${thirdAccId}`);
       },
       (error) => {
 
@@ -107,8 +95,8 @@ class Unpack extends Component {
   }
 
   hongbaoDetail() {
-    const {id} = this.props;
-    this.context.router.push(`/hongbao/detail/${id}/${this.thirdAccId}`);
+    const {id, thirdAccId} = this.props;
+    this.context.router.push(`/hongbao/detail/${id}/${thirdAccId}`);
   }
 
   modalBody() {
@@ -204,6 +192,8 @@ Unpack.contextTypes = {
 
 Unpack.propTypes = {
   id: PropTypes.string,
+  thirdAccId: PropTypes.string,
+  indexActions: PropTypes.object
 };
 
 export default Unpack;

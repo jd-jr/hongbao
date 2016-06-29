@@ -14,11 +14,14 @@ import UserAddressList from '../components/userAddressList/'
 import AddAddress from '../components/addAddress/'
 import EditAddress from '../components/editAddress/'
 import SelectCity from '../components/selectCity/'
+import routeSetting from './routeSetting';
+const {enterHandler} = routeSetting;
 
 // 注意嵌套路由应该是相对路径，不能写成据对路径
 export default (
   <Route path="/" component={App}>
     <IndexRoute component={HomePage}/>
+    <Route path="authorize/:thirdAccId" component={HomePage}/>
     <Route path="sponsor" component={HomePage}/>
     <Route path="product" component={ProductPage}>
       <IndexRoute component={ProductList}/>
@@ -26,7 +29,9 @@ export default (
       <Route path="detail/:view/:skuId" component={Product}/>
     </Route>
     <Route path="initiate" component={InitiatePage}/>
-    <Route path="unpack/:id" component={UnpackPage}/>
+    <Route path="unpack/:id" component={UnpackPage} 
+           onEnter={() => enterHandler('detail')}/>
+    <Route path="unpack/:id/:thirdAccId" component={UnpackPage}/>
     <Route path="hongbao/detail/:id/:thirdAccId" component={HongbaoDetailPage}/>
     <Route path="my" component={MyHongbaoPage}/>
     <Route path="myaddress" component={UserAddressList}/>
