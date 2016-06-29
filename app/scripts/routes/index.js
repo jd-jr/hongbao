@@ -14,6 +14,7 @@ import UserAddressList from '../components/userAddressList/'
 import AddAddress from '../components/addAddress/'
 import EditAddress from '../components/editAddress/'
 import SelectCity from '../components/selectCity/'
+import Logistics from '../components/logisticsInfo/'
 import routeSetting from './routeSetting';
 const {enterHandler} = routeSetting;
 
@@ -34,9 +35,10 @@ export default (
     <Route path="unpack/:id/:thirdAccId" component={UnpackPage}/>
     <Route path="hongbao/detail/:id/:thirdAccId" component={HongbaoDetailPage}/>
     <Route path="my" component={MyHongbaoPage}/>
-    <Route path="myaddress" component={UserAddressList}/>
+    <Route path="myaddress/:skuId/:giftRecordId" component={UserAddressList}/>
     <Route path="addaddress" component={AddAddress}/>
     <Route path="editaddress/:index" component={EditAddress}/>
     <Route path="selectcity" component={SelectCity}/>
+    <Route path="ordertrack/:giftRecordId" component={Logistics}/>
   </Route>
 );
