@@ -173,7 +173,7 @@ class AddAddress extends Component {
   //新增操作
   sureAction() {
     var addressEntity = this.generateParams();
-    const {addUserAddress, updateUserAddress} = this.props;
+    const {addUserAddress, updateUserAddress, params} = this.props;
     var that = this;
     if (!this.checkCanSub()) {
       alert('信息不完整或有误');
@@ -194,9 +194,9 @@ class AddAddress extends Component {
         callApi({
           url: 'user/address/areastock',
           body: {
-            jdPin: "duobaodao3",
+            jdPin: 'duobaodao3',
             addressId: id,
-            skuId: '10001'//需要从store中获取
+            skuId: params.skuId//从url中获取
           }
         }).then(function (res) {
           var stock = res.json.data;

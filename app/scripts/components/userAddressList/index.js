@@ -94,7 +94,7 @@ class UserAddressList extends Component {
     if (item.addressDefault) {
       return;
     }
-    // TODO: 替换所有的jdPin 参数
+    // TODO: jdPin 不需要再传给服务端
     callApi({
       url: 'user/address/setdefault',
       body: {
@@ -247,8 +247,9 @@ class UserAddressList extends Component {
   }
   // TODO: gifRecordId 换成真实的参数
   generateOrder(item){
-    var params = {
-      "gifRecordId":3181,
+    const { params } = this.props;
+    var _ret = {
+      "gifRecordId": params.giftRecordId,
       "receiverName":item.name,
       "receiverPhone":item.mobile,
       "receiverEmail":item.email||'',
@@ -260,18 +261,18 @@ class UserAddressList extends Component {
       "receiverCountryName":"收货人区县名称",
       "receiverZipCode":""
     }
-    item.cityName&&(params.receiverCityName=item.cityName);
-    item.cityId&&(params.receiverCityCode=item.cityId);
-    item.countyId&&(params.receiverCountryCode=item.countyId);
-    item.countyName&&(params.receiverCountryName=item.countyName);
-    item.townId&&(params.receiverTownCode=item.townId);
-    item.townName&&(params.receiverTownName=item.townName);
+    item.cityName&&(_ret.receiverCityName=item.cityName);
+    item.cityId&&(_ret.receiverCityCode=item.cityId);
+    item.countyId&&(_ret.receiverCountryCode=item.countyId);
+    item.countyName&&(_ret.receiverCountryName=item.countyName);
+    item.townId&&(_ret.receiverTownCode=item.townId);
+    item.townName&&(_ret.receiverTownName=item.townName);
 
-    item.fullAddress&&(params.receiverAddress=item.fullAddress);
+    item.fullAddress&&(_ret.receiverAddress=item.fullAddress);
 
     return callApi({
       url:'giftRecordOrder/createOrderAddress',
-      body:params
+      body:_ret
     })
   }
 
