@@ -177,11 +177,11 @@ class EditAddress extends Component {
   //更新操作
   sureAction() {
     var addressEntity = this.generateParams();
-    const {updateUserAddress, params} = this.props;
+    const {updateUserAddress, params, indexActions} = this.props;
     var index = params.index;
     var that = this;
     if(!this.checkCanSub()){
-      alert('信息不完整或有误');
+      indexActions.setErrorMessage('信息不完整或有误')
       return;
     }
     callApi({
@@ -215,9 +215,10 @@ class EditAddress extends Component {
           updateUserAddress({index: 0, addedAddress})
         })
       }
-      that.context.router.push({
-        pathname: 'myaddress'
-      })
+      history.go(-1)
+    }, function (res){
+      var msg = res.json&&res.json.msg||'网络开小差了!';
+      indexActions.setErrorMessage(msg)
     })
 
   }

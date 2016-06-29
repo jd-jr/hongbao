@@ -173,10 +173,10 @@ class AddAddress extends Component {
   //新增操作
   sureAction() {
     var addressEntity = this.generateParams();
-    const {addUserAddress, updateUserAddress, params} = this.props;
+    const {addUserAddress, updateUserAddress, params,indexActions} = this.props;
     var that = this;
     if (!this.checkCanSub()) {
-      alert('信息不完整或有误');
+      indexActions.setErrorMessage('信息不完整或有误')
       return;
     }
     callApi({
@@ -214,6 +214,9 @@ class AddAddress extends Component {
       that.context.router.push({
         pathname: 'myaddress'
       })
+    }, function (res){
+      var msg = res.json&&res.json.msg||'网络开小差了!';
+      indexActions.setErrorMessage(msg)
     })
 
   }

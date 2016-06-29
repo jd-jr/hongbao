@@ -25,10 +25,10 @@ class UserAddressList extends Component {
   }
 
   componentDidMount() {
-    const {address, setUserAddressList} = this.props;
+    const {address, setUserAddressList, indexActions} = this.props;
     var that = this;
     //this.toggleTipState()
-    if(!address.length){
+    if (!address.length) {
       callApi({
         url: 'user/address/list',
         body: {
@@ -39,13 +39,16 @@ class UserAddressList extends Component {
         var list = res.json.data || []
         setUserAddressList(list)
         that.checkGoodsStock(list)
+      }, function (res){
+        var msg = res.json&&res.json.msg||'网络开小差了!';
+        indexActions.setErrorMessage(msg)
       })
     }
 
   }
 
   checkGoodsStock(list) {
-    const {setUserAddressList, updateUserAddress} = this.props;
+    const {setUserAddressList, updateUserAddress, indexActions } = this.props;
     var that = this;
     //检测收货地址
     list.forEach(function (item, index) {
@@ -90,7 +93,7 @@ class UserAddressList extends Component {
 
   //设置成默认地址
   setDefault(index, item) {
-    const {setDefaultAddress} = this.props;
+    const {setDefaultAddress, indexActions} = this.props;
     if (item.addressDefault) {
       return;
     }
@@ -104,6 +107,9 @@ class UserAddressList extends Component {
     }).then(function (res) {
       console.log(res, '=====-')
       setDefaultAddress(item.id);
+    }, function (res) {
+      var msg = res.json && res.json.msg || '网络开小差了!';
+      indexActions.setErrorMessage(msg)
     })
   }
 
@@ -140,8 +146,9 @@ class UserAddressList extends Component {
     })
   }
 
+  // TODO: 不再传递jdpin
   deleteAddress(index, item) {
-    const {deleteUserAddress} = this.props;
+    const {deleteUserAddress, indexActions} = this.props;
     callApi({
       url: 'user/address/delete',
       body: {
@@ -151,6 +158,9 @@ class UserAddressList extends Component {
     }).then(function (res) {
       console.log(res, '=====-')
       deleteUserAddress(index)
+    }, function (res) {
+      var msg = res.json && res.json.msg || '网络开小差了!';
+      indexActions.setErrorMessage(msg)
     })
   }
 
@@ -179,19 +189,19 @@ class UserAddressList extends Component {
 
     switch (type) {
       case 'SET_DFT':
-        callback = this.setDefault.bind(this,index, item)
+        callback = this.setDefault.bind(this, index, item)
         tipMsg = '确认将该地址设置成默认地址吗?'
         break;
       case 'DELETE':
-        callback = this.deleteAddress.bind(this,index, item);
+        callback = this.deleteAddress.bind(this, index, item);
         tipMsg = '确定删除该地址吗?'
         break;
       case 'USE':
-        if(!item.stock){
+        if (!item.stock) {
           this.toggleTipState();
           return;
         }
-        callback = this.sureUseAddress.bind(this,index, item);
+        callback = this.sureUseAddress.bind(this, index, item);
         tipMsg = '确定使用该地址吗?'
         break;
       default:
@@ -199,7 +209,7 @@ class UserAddressList extends Component {
     }
 
     this.setState({
-      actionTip:tipMsg,
+      actionTip: tipMsg,
       sureAction: callback
 
     })
@@ -224,62 +234,66 @@ class UserAddressList extends Component {
   //确定使用这个地址作为收货地址
   sureUseAddress(index, item) {
     var that = this;
+    const {indexActions} = this.props;
     if (item.stock) {
       //确定下单了??
       this.generateOrder(item)
-        .then(function (){
+        .then(function () {
           that.context.router.push({
-            pathname:''
+            pathname: ''
           })
-        }, function(err){
-          // TODO: 接口出错 没有同一提示吗?
-          alert(err)
+        }, function (res) {
+          var msg = res.json && res.json.msg || '网络开小差了!';
+          indexActions.setErrorMessage(msg)
+
         })
     } else {
       //提示
       this.toggleTipState();
     }
   }
+
   //点击确认按钮
-  sureAction(){
+  sureAction() {
     this.state.sureAction();
     this.toggleActionTipState();
   }
-  // TODO: gifRecordId 换成真实的参数
-  generateOrder(item){
-    const { params } = this.props;
+
+  generateOrder(item) {
+    const {params} = this.props;
     var _ret = {
       "gifRecordId": params.giftRecordId,
-      "receiverName":item.name,
-      "receiverPhone":item.mobile,
-      "receiverEmail":item.email||'',
-      "receiverProvinceCode":item.provinceId,
-      "receiverProvinceName":item.provinceName,
+      "receiverName": item.name,
+      "receiverPhone": item.mobile,
+      "receiverEmail": item.email || '',
+      "receiverProvinceCode": item.provinceId,
+      "receiverProvinceName": item.provinceName,
 
-      "receiverCityName":"收货人市区编码",
-      "receiverCountryCode":"收货人区县编码",
-      "receiverCountryName":"收货人区县名称",
-      "receiverZipCode":""
+      "receiverCityName": "收货人市区编码",
+      "receiverCountryCode": "收货人区县编码",
+      "receiverCountryName": "收货人区县名称",
+      "receiverZipCode": ""
     }
-    item.cityName&&(_ret.receiverCityName=item.cityName);
-    item.cityId&&(_ret.receiverCityCode=item.cityId);
-    item.countyId&&(_ret.receiverCountryCode=item.countyId);
-    item.countyName&&(_ret.receiverCountryName=item.countyName);
-    item.townId&&(_ret.receiverTownCode=item.townId);
-    item.townName&&(_ret.receiverTownName=item.townName);
+    item.cityName && (_ret.receiverCityName = item.cityName);
+    item.cityId && (_ret.receiverCityCode = item.cityId);
+    item.countyId && (_ret.receiverCountryCode = item.countyId);
+    item.countyName && (_ret.receiverCountryName = item.countyName);
+    item.townId && (_ret.receiverTownCode = item.townId);
+    item.townName && (_ret.receiverTownName = item.townName);
 
-    item.fullAddress&&(_ret.receiverAddress=item.fullAddress);
+    item.fullAddress && (_ret.receiverAddress = item.fullAddress);
 
     return callApi({
-      url:'giftRecordOrder/createOrderAddress',
-      body:_ret
+      url: 'giftRecordOrder/createOrderAddress',
+      body: _ret
     })
   }
 
   //等待补货
-  waitForGoods(){
+  waitForGoods() {
     this.toggleTipState()
   }
+
   render() {
     const {
       address
@@ -300,7 +314,8 @@ class UserAddressList extends Component {
             address.map(function (item, index) {
               return (
                 <div key={item.id}>
-                  <div className=" hb-bd-t row hb-bg-white item" onClick={that.showTipWhenAction.bind(that,'USE',index, item)}>
+                  <div className=" hb-bd-t row hb-bg-white item"
+                       onClick={that.showTipWhenAction.bind(that,'USE',index, item)}>
                     <div className="col-6 text-truncate">{item.name}</div>
                     <div className="col-10 ">{item.mobile}</div>
                     <div className="col-24 hb-gray-l-t address-text text-truncate-2">
@@ -310,7 +325,7 @@ class UserAddressList extends Component {
                   <div className="row hb-bg-white opt-item hb-bd-t hb-bd-b slt-radio-panel">
                     <i className="line-v"></i>
 
-                    <label forHtml="slt-circle0" onClick={that.setDefault.bind(that, index, item)}
+                    <label forHtml="slt-circle0" onClick={that.showTipWhenAction.bind(that,'SET_DFT', index, item)}
                            className={(item.addressDefault?'checked':'')+" col-3"}></label>
                     <span className="col-8 push-2 hb-gray-l-t"
                           onClick={that.showTipWhenAction.bind(that,'SET_DFT', index, item)}>设为默认</span>
@@ -318,7 +333,8 @@ class UserAddressList extends Component {
                     {that.showStock(item)}
 
                     <span className="col-4 text-center" onClick={that.editAddress.bind(that, index, item)}>编辑</span>
-                    <span className="col-4 text-center" onClick={that.showTipWhenAction.bind(that,'DELETE', index, item)}>删除</span>
+                    <span className="col-4 text-center"
+                          onClick={that.showTipWhenAction.bind(that,'DELETE', index, item)}>删除</span>
                   </div>
                 </div>
               );
@@ -355,8 +371,10 @@ class UserAddressList extends Component {
                 {this.state.actionTip}
               </div>
               <div className="btn-panel">
-                <a href="javascript:;" className="btn-cancel text-red tip-item hb-bd-r" onClick={this.toggleActionTipState.bind(this)}>取消</a>
-                <a href="javascript:;" className="btn-sure text-red tip-item" onClick={this.sureAction.bind(this)}>确定</a>
+                <a href="javascript:;" className="btn-cancel text-red tip-item hb-bd-r"
+                   onClick={this.toggleActionTipState.bind(this)}>取消</a>
+                <a href="javascript:;" className="btn-sure text-red tip-item"
+                   onClick={this.sureAction.bind(this)}>确定</a>
               </div>
             </div>
           </div>

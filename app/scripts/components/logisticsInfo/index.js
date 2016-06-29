@@ -30,7 +30,7 @@ class Logistics extends Component {
 
   componentDidMount() {
     var that = this;
-    const { params } = this.props;
+    const { params ,indexActions} = this.props;
     callApi({
       url:'http://10.13.84.211/redbag/giftRecordOrder/logistics',
       body:{
@@ -39,6 +39,9 @@ class Logistics extends Component {
     }).then(function (res){
       console.log(res.json, '===>')
       that.setState(res.json.data);
+    }, function (res){
+      var msg = res.json&&res.json.msg||'网络开小差了!';
+      indexActions.setErrorMessage(msg)
     })
   }
 

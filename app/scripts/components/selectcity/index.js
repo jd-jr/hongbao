@@ -62,7 +62,7 @@ class SelectCity extends Component{
     })
   }
   showNextList(item, e){
-    const { updateTmpUserAddress } = this.props;
+    const { updateTmpUserAddress , indexActions} = this.props;
     var that = this;
     var _index = this.state.type;
     var methodName = this.areaTypes[_index].search;
@@ -99,6 +99,9 @@ class SelectCity extends Component{
           window.history.go(-1)
         }
 
+      }, function (res){
+        var msg = res.json&&res.json.msg||'网络开小差了!';
+        indexActions.setErrorMessage(msg)
       })
   }
   componentWillUnMount(){
