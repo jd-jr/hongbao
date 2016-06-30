@@ -62,9 +62,16 @@ class SponsorHongbao extends Component {
 
   renderItem(item) {
     const {identifier, skuIcon, createdDate, amount, status, giftGainedNum, giftNum, goodNum} = item;
+    let {thirdAccId, accountType} = this.props;
+    accountType = accountType || perfect.getAccountType();
+    let link = `/hongbao/detail/${identifier}?accountType=${accountType}`;
+    if (thirdAccId) {
+      link += `&thirdAccId=${thirdAccId}`;
+    }
+
     return (
       <li key={identifier}>
-        <Link className="hb-link-block row flex-items-middle" to="/hongbao/detail/99d877579e94e5cf">
+        <Link to={link} className="hb-link-block row flex-items-middle">
           <div className="col-4">
             <img className="img-fluid" src={skuIcon} alt=""/>
           </div>

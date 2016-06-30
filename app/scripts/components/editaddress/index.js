@@ -10,7 +10,7 @@ import className from 'classnames'
 import {assign, keys} from 'lodash'
 import callApi from '../../fetch/'
 
-//require('./style.css');
+/*eslint-disable*/
 class EditAddress extends Component {
   constructor(props) {
     super(props);

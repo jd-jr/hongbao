@@ -10,7 +10,7 @@ import className from 'classnames'
 import {assign} from 'lodash'
 import callApi from '../../fetch/'
 
-//require('./style.css');
+/*eslint-disable*/
 class AddAddress extends Component {
   constructor(props) {
     super(props);

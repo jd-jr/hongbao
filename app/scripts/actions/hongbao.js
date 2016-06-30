@@ -28,7 +28,7 @@ function fetchHongbaoList(body, type) {
         entity: 'receivePagination',
         [CALL_API]: {
           types: [RECEIVE_REQUEST, RECEIVE_SUCCESS, RECEIVE_FAILURE],
-          url: 'gaingift/info',
+          url: body.lucky === 'LUCK' ? 'giftluck/info' : 'gaingift/info',
           schema: HongbaoSchemas.RECEIVE_LIST,
           body,
           paging: true,

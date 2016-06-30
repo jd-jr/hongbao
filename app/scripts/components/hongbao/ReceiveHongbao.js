@@ -70,6 +70,33 @@ class ReceiveHongbao extends Component {
   }
 
   /*eslint-disable indent*/
+  /**
+   * @param status
+   // 初始化
+   INIT("初始化"),
+   // 等待支付
+   WAIT_PAY("等待付款"),
+   // 支付成功
+   PAY_SUCC("支付成功"),
+   // 领取完成
+   RECEIVE_COMPLETE("领取完成"),
+   // 过期
+   EXPIRED("已过期"),
+   //已退款
+   REFUNDED("已退款"),
+   //禁止退款
+   FORBIDDEN_REFUND("禁止退款"),
+   //红包全额退款
+   REDBAGWHOLEREFUND("红包可全额退款"),
+   //只有现金被领取实物可全退
+   REDBAGGOODSREFOUND("红包实物可退款"),
+   //红包实物可转发
+   REDBAGGOODTRANSFER("红包实物可转发")
+   * @param giftAmount
+   * @param giftType
+   * @param skuIcon
+   * @returns {*}
+   */
   getStatus({status, giftAmount, giftType, skuIcon}) {
     if (giftType === 'CASH') {
       return (
@@ -80,30 +107,24 @@ class ReceiveHongbao extends Component {
     }
 
     switch (status) {
-      case 'RECEIVE_COMPLETE':
+      case 'PAY_SUCC':
         return (
           <div className="hb-img-text-thumb">
-            <img
-              src={skuIcon}
-              alt=""/>
+            <img src={skuIcon} alt=""/>
             <div className="label-text bg-primary">未领取</div>
           </div>
         );
-      case 'OK':
+      case 'RECEIVE_COMPLETE':
         return (
           <div className="hb-img-text-thumb">
-            <img
-              src="http://wx.qlogo.cn/mmopen/PiajxSqBRaEIYD5HN4ue4hkrr1p1DLzZxxXA5Nwf2UZWHkmyPGnV4x8An3ISaL668th37Ocic9vx7YX9WIaglcWA/0"
-              alt=""/>
+            <img src={skuIcon} alt=""/>
             <div className="label-text bg-info">已领取</div>
           </div>
         );
       case 'EXPIRED':
         return (
           <div className="hb-img-text-thumb">
-            <img
-              src="http://wx.qlogo.cn/mmopen/PiajxSqBRaEIYD5HN4ue4hkrr1p1DLzZxxXA5Nwf2UZWHkmyPGnV4x8An3ISaL668th37Ocic9vx7YX9WIaglcWA/0"
-              alt=""/>
+            <img src={skuIcon} alt=""/>
             <div className="label-text bg-muted">已过期</div>
           </div>
         );
@@ -113,11 +134,20 @@ class ReceiveHongbao extends Component {
   }
 
   renderItem(item) {
-    const {id, skuIcon, createdDate, giftAmount, status, giftType, thirdAccountUserInfoDtoList} = item;
-    const {nickName} = thirdAccountUserInfoDtoList || {};
+    let {identifier, skuIcon, createdDate, giftAmount, status, giftType, thirdAccountUserInfoDtoList} = item;
+    let nickName;
+    if (thirdAccountUserInfoDtoList && thirdAccountUserInfoDtoList.length > 0) {
+      nickName = thirdAccountUserInfoDtoList[0].nickName;
+    }
+    let {thirdAccId, accountType} = this.props;
+    accountType = accountType || perfect.getAccountType();
+    let link = `/hongbao/detail/${identifier}?accountType=${accountType}`;
+    if (thirdAccId) {
+      link += `&thirdAccId=${thirdAccId}`;
+    }
     return (
-      <li key={id}>
-        <Link className="hb-link-block row flex-items-middle" to="/hongbao/detail/view/99d877579e94e5cf">
+      <li key={identifier}>
+        <Link to={link} className="hb-link-block row flex-items-middle">
           <div className="col-18">
             <div className="text-truncate">{nickName}</div>
             <div className="text-muted f-sm">{perfect.formatDate(createdDate)}</div>

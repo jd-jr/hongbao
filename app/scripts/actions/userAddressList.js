@@ -17,14 +17,14 @@ export function setUserAddressList(state) {
   }
 }
 //设置成默认地址
-export function setDefaultAddress(id ){
+export function setDefaultAddress(id) {
   return {
     type: SET_DEFAULT_ADDRESS,
     id
   }
 }
 //删除用户收货地址
-export function deleteUserAddress( index ){
+export function deleteUserAddress(index) {
   return {
     type: DELETE_ADDRESS,
     index
@@ -32,39 +32,37 @@ export function deleteUserAddress( index ){
 }
 
 //新增用户收货地址
-export function addUserAddress(state ){
+export function addUserAddress(state) {
   return {
     type: ADD_USER_ADDRESS,
     state
   }
 }
 //更新用户收货地址
-export function updateUserAddress(state ){
+export function updateUserAddress(state) {
   return {
     type: UPDATE_USER_ADDRESS,
     state
   }
 }
 //初始化临时用户信息
-export function initTmpUserAddress( state ){
+export function initTmpUserAddress(state) {
   return {
     type: INIT_TMP_USER_ADDRESS,
     state
   }
 }
 //更新临时用户信息
-export function updateTmpUserAddress( state ){
+export function updateTmpUserAddress(state) {
   return {
-    type:UPDATE_TMP_USER_ADDRESS,
+    type: UPDATE_TMP_USER_ADDRESS,
     state
   }
 }
 //重置临时用户地址信息
-export function resetTmpUserAddress(){
+export function resetTmpUserAddress() {
   return {
     type: RESET_TMP_USER_ADDRESS
   }
 }
-
-
 

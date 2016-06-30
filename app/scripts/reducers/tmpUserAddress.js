@@ -3,6 +3,8 @@
  */
 import {UPDATE_TMP_USER_ADDRESS, INIT_TMP_USER_ADDRESS, RESET_TMP_USER_ADDRESS} from '../constants/AddressActionTypes';
 import { assign } from 'lodash'
+
+/*eslint-disable*/
 var resetTmp = {
   name: {
     val: '',
@@ -26,14 +28,11 @@ export default function tmpUserAddress(state = resetTmp, action) {
   switch (action.type) {
     case INIT_TMP_USER_ADDRESS:
       return action.state;
-      break;
     case UPDATE_TMP_USER_ADDRESS:
       return assign({}, state, action.state);
-      break;
     case RESET_TMP_USER_ADDRESS:
       return resetTmp;
     default:
       return state;
-      break;
   }
 };

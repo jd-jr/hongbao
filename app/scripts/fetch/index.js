@@ -59,6 +59,12 @@ function callApi({url, body = {}, options, loginVerify = true, needAuth}) {
     _body.auth = clientInfo.auth;
   }
 
+  Object.keys(_body).forEach((item) => {
+    if (_body[item] === null || _body[item] === undefined ||
+      _body[item] === 'null' || _body[item] === 'undefined') {
+      delete _body[item];
+    }
+  });
   _options.body = perfect.stringifyJSON(_body);
 
   return fetch(fullUrl, _options)

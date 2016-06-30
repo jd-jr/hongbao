@@ -154,7 +154,14 @@ App.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   const {query} = ownProps.location;
-  const {thirdAccId, accountType} = query || {};
+  let {thirdAccId, accountType} = query || {};
+  if (thirdAccId === 'undefined' || thirdAccId === 'null') {
+    thirdAccId = null;
+  }
+  if (accountType === 'undefined' || thirdAccId === 'null') {
+    accountType = null;
+  }
+
   const {caches, errorMessage} = state;
   return {
     caches,

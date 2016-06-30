@@ -13,7 +13,7 @@ import className from 'classnames'
 import * as actions from '../../actions/userAddressList'
 
 import callApi from '../../fetch/'
-
+/*eslint-disable*/
 class UserAddressList extends Component {
   constructor(props) {
     super(props);
