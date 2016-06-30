@@ -19,7 +19,8 @@ function fetchHongbaoList(body, type) {
           url: 'putout/info',
           schema: HongbaoSchemas.SPONSOR_LIST,
           body,
-          paging: true
+          paging: true,
+          needAuth: true
         }
       };
     case 'receive':
@@ -30,7 +31,8 @@ function fetchHongbaoList(body, type) {
           url: 'gaingift/info',
           schema: HongbaoSchemas.RECEIVE_LIST,
           body,
-          paging: true
+          paging: true,
+          needAuth: true
         }
       };
     default:
@@ -62,12 +64,13 @@ function fetchUserInfo(body) {
       types: [USER_INFO_REQUEST, USER_INFO_SUCCESS, USER_INFO_FAILURE],
       url: 'user/info/index',
       schema: 'userInfo',
-      body
+      body,
+      needAuth: true
     }
   };
 }
 
-export function getUserInfo(body) {
+export function getUserInfo(body = {}) {
   return (dispatch, getState) => {
     return dispatch(fetchUserInfo(body));
   };

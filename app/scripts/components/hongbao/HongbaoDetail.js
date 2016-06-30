@@ -43,7 +43,7 @@ class HongbaoDetail extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const {hongbaoInfo, participantPagination} = nextProps;
     const {list} = participantPagination;
-    if (hongbaoInfo.skuId && list && list.length > 0) {
+    if (hongbaoInfo.skuId && list) {
       return true;
     }
     return false;
@@ -209,8 +209,13 @@ class HongbaoDetail extends Component {
       );
     }
 
+    //如果为空，表示还没有领取
+    if (!selfInfo) {
+      return null;
+    }
+
     // 接收者
-    const {giftType, giftAmount} = selfInfo || {};
+    const {giftType, giftAmount} = selfInfo;
     /*eslint-disable no-else-return*/
     if (giftType === 'CASH') { //现金
       return (

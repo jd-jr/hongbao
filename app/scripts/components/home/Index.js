@@ -8,6 +8,7 @@ import Loading from '../../ui/Loading';
 import callApi from '../../fetch';
 import {HONGBAO_TITLE} from '../../constants/common';
 import perfect from '../../utils/perfect'
+import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
 
 const {Base64} = base64;
 
@@ -17,7 +18,6 @@ class Home extends Component {
     let {detail} = props;
     if (detail) {
       detail = decodeURIComponent(detail);
-      console.info(detail);
       detail = Base64.decode(detail);
       detail = perfect.parseJSON(detail);
     }
@@ -47,7 +47,14 @@ class Home extends Component {
   componentWillMount() {
     const fromLogin = location.href.indexOf('from=login');
     if (fromLogin !== -1) {
-      this.pay();
+      const title = getSessionStorage('hb_title');
+      const giftNum = getSessionStorage('hb_giftNum');
+      this.setState({
+        title,
+        giftNum
+      }, () => {
+        this.pay();
+      });
     }
   }
 
@@ -139,7 +146,7 @@ class Home extends Component {
     // 红包 id
     let identifier;
 
-    callApi({url, body}).then(
+    callApi({url, body, needAuth: true}).then(
       ({json, response}) => {
         identifier = json.data;
         const url = 'pay';
@@ -147,9 +154,13 @@ class Home extends Component {
           identifier,
           mystic
         };
-        return callApi({url, body});
+        return callApi({url, body, needAuth: true});
       },
       (error) => {
+        if (error.errorCode === 'RBF100300') {//未登录
+          setSessionStorage('hb_title', title);
+          setSessionStorage('hb_giftNum', giftNum);
+        }
         return Promise.reject(error);
       }
     ).then(
@@ -308,7 +319,7 @@ class Home extends Component {
         </article>
 
         <Help/>
-        <BottomNav type="sponsor" thirdAccId={thirdAccId} accountType={accountType} />
+        <BottomNav type="sponsor" thirdAccId={thirdAccId} accountType={accountType}/>
       </div>
     );
   }

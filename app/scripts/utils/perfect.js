@@ -202,6 +202,18 @@ const perfect = {
   },
 
   /**
+   * 如果图片没有设置 http 或 https，需要动态添加
+   * @param url
+   * @returns {*}
+   */
+  setUrlProtocol(url) {
+    if (url.indexOf('http') === 0) {
+      return url;
+    }
+    return location.protocol + url;
+  },
+
+  /**
    * 判断样式在浏览器中是否支持
    * @param styleProp
    * @returns {boolean}

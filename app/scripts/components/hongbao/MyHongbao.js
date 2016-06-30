@@ -72,9 +72,9 @@ class MyHongbao extends Component {
           </section>
           {type === 'receive' ?
             (<ReceiveHongbao hongbaoActions={hongbaoActions} receivePagination={receivePagination}
-                             userInfo={userInfo}/>) :
+                             userInfo={userInfo} thirdAccId={thirdAccId} accountType={accountType}/>) :
             (<SponsorHongbao hongbaoActions={hongbaoActions} sponsorPagination={sponsorPagination}
-                             userInfo={userInfo}/>)}
+                             userInfo={userInfo} thirdAccId={thirdAccId} accountType={accountType}/>)}
         </article>
 
         <BottomNav type="receive" thirdAccId={thirdAccId} accountType={accountType}/>

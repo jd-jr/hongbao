@@ -1,5 +1,6 @@
 import 'isomorphic-fetch';
 import assign from 'lodash/assign';
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import {URL_ROOT, JD_LOGIN_URL, QB_LOGIN_URL} from '../config';
 import perfect from '../utils/perfect';
 import {getSessionStorage} from '../utils/sessionStorage';
@@ -34,7 +35,7 @@ function checkStatus(response) {
  * @param loginVerify // 是否在该方法中校验登录
  * @returns {Promise.<TResult>}
  */
-function callApi({url, body = {}, options, loginVerify = true}) {
+function callApi({url, body = {}, options, loginVerify = true, needAuth}) {
   if (!url) {
     let error = new Error('请传入 url');
     error.errorCode = 0;
@@ -53,7 +54,11 @@ function callApi({url, body = {}, options, loginVerify = true}) {
   }
 
   let _options = assign({}, defaultOptions, options);
-  let _body = assign({}, {auth: clientInfo.auth}, body);
+  let _body = assign({}, body);
+  if (needAuth && deviceEnv.inJdWallet) {
+    _body.auth = clientInfo.auth;
+  }
+
   _options.body = perfect.stringifyJSON(_body);
 
   return fetch(fullUrl, _options)
@@ -62,7 +67,7 @@ function callApi({url, body = {}, options, loginVerify = true}) {
       response.json().then(json => ({json, response}))
     ).then(({json, response}) => {
       //未登录
-      if (response.ok && json.code === 'RBF100300') {
+      if (response.ok && json.code === 'RBF100300' && !deviceEnv.inJdWallet) {
         if (loginVerify) {
           let activeUrl = location.href;
           if (activeUrl.indexOf('?') !== -1) {

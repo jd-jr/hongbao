@@ -33,11 +33,10 @@ class ReceiveHongbao extends Component {
   }
 
   loadData() {
-    const {hongbaoActions} = this.props;
+    const {hongbaoActions, thirdAccId, accountType} = this.props;
     const body = {
-      requestNo: '1111',
-      accountType: 'WECHAT',
-      accountId: 'otEnCjuXgorSu0yCkWLZC4cuh5D0'
+      accountType: accountType || perfect.getAccountType(),
+      accountId: thirdAccId
     };
 
     if (this.state.type === 'luck') {
@@ -216,6 +215,8 @@ ReceiveHongbao.propTypes = {
   hongbaoActions: PropTypes.object,
   receivePagination: PropTypes.object,
   userInfo: PropTypes.object,
+  thirdAccId: PropTypes.string,
+  accountType: PropTypes.string,
 };
 
 export default ReceiveHongbao;

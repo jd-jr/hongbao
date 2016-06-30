@@ -10,7 +10,7 @@ import {MYSTIC_GIFT} from '../../config';
 class Initiate extends Component {
   constructor(props) {
     super(props);
-    const {status, skuIcon} = this.props;
+    let {status, skuIcon, mystic} = this.props;
     this.state = {
       success: status === 'true',
       visible: true,
@@ -21,6 +21,9 @@ class Initiate extends Component {
     this.onClose = this.onClose.bind(this);
     this.closeShareGuide = this.closeShareGuide.bind(this);
 
+    if (mystic === 'true') {
+      skuIcon = MYSTIC_GIFT;
+    }
     //设置分享图片
     if (deviceEnv.inJdWallet) {
       walletApi.shareIconURL(skuIcon, 'hongbao');
@@ -44,7 +47,7 @@ class Initiate extends Component {
     const urlRoot = prefect.getLocationRoot();
     let {identifier, title, skuName, skuIcon, mystic} = this.props;
     if (mystic === 'true') {
-      title = HONGBAO_MYSTIC;
+      skuName = HONGBAO_MYSTIC;
       skuIcon = MYSTIC_GIFT;
     }
     walletApi.share({
@@ -93,7 +96,7 @@ class Initiate extends Component {
             <div className="hb-ellipse-arc-mask">
               <div className="hb-ellipse-arc-flat flex-items-middle flex-items-center flex">
                 <div>
-                  <h2>红包已包好</h2>
+                  <h2 className="h1">红包已包好</h2>
                   <h4>实物和现金红包</h4>
                 </div>
               </div>

@@ -12,11 +12,10 @@ class SponsorHongbao extends Component {
   }
 
   componentDidMount() {
-    const {hongbaoActions} = this.props;
+    const {hongbaoActions, thirdAccId, accountType} = this.props;
     const body = {
-      requestNo: '444',
-      accountType: 'WECHAT',
-      accountId: 'otEnCjuXgorSu0yCkWLZC4cuh5D0'
+      accountType: accountType || perfect.getAccountType(),
+      accountId: thirdAccId
     };
 
     hongbaoActions.getHongbaoList(body, 'sponsor');
@@ -62,10 +61,10 @@ class SponsorHongbao extends Component {
   }
 
   renderItem(item) {
-    const {id, skuIcon, createdDate, amount, status, giftGainedNum, giftNum, goodNum} = item;
+    const {identifier, skuIcon, createdDate, amount, status, giftGainedNum, giftNum, goodNum} = item;
     return (
-      <li key={id}>
-        <Link className="hb-link-block row flex-items-middle" to="/hongbao/detail/view/99d877579e94e5cf">
+      <li key={identifier}>
+        <Link className="hb-link-block row flex-items-middle" to="/hongbao/detail/99d877579e94e5cf">
           <div className="col-4">
             <img className="img-fluid" src={skuIcon} alt=""/>
           </div>
@@ -120,6 +119,9 @@ class SponsorHongbao extends Component {
     const {giftAndThirdAccUserInfoDto, redbagAssemblyRetDto} = userInfo;
     let {nickName, headpic} = (giftAndThirdAccUserInfoDto || {});
     let {putOutNum, putOutAmount} = (redbagAssemblyRetDto || {});
+    if (putOutAmount === undefined) {
+      putOutAmount = 0;
+    }
 
     return (
       <div>
@@ -151,6 +153,8 @@ SponsorHongbao.propTypes = {
   hongbaoActions: PropTypes.object,
   sponsorPagination: PropTypes.object,
   userInfo: PropTypes.object,
+  thirdAccId: PropTypes.string,
+  accountType: PropTypes.string,
 };
 
 export default SponsorHongbao;
