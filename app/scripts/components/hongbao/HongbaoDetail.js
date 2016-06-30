@@ -21,16 +21,16 @@ class HongbaoDetail extends Component {
 
   componentDidMount() {
     //加载红包详情
-    const {hongbaoDetailAction, id, thirdAccId} = this.props;
+    const {hongbaoDetailAction, identifier, thirdAccId, accountType} = this.props;
     let body = {
-      identifier: id,
-      accountType: 'WECHAT',
+      identifier,
+      accountType: accountType || perfect.getAccountType(),
       thirdAccId
     };
     hongbaoDetailAction.getHongbaoDetail(body);
 
     body = {
-      identifier: id
+      identifier
     };
     hongbaoDetailAction.getParticipantList(body);
 
@@ -86,9 +86,9 @@ class HongbaoDetail extends Component {
 
   loadMore() {
     //加载红包详情
-    const {hongbaoDetailAction, id, thirdAccId} = this.props;
+    const {hongbaoDetailAction, identifier} = this.props;
     const body = {
-      identifier: id
+      identifier
     };
     hongbaoDetailAction.getParticipantList(body);
   }
@@ -188,55 +188,64 @@ class HongbaoDetail extends Component {
     }
   }
 
-  //发起者和领取者
-  renderSelfInfo(selfInfo, status) {
-    //领取者
-    /*    if (!selfInfo) {
-     const {giftType, giftAmount} = selfInfo;
-     if (giftType === 'CASH') { //现金
-     return (
-     <div>
-     <div className="text-center text-primary">
-     <span className="hb-money">{(giftAmount / 100).toFixed(2)}</span> <span>元</span>
-     </div>
-     <div>
-     <Link to="/my" className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</Link>
-     </div>
-     </div>
-     );
-     }
+  /**
+   * 发起者和领取者
+   * @param selfInfo
+   * @param status
+   * @param giftRecordId
+   * @param skuId
+   * @param redbagSelf 红包是否为该用户发起(是：true；否：false)
+   * @param refundStatus 红包退款状态 (红包非该用户发起时，该字段为null；红包为该用户发起时，
+   * 该字段定义如下； ALLOW_REFUND：允许退款 FORBIDDEN_REFUND：禁止退款)
+   * @returns {XML}
+   */
+  renderSelfInfo({selfInfo, status, giftRecordId, skuId, redbagSelf, refundStatus}) {
+    //发起者
+    if (redbagSelf) {
+      return (
+        <div>
+          <button onTouchTap={this.refund} className="btn btn-primary btn-outline-primary btn-sm btn-arc">申请退款</button>
+        </div>
+      );
+    }
 
-     if (status === 'EXPIRED') {
-     return (
-     <div>
-     <div className="text-center text-muted">
-     <span className="hb-money">中奖啦</span>
-     </div>
-     </div>
-     );
-     }
+    // 接收者
+    const {giftType, giftAmount} = selfInfo || {};
+    /*eslint-disable no-else-return*/
+    if (giftType === 'CASH') { //现金
+      return (
+        <div>
+          <div className="text-center text-primary">
+            <span className="hb-money">{(giftAmount / 100).toFixed(2)}</span> <span>元</span>
+          </div>
+          <div>
+            <Link to="/my" className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</Link>
+          </div>
+        </div>
+      );
+    } else { // 实物
+      if (status === 'EXPIRED') {
+        return (
+          <div>
+            <div className="text-center text-muted">
+              <span className="hb-money">中奖啦</span>
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <div className="text-center">
+              <span className="hb-money text-primary">中奖啦</span>
+            </div>
+            <div>
+              <Link to={`/myaddress/${skuId}/${giftRecordId}`} className="btn btn-primary btn-sm btn-arc">立即领奖</Link>
+            </div>
+          </div>
+        );
+      }
+    }
 
-     return (
-     <div>
-     <div className="text-center">
-     <span className="hb-money text-primary">中奖啦</span>
-     </div>
-     <div>
-     <Link to="/myaddress" className="btn btn-primary btn-sm btn-arc">立即领奖</Link>
-     </div>
-     </div>
-     );
-     } else if (status === '') { //创建奖品者
-     <div>
-     <Link to="/myaddress" className="btn btn-primary btn-sm btn-arc">申请退款</Link>
-     </div>
-     }*/
-
-    return (
-      <div>
-        <button onTouchTap={this.refund} className="btn btn-primary btn-outline-primary btn-sm btn-arc">申请退款</button>
-      </div>
-    );
   }
 
   render() {
@@ -258,7 +267,7 @@ class HongbaoDetail extends Component {
      */
     let {
       skuId, skuName, skuIcon, createdDate, finishedDate, ownerHeadpic, ownerNickname,
-      title, goodsNum, giftNum, giftGainedNum, status, selfInfo
+      title, goodsNum, giftNum, giftGainedNum, status, selfInfo, redbagSelf, refundStatus
     } = hongbaoInfo;
 
     title = title || '我发起了个实物和现金红包，快来抢啊！';
@@ -268,6 +277,8 @@ class HongbaoDetail extends Component {
         <Loading/>
       );
     }
+
+    const {giftRecordId} = selfInfo || {};
 
     return (
       <article>
@@ -292,7 +303,7 @@ class HongbaoDetail extends Component {
             <h3 className="m-t-2">{ownerNickname}的红包</h3>
             <p className="text-muted">{title}</p>
             {
-              this.renderSelfInfo(selfInfo, status)
+              this.renderSelfInfo({selfInfo, status, giftRecordId, skuId, redbagSelf, refundStatus})
             }
           </div>
         </section>
@@ -321,8 +332,9 @@ HongbaoDetail.contextTypes = {
 };
 
 HongbaoDetail.propTypes = {
-  id: PropTypes.string,
+  identifier: PropTypes.string,
   thirdAccId: PropTypes.string,
+  accountType: PropTypes.string,
   hongbaoInfo: PropTypes.object,
   participantPagination: PropTypes.object,
   hongbaoDetailAction: PropTypes.object,

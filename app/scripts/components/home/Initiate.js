@@ -4,8 +4,8 @@ import prefect from '../../utils/perfect';
 import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import {HONGBAO_TITLE, HONGBAO_MYSTIC} from '../../constants/common';
-import {getSessionStorage, removeSessionStorage} from '../../utils/sessionStorage';
 import weixinShareGuide from '../../../images/weixin-share-guide.png';
+import {MYSTIC_GIFT} from '../../config';
 
 class Initiate extends Component {
   constructor(props) {
@@ -27,7 +27,6 @@ class Initiate extends Component {
     }
   }
 
-
   //发红包
   sponsor() {
     if (deviceEnv.inWx) {
@@ -40,19 +39,13 @@ class Initiate extends Component {
     }
   }
 
-  componentWillUnmout() {
-    removeSessionStorage('mysterious');
-  }
-
   share() {
     //调起分享
     const urlRoot = prefect.getLocationRoot();
-    let {identifier, title, skuName, skuIcon} = this.props;
-    const mysterious = getSessionStorage('mysterious');
-    //FIXME 待设置神秘图片
-    if (mysterious === 'true') {
+    let {identifier, title, skuName, skuIcon, mystic} = this.props;
+    if (mystic === 'true') {
       title = HONGBAO_MYSTIC;
-      skuIcon = '';
+      skuIcon = MYSTIC_GIFT;
     }
     walletApi.share({
       url: `${urlRoot}unpack/${identifier}`,
@@ -150,6 +143,7 @@ Initiate.propTypes = {
   identifier: PropTypes.string,
   status: PropTypes.string,
   skuIcon: PropTypes.string,
+  mystic: PropTypes.string
 };
 
 Initiate.contextTypes = {

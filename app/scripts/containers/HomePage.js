@@ -3,8 +3,8 @@ import Home from '../components/home';
 
 function mapStateToProps(state, ownProps) {
   const {query} = ownProps.location;
-  const {thirdAccId} = ownProps.params;
-  return {thirdAccId, ...query};
+  const {detail} = query || {};
+  return {detail};
 }
 
 export default connect(mapStateToProps)(Home);

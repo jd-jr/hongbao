@@ -21,8 +21,8 @@ const {enterHandler} = routeSetting;
 // 注意嵌套路由应该是相对路径，不能写成据对路径
 export default (
   <Route path="/" component={App}>
-    <IndexRoute component={HomePage}/>
-    <Route path="authorize/:thirdAccId" component={HomePage}/>
+    <IndexRoute component={HomePage}
+                onEnter={() => enterHandler('home')}/>
     <Route path="sponsor" component={HomePage}/>
     <Route path="product" component={ProductPage}>
       <IndexRoute component={ProductList}/>
@@ -30,10 +30,9 @@ export default (
       <Route path="detail/:view/:skuId" component={Product}/>
     </Route>
     <Route path="initiate" component={InitiatePage}/>
-    <Route path="unpack/:id" component={UnpackPage} 
-           onEnter={() => enterHandler('detail')}/>
-    <Route path="unpack/:id/:thirdAccId" component={UnpackPage}/>
-    <Route path="hongbao/detail/:id/:thirdAccId" component={HongbaoDetailPage}/>
+    <Route path="unpack/:identifier" component={UnpackPage}
+           onEnter={() => enterHandler('unpack')}/>
+    <Route path="hongbao/detail/:identifier" component={HongbaoDetailPage}/>
     <Route path="my" component={MyHongbaoPage}/>
     <Route path="myaddress/:skuId/:giftRecordId" component={UserAddressList}/>
     <Route path="addaddress" component={AddAddress}/>

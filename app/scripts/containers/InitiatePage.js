@@ -4,14 +4,15 @@ import Initiate from '../components/home/Initiate';
 
 function mapStateToProps(state, ownProps) {
   const {query} = ownProps.location;
-  const {identifier, title, skuName, status, skuIcon} = query;
+  const {identifier, title, skuName, status, skuIcon, mystic} = query;
 
   return {
     identifier,
     title,
     skuName,
     status,
-    skuIcon
+    skuIcon,
+    mystic
   };
 }
 

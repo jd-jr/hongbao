@@ -4,11 +4,10 @@ import Unpack from '../components/hongbao/Unpack';
 
 
 function mapStateToProps(state, ownProps) {
-  const {id, thirdAccId} = ownProps.params;
+  const {identifier} = ownProps.params;
 
   return {
-    id,
-    thirdAccId
+    identifier
   };
 }
 

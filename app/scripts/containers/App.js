@@ -120,7 +120,7 @@ class App extends Component {
 
   render() {
     const {
-      children, location, caches, cacheActions, errorMessage, indexActions
+      children, location, caches, cacheActions, errorMessage, indexActions, thirdAccId, accountType
     } = this.props;
 
     return (
@@ -132,7 +132,9 @@ class App extends Component {
           cacheActions,
           errorMessage,
           indexActions,
-          setClientInfo: this.setClientInfo
+          setClientInfo: this.setClientInfo,
+          thirdAccId,
+          accountType
         })}
       </div>
     );
@@ -145,14 +147,20 @@ App.propTypes = {
   cacheActions: PropTypes.object,
   caches: PropTypes.object,
   errorMessage: PropTypes.string,
-  indexActions: PropTypes.object
+  indexActions: PropTypes.object,
+  thirdAccId: PropTypes.string,
+  accountType: PropTypes.string,
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  const {query} = ownProps.location;
+  const {thirdAccId, accountType} = query || {};
   const {caches, errorMessage} = state;
   return {
     caches,
-    errorMessage
+    errorMessage,
+    thirdAccId,
+    accountType
   };
 }
 

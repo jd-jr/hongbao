@@ -8,7 +8,6 @@ import Loading from '../../ui/Loading';
 import callApi from '../../fetch';
 import {HONGBAO_TITLE} from '../../constants/common';
 import perfect from '../../utils/perfect'
-import {setSessionStorage, removeSessionStorage} from '../../utils/sessionStorage';
 
 const {Base64} = base64;
 
@@ -18,6 +17,7 @@ class Home extends Component {
     let {detail} = props;
     if (detail) {
       detail = decodeURIComponent(detail);
+      console.info(detail);
       detail = Base64.decode(detail);
       detail = perfect.parseJSON(detail);
     }
@@ -35,7 +35,7 @@ class Home extends Component {
       payDataReady: false,
       loadingStatus: false,
       checked: true, //同意条款
-      mystery: false // 是否为神秘奖品
+      mystic: false // 是否为神秘奖品
     };
     this.selectProduct = this.selectProduct.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -89,9 +89,9 @@ class Home extends Component {
   }
 
   handleMystery() {
-    const {mystery} = this.state;
+    const {mystic} = this.state;
     this.setState({
-      mystery: !mystery
+      mystic: !mystic
     });
   }
 
@@ -114,8 +114,8 @@ class Home extends Component {
 
   //支付
   pay() {
-    const {indexActions, thirdAccId} = this.props;
-    const {skuId, giftNum, title, loadingStatus} = this.state;
+    const {indexActions, thirdAccId, accountType} = this.props;
+    const {skuId, giftNum, title, loadingStatus, mystic} = this.state;
     if (loadingStatus) {
       return;
     }
@@ -129,7 +129,7 @@ class Home extends Component {
       skuId,
       giftNum,
       title: title || HONGBAO_TITLE,
-      accountType: perfect.getAccountType()
+      accountType: accountType || perfect.getAccountType()
     };
 
     if (!deviceEnv.inJdWallet) {
@@ -144,7 +144,8 @@ class Home extends Component {
         identifier = json.data;
         const url = 'pay';
         const body = {
-          identifier
+          identifier,
+          mystic
         };
         return callApi({url, body});
       },
@@ -159,11 +160,6 @@ class Home extends Component {
           payDataReady: true,
           loadingStatus: false
         }, () => {
-          if (this.state.mystery) {
-            setSessionStorage('mysterious', 'true');
-          } else {
-            removeSessionStorage('mysterious');
-          }
           this.refs.h5PayForm.submit();
         });
       },
@@ -222,8 +218,9 @@ class Home extends Component {
   }
 
   render() {
-    let {giftNum, title, bizPrice, skuName, indexImg, selecting, checked, loadingStatus, mystery} = this.state;
+    let {giftNum, title, bizPrice, skuName, indexImg, selecting, checked, loadingStatus, mystic} = this.state;
 
+    const {thirdAccId, accountType} = this.props;
     bizPrice = (bizPrice / 100).toFixed(2);
 
     return (
@@ -264,7 +261,7 @@ class Home extends Component {
                     </div>
                   </div>
                   <p className="f-xs m-l-1 text-muted">
-                    <i className={`hb-radio${mystery ? ' checked' : ''}`} onTouchTap={this.handleMystery}></i>
+                    <i className={`hb-radio${mystic ? ' checked' : ''}`} onTouchTap={this.handleMystery}></i>
                     隐藏实物图片和名称，给小伙伴们发神秘奖品
                   </p>
                 </div>
@@ -311,7 +308,7 @@ class Home extends Component {
         </article>
 
         <Help/>
-        <BottomNav type="sponsor"/>
+        <BottomNav type="sponsor" thirdAccId={thirdAccId} accountType={accountType} />
       </div>
     );
   }
@@ -322,6 +319,7 @@ Home.propTypes = {
   indexActions: PropTypes.object,
   setClientInfo: PropTypes.func,
   thirdAccId: PropTypes.string,
+  accountType: PropTypes.string,
 };
 
 Home.contextTypes = {

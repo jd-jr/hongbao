@@ -36,11 +36,11 @@ class Unpack extends Component {
    */
   validateHongbao() {
     const url = 'prepare/receive';
-    const {id, thirdAccId, indexActions} = this.props;
+    const {identifier, thirdAccId, accountType, indexActions} = this.props;
     // id 表示红包 id
     const body = {
-      identifier: id,
-      accountType: 'WECHAT',
+      identifier,
+      accountType,
       thirdAccId
     };
 
@@ -70,23 +70,33 @@ class Unpack extends Component {
   // 拆开红包
   unpack() {
     const {hongbaoStatus} = this.state;
-    const {id, thirdAccId} = this.props;
+    const {identifier, thirdAccId, accountType} = this.props;
     if (hongbaoStatus === 'HAS_RECEIVE') {
-      //FIXME 线上环境换成 replace
-      this.context.router.push(`/hongbao/detail/${id}/${thirdAccId}`);
+      this.context.router.replace({
+        pathname: `/hongbao/detail/${identifier}`,
+        query: {
+          thirdAccId,
+          accountType
+        }
+      });
       return;
     }
     const url = 'receive';
     const body = {
-      identifier: id,
-      accountType: 'WECHAT',
+      identifier,
+      accountType,
       thirdAccId
     };
 
     callApi({url, body}).then(
       ({json, response}) => {
-        //FIXME 线上环境换成 replace
-        this.context.router.push(`/hongbao/detail/${id}/${thirdAccId}`);
+        this.context.router.replace({
+          pathname: `/hongbao/detail/${identifier}`,
+          query: {
+            thirdAccId,
+            accountType
+          }
+        });
       },
       (error) => {
 
@@ -95,8 +105,14 @@ class Unpack extends Component {
   }
 
   hongbaoDetail() {
-    const {id, thirdAccId} = this.props;
-    this.context.router.push(`/hongbao/detail/${id}/${thirdAccId}`);
+    const {identifier, thirdAccId, accountType} = this.props;
+    this.context.router.replace({
+      pathname: `/hongbao/detail/${identifier}`,
+      query: {
+        thirdAccId,
+        accountType
+      }
+    });
   }
 
   modalBody() {
@@ -191,9 +207,10 @@ Unpack.contextTypes = {
 };
 
 Unpack.propTypes = {
-  id: PropTypes.string,
+  identifier: PropTypes.string,
+  indexActions: PropTypes.object,
   thirdAccId: PropTypes.string,
-  indexActions: PropTypes.object
+  accountType: PropTypes.string,
 };
 
 export default Unpack;

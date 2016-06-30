@@ -223,6 +223,16 @@ const perfect = {
     return false;
   },
 
+  /**
+   * 返回 requestNo
+   * 算法：前面部分为转换后十六进制的时间戳毫秒值，后面部分为转换后十六进制的随机值
+   */
+  getRequestNo() {
+    const time = new Date().getTime().toString(16);
+    const random = Math.ceil(Math.random() * 100000).toString(16);
+    return time + random;
+  },
+
   getAccountType() {
     if (deviceEnv.inJdWallet) {
       return 'WALLET';

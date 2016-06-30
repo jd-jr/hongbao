@@ -13,7 +13,6 @@ class ReceiveHongbao extends Component {
   }
 
   componentDidMount() {
-    this.adjustArrow();
     this.loadData();
   }
 
@@ -29,13 +28,16 @@ class ReceiveHongbao extends Component {
     return false;
   }
 
+  componentDidUpdate(nextProps, nextState) {
+    this.adjustArrow();
+  }
 
   loadData() {
     const {hongbaoActions} = this.props;
     const body = {
       requestNo: '1111',
       accountType: 'WECHAT',
-      accountId: '123456'
+      accountId: 'otEnCjuXgorSu0yCkWLZC4cuh5D0'
     };
 
     if (this.state.type === 'luck') {
@@ -150,13 +152,16 @@ class ReceiveHongbao extends Component {
     }
 
     return (
-      <ul className="hb-list">
-        {
-          list ? list.map((item) => {
-            return this.renderItem(item);
-          }) : null
-        }
-      </ul>
+      <section className="m-t-1">
+        <div className="arrow-hollow-top hb-arrows-active" ref="arrow"></div>
+        <ul className="hb-list">
+          {
+            list ? list.map((item) => {
+              return this.renderItem(item);
+            }) : null
+          }
+        </ul>
+      </section>
     );
   }
 
@@ -197,10 +202,7 @@ class ReceiveHongbao extends Component {
             <div className="h1" ref="luckHb">{gainGoodNum}</div>
           </div>
         </section>
-        <section className="m-t-1">
-          <div className="arrow-hollow-top hb-arrows-active" ref="arrow"></div>
-          {this.renderList()}
-        </section>
+        {this.renderList()}
       </div>
     );
   }

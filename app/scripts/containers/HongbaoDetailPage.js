@@ -9,7 +9,7 @@ import * as hongbaoDetailAction from '../actions/hongbaoDetail';
 const entitykeys = ['participantPagination'];
 
 function mapStateToProps(state, ownProps) {
-  const {id, thirdAccId} = ownProps.params;
+  const {identifier} = ownProps.params;
 
   const {
     hongbaoDetail,
@@ -32,8 +32,7 @@ function mapStateToProps(state, ownProps) {
   });
 
   let objects = {
-    id,
-    thirdAccId,
+    identifier,
     hongbaoInfo: hongbaoInfo || {}
   };
 

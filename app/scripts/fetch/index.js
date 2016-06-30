@@ -70,6 +70,7 @@ function callApi({url, body = {}, options, loginVerify = true}) {
           } else {
             activeUrl += '?from=login';
           }
+          activeUrl = encodeURIComponent(activeUrl);
           location.href = JD_LOGIN_URL + encodeURIComponent(QB_LOGIN_URL + activeUrl);
         }
         let error = new Error(json.msg);

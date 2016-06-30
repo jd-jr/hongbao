@@ -4,6 +4,7 @@ import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import BottomNav from '../BottomNav';
 import ReceiveHongbao from './ReceiveHongbao';
 import SponsorHongbao from './SponsorHongbao';
+import perfect from '../../utils/perfect';
 
 class MyHongbao extends Component {
   constructor(props, context) {
@@ -29,11 +30,10 @@ class MyHongbao extends Component {
   }
 
   loadData() {
-    const {hongbaoActions} = this.props;
+    const {hongbaoActions, thirdAccId, accountType} = this.props;
     const body = {
-      requestNo: '444',
-      accountType: 'WECHAT',
-      accountId: 'otEnCjuXgorSu0yCkWLZC4cuh5D0'
+      accountType: accountType || perfect.getAccountType,
+      accountId: thirdAccId
     };
 
     hongbaoActions.getUserInfo(body).then((json) => {
@@ -44,15 +44,16 @@ class MyHongbao extends Component {
   }
 
   switchTab(e, type) {
+    const {thirdAccId, accountType} = this.props;
     this.setState({
       type
     });
-    history.replaceState(null, null, `?type=${type}`);
+    history.replaceState(null, null, `?type=${type}&thirdAccId=${thirdAccId}&accountType=${thirdAccId}`);
   }
 
   render() {
     const {type, loaded} = this.state;
-    const {hongbaoActions, receivePagination, sponsorPagination, userInfo} = this.props;
+    const {hongbaoActions, receivePagination, sponsorPagination, userInfo, thirdAccId, accountType} = this.props;
 
     if (!loaded) {
       return null;
@@ -76,7 +77,7 @@ class MyHongbao extends Component {
                              userInfo={userInfo}/>)}
         </article>
 
-        <BottomNav type="receive"/>
+        <BottomNav type="receive" thirdAccId={thirdAccId} accountType={accountType}/>
       </div>
     );
   }
@@ -93,6 +94,8 @@ MyHongbao.propTypes = {
   userInfo: PropTypes.object,
   type: PropTypes.string,
   setClientInfo: PropTypes.func,
+  thirdAccId: PropTypes.string,
+  accountType: PropTypes.string,
 };
 
 export default MyHongbao;

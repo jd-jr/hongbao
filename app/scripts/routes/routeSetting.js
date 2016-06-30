@@ -1,24 +1,32 @@
-
-//FIXME 测试数据
-const accountIds = [
-  'otEnCjuXgorSu0yCkWLZC4cuh5D0',
-  'otEnCjrz_3PMW-DZx_s2VnoKx6Cc',
-  'otEnCjmW191iFeVOb5Ft2uZXBeMo',
-  'otEnCju_FqhkHHdoCSvEF0y8PZ5I',
-  'otEnCjml8gOGmIfUBCX73kwHOOPY',
-  'otEnCjl9xilxOMUWliE9651mUGg8',
-  'otEnCjr7J1-9mhlGUyxQVtNxBGL0',
-  'otEnCjo1dD0xg37IJkONGYUKRAq4',
-  'otEnCjuG5nFAJt9q-8NmQx-Op7jc',
-  'otEnCjmfmUsNJnSvLQTB2B1K_dgI'];
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
+import {WEIXIN_AUTHORIZE, REDIRECT_URI} from '../config';
+import perfect from '../utils/perfect';
+import {setSessionStorage} from '../utils/sessionStorage';
 
 const routeSetting = {
   //进入一个新的路由触发的事件
   enterHandler(key) {
-    const currentUrl = location.href;
-    accountIds[Math.floor(Math.random() * 10)];
-    // id 表示红包 id
-    location.href = `${currentUrl}/${accountIds[Math.floor(Math.random() * 10)]}`;
+    const params = perfect.getLocationParams() || {};
+    const {thirdAccId, accountType} = params;
+    //如果在微信端，并且没有返回 accountId，需要微信授权
+    if (deviceEnv.inWx) {
+      if (thirdAccId && accountType) {
+        setSessionStorage('thirdAccId', thirdAccId);
+        setSessionStorage('accountType', accountType);
+      } else { //授权
+        /**
+         * 例子
+         * https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx70b5cd13e1f6b778&redirect_uri=URL&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect
+         */
+        let currentUrl = location.href;
+        currentUrl = encodeURIComponent(currentUrl);
+        const requestNo = perfect.getRequestNo();
+        let redirectUri = `${REDIRECT_URI}?requestNo=${requestNo}&skip_url=${currentUrl}`;
+        redirectUri = encodeURIComponent(redirectUri);
+        //console.info(`${WEIXIN_AUTHORIZE}&redirect_uri=${redirectUri}&response_type=code&scope=snsapi_base&state=weixin#wechat_redirect`);
+        document.location.href = `${WEIXIN_AUTHORIZE}&redirect_uri=${redirectUri}&response_type=code&scope=snsapi_base&state=state#wechat_redirect`
+      }
+    }
   },
 
   // 离开一个路由触发的事件

@@ -11,11 +11,25 @@ class BottomNav extends Component {
   }
 
   createOrder() {
-    this.context.router.push('/');
+    const {thirdAccId, accountType} = this.props;
+    this.context.router.push({
+      pathname: '/',
+      query: {
+        thirdAccId,
+        accountType
+      }
+    });
   }
 
   myHongbao() {
-    this.context.router.push('/my');
+    const {thirdAccId, accountType} = this.props;
+    this.context.router.push({
+      pathname: '/my',
+      query: {
+        thirdAccId,
+        accountType
+      }
+    });
   }
 
   render() {
@@ -43,7 +57,9 @@ BottomNav.contextTypes = {
 };
 
 BottomNav.propTypes = {
-  type: PropTypes.string
+  type: PropTypes.string,
+  thirdAccId: PropTypes.string,
+  accountType: PropTypes.string,
 };
 
 export default BottomNav;

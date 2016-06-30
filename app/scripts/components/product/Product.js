@@ -25,7 +25,7 @@ class Product extends Component {
   }
 
   selectProduct() {
-    const {productDetail, view} = this.props;
+    const {productDetail, view, thirdAccId, accountType} = this.props;
     if (view === 'view') {
       this.context.router.goBack();
       return;
@@ -34,10 +34,14 @@ class Product extends Component {
     let detail = perfect.stringifyJSON({skuName, skuId, bizPrice, indexImg});
     detail = Base64.encode(detail);
     detail = encodeURIComponent(detail);
+    //浏览器发送 http 请求数据时,会自动把 + 转换为空格,所以先对 + Unicode编码 为 %2B
+    detail = detail.replace(/\+/g, '%2B');
     this.context.router.replace({
       pathname: '/',
       query: {
-        detail
+        detail,
+        thirdAccId,
+        accountType
       }
     });
   }
@@ -97,6 +101,8 @@ Product.propTypes = {
   productDetail: PropTypes.object,
   skuId: PropTypes.string,
   view: PropTypes.string,
+  thirdAccId: PropTypes.string,
+  accountType: PropTypes.string,
 };
 
 export default Product;

@@ -15,8 +15,8 @@ class SponsorHongbao extends Component {
     const {hongbaoActions} = this.props;
     const body = {
       requestNo: '444',
-      accountType: 'WALLET',
-      accountId: 'otEnCjr7J1-9mhlGUyxQVtNxBGL0'
+      accountType: 'WECHAT',
+      accountId: 'otEnCjuXgorSu0yCkWLZC4cuh5D0'
     };
 
     hongbaoActions.getHongbaoList(body, 'sponsor');
