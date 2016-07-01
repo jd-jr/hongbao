@@ -34,7 +34,7 @@
   &.active {
     background-image: none;
     outline: 0;
-    @include box-shadow($btn-active-box-shadow);
+    //@include box-shadow($btn-active-box-shadow);
   }
 
   &.disabled,

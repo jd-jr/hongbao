@@ -107,9 +107,37 @@ class Home extends Component {
     this.context.router.push('/product');
   }
 
+  //提交前校验表单
+  verify() {
+    const {indexActions} = this.props;
+    const {checked, giftNum, title, bizPrice} = this.state;
+    let limit = bizPrice <= 100 ? bizPrice - 1 : 100;
+    if (giftNum > limit) {
+      indexActions.setErrorMessage(`红包个数不能超过${limit}个`);
+      return;
+    }
+    if (title.length > 30) {
+      indexActions.setErrorMessage('红包标题最多输入30个字');
+      return;
+    }
+    if (!checked) {
+      indexActions.setErrorMessage('请勾选服务协议，谢谢您的合作');
+      return;
+    }
+    return true;
+  }
+
   payBefore(e) {
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
+
+    if (this.state.selecting) {
+      return;
+    }
+
+    if (!this.verify()) {
+      return;
+    }
 
     const {setClientInfo} = this.props;
     setClientInfo((status) => {
@@ -121,7 +149,6 @@ class Home extends Component {
 
   //支付
   pay() {
-    const {indexActions, thirdAccId, accountType} = this.props;
     const {skuId, giftNum, title, loadingStatus, mystic} = this.state;
     if (loadingStatus) {
       return;
@@ -131,12 +158,15 @@ class Home extends Component {
       loadingStatus: true
     });
 
+    const {indexActions} = this.props;
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
     const url = 'create';
     const body = {
       skuId,
       giftNum,
       title: title || HONGBAO_TITLE,
-      accountType: accountType || perfect.getAccountType()
+      accountType
     };
 
     if (!deviceEnv.inJdWallet) {
@@ -231,14 +261,13 @@ class Home extends Component {
   render() {
     let {giftNum, title, bizPrice, skuName, indexImg, selecting, checked, loadingStatus, mystic} = this.state;
 
-    const {thirdAccId, accountType} = this.props;
     bizPrice = (bizPrice / 100).toFixed(2);
 
     return (
       <div>
         {loadingStatus ? (<Loading loadingStatus={loadingStatus}/>) : null}
         {this.renderH5PayForm()}
-        <article className="hb-wrap m-t-3">
+        <article className="hb-wrap m-t-2">
           <section>
             <div>
               <div className="hb-single" onTouchTap={this.selectProduct}>
@@ -251,7 +280,7 @@ class Home extends Component {
                   )
                 }
               </div>
-              <p className="f-xs m-l-1 text-muted">未中奖用户可随机获得钱包补贴的现金红包</p>
+              <p className="f-sm m-l-1 text-muted">未中奖用户可随机获得钱包补贴的现金红包</p>
             </div>
 
             {
@@ -288,7 +317,7 @@ class Home extends Component {
                   <span className="pull-right">个</span>
                 </div>
               </div>
-              <p className="f-xs m-l-1 text-muted">包含实物和现金红包</p>
+              <p className="f-sm m-l-1 text-muted">包含实物和现金红包</p>
             </div>
 
             <div>
@@ -319,7 +348,7 @@ class Home extends Component {
         </article>
 
         <Help/>
-        <BottomNav type="sponsor" thirdAccId={thirdAccId} accountType={accountType}/>
+        <BottomNav type="sponsor"/>
       </div>
     );
   }
@@ -329,8 +358,6 @@ Home.propTypes = {
   detail: PropTypes.string,
   indexActions: PropTypes.object,
   setClientInfo: PropTypes.func,
-  thirdAccId: PropTypes.string,
-  accountType: PropTypes.string,
 };
 
 Home.contextTypes = {

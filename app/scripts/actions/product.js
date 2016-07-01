@@ -25,14 +25,14 @@ function fetchProductList(body) {
 export function getProductList(body = {}) {
   return (dispatch, getState) => {
     const {
-      nextPage = 1, //请求传递的页面
+      pageNum = 1, //请求传递的页面
       isFetching,
       lastPage //最后一页
     } = getState().product.productPagination || {};
     if (isFetching || lastPage) {
       return null;
     }
-    return dispatch(fetchProductList({...body, pageNum: nextPage, pageSize: 10}));
+    return dispatch(fetchProductList({...body, pageNum, pageSize: 10}));
   };
 }
 

@@ -16,7 +16,8 @@ function fetchParticipantList(body) {
       url: 'gainerList',
       schema: HongbaoDetailSchemas.PARTICIPANT_LIST,
       body,
-      paging: true
+      paging: true,
+      needAuth: true
     }
   };
 }
@@ -25,14 +26,14 @@ export function getParticipantList(body = {}) {
   return (dispatch, getState) => {
     const state = getState();
     const {
-      nextPage = 1, //请求传递的页面
+      pageNum = 1, //请求传递的页面
       isFetching,
       lastPage //最后一页
     } = state.hongbaoDetail.participantPagination || {};
     if (isFetching || lastPage) {
       return null;
     }
-    return dispatch(fetchParticipantList({...body, pageNum: nextPage, pageSize: 5}));
+    return dispatch(fetchParticipantList({...body, pageNum, pageSize: 5}));
   };
 }
 
@@ -45,7 +46,8 @@ function fetchHongbaoDetail(body) {
       types: [HONGBAO_DETAIL_REQUEST, HONGBAO_DETAIL_SUCCESS, HONGBAO_DETAIL_FAILURE],
       url: 'info',
       schema: 'hongbaoInfo',
-      body
+      body,
+      needAuth: true
     }
   };
 }

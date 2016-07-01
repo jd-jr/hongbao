@@ -30,9 +30,11 @@ class MyHongbao extends Component {
   }
 
   loadData() {
-    const {hongbaoActions, thirdAccId, accountType} = this.props;
+    const {hongbaoActions} = this.props;
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
     const body = {
-      accountType: accountType || perfect.getAccountType,
+      accountType,
       accountId: thirdAccId
     };
 
@@ -44,16 +46,15 @@ class MyHongbao extends Component {
   }
 
   switchTab(e, type) {
-    const {thirdAccId, accountType} = this.props;
     this.setState({
       type
     });
-    history.replaceState(null, null, `?type=${type}&thirdAccId=${thirdAccId}&accountType=${thirdAccId}`);
+    history.replaceState(null, null, `?type=${type}`);
   }
 
   render() {
     const {type, loaded} = this.state;
-    const {hongbaoActions, receivePagination, sponsorPagination, userInfo, thirdAccId, accountType} = this.props;
+    const {hongbaoActions, receivePagination, sponsorPagination, userInfo} = this.props;
 
     if (!loaded) {
       return null;
@@ -72,12 +73,12 @@ class MyHongbao extends Component {
           </section>
           {type === 'receive' ?
             (<ReceiveHongbao hongbaoActions={hongbaoActions} receivePagination={receivePagination}
-                             userInfo={userInfo} thirdAccId={thirdAccId} accountType={accountType}/>) :
+                             userInfo={userInfo}/>) :
             (<SponsorHongbao hongbaoActions={hongbaoActions} sponsorPagination={sponsorPagination}
-                             userInfo={userInfo} thirdAccId={thirdAccId} accountType={accountType}/>)}
+                             userInfo={userInfo}/>)}
         </article>
 
-        <BottomNav type="receive" thirdAccId={thirdAccId} accountType={accountType}/>
+        <BottomNav type="receive"/>
       </div>
     );
   }
@@ -94,8 +95,6 @@ MyHongbao.propTypes = {
   userInfo: PropTypes.object,
   type: PropTypes.string,
   setClientInfo: PropTypes.func,
-  thirdAccId: PropTypes.string,
-  accountType: PropTypes.string,
 };
 
 export default MyHongbao;

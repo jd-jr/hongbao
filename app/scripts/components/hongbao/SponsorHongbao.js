@@ -1,6 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
+import ScrollLoad from '../../ui/ScrollLoad';
 import perfect from '../../utils/perfect';
+import classnames from 'classnames';
 
 class SponsorHongbao extends Component {
   constructor(props, context) {
@@ -9,16 +11,11 @@ class SponsorHongbao extends Component {
       type: 'received' // received 已收红包， luck 手气最佳
     };
     this.switchTab = this.switchTab.bind(this);
+    this.loadMore = this.loadMore.bind(this);
   }
 
   componentDidMount() {
-    const {hongbaoActions, thirdAccId, accountType} = this.props;
-    const body = {
-      accountType: accountType || perfect.getAccountType(),
-      accountId: thirdAccId
-    };
-
-    hongbaoActions.getHongbaoList(body, 'sponsor');
+    this.loadMore();
   }
 
   //切换已收红包和手气最佳
@@ -34,13 +31,13 @@ class SponsorHongbao extends Component {
       case 'RECEIVE_COMPLETE':
         return (
           <div>
-            已抢光 {giftGainedNum}/{giftNum + goodNum}个
+            已抢光 {giftGainedNum}/{giftNum}个
           </div>
         );
       case 'OK':
         return (
           <div>
-            {giftGainedNum}/{giftNum + goodNum}个
+            {giftGainedNum}/{giftNum}个
           </div>
         );
       case 'EXPIRED':
@@ -60,34 +57,16 @@ class SponsorHongbao extends Component {
     }
   }
 
-  renderItem(item) {
-    const {identifier, skuIcon, createdDate, amount, status, giftGainedNum, giftNum, goodNum} = item;
-    let {thirdAccId, accountType} = this.props;
-    accountType = accountType || perfect.getAccountType();
-    let link = `/hongbao/detail/${identifier}?accountType=${accountType}`;
-    if (thirdAccId) {
-      link += `&thirdAccId=${thirdAccId}`;
-    }
+  loadMore() {
+    const {hongbaoActions} = this.props;
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
+    const body = {
+      accountType,
+      accountId: thirdAccId
+    };
 
-    return (
-      <li key={identifier}>
-        <Link to={link} className="hb-link-block row flex-items-middle">
-          <div className="col-4">
-            <img className="img-fluid" src={skuIcon} alt=""/>
-          </div>
-          <div className="col-14">
-            <div className="text-truncate">拼手气</div>
-            <div className="text-muted f-sm">{perfect.formatDate(createdDate)}</div>
-          </div>
-          <div className="col-6 text-right">
-            <div>{(amount / 100).toFixed(2)}元</div>
-            <div className="text-muted f-sm">
-              {this.getStatus({status, giftGainedNum, giftNum, goodNum})}
-            </div>
-          </div>
-        </Link>
-      </li>
-    );
+    hongbaoActions.getHongbaoList(body, 'sponsor');
   }
 
   //渲染列表
@@ -96,7 +75,7 @@ class SponsorHongbao extends Component {
       sponsorPagination
     } = this.props;
 
-    const list = sponsorPagination.list;
+    let {list, isFetching, lastPage} = sponsorPagination;
 
     if (!list) {
       return (
@@ -111,13 +90,38 @@ class SponsorHongbao extends Component {
     }
 
     return (
-      <ul className="hb-list">
-        {
-          list ? list.map((item) => {
-            return this.renderItem(item);
-          }) : null
-        }
-      </ul>
+      <ScrollLoad loadMore={this.loadMore}
+                  hasMore={!lastPage}
+                  isLoading={isFetching}
+                  className={classnames({loading: isFetching})}
+                  loader={<div className=""></div>}>
+        <ul className="hb-list">
+          {list.map((item) => {
+            const {identifier, skuIcon, createdDate, amount, status, giftGainedNum, giftNum, goodNum} = item;
+            let link = `/hongbao/detail/${identifier}`;
+
+            return (
+              <li key={identifier}>
+                <Link to={link} className="hb-link-block row flex-items-middle">
+                  <div className="col-4">
+                    <img className="img-fluid" src={skuIcon} alt=""/>
+                  </div>
+                  <div className="col-12">
+                    <div className="text-truncate">实物红包</div>
+                    <div className="text-muted f-sm">{perfect.formatDate(createdDate)}</div>
+                  </div>
+                  <div className="col-8 text-right">
+                    <div>{(amount / 100).toFixed(2)}元</div>
+                    <div className="text-muted f-sm">
+                      {this.getStatus({status, giftGainedNum, giftNum, goodNum})}
+                    </div>
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </ScrollLoad>
     );
   }
 
@@ -160,8 +164,6 @@ SponsorHongbao.propTypes = {
   hongbaoActions: PropTypes.object,
   sponsorPagination: PropTypes.object,
   userInfo: PropTypes.object,
-  thirdAccId: PropTypes.string,
-  accountType: PropTypes.string,
 };
 
 export default SponsorHongbao;

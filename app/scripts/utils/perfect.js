@@ -1,4 +1,5 @@
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
+import {getSessionStorage} from '../utils/sessionStorage';
 const win = window;
 const doc = document;
 
@@ -245,8 +246,27 @@ const perfect = {
     return time + random;
   },
 
+  /**
+   * 获取账户 id
+   * @returns {*}
+   */
+  getThirdAccId() {
+    const thirdAccId = getSessionStorage('thirdAccId');
+    if (thirdAccId) {
+      return thirdAccId;
+    }
+    return null;
+  },
+
+  /**
+   * 获取账户类型
+   * @returns {*}
+   */
   getAccountType() {
-    if (deviceEnv.inJdWallet) {
+    const accountType = getSessionStorage('accountType');
+    if (accountType) {
+      return accountType;
+    } else if (deviceEnv.inJdWallet) {
       return 'WALLET';
     }
     return 'WECHAT';

@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import Modal from 'reactjs-modal';
 import callApi from '../../fetch';
 import {HONGBAO_INVALID_STATUS, HONGBAO_TITLE} from '../../constants/common';
+import prefect from '../../utils/perfect';
 
 class Unpack extends Component {
   constructor(props, context) {
@@ -36,7 +37,9 @@ class Unpack extends Component {
    */
   validateHongbao() {
     const url = 'prepare/receive';
-    const {identifier, thirdAccId, accountType, indexActions} = this.props;
+    const {identifier, indexActions} = this.props;
+    const accountType = prefect.getAccountType();
+    const thirdAccId = prefect.getThirdAccId();
     // id 表示红包 id
     const body = {
       identifier,
@@ -184,7 +187,7 @@ class Unpack extends Component {
         <Modal
           visible={unpackModal}
           className="hb-modal"
-          bodyStyle={{height: '35rem'}}
+          bodyStyle={{height: '33rem'}}
         >
           {this.modalBody()}
         </Modal>

@@ -16,16 +16,17 @@ const $ = gulpLoadPlugins();
 
 // webpack gulp 配置可参考 https://github.com/webpack/webpack-with-common-libs/blob/master/gulpfile.js
 
-//利用sass生成styles任务
+//利用sass生成styles任务，开发环境不压缩，线上环境设为 compressed
+let outputStyle = 'expanded';
 gulp.task('styles', () => {
   return gulp.src('app/sass/*.scss')
     .pipe($.sass.sync({
-      outputStyle: 'expanded', // 展开的
-      precision: 10, //数字精读
+      outputStyle, // 展开的
+      precision: 10, //数字精度
       includePaths: ['.']
     }).on('error', $.sass.logError))
     .pipe($.autoprefixer({
-      browsers: ['last 2 version', 'chrome >=30', 'Android >= 4.3'],
+      browsers: ['last 3 version', 'Android >= 4.3', 'iOS >=8.1'],
       flexbox: 'no-2009',
       remove: false // 是否自动删除过时的前缀
     }))
@@ -238,13 +239,17 @@ gulp.task('mockjs', () => {
   $.supervisor('server/index.js');
 });
 
+gulp.task('sass-compress', () => {
+  outputStyle = 'compressed';
+});
+
 // 编译打包，正式环境
-gulp.task('build', ['styles', 'copy:prod'], () => {
+gulp.task('build', ['sass-compress', 'styles', 'copy:prod'], () => {
   gulp.start(['webpack:build']);
 });
 
 // 编译打包，测试环境
-gulp.task('build:dev', ['styles', 'copy:dev'], () => {
+gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev'], () => {
   gulp.start(['webpack:build']);
 });
 

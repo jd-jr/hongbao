@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import offset from 'perfect-dom/lib/offset';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import perfect from '../../utils/perfect';
 
 class ReceiveHongbao extends Component {
@@ -13,6 +14,7 @@ class ReceiveHongbao extends Component {
   }
 
   componentDidMount() {
+    this.adjustArrow();
     this.loadData();
   }
 
@@ -33,9 +35,11 @@ class ReceiveHongbao extends Component {
   }
 
   loadData() {
-    const {hongbaoActions, thirdAccId, accountType} = this.props;
+    const {hongbaoActions} = this.props;
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
     const body = {
-      accountType: accountType || perfect.getAccountType(),
+      accountType,
       accountId: thirdAccId
     };
 
@@ -50,6 +54,8 @@ class ReceiveHongbao extends Component {
     this.setState({
       type
     }, () => {
+      const {hongbaoActions} = this.props;
+      hongbaoActions.clearReceive();
       this.adjustArrow();
       this.loadData();
     });
@@ -66,7 +72,9 @@ class ReceiveHongbao extends Component {
 
     const xy = offset(tabEl);
     const width = tabEl.clientWidth;
-    this.refs.arrow.style.left = `${xy.left + width / 2 - 8}px`;
+    if (this.refs.arrow) {
+      this.refs.arrow.style.left = `${xy.left + width / 2 - 8}px`;
+    }
   }
 
   /*eslint-disable indent*/
@@ -139,12 +147,7 @@ class ReceiveHongbao extends Component {
     if (thirdAccountUserInfoDtoList && thirdAccountUserInfoDtoList.length > 0) {
       nickName = thirdAccountUserInfoDtoList[0].nickName;
     }
-    let {thirdAccId, accountType} = this.props;
-    accountType = accountType || perfect.getAccountType();
-    let link = `/hongbao/detail/${identifier}?accountType=${accountType}`;
-    if (thirdAccId) {
-      link += `&thirdAccId=${thirdAccId}`;
-    }
+    let link = `/hongbao/detail/${identifier}`;
     return (
       <li key={identifier}>
         <Link to={link} className="hb-link-block row flex-items-middle">
@@ -180,16 +183,23 @@ class ReceiveHongbao extends Component {
       );
     }
 
+    const {type} = this.state;
     return (
       <section className="m-t-1">
         <div className="arrow-hollow-top hb-arrows-active" ref="arrow"></div>
-        <ul className="hb-list">
-          {
-            list ? list.map((item) => {
-              return this.renderItem(item);
-            }) : null
-          }
-        </ul>
+        <ReactCSSTransitionGroup
+          component="div"
+          transitionName="hb-opacity"
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={50}>
+          <ul className="hb-list" key={type}>
+            {
+              list ? list.map((item) => {
+                return this.renderItem(item);
+              }) : null
+            }
+          </ul>
+        </ReactCSSTransitionGroup>
       </section>
     );
   }
@@ -245,8 +255,6 @@ ReceiveHongbao.propTypes = {
   hongbaoActions: PropTypes.object,
   receivePagination: PropTypes.object,
   userInfo: PropTypes.object,
-  thirdAccId: PropTypes.string,
-  accountType: PropTypes.string,
 };
 
 export default ReceiveHongbao;

@@ -34,7 +34,6 @@ class ScrollLoad extends Component {
   }
 
   fireScroll() {
-    const scrollTop = document.body.scrollTop;
     const {disablePointer, hasMore, isLoading, useDocument, threshold, loadMore} = this.props;
     if (disablePointer > 0) {
       this.disablePointer();
@@ -44,16 +43,24 @@ class ScrollLoad extends Component {
       return;
     }
 
-    const clientHeight = document.body.clientHeight;
-    const el = ReactDOM.findDOMNode(this);
-    const currentScroll = useDocument ?
-    document.body.scrollTop + offset(el).top : el.scrollTop + el.offsetHeight;
+    /*const clientHeight = document.body.clientHeight;
+     const el = ReactDOM.findDOMNode(this);
+     /!*const currentScroll = useDocument ?
+     document.body.scrollTop + offset(el).top : el.scrollTop + el.offsetHeight;*!/
 
-    if (currentScroll + threshold < clientHeight) {
-      return;
+     const currentScroll = document.body.scrollTop + document.body.offsetHeight;
+
+     if (currentScroll + threshold < clientHeight) {
+     return;
+     }*/
+
+    const body = document.body;
+    const viewHeight = document.documentElement.clientHeight;
+    const scrollHeight = body.scrollHeight;
+    const scrollTop = body.scrollTop;
+    if (scrollTop + viewHeight + threshold > scrollHeight) {
+      loadMore();
     }
-
-    loadMore();
   }
 
   disablePointer() {
@@ -89,10 +96,8 @@ class ScrollLoad extends Component {
   render() {
     const {children, isLoading, loader, className} = this.props;
     return (
-      <div className={className}>
-        <div ref="wrapper">
-          {children && React.cloneElement(children, isLoading ? {loader} : {})}
-        </div>
+      <div className={className} ref="wrapper">
+        {children && React.cloneElement(children, isLoading ? {loader} : {})}
       </div>
     );
   }
@@ -120,7 +125,7 @@ ScrollLoad.defaultProps = {
   debounceInt: 100, //防抖处理，默认为100毫秒
   isLoading: false,
   useDocument: true,
-  threshold: 1500,
+  threshold: 10,
   loader: React.createElement('div', null, 'Loading...'),
   disablePointer: 0,
   disablePointerClass: 'disable-pointer'

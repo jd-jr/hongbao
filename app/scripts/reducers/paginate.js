@@ -52,7 +52,7 @@ function paginate({types, paging = true, clearType, customTypes}) {
           pageNum,
           pageCount,
           lastPage,
-          nextPage: lastPage ? state.nextPage : state.nextPage + 1
+          pageNum: lastPage ? state.pageNum : state.pageNum + 1
         } : {
           entity: merge({}, state.entity, entities[entity]), //合并
           ids: union(state.ids, result),
@@ -71,7 +71,7 @@ function paginate({types, paging = true, clearType, customTypes}) {
   // 返回分页或列表数据
   return function updatePagination(state = paging ? {
     isFetching: false,
-    nextPage: 1 //下一页
+    pageNum: 1 //下一页
   } : {
     isFetching: false
   }, action) {
@@ -84,7 +84,7 @@ function paginate({types, paging = true, clearType, customTypes}) {
       {
         return paging ? {
           isFetching: false,
-          nextPage: 1 //下一页
+          pageNum: 1 //下一页
         } : {
           isFetching: false
         };

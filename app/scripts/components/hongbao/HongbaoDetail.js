@@ -3,6 +3,7 @@ import {Link} from 'react-router';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
 import ScrollLoad from '../../ui/ScrollLoad';
+import callApi from '../../fetch';
 
 class HongbaoDetail extends Component {
   constructor(props, context) {
@@ -21,10 +22,12 @@ class HongbaoDetail extends Component {
 
   componentDidMount() {
     //加载红包详情
-    const {hongbaoDetailAction, identifier, thirdAccId, accountType} = this.props;
+    const {hongbaoDetailAction, identifier} = this.props;
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
     let body = {
       identifier,
-      accountType: accountType || perfect.getAccountType(),
+      accountType,
       thirdAccId
     };
     hongbaoDetailAction.getHongbaoDetail(body);
@@ -94,12 +97,19 @@ class HongbaoDetail extends Component {
   }
 
   refund() {
-    const url = '';
-    const body = {};
+    const {identifier} = this.props;
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
+    const url = 'refund';
+    const body = {
+      identifier,
+      accountId: thirdAccId,
+      accountType
+    };
 
-    callApi({url, body}).then(
+    callApi({url, body, needAuth: true}).then(
       ({json, response}) => {
-
+        console.info(json);
       }
     );
   }
@@ -338,8 +348,6 @@ HongbaoDetail.contextTypes = {
 
 HongbaoDetail.propTypes = {
   identifier: PropTypes.string,
-  thirdAccId: PropTypes.string,
-  accountType: PropTypes.string,
   hongbaoInfo: PropTypes.object,
   participantPagination: PropTypes.object,
   hongbaoDetailAction: PropTypes.object,

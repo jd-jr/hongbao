@@ -25,7 +25,7 @@ class Product extends Component {
   }
 
   selectProduct() {
-    const {productDetail, view, thirdAccId, accountType} = this.props;
+    const {productDetail, view} = this.props;
     if (view === 'view') {
       this.context.router.goBack();
       return;
@@ -40,8 +40,6 @@ class Product extends Component {
       pathname: '/',
       query: {
         detail,
-        thirdAccId,
-        accountType
       }
     });
   }
@@ -72,7 +70,9 @@ class Product extends Component {
             <p className="text-truncate-2 f-lg">
               {skuName}
             </p>
-            <div className="text-center h2 text-primary">￥{(bizPrice / 100).toFixed(2)}</div>
+            {view === 'view' ? null : (
+              <div className="text-center h2 text-primary">￥{(bizPrice / 100).toFixed(2)}</div>
+            )}
           </section>
           <section className="m-t-1">
             <h3 className="text-center f-lg">－ 商品详情 －</h3>
@@ -101,8 +101,6 @@ Product.propTypes = {
   productDetail: PropTypes.object,
   skuId: PropTypes.string,
   view: PropTypes.string,
-  thirdAccId: PropTypes.string,
-  accountType: PropTypes.string,
 };
 
 export default Product;

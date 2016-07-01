@@ -43,16 +43,25 @@ function fetchHongbaoList(body, type) {
 export function getHongbaoList(body = {}, type) {
   return (dispatch, getState) => {
     const state = getState();
-    const {
-      nextPage = 1, //请求传递的页面
+    let {
+      pageNum = 1, //请求传递的页面
       isFetching,
       lastPage //最后一页
-    } = state.hongbao[type] || {};
+    } = state.hongbao[`${type}Pagination`] || {};
     if (isFetching || lastPage) {
       return null;
     }
-    return dispatch(fetchHongbaoList({...body, pageNum: nextPage}, type));
+    return dispatch(fetchHongbaoList({...body, pageSize: 5, pageNum}, type));
   };
+}
+
+//清空我收到的红包
+export function clearReceive() {
+  return {
+    type: RECEIVE_CLEAR,
+    entity: 'receivePagination',
+    clear: true
+  }
 }
 
 // 用户信息

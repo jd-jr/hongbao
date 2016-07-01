@@ -30,7 +30,7 @@ export default (
       <Route path="detail/:view/:skuId" component={Product}/>
     </Route>
     <Route path="initiate" component={InitiatePage}/>
-    <Route path="unpack/:identifier" component={UnpackPage}
+    <Route path="unpack/:identifier" component={HongbaoDetailPage}
            onEnter={() => enterHandler('unpack')}/>
     <Route path="hongbao/detail/:identifier" component={HongbaoDetailPage}/>
     <Route path="my" component={MyHongbaoPage}/>

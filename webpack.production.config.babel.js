@@ -26,8 +26,6 @@ let webpackConfig = {
 
   entry: {
     index: ['./app/scripts/index.js'],
-    //添加要打包在vendors里面的库，作为公共的js文件
-    vendors: []
   },
   output: {
     path: path.join(__dirname, 'dist'), //打包输出目录
@@ -69,8 +67,6 @@ let webpackConfig = {
   },
 
   plugins: [
-    //把入口文件里面的数组打包成verdors.js
-    new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.[hash].js'),
     new ExtractTextPlugin('[name].[hash].css', {
       disable: false,
       allChunks: true
@@ -93,8 +89,6 @@ let webpackConfig = {
         except: ['wx', 'MtaH5'] // 设置不混淆变量名
       }
     }),
-    //按照引用频度来排序各个模块,引用的越频繁,模块 id 越短,来优化代码,减少文件大小
-    new webpack.optimize.OccurenceOrderPlugin(),
     //用来优化生成的代码 chunk,合并相同的代码
     new webpack.optimize.AggressiveMergingPlugin(),
     //用来保证编译过程不出错
