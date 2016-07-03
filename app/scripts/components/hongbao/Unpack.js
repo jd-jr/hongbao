@@ -37,7 +37,7 @@ class Unpack extends Component {
    */
   validateHongbao() {
     const url = 'prepare/receive';
-    const {identifier, indexActions} = this.props;
+    const {identifier, indexActions, showDetail} = this.props;
     const accountType = prefect.getAccountType();
     const thirdAccId = prefect.getThirdAccId();
     // id 表示红包 id
@@ -61,6 +61,8 @@ class Unpack extends Component {
             unpackModal: true,
             hongbaoStatus: status,
             user
+          }, () => {
+            showDetail();
           });
         }
       },
@@ -73,15 +75,11 @@ class Unpack extends Component {
   // 拆开红包
   unpack() {
     const {hongbaoStatus} = this.state;
-    const {identifier, thirdAccId, accountType} = this.props;
+    const {identifier} = this.props;
+    const accountType = prefect.getAccountType();
+    const thirdAccId = prefect.getThirdAccId();
     if (hongbaoStatus === 'HAS_RECEIVE') {
-      this.context.router.replace({
-        pathname: `/hongbao/detail/${identifier}`,
-        query: {
-          thirdAccId,
-          accountType
-        }
-      });
+      this.context.router.replace(`/hongbao/detail/${identifier}`);
       return;
     }
     const url = 'receive';
@@ -93,13 +91,7 @@ class Unpack extends Component {
 
     callApi({url, body}).then(
       ({json, response}) => {
-        this.context.router.replace({
-          pathname: `/hongbao/detail/${identifier}`,
-          query: {
-            thirdAccId,
-            accountType
-          }
-        });
+        this.context.router.replace(`/hongbao/detail/${identifier}`);
       },
       (error) => {
 
@@ -108,14 +100,8 @@ class Unpack extends Component {
   }
 
   hongbaoDetail() {
-    const {identifier, thirdAccId, accountType} = this.props;
-    this.context.router.replace({
-      pathname: `/hongbao/detail/${identifier}`,
-      query: {
-        thirdAccId,
-        accountType
-      }
-    });
+    const {identifier} = this.props;
+    this.context.router.replace(`/hongbao/detail/${identifier}`);
   }
 
   modalBody() {
@@ -212,8 +198,7 @@ Unpack.contextTypes = {
 Unpack.propTypes = {
   identifier: PropTypes.string,
   indexActions: PropTypes.object,
-  thirdAccId: PropTypes.string,
-  accountType: PropTypes.string,
+  showDetail: PropTypes.func
 };
 
 export default Unpack;

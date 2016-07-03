@@ -33,7 +33,22 @@ class App extends Component {
 
       if (!clientInfo.auth || info.auth !== clientInfo.auth) {
         if (info.auth && String(info.isLogin) === '1') {
-          this.updateClientInfo(info, callback);
+          if (!info.jdPin) {
+            // bindJdPin 没有提供回调参数，故还需重新处理
+            walletApi.bindJdPin(() => {
+              walletApi.getClientInfo((info) => {
+                info = perfect.parseJSON(info) || {};
+                const jdPin = info.jdPin;
+                if (jdPin) {
+                  this.updateClientInfo(info, callback);
+                } else {
+                  walletApi.alert('您还没有绑定京东账户，请重新绑定');
+                }
+              });
+            });
+          } else {
+            this.updateClientInfo(info, callback);
+          }
         } else {
           this.login(callback);
         }

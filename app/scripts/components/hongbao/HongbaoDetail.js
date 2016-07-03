@@ -1,15 +1,20 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
 import ScrollLoad from '../../ui/ScrollLoad';
 import callApi from '../../fetch';
+import Unpack from './Unpack';
 
 class HongbaoDetail extends Component {
   constructor(props, context) {
     super(props, context);
+    const isUnPack = location.href.indexOf('/unpack') !== -1;
     this.state = {
-      showFoot: false
+      showFoot: false,
+      unpack: isUnPack,
+      detail: isUnPack ? 'none' : 'block'
     };
 
     this.onTouchStart = this.onTouchStart.bind(this);
@@ -17,6 +22,7 @@ class HongbaoDetail extends Component {
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.refund = this.refund.bind(this);
+    this.showDetail = this.showDetail.bind(this);
     this.timeouter = null;
   }
 
@@ -112,6 +118,12 @@ class HongbaoDetail extends Component {
         console.info(json);
       }
     );
+  }
+
+  showDetail () {
+    this.setState({
+      detail: true
+    });
   }
 
   //渲染获取者列表
@@ -234,7 +246,7 @@ class HongbaoDetail extends Component {
             <span className="hb-money">{(giftAmount / 100).toFixed(2)}</span> <span>元</span>
           </div>
           <div>
-            <Link to="/my" className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</Link>
+            <Link to="/my" className="btn btn-primary btn-sm hb-fillet-1">{deviceEnv.inJdWallet ? '提现' : '去京东钱包提现'}</Link>
           </div>
         </div>
       );
@@ -264,7 +276,7 @@ class HongbaoDetail extends Component {
   }
 
   render() {
-    const {hongbaoInfo} = this.props;
+    const {hongbaoInfo, identifier, indexActions} = this.props;
 
     /**
      skuId  String  商品SKU
@@ -294,50 +306,56 @@ class HongbaoDetail extends Component {
     }
 
     const {giftRecordId} = selfInfo || {};
+    const showDetail = this.showDetail;
+    const unpackProps = {identifier, indexActions, showDetail};
+    const {unpack, detail} = this.state;
 
     return (
-      <article>
-        <section>
-          <div className="hb-single m-t-1 m-b-1">
-            <Link className="hb-link-block row flex-items-middle" to={`/product/detail/view/${skuId}`}>
-              <div className="col-4">
-                <img className="img-fluid" src={skuIcon} alt=""/>
-              </div>
-              <div className="col-16">
-                <div className="text-truncate">{skuName}</div>
-                <div className="text-muted f-sm">发起时间：{perfect.formatDate(createdDate)}</div>
-              </div>
-            </Link>
-          </div>
-
-          <div className="text-center m-t-3">
-            <div>
-              <img className="img-circle img-thumbnail hb-figure"
-                   src={ownerHeadpic} alt=""/>
+      <div>
+        {unpack ? <Unpack {...unpackProps}/> : null}
+        <article style={{display: detail}}>
+          <section>
+            <div className="hb-single m-t-1 m-b-1">
+              <Link className="hb-link-block row flex-items-middle" to={`/product/detail/view/${skuId}`}>
+                <div className="col-4">
+                  <img className="img-fluid" src={skuIcon} alt=""/>
+                </div>
+                <div className="col-16">
+                  <div className="text-truncate">{skuName}</div>
+                  <div className="text-muted f-sm">发起时间：{perfect.formatDate(createdDate)}</div>
+                </div>
+              </Link>
             </div>
-            <h3 className="m-t-2">{ownerNickname}的红包</h3>
-            <p className="text-muted">{title}</p>
-            {
-              this.renderSelfInfo({selfInfo, status, giftRecordId, skuId, redbagSelf, refundStatus})
-            }
-          </div>
-        </section>
 
-        <section className="m-t-3">
-          {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
-          {this.renderGainedList()}
-          <p className="text-center">
-            <i className="hb-logo"></i>
-          </p>
-        </section>
-        {
-          this.state.showFoot ? (
-            <div className="hb-footer text-center">
-              <Link className="hb-active-btn" to="/">发起实物红包</Link>
+            <div className="text-center m-t-3">
+              <div>
+                <img className="img-circle img-thumbnail hb-figure"
+                     src={ownerHeadpic} alt=""/>
+              </div>
+              <h3 className="m-t-2">{ownerNickname}的红包</h3>
+              <p className="text-muted">{title}</p>
+              {
+                this.renderSelfInfo({selfInfo, status, giftRecordId, skuId, redbagSelf, refundStatus})
+              }
             </div>
-          ) : null
-        }
-      </article>
+          </section>
+
+          <section className="m-t-3">
+            {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
+            {this.renderGainedList()}
+            <p className="text-center">
+              <i className="hb-logo"></i>
+            </p>
+          </section>
+          {
+            this.state.showFoot ? (
+              <div className="hb-footer text-center">
+                <Link className="hb-active-btn" to="/">发起实物红包</Link>
+              </div>
+            ) : null
+          }
+        </article>
+      </div>
     );
   }
 }
@@ -351,6 +369,7 @@ HongbaoDetail.propTypes = {
   hongbaoInfo: PropTypes.object,
   participantPagination: PropTypes.object,
   hongbaoDetailAction: PropTypes.object,
+  indexActions: PropTypes.object,
 };
 
 export default HongbaoDetail;

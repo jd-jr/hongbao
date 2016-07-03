@@ -29,7 +29,7 @@ class Home extends Component {
       skuId,
       skuName,
       indexImg,
-      giftNum: 1,
+      giftNum: '',
       selecting: Boolean(!skuId),
       visible: false,
       payDataReady: false,
@@ -71,14 +71,14 @@ class Home extends Component {
         return;
       }
       value = parseInt(value, 10);
-      if (value > 50) {
+      if (value > 100) {
         this.setState({
-          giftNum: 50
+          giftNum: 100
         });
         return;
       }
     } else if (type === 'title') {
-      if (value.length > 30) {
+      if (value.length > 25) {
         return;
       }
     }
@@ -112,12 +112,16 @@ class Home extends Component {
     const {indexActions} = this.props;
     const {checked, giftNum, title, bizPrice} = this.state;
     let limit = bizPrice <= 100 ? bizPrice - 1 : 100;
+    if (giftNum === '') {
+      indexActions.setErrorMessage('请输入红包个数');
+      return;
+    }
     if (giftNum > limit) {
       indexActions.setErrorMessage(`红包个数不能超过${limit}个`);
       return;
     }
-    if (title.length > 30) {
-      indexActions.setErrorMessage('红包标题最多输入30个字');
+    if (title.length > 25) {
+      indexActions.setErrorMessage('红包标题最多输入25个字');
       return;
     }
     if (!checked) {
@@ -322,7 +326,7 @@ class Home extends Component {
 
             <div>
               <div className="hb-single">
-                <textarea maxLength="30" value={title} onChange={(e) => this.handleChange(e, 'title')}
+                <textarea maxLength="25" value={title} onChange={(e) => this.handleChange(e, 'title')}
                           className="hb-textarea" placeholder={HONGBAO_TITLE}></textarea>
               </div>
             </div>
@@ -333,7 +337,7 @@ class Home extends Component {
           </section>
 
           <section className="m-t-2">
-            <button className="btn btn-block btn-primary btn-lg" disabled={selecting}
+            <button className="btn btn-block btn-primary btn-lg" disabled={selecting || giftNum === ''}
                     onTouchTap={this.payBefore}>发起实物红包
             </button>
             <p className="text-center f-sm m-t-2 text-muted">

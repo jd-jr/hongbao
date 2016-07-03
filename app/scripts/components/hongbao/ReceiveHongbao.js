@@ -2,6 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import offset from 'perfect-dom/lib/offset';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import jdWalletApi from 'jd-wallet-sdk';
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../../utils/perfect';
 
 class ReceiveHongbao extends Component {
@@ -11,6 +13,7 @@ class ReceiveHongbao extends Component {
       type: 'received', // received 已收红包， luck 手气最佳
     };
     this.switchTab = this.switchTab.bind(this);
+    this.withdraw = this.withdraw.bind(this);
   }
 
   componentDidMount() {
@@ -59,6 +62,11 @@ class ReceiveHongbao extends Component {
       this.adjustArrow();
       this.loadData();
     });
+  }
+
+  // 提现
+  withdraw() {
+    jdWalletApi.openModule('BALANCE');
   }
 
   adjustArrow() {
@@ -225,7 +233,13 @@ class ReceiveHongbao extends Component {
           <div className="h1">{(gainCashBalance / 100).toFixed(2)}</div>
 
           <div>
-            <button className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</button>
+            {
+              deviceEnv.inJdWallet ? (
+              <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">提现</button>
+              ) : (
+                <a href="https://qianbao.jd.com/p/page/download.htm?module=BALANCE" className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</a>
+              )
+            }
           </div>
         </section>
 

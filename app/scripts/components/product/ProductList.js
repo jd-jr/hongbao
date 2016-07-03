@@ -196,7 +196,7 @@ class ProductList extends Component {
         <div className="col-17">
           <div className="text-truncate">{skuName}</div>
           <div className="f-sm hb-product-info">
-            <span>¥ {bizPrice}</span>
+            <span>¥ {(bizPrice / 100).toFixed(2)}</span>
           </div>
         </div>
         <div className="col-3 text-center">
