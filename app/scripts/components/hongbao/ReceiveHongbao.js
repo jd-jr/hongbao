@@ -128,15 +128,8 @@ class ReceiveHongbao extends Component {
       );
     }
 
-    switch (status) {
-      case 'PAY_SUCC':
-        return (
-          <div className="hb-img-text-thumb">
-            <img src={skuIcon} alt=""/>
-            <div className="label-text bg-primary">未领取</div>
-          </div>
-        );
-      case 'RECEIVE_COMPLETE':
+    switch (giftStatus) {
+      case 'GIVE_OUT':
         return (
           <div className="hb-img-text-thumb">
             <img src={skuIcon} alt=""/>
@@ -151,7 +144,12 @@ class ReceiveHongbao extends Component {
           </div>
         );
       default:
-        return null;
+        return (
+          <div className="hb-img-text-thumb">
+            <img src={skuIcon} alt=""/>
+            <div className="label-text bg-primary">未领取</div>
+          </div>
+        );
     }
   }
 

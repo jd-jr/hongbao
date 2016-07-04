@@ -8,8 +8,7 @@ import {
 
 /*eslint-disable indent*/
 export default function address(state = null, action) {
-  state = state || [];
-  let newState = state.concat();
+  let newState = (state || []).concat();
   switch (action.type) {
     case INIT_USER_ADD_LIST:
       return action.state.concat();

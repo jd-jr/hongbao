@@ -10,11 +10,11 @@ class Unpack extends Component {
     this.state = {
       unpackModal: false, //拆红包弹框
       hongbaoStatus: null, //红包状态
-      user: null //用户信息
+      user: null, //用户信息
+      unpackStatus: false
     };
     this.unpack = this.unpack.bind(this);
     this.hongbaoDetail = this.hongbaoDetail.bind(this);
-
   }
 
   componentDidMount() {
@@ -74,6 +74,13 @@ class Unpack extends Component {
 
   // 拆开红包
   unpack() {
+    if (this.state.unpackStatus) {
+      return;
+    }
+    //防重处理
+    this.setState({
+      unpackStatus: true
+    });
     const {hongbaoStatus} = this.state;
     const {identifier} = this.props;
     const accountType = prefect.getAccountType();
@@ -91,10 +98,15 @@ class Unpack extends Component {
 
     callApi({url, body}).then(
       ({json, response}) => {
+        this.setState({
+          unpackStatus: false
+        });
         this.context.router.replace(`/hongbao/detail/${identifier}`);
       },
       (error) => {
-
+        this.setState({
+          unpackStatus: false
+        });
       }
     );
   }

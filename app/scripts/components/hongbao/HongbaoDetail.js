@@ -149,8 +149,10 @@ class HongbaoDetail extends Component {
 
   //兑奖
   reward (giftRecordId, skuId) {
+    const {identifier} = this.props;
     setSessionStorage('skuId', skuId);
     setSessionStorage('giftRecordId', giftRecordId);
+    setSessionStorage('identifier', identifier);
     this.context.router.push('/myaddress');
   }
 

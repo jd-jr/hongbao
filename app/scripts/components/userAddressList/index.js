@@ -24,7 +24,7 @@ class UserAddressList extends Component {
 
     this.skuId = getSessionStorage('skuId');
     this.giftRecordId = getSessionStorage('giftRecordId');
-    
+
     this.showTipWhenAction = this.showTipWhenAction.bind(this);
     this.editAddress = this.editAddress.bind(this);
     this.toggleActionTipState = this.toggleActionTipState.bind(this);
@@ -37,7 +37,7 @@ class UserAddressList extends Component {
 
   componentWillMount() {
     const {address, setUserAddressList, indexActions} = this.props;
-    if (!address.length) {
+    if (!address) {
       callApi({
         url: 'user/address/list',
         body: {},
@@ -272,7 +272,7 @@ class UserAddressList extends Component {
       receiverCountryName: '收货人区县名称',
       receiverZipCode: ''
     };
-    
+
     item.cityName && (_ret.receiverCityName = item.cityName);
     item.cityId && (_ret.receiverCityCode = item.cityId);
     item.countyId && (_ret.receiverCountryCode = item.countyId);
@@ -290,13 +290,15 @@ class UserAddressList extends Component {
   }
 
   //等待补货
+  //FIXME 待联调
   waitForGoods() {
     const {indexActions} = this.props;
     const url = '';
     const body = {};
+    const identifier = getSessionStorage('identifier');
     callApi({url, body}).then(
       (res) => {
-        this.context.router.replace('hongbao/detail/:identifier');
+        this.context.router.replace(`hongbao/detail/${identifier}`);
       }, (error) => {
         if (error.errorCode !== 'RBF100300') {
           indexActions.setErrorMessage(error.message);
@@ -312,7 +314,6 @@ class UserAddressList extends Component {
       address
     } = this.props;
 
-    console.info(address);
     if (!address) {
       return null;
     }
@@ -360,7 +361,7 @@ class UserAddressList extends Component {
     return (
       <div className="hb-address-panel">
         <div className="hb-bd-t hb-bd-b row hb-bg-white item">
-          <div className="col-21" onClick={this.goAddAddress}>新建收货地址</div>
+          <div className="col-21" onTouchTap={this.goAddAddress}>新建收货地址</div>
           <div className="col-3  arrow-hollow-right"></div>
         </div>
         <div>

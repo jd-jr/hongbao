@@ -6,7 +6,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import * as actions from '../../actions/userAddressList'
 import className from 'classnames'
-import {assign, keys} from 'lodash'
+import {assign, keys, trim} from 'lodash'
 import callApi from '../../fetch/'
 import {getSessionStorage} from '../../utils/sessionStorage';
 
@@ -124,8 +124,11 @@ class AddAddress extends Component {
     if (t.name.valid !== 1) {
       return '请输入姓名';
     }
-    if (t.mobile.valid !== 1) {
+    if (trim(this.refs.mobile.value) === '') {
       return '请输入手机号码';
+    }
+    if (t.mobile.valid !== 1) {
+      return '手机号码格式不正确';
     }
     if (t.fullAddress.valid !== 1) {
       return '请选择所在省市';
@@ -138,6 +141,15 @@ class AddAddress extends Component {
 
   //新增操作
   sureAction() {
+    //防重处理
+    const {submitState} = this.state;
+    if (submitState) {
+      return;
+    }
+    this.setState({
+      submitState: true
+    });
+
     const addressEntity = this.generateParams();
     const {addUserAddress, updateUserAddress, params, indexActions} = this.props;
     const message = this.checkCanSub();
@@ -182,6 +194,9 @@ class AddAddress extends Component {
       }
     }, (error) => {
       indexActions.setErrorMessage(error.message);
+      this.setState({
+        submitState: false
+      });
     }).then((res) => {
       const stock = res.json.data;
       addedAddress.stock = stock;
@@ -255,7 +270,7 @@ class AddAddress extends Component {
           <div className="wg-address-item">
             <span className=" item-title">手机号码</span>
             <div className=" item-input">
-              <input className="hb-input" type="tel" placeholder="请输入手机号码" maxLength="11"
+              <input ref="mobile" className="hb-input" type="tel" placeholder="请输入手机号码" maxLength="11"
                      value={state.mobile.val}
                      onChange={this.setValue.bind(this, 'mobile')}
                      onBlur={this.showError.bind(this, 'mobile')}/>
