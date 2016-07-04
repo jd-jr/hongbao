@@ -3,7 +3,7 @@ import paginate from './paginate';
 import * as ProductActionTypes from '../constants/ProductActionTypes';
 
 const {
-  PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAILURE, PRODUCT_CLEAR,
+  PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAILURE, PRODUCT_LIST_CLEAR,
   CATEGORY_LIST_REQUEST, CATEGORY_LIST_SUCCESS, CATEGORY_LIST_FAILURE,
   SWITCH_CATEGORY, PRICE_ORDER
 } = ProductActionTypes;
@@ -11,7 +11,7 @@ const {
 const product = combineReducers({
   productPagination: paginate({
     types: [PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAILURE],
-    clearType: PRODUCT_CLEAR
+    clearType: PRODUCT_LIST_CLEAR
   }),
 
   categoryList: paginate({

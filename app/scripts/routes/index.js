@@ -34,9 +34,9 @@ export default (
            onEnter={() => enterHandler('unpack')}/>
     <Route path="hongbao/detail/:identifier" component={HongbaoDetailPage}/>
     <Route path="my" component={MyHongbaoPage}/>
-    <Route path="myaddress/:skuId/:giftRecordId" component={UserAddressList}/>
+    <Route path="myaddress" component={UserAddressList}/>
     <Route path="addaddress" component={AddAddress}/>
-    <Route path="editaddress/:index" component={EditAddress}/>
+    <Route path="editaddress/:index" component={AddAddress}/>
     <Route path="selectcity" component={SelectCity}/>
     <Route path="ordertrack/:giftRecordId" component={Logistics}/>
   </Route>

@@ -6,6 +6,7 @@ import perfect from '../../utils/perfect';
 import ScrollLoad from '../../ui/ScrollLoad';
 import callApi from '../../fetch';
 import Unpack from './Unpack';
+import {setSessionStorage} from '../../utils/sessionStorage';
 
 class HongbaoDetail extends Component {
   constructor(props, context) {
@@ -14,7 +15,8 @@ class HongbaoDetail extends Component {
     this.state = {
       showFoot: false,
       unpack: isUnPack,
-      detail: isUnPack ? 'none' : 'block'
+      detail: isUnPack ? 'none' : 'block',
+      refundStatus: null
     };
 
     this.onTouchStart = this.onTouchStart.bind(this);
@@ -23,10 +25,11 @@ class HongbaoDetail extends Component {
     this.loadMore = this.loadMore.bind(this);
     this.refund = this.refund.bind(this);
     this.showDetail = this.showDetail.bind(this);
+    this.reward = this.reward.bind(this);
     this.timeouter = null;
   }
 
-  componentDidMount() {
+  componentWillMount() {
     //加载红包详情
     const {hongbaoDetailAction, identifier} = this.props;
     const accountType = perfect.getAccountType();
@@ -36,7 +39,16 @@ class HongbaoDetail extends Component {
       accountType,
       thirdAccId
     };
-    hongbaoDetailAction.getHongbaoDetail(body);
+
+    hongbaoDetailAction.getHongbaoDetail(body).then((json, response) => {
+      const {res} = json;
+      const {refundStatus} = res;
+      if (refundStatus) {
+        this.setState({
+          refundStatus: 'REFUNDED'
+        });
+      }
+    });
 
     body = {
       identifier
@@ -62,6 +74,10 @@ class HongbaoDetail extends Component {
     window.removeEventListener('touchstart', this.onTouchStart, false);
     window.removeEventListener('touchmove', this.onTouchMove, false);
     window.removeEventListener('touchend', this.onTouchEnd, false);
+
+    const {hongbaoDetailAction} = this.props;
+    hongbaoDetailAction.clearHongbaoDetail();
+    hongbaoDetailAction.clearParticipant();
   }
 
   onTouchStart(e) {
@@ -85,12 +101,12 @@ class HongbaoDetail extends Component {
   }
 
   onTouchEnd(e) {
-    //4秒后隐藏
+    //2秒后隐藏
     this.timeouter = setTimeout(() => {
       this.setState({
         showFoot: false
       });
-    }, 4000);
+    }, 2000);
   }
 
   loadMore() {
@@ -103,7 +119,7 @@ class HongbaoDetail extends Component {
   }
 
   refund() {
-    const {identifier} = this.props;
+    const {identifier, indexActions, setModalCloseCallback} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
     const url = 'refund';
@@ -115,15 +131,27 @@ class HongbaoDetail extends Component {
 
     callApi({url, body, needAuth: true}).then(
       ({json, response}) => {
-        console.info(json);
+        indexActions.setErrorMessage('退款成功');
+        setModalCloseCallback(() => {
+          this.setState({
+            refundStatus: ''
+          });
+        });
       }
     );
   }
 
-  showDetail () {
+  showDetail() {
     this.setState({
       detail: true
     });
+  }
+
+  //兑奖
+  reward (giftRecordId, skuId) {
+    setSessionStorage('skuId', skuId);
+    setSessionStorage('giftRecordId', giftRecordId);
+    this.context.router.push('/myaddress');
   }
 
   //渲染获取者列表
@@ -218,17 +246,29 @@ class HongbaoDetail extends Component {
    * @param skuId
    * @param redbagSelf 红包是否为该用户发起(是：true；否：false)
    * @param refundStatus 红包退款状态 (红包非该用户发起时，该字段为null；红包为该用户发起时，
-   * 该字段定义如下； ALLOW_REFUND：允许退款 FORBIDDEN_REFUND：禁止退款)
+   * 该字段定义如下； ALLOW_REFUND：允许退款 FORBIDDEN_REFUND：禁止退款， REFUNDED 已退款)
    * @returns {XML}
    */
-  renderSelfInfo({selfInfo, status, giftRecordId, skuId, redbagSelf, refundStatus}) {
+  renderSelfInfo({selfInfo, status, giftRecordId, skuId, redbagSelf}) {
     //发起者
     if (redbagSelf) {
-      return (
-        <div>
-          <button onTouchTap={this.refund} className="btn btn-primary btn-outline-primary btn-sm btn-arc">申请退款</button>
-        </div>
-      );
+      const {refundStatus} = this.state;
+      if (refundStatus === 'ALLOW_REFUND') {
+        return (
+          <div>
+            <button onTouchTap={this.refund} className="btn btn-primary btn-outline-primary btn-sm btn-arc">申请退款
+            </button>
+          </div>
+        );
+      } else if (refundStatus === 'REFUNDED') {
+        return (
+          <div>
+            已退款
+          </div>
+        );
+      }
+
+      return null;
     }
 
     //如果为空，表示还没有领取
@@ -246,7 +286,8 @@ class HongbaoDetail extends Component {
             <span className="hb-money">{(giftAmount / 100).toFixed(2)}</span> <span>元</span>
           </div>
           <div>
-            <Link to="/my" className="btn btn-primary btn-sm hb-fillet-1">{deviceEnv.inJdWallet ? '提现' : '去京东钱包提现'}</Link>
+            <Link to="/my"
+                  className="btn btn-primary btn-sm hb-fillet-1">{deviceEnv.inJdWallet ? '提现' : '去京东钱包提现'}</Link>
           </div>
         </div>
       );
@@ -266,7 +307,7 @@ class HongbaoDetail extends Component {
               <span className="hb-money text-primary">中奖啦</span>
             </div>
             <div>
-              <Link to={`/myaddress/${skuId}/${giftRecordId}`} className="btn btn-primary btn-sm btn-arc">立即领奖</Link>
+              <button onTouchTap={() => this.reward(giftRecordId, skuId)} className="btn btn-primary btn-sm btn-arc">立即领奖</button>
             </div>
           </div>
         );
@@ -370,6 +411,7 @@ HongbaoDetail.propTypes = {
   participantPagination: PropTypes.object,
   hongbaoDetailAction: PropTypes.object,
   indexActions: PropTypes.object,
+  setModalCloseCallback: PropTypes.func
 };
 
 export default HongbaoDetail;

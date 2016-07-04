@@ -15,7 +15,11 @@ class SponsorHongbao extends Component {
   }
 
   componentDidMount() {
-    this.loadMore();
+    const {caches, cacheActions} = this.props;
+    if (!caches.sponsorPagination) {
+      cacheActions.addCache('sponsorPagination');
+      this.loadMore();
+    }
   }
 
   //切换已收红包和手气最佳
@@ -26,7 +30,7 @@ class SponsorHongbao extends Component {
   }
 
   /*eslint-disable indent*/
-  getStatus({status, giftGainedNum, giftNum, goodNum}) {
+  getStatus({status, giftStatus, giftGainedNum, giftNum, goodNum}) {
     switch (status) {
       case 'RECEIVE_COMPLETE':
         return (
@@ -97,7 +101,7 @@ class SponsorHongbao extends Component {
                   loader={<div className=""></div>}>
         <ul className="hb-list">
           {list.map((item) => {
-            const {identifier, skuIcon, createdDate, amount, status, giftGainedNum, giftNum, goodNum} = item;
+            const {identifier, skuIcon, createdDate, amount, status, giftStatus, giftGainedNum, giftNum, goodNum} = item;
             let link = `/hongbao/detail/${identifier}`;
 
             return (
@@ -113,7 +117,7 @@ class SponsorHongbao extends Component {
                   <div className="col-8 text-right">
                     <div>{(amount / 100).toFixed(2)}元</div>
                     <div className="text-muted f-sm">
-                      {this.getStatus({status, giftGainedNum, giftNum, goodNum})}
+                      {this.getStatus({status, giftStatus, giftGainedNum, giftNum, goodNum})}
                     </div>
                   </div>
                 </Link>
@@ -164,6 +168,8 @@ SponsorHongbao.propTypes = {
   hongbaoActions: PropTypes.object,
   sponsorPagination: PropTypes.object,
   userInfo: PropTypes.object,
+  caches: PropTypes.object,
+  cacheActions: PropTypes.object,
 };
 
 export default SponsorHongbao;

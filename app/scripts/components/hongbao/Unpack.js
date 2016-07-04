@@ -174,6 +174,8 @@ class Unpack extends Component {
           visible={unpackModal}
           className="hb-modal"
           bodyStyle={{height: '33rem'}}
+          animation
+          maskAnimation
         >
           {this.modalBody()}
         </Modal>

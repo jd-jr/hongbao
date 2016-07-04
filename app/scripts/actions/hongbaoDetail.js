@@ -37,6 +37,15 @@ export function getParticipantList(body = {}) {
   };
 }
 
+//清空红包参与者
+export function clearParticipant() {
+  return {
+    type: PARTICIPANTS_CLEAR,
+    entity: 'participantPagination',
+    clear: true
+  }
+}
+
 // 红包详情
 function fetchHongbaoDetail(body) {
   return {
@@ -56,4 +65,14 @@ export function getHongbaoDetail(body) {
   return (dispatch, getState) => {
     return dispatch(fetchHongbaoDetail(body));
   };
+}
+
+//清空红包详情
+export function clearHongbaoDetail() {
+  return {
+    type: HONGBAO_DETAIL_CLEAR,
+    entity: 'hongbaoInfo',
+    unSchema: true,
+    clear: true
+  }
 }

@@ -3,133 +3,122 @@
  */
 import React, {Component, PropTypes} from 'react'
 import {bindActionCreators} from 'redux'
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 import * as actions from '../../actions/userAddressList'
 import callApi from '../../fetch/'
 
-class SelectCity extends Component{
+class SelectCity extends Component {
 
-  constructor( props ){
-    super( props );
+  constructor(props) {
+    super(props);
     this.state = {
-      list:[],
-      type:0
+      list: [],
+      type: 0
     }
     this.areaTypes = [
       {
-        search:'getProvices',
-        key:'province',
-      },{
+        search: 'getProvices',
+        key: 'province',
+      }, {
         search: 'getCitys',
-        key:'city'
-      },{
+        key: 'city'
+      }, {
         search: 'getCountys',
-        key:'county'
-      },{
+        key: 'county'
+      }, {
         search: 'getTowns',
-        key:'town'
+        key: 'town'
       }
 
     ];
     this.fullAddress = '';
-    this.sltInfo = {
-
-    };
-
+    this.sltInfo = {};
   }
 
-  componentDidMount(){
-    var that = this;
-    var _index = this.state.type;
-    var methodName = this.areaTypes[_index].search;
-    this.getNextList(0,methodName)
-      .then(function (res){
-        console.log(res, 'sdf')
-        that.setState({
-          list:res.json.data,
-          type:++_index
+  /*eslint-disable react/no-did-mount-set-state*/
+  componentDidMount() {
+    let _index = this.state.type;
+    const methodName = this.areaTypes[_index].search;
+    this.getNextList(0, methodName)
+      .then((res) => {
+        this.setState({
+          list: res.json.data,
+          type: ++_index
         })
       })
-
   }
-  getNextList(areaId, methodName){
+
+  getNextList(areaId, methodName) {
     return callApi({
-      url:'user/address/getarealist',
-      body:{
-        areaId:areaId+'',
+      url: 'user/address/getarealist',
+      body: {
+        areaId: String(areaId),
         methodName
       }
     })
   }
-  showNextList(item, e){
-    const { updateTmpUserAddress , indexActions} = this.props;
-    var that = this;
-    var _index = this.state.type;
-    var methodName = this.areaTypes[_index].search;
 
-    var key = that.areaTypes[_index-1].key;
+  showNextList(item, e) {
+    const {updateTmpUserAddress, indexActions} = this.props;
+    let _index = this.state.type;
+    const methodName = this.areaTypes[_index].search;
 
-    this.getNextList(item.id,methodName)
-      .then(function (res){
-        if( res.json.data && _index<3){
+    const key = this.areaTypes[_index - 1].key;
 
-          console.log(key, 'key')
-          that.setState({
-            list:res.json.data,
-            type:++_index
+    /*eslint-disable prefer-template*/
+    this.getNextList(item.id, methodName)
+      .then((res) => {
+        if (res.json.data && _index < 3) {
+          this.setState({
+            list: res.json.data,
+            type: ++_index
           })
-          that.sltInfo[key+'Name'] = item.name;
-          that.sltInfo[key+'Id'] = item.id;
-          that.fullAddress+=item.name;
-        }else{
+          this.sltInfo[key + 'Name'] = item.name;
+          this.sltInfo[key + 'Id'] = item.id;
+          this.fullAddress += item.name;
+        } else {
           //选择完成了
-          that.sltInfo[key+'Name'] = item.name;
-          that.sltInfo[key+'Id'] = item.id;
-          that.fullAddress+=item.name;
+          this.sltInfo[key + 'Name'] = item.name;
+          this.sltInfo[key + 'Id'] = item.id;
+          this.fullAddress += item.name;
           updateTmpUserAddress({
-            fullAddress:{
-              val: that.fullAddress,
-              valid:1
+            fullAddress: {
+              val: this.fullAddress,
+              valid: 1
             }
           })
           updateTmpUserAddress({
-            sltInfo: that.sltInfo
+            sltInfo: this.sltInfo
           })
 
           window.history.go(-1)
         }
 
-      }, function (res){
-        var msg = res.json&&res.json.msg||'网络开小差了!';
-        indexActions.setErrorMessage(msg)
+      }, (error) => {
+        if (error.errorCode !== 'RBF100300') {
+          indexActions.setErrorMessage(error.message);
+        }
       })
   }
-  componentWillUnMount(){
 
-
-  }
-
-  render(){
-    var list = this.state.list||[];
-    var that = this;
-    console.log(list, 'list')
+  render() {
+    const list = this.state.list || [];
     return (
       <div className="address-list-panel">
         {
-          list.map(function (item, index){
+          list.map((item, index) => {
             return (
-              <div className="item" key={item.id} onClick={that.showNextList.bind(that, item)}>{item.name}</div>
+              <div className="item" key={item.id} onClick={this.showNextList.bind(this, item)}>{item.name}</div>
             )
           })
         }
       </div>
     );
   }
-
 }
 
 
-function mapStateToProps( state ){
+function mapStateToProps(state) {
   return {
     tmpUserAddress: state.tmpUserAddress
   }
@@ -137,7 +126,13 @@ function mapStateToProps( state ){
 SelectCity.contextTypes = {
   router: PropTypes.object.isRequired,
 };
-function mapDispatchToProps( dispatch ){
+
+SelectCity.propTypes = {
+  updateTmpUserAddress: PropTypes.func,
+  indexActions: PropTypes.object
+};
+
+function mapDispatchToProps(dispatch) {
   return bindActionCreators(actions, dispatch);
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SelectCity);

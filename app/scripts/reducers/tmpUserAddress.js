@@ -19,11 +19,12 @@ var resetTmp = {
     valid: -1
   },
   addressDetail: {
-    val: '请输入详细地址',
+    val: '',
     valid: -1
   },
   canSub: false
-}
+};
+
 export default function tmpUserAddress(state = resetTmp, action) {
   switch (action.type) {
     case INIT_TMP_USER_ADDRESS:

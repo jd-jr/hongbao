@@ -1,7 +1,7 @@
 import {
-  PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAILURE, PRODUCT_CLEAR,
+  PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAILURE, PRODUCT_LIST_CLEAR,
   CATEGORY_LIST_REQUEST, CATEGORY_LIST_SUCCESS, CATEGORY_LIST_FAILURE,
-  PRODUCT_REQUEST, PRODUCT_SUCCESS, PRODUCT_FAILURE,
+  PRODUCT_REQUEST, PRODUCT_SUCCESS, PRODUCT_FAILURE, PRODUCT_CLEAR,
   SWITCH_CATEGORY, PRICE_ORDER
 } from '../constants/ProductActionTypes';
 
@@ -36,10 +36,10 @@ export function getProductList(body = {}) {
   };
 }
 
-//清空数据
+//清空商品列表
 export function clearProductList() {
   return {
-    type: PRODUCT_CLEAR,
+    type: PRODUCT_LIST_CLEAR,
     entity: 'productPagination',
     clear: true
   }
@@ -90,6 +90,16 @@ export function getProductDetail(skuId) {
   return (dispatch, getState) => {
     return dispatch(fetchProductDetail(skuId));
   };
+}
+
+//清空商品详情
+export function clearProduct() {
+  return {
+    type: PRODUCT_CLEAR,
+    entity: 'productDetail',
+    unSchema: true,
+    clear: true
+  }
 }
 
 // 切换分类 分类ID 传null查询所有分类的商品

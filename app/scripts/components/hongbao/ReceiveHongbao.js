@@ -4,6 +4,8 @@ import offset from 'perfect-dom/lib/offset';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import jdWalletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
+import ScrollLoad from '../../ui/ScrollLoad';
+import classnames from 'classnames';
 import perfect from '../../utils/perfect';
 
 class ReceiveHongbao extends Component {
@@ -18,7 +20,11 @@ class ReceiveHongbao extends Component {
 
   componentDidMount() {
     this.adjustArrow();
-    this.loadData();
+    const {caches, cacheActions} = this.props;
+    if (!caches.receivePagination) {
+      cacheActions.addCache('receivePagination');
+      this.loadMore();
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -37,7 +43,7 @@ class ReceiveHongbao extends Component {
     this.adjustArrow();
   }
 
-  loadData() {
+  loadMore() {
     const {hongbaoActions} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
@@ -60,13 +66,13 @@ class ReceiveHongbao extends Component {
       const {hongbaoActions} = this.props;
       hongbaoActions.clearReceive();
       this.adjustArrow();
-      this.loadData();
+      this.loadMore();
     });
   }
 
   // 提现
   withdraw() {
-    jdWalletApi.openModule('BALANCE');
+    jdWalletApi.openModule({name: 'BALANCE'});
   }
 
   adjustArrow() {
@@ -113,7 +119,7 @@ class ReceiveHongbao extends Component {
    * @param skuIcon
    * @returns {*}
    */
-  getStatus({status, giftAmount, giftType, skuIcon}) {
+  getStatus({status, giftStatus, giftAmount, giftType, skuIcon}) {
     if (giftType === 'CASH') {
       return (
         <div>
@@ -150,7 +156,7 @@ class ReceiveHongbao extends Component {
   }
 
   renderItem(item) {
-    let {identifier, skuIcon, createdDate, giftAmount, status, giftType, thirdAccountUserInfoDtoList} = item;
+    let {identifier, skuIcon, createdDate, giftAmount, status, giftStatus, giftType, thirdAccountUserInfoDtoList} = item;
     let nickName;
     if (thirdAccountUserInfoDtoList && thirdAccountUserInfoDtoList.length > 0) {
       nickName = thirdAccountUserInfoDtoList[0].nickName;
@@ -164,7 +170,7 @@ class ReceiveHongbao extends Component {
             <div className="text-muted f-sm">{perfect.formatDate(createdDate)}</div>
           </div>
           <div className="col-6 text-right">
-            {this.getStatus({status, giftAmount, giftType, skuIcon})}
+            {this.getStatus({status, giftStatus, giftAmount, giftType, skuIcon})}
           </div>
         </Link>
       </li>
@@ -177,7 +183,7 @@ class ReceiveHongbao extends Component {
       receivePagination
     } = this.props;
 
-    const list = receivePagination.list;
+    let {list, isFetching, lastPage} = receivePagination;
 
     if (!list) {
       return (
@@ -199,14 +205,21 @@ class ReceiveHongbao extends Component {
           component="div"
           transitionName="hb-opacity"
           transitionEnterTimeout={500}
-          transitionLeaveTimeout={50}>
-          <ul className="hb-list" key={type}>
-            {
-              list ? list.map((item) => {
-                return this.renderItem(item);
-              }) : null
-            }
-          </ul>
+          transitionLeaveTimeout={300}>
+          <ScrollLoad loadMore={this.loadMore}
+                      hasMore={!lastPage}
+                      isLoading={isFetching}
+                      className={classnames({loading: isFetching})}
+                      loader={<div className=""></div>}
+                      key={type}>
+            <ul className="hb-list">
+              {
+                list ? list.map((item) => {
+                  return this.renderItem(item);
+                }) : null
+              }
+            </ul>
+          </ScrollLoad>
         </ReactCSSTransitionGroup>
       </section>
     );
@@ -235,9 +248,10 @@ class ReceiveHongbao extends Component {
           <div>
             {
               deviceEnv.inJdWallet ? (
-              <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">提现</button>
+                <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">提现</button>
               ) : (
-                <a href="https://qianbao.jd.com/p/page/download.htm?module=BALANCE" className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</a>
+                <a href="https://qianbao.jd.com/p/page/download.htm?module=BALANCE"
+                   className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</a>
               )
             }
           </div>
@@ -269,6 +283,8 @@ ReceiveHongbao.propTypes = {
   hongbaoActions: PropTypes.object,
   receivePagination: PropTypes.object,
   userInfo: PropTypes.object,
+  caches: PropTypes.object,
+  cacheActions: PropTypes.object,
 };
 
 export default ReceiveHongbao;

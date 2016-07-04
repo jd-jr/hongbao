@@ -151,7 +151,7 @@ class ProductList extends Component {
 
     return (
       <div className="row text-nowrap">
-        <div className="col-3" style={{paddingRight: '0'}}>
+        <div className="col-3" style={{paddingRight: '0px'}}>
           <span className={`hb-product-nav-btn${activeCategory === null ? ' active' : ''}`}
                 onTouchTap={(e) => this.handleSelectTab(e, null)}
                 style={{width: '100%'}}>全部</span>

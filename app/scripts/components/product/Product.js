@@ -24,6 +24,11 @@ class Product extends Component {
     return false;
   }
 
+  componentWillUnmount() {
+    const {productActions} = this.props;
+    productActions.clearProduct();
+  }
+
   selectProduct() {
     const {productDetail, view} = this.props;
     if (view === 'view') {

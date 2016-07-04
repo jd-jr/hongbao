@@ -92,6 +92,8 @@ class Initiate extends Component {
             visible={visible}
             className="hb-modal"
             bodyStyle={{height: '32rem'}}
+            animation
+            maskAnimation
           >
             <div className="hb-ellipse-arc-mask">
               <div className="hb-ellipse-arc-flat flex-items-middle flex-items-center flex">
@@ -130,6 +132,8 @@ class Initiate extends Component {
           onClose={this.onClose}
           title="支付结果"
           footer={footer}
+          animation
+          maskAnimation
         >
           <div className="text-center">支付失败</div>
         </Modal>

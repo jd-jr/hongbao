@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import jdWalletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import BottomNav from '../BottomNav';
 import ReceiveHongbao from './ReceiveHongbao';
@@ -30,6 +29,15 @@ class MyHongbao extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const {hongbaoActions, cacheActions} = this.props;
+    hongbaoActions.clearReceive();
+    hongbaoActions.clearSponsor();
+    hongbaoActions.clearUserInfo();
+    cacheActions.resetCacheById('receivePagination');
+    cacheActions.resetCacheById('sponsorPagination');
+  }
+
   loadData() {
     const {hongbaoActions} = this.props;
     const accountType = perfect.getAccountType();
@@ -55,11 +63,30 @@ class MyHongbao extends Component {
 
   render() {
     const {type, loaded} = this.state;
-    const {hongbaoActions, receivePagination, sponsorPagination, userInfo} = this.props;
+    const {
+      hongbaoActions, receivePagination, sponsorPagination, userInfo,
+      caches, cacheActions
+    } = this.props;
 
     if (!loaded) {
       return null;
     }
+
+    const receiveProps = {
+      hongbaoActions,
+      receivePagination,
+      userInfo,
+      caches,
+      cacheActions
+    };
+
+    const sponsorProps = {
+      hongbaoActions,
+      sponsorPagination,
+      userInfo,
+      caches,
+      cacheActions
+    };
 
     return (
       <div>
@@ -84,10 +111,8 @@ class MyHongbao extends Component {
           </section>
 
           {type === 'receive' ?
-            (<ReceiveHongbao hongbaoActions={hongbaoActions} receivePagination={receivePagination}
-                             userInfo={userInfo}/>) :
-            (<SponsorHongbao hongbaoActions={hongbaoActions} sponsorPagination={sponsorPagination}
-                             userInfo={userInfo}/>)}
+            (<ReceiveHongbao {...receiveProps}/>) :
+            (<SponsorHongbao {...sponsorProps}/>)}
         </article>
 
         <BottomNav type="receive"/>
@@ -107,6 +132,8 @@ MyHongbao.propTypes = {
   userInfo: PropTypes.object,
   type: PropTypes.string,
   setClientInfo: PropTypes.func,
+  caches: PropTypes.object,
+  cacheActions: PropTypes.object,
 };
 
 export default MyHongbao;

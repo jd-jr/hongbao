@@ -15,6 +15,9 @@ class App extends Component {
     super(props, context);
     this.setClientInfo = this.setClientInfo.bind(this);
     this.onClose = this.onClose.bind(this);
+    this.setModalCloseCallback = this.setModalCloseCallback.bind(this);
+    this.modalCloseCallback = function () {
+    };
   }
 
   //跳转到设置客户端信息
@@ -99,6 +102,13 @@ class App extends Component {
   onClose() {
     const {indexActions} = this.props;
     indexActions.resetErrorMessage();
+    if (this.modalCloseCallback && typeof this.modalCloseCallback === 'function') {
+      this.modalCloseCallback();
+    }
+  }
+
+  setModalCloseCallback(callback) {
+    this.modalCloseCallback = callback;
   }
 
   // alert 窗口
@@ -118,7 +128,7 @@ class App extends Component {
     return (
       <Modal
         visible={errorMessage !== null}
-        style={{width: '70%'}}
+        style={{width: '70%', zIndex: 30000}}
         bodyStyle={{height: '5rem'}}
         onClose={this.onClose}
         title="温馨提示"
@@ -148,6 +158,7 @@ class App extends Component {
           errorMessage,
           indexActions,
           setClientInfo: this.setClientInfo,
+          setModalCloseCallback: this.setModalCloseCallback
         })}
       </div>
     );

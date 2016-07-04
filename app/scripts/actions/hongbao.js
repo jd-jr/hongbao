@@ -1,7 +1,7 @@
 import {
   SPONSOR_REQUEST, SPONSOR_SUCCESS, SPONSOR_FAILURE, SPONSOR_CLEAR,
   RECEIVE_REQUEST, RECEIVE_SUCCESS, RECEIVE_FAILURE, RECEIVE_CLEAR,
-  USER_INFO_REQUEST, USER_INFO_SUCCESS, USER_INFO_FAILURE
+  USER_INFO_REQUEST, USER_INFO_SUCCESS, USER_INFO_FAILURE, USER_INFO_CLEAR
 } from '../constants/HongbaoActionTypes';
 
 import HongbaoSchemas from '../models/HongbaoSchemas';
@@ -64,6 +64,15 @@ export function clearReceive() {
   }
 }
 
+//清空我发出的红包
+export function clearSponsor() {
+  return {
+    type: SPONSOR_CLEAR,
+    entity: 'sponsorPagination',
+    clear: true
+  }
+}
+
 // 用户信息
 function fetchUserInfo(body) {
   return {
@@ -83,4 +92,14 @@ export function getUserInfo(body = {}) {
   return (dispatch, getState) => {
     return dispatch(fetchUserInfo(body));
   };
+}
+
+//清空用户信息
+export function clearUserInfo() {
+  return {
+    type: USER_INFO_CLEAR,
+    entity: 'userInfo',
+    unSchema: true,
+    clear: true
+  }
 }

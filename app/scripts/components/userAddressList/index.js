@@ -2,18 +2,17 @@
  * 用户的收获地址列表
  *
  */
-
 import React, {Component, PropTypes} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {assign} from  'lodash'
-import Modal from 'reactjs-modal'
 import className from 'classnames'
-
 import * as actions from '../../actions/userAddressList'
+import callApi from '../../fetch'
+import {getSessionStorage} from '../../utils/sessionStorage';
+//图片
+import noItems from '../../../images/no_items.png';
 
-import callApi from '../../fetch/'
-/*eslint-disable*/
 class UserAddressList extends Component {
   constructor(props) {
     super(props);
@@ -21,74 +20,73 @@ class UserAddressList extends Component {
       showTip: false,
       showActionTip: false,
       actionTip: '确认使用该收货地址？'
-    }
+    };
+
+    this.skuId = getSessionStorage('skuId');
+    this.giftRecordId = getSessionStorage('giftRecordId');
+    
+    this.showTipWhenAction = this.showTipWhenAction.bind(this);
+    this.editAddress = this.editAddress.bind(this);
+    this.toggleActionTipState = this.toggleActionTipState.bind(this);
+    this.sureAction = this.sureAction.bind(this);
+    this.waitForGoods = this.waitForGoods.bind(this);
+    this.toggleTipState = this.toggleTipState.bind(this);
+    this.toggleTipState = this.toggleTipState.bind(this);
+    this.goAddAddress = this.goAddAddress.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const {address, setUserAddressList, indexActions} = this.props;
-    var that = this;
-    //this.toggleTipState()
     if (!address.length) {
       callApi({
         url: 'user/address/list',
-        body: {
-          jdPin: "duobaodao3"
-        }
-      }).then(function (res) {
-        console.log(res, '=====>')
-        var list = res.json.data || []
+        body: {},
+        needAuth: true
+      }).then((res) => {
+        const list = res.json.data || []
         setUserAddressList(list)
-        that.checkGoodsStock(list)
-      }, function (res){
-        var msg = res.json&&res.json.msg||'网络开小差了!';
-        indexActions.setErrorMessage(msg)
-      })
+        this.checkGoodsStock(list)
+      }, (error) => {
+        if (error.errorCode !== 'RBF100300') {
+          indexActions.setErrorMessage(error.message);
+        }
+      });
     }
-
   }
 
   checkGoodsStock(list) {
-    const {setUserAddressList, updateUserAddress, indexActions } = this.props;
-    var that = this;
+    const {updateUserAddress} = this.props;
     //检测收货地址
-    list.forEach(function (item, index) {
+    list.forEach((item, index) => {
       callApi({
         url: 'user/address/areastock',
         body: {
-          jdPin: "duobaodao3",
           addressId: item.id,
-          skuId: '100012'//需要从store中获取
-        }
-      }).then(function (res) {
-        var stock = res.json.data;
+          skuId: this.skuId
+        },
+        needAuth: true
+      }).then((res) => {
+        const stock = res.json.data;
         list[index].stock = stock;
         updateUserAddress({index, addedAddress: list[index]});
-        if (item.addressDefault == true && !stock) {
-          that.toggleTipState();
+        if (item.addressDefault && !stock) {
+          this.toggleTipState();
         }
-      }, function (res) {
+      }, (res) => {
         list[index].stock = false;
-        if (item.addressDefault == true) {
-
-          that.toggleTipState();
+        if (item.addressDefault) {
+          this.toggleTipState();
         }
         updateUserAddress({index, addedAddress: list[index]});
-
       })
     })
-
-  }
-
-  componentWillUnMount() {
 
   }
 
   goAddAddress() {
     const {resetTmpUserAddress} = this.props;
-    resetTmpUserAddress()
-    this.context.router.push({
-      pathname: 'addaddress'
-    })
+    resetTmpUserAddress();
+    this.context.router.push('/addaddress');
   }
 
   //设置成默认地址
@@ -97,19 +95,18 @@ class UserAddressList extends Component {
     if (item.addressDefault) {
       return;
     }
-    // TODO: jdPin 不需要再传给服务端
     callApi({
       url: 'user/address/setdefault',
       body: {
-        jdPin: "duobaodao3",
-        addressId: item.id + ""
-      }
-    }).then(function (res) {
-      console.log(res, '=====-')
+        addressId: String(item.id)
+      },
+      needAuth: true
+    }).then((res) => {
       setDefaultAddress(item.id);
-    }, function (res) {
-      var msg = res.json && res.json.msg || '网络开小差了!';
-      indexActions.setErrorMessage(msg)
+    }, (error) => {
+      if (error.errorCode !== 'RBF100300') {
+        indexActions.setErrorMessage(error.message);
+      }
     })
   }
 
@@ -122,7 +119,7 @@ class UserAddressList extends Component {
    */
   editAddress(index, item) {
     const {initTmpUserAddress} = this.props;
-    var tmp = assign({}, item, {
+    const tmp = assign({}, item, {
       name: {
         val: item.name,
         valid: 1
@@ -138,55 +135,57 @@ class UserAddressList extends Component {
       addressDetail: {
         val: item.addressDetail,
         valid: 1
-      },
+      }
     })
     initTmpUserAddress(tmp)
     this.context.router.push({
-      pathname: 'editaddress/' + index
+      pathname: `editaddress/${index}`
     })
   }
 
-  // TODO: 不再传递jdpin
   deleteAddress(index, item) {
     const {deleteUserAddress, indexActions} = this.props;
     callApi({
       url: 'user/address/delete',
       body: {
-        jdPin: "duobaodao3",
-        addressId: item.id + ""
-      }
-    }).then(function (res) {
-      console.log(res, '=====-')
+        addressId: String(item.id)
+      },
+      needAuth: true
+    }).then((res) => {
       deleteUserAddress(index)
-    }, function (res) {
-      var msg = res.json && res.json.msg || '网络开小差了!';
-      indexActions.setErrorMessage(msg)
+    }, (error) => {
+      if (error.errorCode !== 'RBF100300') {
+        indexActions.setErrorMessage(error.message);
+      }
     })
   }
 
   //切换显示删除 等操作提示弹窗
-  toggleActionTipState() {
-
-    var tipState = this.state.actionShowTip;
+  toggleActionTipState(e) {
+    if (e) {
+      e.nativeEvent.preventDefault();
+      e.nativeEvent.stopPropagation();
+    }
+    const {actionShowTip} = this.state;
     this.setState({
-      actionShowTip: !tipState
+      actionShowTip: !actionShowTip
     })
   }
 
   //切换显示无货提示弹窗
   toggleTipState() {
-    var actionState = this.state.showTip;
+    const {showTip} = this.state;
     this.setState({
-      showTip: !actionState
+      showTip: !showTip
     })
   }
 
   //展示操作提示
   showTipWhenAction(type, index, item) {
-    var tipMsg = '';
-    var callback = null;
+    let tipMsg = '';
+    let callback = null;
 
-
+    /*eslint-disable indent*/
     switch (type) {
       case 'SET_DFT':
         callback = this.setDefault.bind(this, index, item)
@@ -202,7 +201,7 @@ class UserAddressList extends Component {
           return;
         }
         callback = this.sureUseAddress.bind(this, index, item);
-        tipMsg = '确定使用该地址吗?'
+        tipMsg = '确定使用该地址吗?';
         break;
       default:
         break;
@@ -212,7 +211,7 @@ class UserAddressList extends Component {
       actionTip: tipMsg,
       sureAction: callback
 
-    })
+    });
     this.toggleActionTipState();
 
   }
@@ -220,7 +219,7 @@ class UserAddressList extends Component {
   //展示是否有货
   showStock(item) {
     console.log(item, 'item')
-    if (item.stock == undefined) {
+    if (item.stock === undefined) {
       return <span className="col-8 goods-state">获取中...</span>;
     }
     if (item.stock === true) {
@@ -233,19 +232,18 @@ class UserAddressList extends Component {
 
   //确定使用这个地址作为收货地址
   sureUseAddress(index, item) {
-    var that = this;
     const {indexActions} = this.props;
     if (item.stock) {
       //确定下单了??
       this.generateOrder(item)
-        .then(function () {
-          that.context.router.push({
+        .then(() => {
+          this.context.router.push({
             pathname: ''
           })
-        }, function (res) {
-          var msg = res.json && res.json.msg || '网络开小差了!';
-          indexActions.setErrorMessage(msg)
-
+        }, (error) => {
+          if (error.errorCode !== 'RBF100300') {
+            indexActions.setErrorMessage(error.message);
+          }
         })
     } else {
       //提示
@@ -254,26 +252,27 @@ class UserAddressList extends Component {
   }
 
   //点击确认按钮
-  sureAction() {
+  sureAction(e) {
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
     this.state.sureAction();
     this.toggleActionTipState();
   }
 
   generateOrder(item) {
-    const {params} = this.props;
-    var _ret = {
-      "gifRecordId": params.giftRecordId,
-      "receiverName": item.name,
-      "receiverPhone": item.mobile,
-      "receiverEmail": item.email || '',
-      "receiverProvinceCode": item.provinceId,
-      "receiverProvinceName": item.provinceName,
-
-      "receiverCityName": "收货人市区编码",
-      "receiverCountryCode": "收货人区县编码",
-      "receiverCountryName": "收货人区县名称",
-      "receiverZipCode": ""
-    }
+    let _ret = {
+      gifRecordId: this.giftRecordId,
+      receiverName: item.name,
+      receiverPhone: item.mobile,
+      receiverEmail: item.email || '',
+      receiverProvinceCode: item.provinceId,
+      receiverProvinceName: item.provinceName,
+      receiverCityName: '收货人市区编码',
+      receiverCountryCode: '收货人区县编码',
+      receiverCountryName: '收货人区县名称',
+      receiverZipCode: ''
+    };
+    
     item.cityName && (_ret.receiverCityName = item.cityName);
     item.cityId && (_ret.receiverCityCode = item.cityId);
     item.countyId && (_ret.receiverCountryCode = item.countyId);
@@ -285,84 +284,110 @@ class UserAddressList extends Component {
 
     return callApi({
       url: 'giftRecordOrder/createOrderAddress',
-      body: _ret
+      body: _ret,
+      needAuth: true
     })
   }
 
   //等待补货
   waitForGoods() {
-    this.toggleTipState()
+    const {indexActions} = this.props;
+    const url = '';
+    const body = {};
+    callApi({url, body}).then(
+      (res) => {
+        this.context.router.replace('hongbao/detail/:identifier');
+      }, (error) => {
+        if (error.errorCode !== 'RBF100300') {
+          indexActions.setErrorMessage(error.message);
+        }
+      }
+    );
   }
 
-  render() {
+  //渲染地址列表
+  /*eslint-disable prefer-template*/
+  renderAddressList() {
     const {
       address
     } = this.props;
-    var that = this;
 
+    console.info(address);
+    if (!address) {
+      return null;
+    }
 
+    if (address.length === 0) {
+      return (
+        <div className="m-t-3">
+          <img className="hb-no-items" src={noItems}/>
+          <p className="m-t-2 text-center text-muted">暂无地址</p>
+        </div>
+      );
+    }
+
+    return address.map((item, index) => {
+      return (
+        <div key={item.id}>
+          <div className="hb-bd-t row hb-bg-white item"
+               onClick={() => this.showTipWhenAction('USE', index, item)}>
+            <div className="col-6 text-truncate">{item.name}</div>
+            <div className="col-10 ">{item.mobile}</div>
+            <div className="col-24 hb-gray-l-t address-text text-truncate-2">
+              {item.fullAddress}
+            </div>
+          </div>
+          <div className="row hb-bg-white opt-item hb-bd-t hb-bd-b slt-radio-panel">
+            <i className="line-v"></i>
+
+            <label forHtml="slt-circle0" onClick={() => this.showTipWhenAction('SET_DFT', index, item)}
+                   className={(item.addressDefault ? 'checked' : '') + ' col-3'}></label>
+                    <span className="col-8 push-2 hb-gray-l-t"
+                          onClick={() => this.showTipWhenAction('SET_DFT', index, item)}>设为默认</span>
+
+            {this.showStock(item)}
+
+            <span className="col-4 text-center" onClick={() => this.editAddress(index, item)}>编辑</span>
+                    <span className="col-4 text-center"
+                          onClick={() => this.showTipWhenAction('DELETE', index, item)}>删除</span>
+          </div>
+        </div>
+      );
+    })
+  }
+
+  render() {
     return (
       <div className="hb-address-panel">
-
-
         <div className="hb-bd-t hb-bd-b row hb-bg-white item">
-          <div className="col-21" onClick={this.goAddAddress.bind(this)}>新建收货地址</div>
+          <div className="col-21" onClick={this.goAddAddress}>新建收货地址</div>
           <div className="col-3  arrow-hollow-right"></div>
         </div>
         <div>
           {
-            address.map(function (item, index) {
-              return (
-                <div key={item.id}>
-                  <div className=" hb-bd-t row hb-bg-white item"
-                       onClick={that.showTipWhenAction.bind(that,'USE',index, item)}>
-                    <div className="col-6 text-truncate">{item.name}</div>
-                    <div className="col-10 ">{item.mobile}</div>
-                    <div className="col-24 hb-gray-l-t address-text text-truncate-2">
-                      {item.fullAddress}
-                    </div>
-                  </div>
-                  <div className="row hb-bg-white opt-item hb-bd-t hb-bd-b slt-radio-panel">
-                    <i className="line-v"></i>
-
-                    <label forHtml="slt-circle0" onClick={that.showTipWhenAction.bind(that,'SET_DFT', index, item)}
-                           className={(item.addressDefault?'checked':'')+" col-3"}></label>
-                    <span className="col-8 push-2 hb-gray-l-t"
-                          onClick={that.showTipWhenAction.bind(that,'SET_DFT', index, item)}>设为默认</span>
-
-                    {that.showStock(item)}
-
-                    <span className="col-4 text-center" onClick={that.editAddress.bind(that, index, item)}>编辑</span>
-                    <span className="col-4 text-center"
-                          onClick={that.showTipWhenAction.bind(that,'DELETE', index, item)}>删除</span>
-                  </div>
-                </div>
-              );
-            })
+            this.renderAddressList()
           }
         </div>
 
-
         <div className={className({
-          "tip-mask": true,
-           "hb-hidden": !this.state.showTip
+          'tip-mask': true,
+           'hb-hidden': !this.state.showTip
         })}>
           <div className="tip-alert">
-
             <div className="text-center">
               <div className="hb-bd-b">
                 <h2 className="hb-f-16 tip-item title">您所选择的收货地址无货</h2>
                 <div className="hb-f-12 sub-title">您可以有如下选择</div>
               </div>
-              <div className="text-red tip-item hb-bd-b" onClick={this.waitForGoods.bind(this)}>等待京东补货</div>
-              <div className="text-red tip-item" onClick={this.toggleTipState.bind(this)}>取消</div>
+              <div className="text-red tip-item hb-bd-b" onClick={this.waitForGoods}>等待京东补货</div>
+              <div className="text-red tip-item" onClick={this.toggleTipState}>取消</div>
             </div>
           </div>
         </div>
 
         <div className={className({
-          "tip-mask": true,
-           "hb-hidden": !this.state.actionShowTip
+          'tip-mask': true,
+           'hb-hidden': !this.state.actionShowTip
         })}>
           <div className="tip-alert">
 
@@ -371,31 +396,41 @@ class UserAddressList extends Component {
                 {this.state.actionTip}
               </div>
               <div className="btn-panel">
-                <a href="javascript:;" className="btn-cancel text-red tip-item hb-bd-r"
-                   onClick={this.toggleActionTipState.bind(this)}>取消</a>
-                <a href="javascript:;" className="btn-sure text-red tip-item"
-                   onClick={this.sureAction.bind(this)}>确定</a>
+                <a href="#" className="btn-cancel text-red tip-item hb-bd-r"
+                   onClick={this.toggleActionTipState}>取消</a>
+                <a href="#" className="btn-sure text-red tip-item"
+                   onClick={this.sureAction}>确定</a>
               </div>
             </div>
           </div>
         </div>
-
-
       </div>
-
-
     );
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   return {
     address: state.address
   }
 }
+
 UserAddressList.contextTypes = {
   router: PropTypes.object.isRequired,
 };
+
+UserAddressList.propTypes = {
+  address: PropTypes.array,
+  setUserAddressList: PropTypes.func,
+  indexActions: PropTypes.object,
+  updateUserAddress: PropTypes.func,
+  resetTmpUserAddress: PropTypes.func,
+  setDefaultAddress: PropTypes.func,
+  initTmpUserAddress: PropTypes.func,
+  deleteUserAddress: PropTypes.func,
+};
+
+
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(actions, dispatch);
 }

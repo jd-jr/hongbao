@@ -8,6 +8,7 @@ import promise from 'es6-promise';
 import Root from './containers/Root';
 import configureStore from './store';
 
+import 'reactjs-modal/dist/styles/modal.css';
 import '../styles/main.css';
 
 // Promise 兼容性处理
