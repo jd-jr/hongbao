@@ -30,11 +30,11 @@ export default function address(state = null, action) {
       return newState;
     }
     case ADD_USER_ADDRESS:
-      newState.unshift(action.state)
+      newState.unshift(action.state);
       return newState;
     case UPDATE_USER_ADDRESS:
     {
-      let _index = action.state.index;
+      let _index = Number(action.state.index);
       newState = newState.map((item, index) => {
         if (_index === index) {
           return action.state.addedAddress;

@@ -19,8 +19,8 @@ const errorMapping = {
 };
 
 export default function (error, errorMsg) {
-  //没有登录，不用处理错误信息
-  if (error.errorCode === 'RBF100300') {
+  //没有登录或未知异常，不用处理错误信息
+  if (error.errorCode === 'RBF100300' || error.errorCode === 'RBE200001') {
     return;
   }
   if (errorMsg) {

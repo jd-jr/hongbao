@@ -33,7 +33,7 @@ export function getParticipantList(body = {}) {
     if (isFetching || lastPage) {
       return null;
     }
-    return dispatch(fetchParticipantList({...body, pageNum, pageSize: 5}));
+    return dispatch(fetchParticipantList({...body, pageNum, pageSize: 20}));
   };
 }
 

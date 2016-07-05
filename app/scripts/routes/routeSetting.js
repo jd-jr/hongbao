@@ -2,7 +2,7 @@ import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import walletApi from 'jd-wallet-sdk';
 import {WEIXIN_AUTHORIZE, REDIRECT_URI} from '../config';
 import perfect from '../utils/perfect';
-import {setSessionStorage} from '../utils/sessionStorage';
+import {setSessionStorage, getSessionStorage} from '../utils/sessionStorage';
 
 const routeSetting = {
   titles: {
@@ -32,12 +32,15 @@ const routeSetting = {
     if (key === 'home' || key === 'unpack') {
       const params = perfect.getLocationParams() || {};
       const {thirdAccId, accountType} = params;
+      const _thirdAccId = getSessionStorage('thirdAccId');
+      const _accountType = getSessionStorage('accountType');
+
       //如果在微信端，并且没有返回 accountId，需要微信授权
       if (deviceEnv.inWx) {
         if (thirdAccId && accountType) {
           setSessionStorage('thirdAccId', thirdAccId);
           setSessionStorage('accountType', accountType);
-        } else { //授权
+        } else if (!_thirdAccId && !_accountType) {//授权
           /**
            * 例子
            * https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx70b5cd13e1f6b778&redirect_uri=URL&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect

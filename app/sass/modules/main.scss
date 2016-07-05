@@ -4,7 +4,20 @@ html, body {
 }
 
 // 处理底部内容始终显示在底部
+html {
+  position: relative;
+}
 
+html, body {
+  height: auto;
+  min-height: 100%;
+}
+
+//弹性滚动，Android 不支持
+/*body {
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}*/
 
 ul {
   list-style: none;
@@ -183,6 +196,21 @@ h1, h2, h3, h4, h5, h6 {
     }
   }
 
+  &alert {
+    .rc-modal-body {
+      padding: 1rem;
+      color: $gray;
+    }
+    .btn-alert {
+      border: 0;
+      color: $brand-primary;
+      background: #fff;
+    }
+    .rc-modal-footer {
+      padding: .5rem 1rem;
+    }
+  }
+
   &ellipse-arc-mask {
     position: relative;
     background: #d64f47;
@@ -292,8 +320,9 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
   }
 
-  &iscroll {
-    margin-top: 3.65rem;
+  &iscroll.iscroll-wrapper {
+    top: 3.65rem;
+    bottom: 4rem;
   }
 
   &mask {
@@ -341,6 +370,34 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     width: 100%;
     bottom: 3rem;
+  }
+
+  &radio-gray {
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid #ccc;
+    position: relative;
+    display: inline-block;
+    width: 1.2rem;
+    height: 1.2rem;
+    vertical-align: top;
+    margin-right: 0.3rem;
+    text-align: center;
+
+    &.checked {
+      background: $brand-primary;
+      border: 1px solid $brand-primary;
+    }
+
+    &.checked:after {
+      position: absolute;
+      border-left: 1px solid #fff;
+      border-bottom: 1px solid #fff;
+      content: "";
+      width: 60%;
+      height: 30%;
+      transform: translate(-50%, 70%) rotate(-45deg);
+    }
   }
 }
 

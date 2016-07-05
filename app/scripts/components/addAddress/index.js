@@ -4,16 +4,16 @@
 import React, {Component, PropTypes} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import * as actions from '../../actions/userAddressList'
-import className from 'classnames'
 import {assign, keys, trim} from 'lodash'
+import * as actions from '../../actions/userAddressList'
 import callApi from '../../fetch/'
+import Loading from '../../ui/Loading';
 import {getSessionStorage} from '../../utils/sessionStorage';
 
 class AddAddress extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {};
     this.sureAction = this.sureAction.bind(this);
     this.skuId = getSessionStorage('skuId');
     this.giftRecordId = getSessionStorage('giftRecordId');
@@ -100,7 +100,7 @@ class AddAddress extends Component {
       case 'name':
         return val.length > 0;
       case 'mobile':
-        return (/^1[3578]\d{9}$/g).test(val);
+        return (/^1[3-9]\d{9}$/g).test(val);
       case 'addressDetail':
         return val.length > 0;
       default:
@@ -125,7 +125,7 @@ class AddAddress extends Component {
       return '请输入手机号码';
     }
     if (t.mobile.valid !== 1) {
-      return '手机号码格式不正确';
+      return '您输入的手机号格式不正确，请重新输入';
     }
     if (t.fullAddress.valid !== 1) {
       return '请选择所在省市';
@@ -138,6 +138,14 @@ class AddAddress extends Component {
 
   //新增操作
   sureAction() {
+    const addressEntity = this.generateParams();
+    const {addUserAddress, updateUserAddress, params, indexActions} = this.props;
+    const message = this.checkCanSub();
+    if (message !== true) {
+      indexActions.setErrorMessage(message);
+      return;
+    }
+
     //防重处理
     const {submitState} = this.state;
     if (submitState) {
@@ -146,14 +154,6 @@ class AddAddress extends Component {
     this.setState({
       submitState: true
     });
-
-    const addressEntity = this.generateParams();
-    const {addUserAddress, updateUserAddress, params, indexActions} = this.props;
-    const message = this.checkCanSub();
-    if (message !== true) {
-      indexActions.setErrorMessage(message);
-      return;
-    }
 
     const {index} = params;
     const url = index ? 'user/address/update' : 'user/address/save';
@@ -170,9 +170,9 @@ class AddAddress extends Component {
       body,
       needAuth: true
     }).then((res) => {
-      const id = res.json.data;
-      if (id) {
-        addedAddress = assign({}, addressEntity, {id});
+      const addressId = index ? addressEntity.id : res.json.data;
+      if (addressId) {
+        addedAddress = assign({}, addressEntity, {addressId});
         if (index) {
           updateUserAddress({index, addedAddress});
         } else {
@@ -183,7 +183,7 @@ class AddAddress extends Component {
         return callApi({
           url: 'user/address/areastock',
           body: {
-            addressId: id,
+            addressId,
             skuId: this.skuId
           },
           needAuth: true
@@ -252,6 +252,9 @@ class AddAddress extends Component {
 
     return (
       <div>
+        {
+          state.submitState ? <Loading/> : null
+        }
         <div className="mg-t-10 wg-address-panel">
           <div className="wg-address-item">
             <span className=" item-title">收货人</span>
@@ -261,10 +264,6 @@ class AddAddress extends Component {
                      onChange={this.setValue.bind(this, 'name')}
                      onBlur={this.showError.bind(this, 'name')}/>
             </div>
-            <i className={className({
-              'error-icon': true,
-              'hb-hidden': this.state.mobile.valid === 1
-            })}>+</i>
           </div>
           <div className="wg-address-item">
             <span className=" item-title">手机号码</span>
@@ -274,15 +273,11 @@ class AddAddress extends Component {
                      onChange={this.setValue.bind(this, 'mobile')}
                      onBlur={this.showError.bind(this, 'mobile')}/>
             </div>
-            <i className={className({
-              'error-icon': true,
-              'hb-hidden': this.state.mobile.valid === 1
-            })}>+</i>
           </div>
           <div className="wg-address-item" onTouchTap={this.goSltCity.bind(this)}>
             <span className=" item-title">所在省市</span>
             <div className=" item-input">
-              <input className="hb-input" type="text" disabled placeholder="请选择所在省市"
+              <input className="hb-input" type="text" readOnly placeholder="请选择所在省市"
                      value={fullAddress}/>
             </div>
             <i className="arrow-hollow-right"></i>
@@ -295,10 +290,6 @@ class AddAddress extends Component {
                         onChange={this.setValue.bind(this, 'addressDetail')}
                         onBlur={this.showError.bind(this, 'addressDetail')}></textarea>
             </div>
-            <i className={className({
-              'error-icon': true,
-              'hb-hidden': this.state.mobile.valid === 1
-            })}>+</i>
           </div>
         </div>
 

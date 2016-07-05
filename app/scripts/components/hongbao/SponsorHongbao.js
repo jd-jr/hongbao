@@ -67,6 +67,7 @@ class SponsorHongbao extends Component {
           </div>
         );
       case 'OK':
+      case 'PAY_SUCC':
         return (
           <div>
             {giftGainedNum}/{giftNum}个

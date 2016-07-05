@@ -3,6 +3,7 @@ import Modal from 'reactjs-modal';
 import callApi from '../../fetch';
 import {HONGBAO_INVALID_STATUS, HONGBAO_TITLE} from '../../constants/common';
 import prefect from '../../utils/perfect';
+import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
 
 class Unpack extends Component {
   constructor(props, context) {
@@ -15,6 +16,11 @@ class Unpack extends Component {
     };
     this.unpack = this.unpack.bind(this);
     this.hongbaoDetail = this.hongbaoDetail.bind(this);
+    const unpacked = getSessionStorage('unpacked');
+    if (unpacked === 'true') {
+      const {identifier} = props;
+      context.router.replace(`/hongbao/detail/${identifier}`);
+    }
   }
 
   componentDidMount() {
@@ -54,7 +60,7 @@ class Unpack extends Component {
           if (status === 'NEED_PAY') {
             indexActions.setErrorMessage('该红包还未支付！');
           } else {
-            indexActions.setErrorMessage('改红包不存在或已被删除');
+            indexActions.setErrorMessage('该红包不存在或已被删除');
           }
         } else {
           this.setState({
@@ -74,12 +80,14 @@ class Unpack extends Component {
 
   // 拆开红包
   unpack() {
+    setSessionStorage('unpacked', 'true');
     if (this.state.unpackStatus) {
       return;
     }
     //防重处理
     this.setState({
-      unpackStatus: true
+      unpackStatus: true,
+      unpackModal: false, //隐藏红包
     });
     const {hongbaoStatus} = this.state;
     const {identifier} = this.props;
@@ -114,6 +122,7 @@ class Unpack extends Component {
 
   hongbaoDetail() {
     const {identifier} = this.props;
+    setSessionStorage('unpacked', 'true');
     this.context.router.replace(`/hongbao/detail/${identifier}`);
   }
 
@@ -181,19 +190,17 @@ class Unpack extends Component {
   renderModal() {
     const {unpackModal} = this.state;
     let modal;
-    if (unpackModal) {
-      modal = (
-        <Modal
-          visible={unpackModal}
-          className="hb-modal"
-          bodyStyle={{height: '33rem'}}
-          animation
-          maskAnimation
-        >
-          {this.modalBody()}
-        </Modal>
-      );
-    }
+    modal = (
+      <Modal
+        visible={unpackModal}
+        className="hb-modal"
+        bodyStyle={{height: '33rem'}}
+        animation
+        maskAnimation
+      >
+        {this.modalBody()}
+      </Modal>
+    );
     return modal;
   }
 

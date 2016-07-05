@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
-import callApi from '../../fetch';
 import Unpack from './Unpack';
 import {HONGBAO_TITLE} from '../../constants/common';
 import HongbaoSelfInfo from './HongbaoSelfInfo';
@@ -16,13 +15,11 @@ class HongbaoDetail extends Component {
       showFoot: true,
       unpack: isUnPack,
       detail: isUnPack ? 'none' : 'block',
-      refundStatus: null
     };
 
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
-    this.refund = this.refund.bind(this);
     this.showDetail = this.showDetail.bind(this);
   }
 
@@ -37,18 +34,7 @@ class HongbaoDetail extends Component {
       thirdAccId
     };
 
-    hongbaoDetailAction.getHongbaoDetail(body)
-      .then((json, response) => {
-        if (json) {
-          const {res} = json;
-          const {refundStatus} = res.hongbaoInfo;
-          if (refundStatus) {
-            this.setState({
-              refundStatus
-            });
-          }
-        }
-      });
+    hongbaoDetailAction.getHongbaoDetail(body);
 
     //滚动窗口显示底部 banner，停止隐藏
     window.addEventListener('touchstart', this.onTouchStart, false);
@@ -75,47 +61,29 @@ class HongbaoDetail extends Component {
   }
 
   onTouchStart(e) {
-    const target = e.currentTarget;
-    console.info(e);
-    console.info(1);
+    const el = e.changedTouches[0];
+    const pageY = el.pageY;
+    this.pageY = pageY;
   }
 
   onTouchMove(e) {
-    this.setState({
-      showFoot: false
-    });
-    console.info(2);
+    // 解决 Android bug 这会触发一次 touchstart， 一次 touchmove， touchend 不触发
+    // http://www.imooc.com/video/9579
+    //e.preventDefault();
+    const el = e.changedTouches[0];
+    const pageY = el.pageY;
+    const offset = pageY - this.pageY;
+    if (offset < -20 || offset > 20) {//向下滑动
+      this.setState({
+        showFoot: false
+      });
+    }
   }
 
   onTouchEnd(e) {
     this.setState({
       showFoot: true
     });
-    console.info(3);
-  }
-
-  //退款
-  refund() {
-    const {identifier, indexActions, setModalCloseCallback} = this.props;
-    const accountType = perfect.getAccountType();
-    const thirdAccId = perfect.getThirdAccId();
-    const url = 'refund';
-    const body = {
-      identifier,
-      accountId: thirdAccId,
-      accountType
-    };
-
-    callApi({url, body, needAuth: true}).then(
-      ({json, response}) => {
-        indexActions.setErrorMessage('退款成功');
-        setModalCloseCallback(() => {
-          this.setState({
-            refundStatus: ''
-          });
-        });
-      }
-    );
   }
 
   showDetail() {
@@ -166,7 +134,10 @@ class HongbaoDetail extends Component {
   }
 
   render() {
-    const {hongbaoInfo, identifier, indexActions, hongbaoDetailAction, participantPagination} = this.props;
+    const {
+      hongbaoInfo, identifier, indexActions,
+      hongbaoDetailAction, participantPagination, setModalCloseCallback
+    } = this.props;
 
     /**
      skuId  String  商品SKU
@@ -200,14 +171,17 @@ class HongbaoDetail extends Component {
     const unpackProps = {identifier, indexActions, showDetail};
     const {unpack, detail} = this.state;
 
-    const selfInfoProps = {selfInfo, giftRecordId, skuId, redbagSelf, refundStatus, identifier};
+    const selfInfoProps = {
+      selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
+      identifier, indexActions, setModalCloseCallback
+    };
 
     const gainedListProps = {hongbaoDetailAction, identifier, participantPagination};
 
     return (
       <div>
         {unpack ? <Unpack {...unpackProps}/> : null}
-        <article style={{display: detail}}>
+        <article className="hb-wrap-mb" style={{display: detail}}>
           <section>
             <div className="hb-single m-t-1 m-b-1">
               <Link className="hb-link-block row flex-items-middle" to={`/product/detail/view/${skuId}`}>
@@ -235,18 +209,18 @@ class HongbaoDetail extends Component {
           <section className="m-t-3">
             {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
             <HongbaoGainedList {...gainedListProps}/>
-            <p className="text-center hb-logo-pos">
-              <i className="hb-logo"></i>
-            </p>
           </section>
           {
             this.state.showFoot ? (
-              <div className="hb-footer text-center" style={{opacity: 0.7}}>
+              <div className="hb-footer text-center" style={{backgroundColor: 'rgba(255, 255, 255, 0.7)'}}>
                 <Link className="hb-active-btn" to="/">发起实物红包</Link>
               </div>
             ) : null
           }
         </article>
+        <p className="text-center hb-logo-pos">
+          <i className="hb-logo"></i>
+        </p>
       </div>
     );
   }

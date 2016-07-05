@@ -102,15 +102,19 @@ class MyHongbao extends Component {
             </div>
           </section>
 
-          <section className="hb-single row m-a-1">
-            <div className="col-5">
-              <img className="img-fluid" src={emsCnpl} alt=""/>
-            </div>
-            <div className="col-19 flex flex-items-center flex-items-column">
-              <div>关注京东钱包，查看后续中奖信息！</div>
-              <div className="text-muted">长按识别二维码</div>
-            </div>
-          </section>
+          {
+            deviceEnv.inWx ? (
+              <section className="hb-single row m-a-1">
+                <div className="col-5">
+                  <img className="img-fluid" src={emsCnpl} alt=""/>
+                </div>
+                <div className="col-19 flex flex-items-center flex-items-column">
+                  <div>关注京东钱包，查看后续中奖信息！</div>
+                  <div className="text-muted">长按识别二维码</div>
+                </div>
+              </section>
+            ) : null
+          }
 
           {type === 'receive' ?
             (<ReceiveHongbao {...receiveProps}/>) :

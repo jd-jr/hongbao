@@ -121,19 +121,18 @@ class App extends Component {
 
     const footer = (
       <div className="text-center">
-        <button className="btn btn-secondary" onClick={this.onClose}>
-          确认
-        </button>
+        <span className="btn btn-alert" onClick={this.onClose}>
+          确定
+        </span>
       </div>
     );
 
     return (
       <Modal
+        className="hb-alert"
         visible={errorMessage !== null}
         style={{width: '70%'}}
-        bodyStyle={{height: '5rem'}}
         onClose={this.onClose}
-        title="温馨提示"
         footer={footer}
         animation
         maskAnimation

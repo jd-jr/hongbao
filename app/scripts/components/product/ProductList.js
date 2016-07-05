@@ -1,6 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import iScroll from 'iscroll/build/iscroll-probe';
 import ReactIScroll from 'reactjs-iscroll';
+import base64 from 'js-base64';
+import perfect from '../../utils/perfect'
+const {Base64} = base64;
 
 //图片
 import noItems from '../../../images/no_items.png';
@@ -8,12 +11,16 @@ import noItems from '../../../images/no_items.png';
 class ProductList extends Component {
   constructor(props, context) {
     super(props, context);
+    this.state = {
+      productChecked: null
+    };
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
     this.handleSelectTab = this.handleSelectTab.bind(this);
     this.handleOrder = this.handleOrder.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
     this.handleChecked = this.handleChecked.bind(this);
+    this.selectProduct = this.selectProduct.bind(this);
 
     this.touchEnable = false; //是否可以移动
     this.touchMaxDistance = 0; //移动最大距离
@@ -34,7 +41,7 @@ class ProductList extends Component {
       productPagination
     } = nextProps;
 
-    if (categoryList.list && productPagination.list) {
+    if (categoryList.ids && productPagination.ids) {
       return true;
     }
     return false;
@@ -49,8 +56,35 @@ class ProductList extends Component {
   }
 
   // 选择商品
-  handleChecked (skuId) {
+  handleChecked(skuId) {
+    this.setState({
+      productChecked: skuId
+    });
+  }
 
+  //选择商品
+  selectProduct() {
+    const {productChecked} = this.state;
+    if (!productChecked) {
+      return;
+    }
+    const {
+      productPagination: {entity}
+    } = this.props;
+
+    const {skuName, skuId, bizPrice, indexImg} = entity[productChecked];
+
+    let detail = perfect.stringifyJSON({skuName, skuId, bizPrice, indexImg});
+    detail = Base64.encode(detail);
+    detail = encodeURIComponent(detail);
+    //浏览器发送 http 请求数据时,会自动把 + 转换为空格,所以先对 + Unicode编码 为 %2B
+    detail = detail.replace(/\+/g, '%2B');
+    this.context.router.replace({
+      pathname: '/',
+      query: {
+        detail,
+      }
+    });
   }
 
   //切换标签
@@ -141,6 +175,7 @@ class ProductList extends Component {
     }
   }
 
+  //渲染商品分类
   renderCategory() {
     const {
       categoryList,
@@ -148,8 +183,8 @@ class ProductList extends Component {
       priceOrder
     } = this.props;
 
-    const list = categoryList.list;
-    const len = list ? list.length : 0;
+    const {ids, entity} = categoryList;
+    const len = ids ? ids.length : 0;
     if (len > 4) { //开启移动
       this.touchEnable = true;
       this.touchMaxDistance = 0;
@@ -166,14 +201,15 @@ class ProductList extends Component {
           <div ref="categoryNav" onTouchStart={this.handleTouchStart}
                onTouchMove={this.handleTouchMove}>
             {
-              list && list.length > 0 ?
-                list.map((item, index) => {
-                  const {id} = item;
+              ids && ids.length > 0 ?
+                ids.map((item, index) => {
+                  const record = entity[item];
+                  const {id, categoryName} = record;
                   return (
                     <span key={id}
                           className={`hb-product-nav-btn${activeCategory === id ? ' active' : ''}`}
                           onTouchTap={(e) => this.handleSelectTab(e, id)}>
-                    {item.categoryName}
+                    {categoryName}
                   </span>
                   );
                 }) : null
@@ -193,19 +229,26 @@ class ProductList extends Component {
 
   renderProductItem(item) {
     const {skuId, skuName, indexImg, bizPrice} = item;
+    const {productChecked} = this.state;
     return (
-      <li key={skuId} className="row flex-items-middle"
-          onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`)}>
-        <div className="col-4">
+      <li key={skuId} className="row flex-items-middle">
+        <div className="col-3 text-right">
+          <i className={`hb-radio-gray${productChecked === skuId ? ' checked' : ''}`}
+             onTouchTap={() => this.handleChecked(skuId)}></i>
+        </div>
+        <div className="col-4"
+             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`)}>
           <img className="img-fluid" src={indexImg} alt=""/>
         </div>
-        <div className="col-17">
+        <div className="col-14"
+             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`)}>
           <div className="text-truncate">{skuName}</div>
           <div className="f-sm hb-product-info">
             <span>¥ {(bizPrice / 100).toFixed(2)}</span>
           </div>
         </div>
-        <div className="col-3 text-center">
+        <div className="col-3 text-center"
+             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`)}>
           <span className="arrow-hollow-right"></span>
         </div>
       </li>
@@ -217,13 +260,13 @@ class ProductList extends Component {
       productPagination
     } = this.props;
 
-    const {list, isFetching, lastPage} = productPagination;
+    const {ids, entity, lastPage} = productPagination;
 
-    if (!list) {
+    if (!ids) {
       return (
         <div className="page-loading">载入中，请稍后 ...</div>
       );
-    } else if (list.length === 0) {
+    } else if (ids.length === 0) {
       return (
         <div className="m-t-3">
           <img className="hb-no-items" src={noItems}/>
@@ -239,8 +282,8 @@ class ProductList extends Component {
                     className="hb-iscroll">
         <ul className="hb-list">
           {
-            list ? list.map((item) => {
-              return this.renderProductItem(item);
+            ids ? ids.map((item) => {
+              return this.renderProductItem(entity[item]);
             }) : null
           }
         </ul>
@@ -249,14 +292,22 @@ class ProductList extends Component {
   }
 
   render() {
+    const {productChecked} = this.state;
     return (
       <div>
         <header className="hb-product-nav">
           {this.renderCategory()}
         </header>
-        <article>
+        <article className="hb-wrap-mb">
           {this.renderProduct()}
         </article>
+        <footer className="hb-footer-fixed">
+          <button className="btn btn-block btn-primary btn-lg btn-flat"
+                  onTouchTap={this.selectProduct}
+                  disabled={!productChecked}>
+            确认商品
+          </button>
+        </footer>
       </div>
     );
   }

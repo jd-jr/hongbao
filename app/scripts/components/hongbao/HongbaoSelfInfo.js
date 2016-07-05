@@ -2,6 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import {setSessionStorage} from '../../utils/sessionStorage';
+import perfect from '../../utils/perfect';
+import callApi from '../../fetch';
 
 /**
  * 发起者和领取者
@@ -17,8 +19,12 @@ import {setSessionStorage} from '../../utils/sessionStorage';
 class HongbaoSelfInfo extends Component {
   constructor(props, context) {
     super(props, context);
+    this.state = {
+      refundStatus: props.refundStatus
+    };
     this.reward = this.reward.bind(this);
     this.logistics = this.logistics.bind(this);
+    this.refund = this.refund.bind(this);
   }
 
   //物流详情
@@ -34,6 +40,30 @@ class HongbaoSelfInfo extends Component {
     setSessionStorage('giftRecordId', giftRecordId);
     setSessionStorage('identifier', identifier);
     this.context.router.push('/myaddress');
+  }
+
+  //退款
+  refund() {
+    const {identifier, indexActions, setModalCloseCallback} = this.props;
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
+    const url = 'refund';
+    const body = {
+      identifier,
+      accountId: thirdAccId,
+      accountType
+    };
+
+    callApi({url, body, needAuth: true}).then(
+      ({json, response}) => {
+        indexActions.setErrorMessage('退款成功');
+        setModalCloseCallback(() => {
+          this.setState({
+            refundStatus: 'REFUNDED'
+          });
+        });
+      }
+    );
   }
 
   /**
@@ -96,7 +126,7 @@ class HongbaoSelfInfo extends Component {
   }
 
   //退款状态
-  refundStatus(refundStatus) {
+  renderRefundStatus(refundStatus) {
     if (refundStatus === 'ALLOW_REFUND') {
       return (
         <div>
@@ -129,7 +159,8 @@ class HongbaoSelfInfo extends Component {
   }
 
   renderStatus() {
-    const {selfInfo, giftRecordId, skuId, redbagSelf, refundStatus} = this.props;
+    const {selfInfo, giftRecordId, skuId, redbagSelf} = this.props;
+    const {refundStatus} = this.state;
     //发起者
     if (redbagSelf) {
       if (selfInfo) { //自己抢到红包
@@ -139,12 +170,12 @@ class HongbaoSelfInfo extends Component {
         } else { // 实物
           // 优先判断是否可以退款
           if (refundStatus) {
-            return this.refundStatus(refundStatus);
+            return this.renderRefundStatus(refundStatus);
           }
           return this.winningStatus(confirmAddress, giftRecordId, skuId);
         }
       } else { //自己没有抢自己的红包
-        return this.refundStatus(refundStatus);
+        return this.renderRefundStatus(refundStatus);
       }
     } else { // 接收者
       if (selfInfo) {
@@ -178,6 +209,8 @@ HongbaoSelfInfo.propTypes = {
   redbagSelf: PropTypes.bool,
   refundStatus: PropTypes.string,
   identifier: PropTypes.string,
+  indexActions: PropTypes.object,
+  setModalCloseCallback: PropTypes.func
 };
 
 export default HongbaoSelfInfo;

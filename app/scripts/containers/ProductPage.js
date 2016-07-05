@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import assign from 'lodash/assign';
 import * as productActions from '../actions/product';
 
 class ProductPage extends Component {
@@ -46,44 +45,22 @@ ProductPage.propTypes = {
   view: PropTypes.string,
 };
 
-// 商品记录
-const entitykeys = ['productPagination', 'categoryList'];
-
 function mapStateToProps(state, ownProps) {
   const {skuId, view} = ownProps.params;
   const {
-    product,
+    product: {productPagination, categoryList, activeCategory, priceOrder},
     entity: {productDetail}
   } = state;
 
-  const {activeCategory, priceOrder} = product;
-
-  const lists = entitykeys.map(key => {
-    const entityList = product[key];
-    let entityPagination = assign({}, entityList);
-    let {ids, entity} = entityList;
-    if (ids) {
-      entityPagination.list = ids.map(id => entity[id]);
-    }
-
-    delete entityPagination.ids;
-    delete entityPagination.entity;
-    return {
-      [key]: entityPagination
-    };
-  });
-
   let objects = {
+    productPagination,
+    categoryList,
     activeCategory,
     priceOrder,
     productDetail: productDetail || {},
     skuId,
     view
   };
-
-  lists.forEach((item) => {
-    assign(objects, item);
-  });
 
   return objects;
 }

@@ -51,7 +51,7 @@ export function getHongbaoList(body = {}, type) {
     if (isFetching || lastPage) {
       return null;
     }
-    return dispatch(fetchHongbaoList({...body, pageSize: 5, pageNum}, type));
+    return dispatch(fetchHongbaoList({...body, pageSize: 20, pageNum}, type));
   };
 }
 

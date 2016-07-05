@@ -223,7 +223,6 @@ class UserAddressList extends Component {
 
   //展示是否有货
   showStock(item) {
-    console.log(item, 'item')
     if (item.stock === undefined) {
       return <span className="col-8 goods-state">获取中...</span>;
     }

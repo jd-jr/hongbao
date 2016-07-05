@@ -110,7 +110,12 @@ class Home extends Component {
   //提交前校验表单
   verify() {
     const {indexActions} = this.props;
-    const {checked, giftNum, title, bizPrice} = this.state;
+    const {checked, giftNum, title, bizPrice, skuId} = this.state;
+    if (!skuId) {
+      indexActions.setErrorMessage('请选择商品');
+      return;
+    }
+
     let limit = bizPrice <= 100 ? bizPrice - 1 : 100;
     if (giftNum === '') {
       indexActions.setErrorMessage('请输入红包个数');
@@ -134,10 +139,6 @@ class Home extends Component {
   payBefore(e) {
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
-
-    if (this.state.selecting) {
-      return;
-    }
 
     if (!this.verify()) {
       return;
@@ -345,12 +346,11 @@ class Home extends Component {
               <span>同意并接受</span> <a href="#">《京东钱包实物红包服务协议》</a>
             </p>
             <p className="text-center f-sm m-t-2 text-muted">中奖者未领取实物，可于7天后申请退款</p>
-            <p className="text-center hb-logo-pos">
-              <i className="hb-logo"></i>
-            </p>
           </section>
         </article>
-
+        <p className="text-center hb-logo-pos">
+          <i className="hb-logo"></i>
+        </p>
         <Help/>
         <BottomNav type="sponsor"/>
       </div>

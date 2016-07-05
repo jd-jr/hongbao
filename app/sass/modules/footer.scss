@@ -24,5 +24,6 @@
     right: 0;
     // 解决 ios 下底部会有1px空白
     bottom: -1px;
+    z-index: 100;
   }
 }

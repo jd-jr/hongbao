@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "classnames": "^2.2.5",
+    "draggabilly": "^2.1.1",
     "eruda": "^0.7.1",
     "es6-promise": "^3.2.1",
     "history": "^2.1.2",
