@@ -8,11 +8,9 @@ import Product from '../components/product/Product';
 import HongbaoDetailPage from '../containers/HongbaoDetailPage';
 import MyHongbaoPage from '../containers/MyHongbaoPage';
 import InitiatePage from '../containers/InitiatePage';
-import UnpackPage from '../containers/UnpackPage';
 
 import UserAddressList from '../components/userAddressList/'
 import AddAddress from '../components/addAddress/'
-import EditAddress from '../components/editAddress/'
 import SelectCity from '../components/selectCity/'
 import Logistics from '../components/logisticsInfo/'
 import routeSetting from './routeSetting';
@@ -23,21 +21,31 @@ export default (
   <Route path="/" component={App}>
     <IndexRoute component={HomePage}
                 onEnter={() => enterHandler('home')}/>
-    <Route path="sponsor" component={HomePage}/>
     <Route path="product" component={ProductPage}>
-      <IndexRoute component={ProductList}/>
-      <Route path="detail/:skuId" component={Product}/>
-      <Route path="detail/:view/:skuId" component={Product}/>
+      <IndexRoute component={ProductList}
+                  onEnter={() => enterHandler('productList')}/>
+      <Route path="detail/:skuId" component={Product}
+             onEnter={() => enterHandler('product')}/>
+      <Route path="detail/:view/:skuId" component={Product}
+             onEnter={() => enterHandler('productView')}/>
     </Route>
-    <Route path="initiate" component={InitiatePage}/>
+    <Route path="initiate" component={InitiatePage}
+           onEnter={() => enterHandler('initiate')}/>
     <Route path="unpack/:identifier" component={HongbaoDetailPage}
            onEnter={() => enterHandler('unpack')}/>
-    <Route path="hongbao/detail/:identifier" component={HongbaoDetailPage}/>
-    <Route path="my" component={MyHongbaoPage}/>
-    <Route path="myaddress" component={UserAddressList}/>
-    <Route path="addaddress" component={AddAddress}/>
-    <Route path="editaddress/:index" component={AddAddress}/>
-    <Route path="selectcity" component={SelectCity}/>
-    <Route path="ordertrack/:giftRecordId" component={Logistics}/>
+    <Route path="hongbao/detail/:identifier" component={HongbaoDetailPage}
+           onEnter={() => enterHandler('detail')}/>
+    <Route path="my" component={MyHongbaoPage}
+           onEnter={() => enterHandler('my')}/>
+    <Route path="myaddress" component={UserAddressList}
+           onEnter={() => enterHandler('myaddress')}/>
+    <Route path="addaddress" component={AddAddress}
+           onEnter={() => enterHandler('addaddress')}/>
+    <Route path="editaddress/:index" component={AddAddress}
+           onEnter={() => enterHandler('editaddress')}/>
+    <Route path="selectcity" component={SelectCity}
+           onEnter={() => enterHandler('selectcity')}/>
+    <Route path="logistics/:giftRecordId" component={Logistics}
+           onEnter={() => enterHandler('logistics')}/>
   </Route>
 );

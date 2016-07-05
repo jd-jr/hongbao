@@ -107,6 +107,7 @@ class Unpack extends Component {
         this.setState({
           unpackStatus: false
         });
+        this.context.router.replace(`/hongbao/detail/${identifier}`);
       }
     );
   }

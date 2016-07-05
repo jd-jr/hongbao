@@ -13,6 +13,7 @@ class ProductList extends Component {
     this.handleSelectTab = this.handleSelectTab.bind(this);
     this.handleOrder = this.handleOrder.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
+    this.handleChecked = this.handleChecked.bind(this);
 
     this.touchEnable = false; //是否可以移动
     this.touchMaxDistance = 0; //移动最大距离
@@ -45,6 +46,11 @@ class ProductList extends Component {
       const navSW = this.refs.categoryNav.scrollWidth;
       this.touchMaxDistance = navSW - navCW;
     }
+  }
+
+  // 选择商品
+  handleChecked (skuId) {
+
   }
 
   //切换标签
@@ -100,6 +106,7 @@ class ProductList extends Component {
       }
     }
 
+    this.refs.categoryNav.style.webkitTransform = `translateX(-${this.touchOffset}px)`;
     this.refs.categoryNav.style.transform = `translateX(-${this.touchOffset}px)`;
   }
 
@@ -116,7 +123,6 @@ class ProductList extends Component {
     } = this.props;
     const {clearProductList, getProductList} = productActions;
 
-    const {lastPage} = productPagination;
     if (downOrUp === 'up') { // 加载更多
       getProductList({
         category: activeCategory,

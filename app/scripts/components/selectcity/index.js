@@ -108,7 +108,7 @@ class SelectCity extends Component {
         {
           list.map((item, index) => {
             return (
-              <div className="item" key={item.id} onClick={this.showNextList.bind(this, item)}>{item.name}</div>
+              <div className="item" key={item.id} onTouchTap={this.showNextList.bind(this, item)}>{item.name}</div>
             )
           })
         }

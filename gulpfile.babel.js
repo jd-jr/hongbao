@@ -69,6 +69,7 @@ gulp.task('copy:dev', ['clean'], () => {
     {src: 'app/scripts/containers/Root.prod.js', dest: 'app/scripts/containers/Root.js'},
     {src: 'app/favicon.ico', dest: 'dist/favicon.ico'},
     {src: 'node_modules/eruda/dist/eruda.min.js', dest: 'dist/eruda.min.js'},
+    {src: 'app/images/mystic-gift-sm.png', dest: 'dist/images/mystic-gift-sm.png'},
   ];
   return $.copy2(paths);
 });
@@ -81,6 +82,7 @@ gulp.task('copy:prod', ['clean'], () => {
     {src: 'app/scripts/containers/Root.prod.js', dest: 'app/scripts/containers/Root.js'},
     {src: 'app/favicon.ico', dest: 'dist/favicon.ico'},
     {src: 'node_modules/eruda/dist/eruda.min.js', dest: 'dist/eruda.min.js'},
+    {src: 'app/images/mystic-gift-sm.png', dest: 'dist/images/mystic-gift-sm.png'},
   ];
   return $.copy2(paths);
 });

@@ -7,6 +7,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {assign} from  'lodash'
 import className from 'classnames'
+import Modal from 'reactjs-modal';
 import * as actions from '../../actions/userAddressList'
 import callApi from '../../fetch'
 import {getSessionStorage} from '../../utils/sessionStorage';
@@ -19,7 +20,8 @@ class UserAddressList extends Component {
     this.state = {
       showTip: false,
       showActionTip: false,
-      actionTip: '确认使用该收货地址？'
+      actionTip: '确认使用该收货地址？',
+      waitforModal: false
     };
 
     this.skuId = getSessionStorage('skuId');
@@ -33,6 +35,8 @@ class UserAddressList extends Component {
     this.toggleTipState = this.toggleTipState.bind(this);
     this.toggleTipState = this.toggleTipState.bind(this);
     this.goAddAddress = this.goAddAddress.bind(this);
+    this.onModalClose = this.onModalClose.bind(this);
+    this.currentItem = null;
   }
 
   componentWillMount() {
@@ -196,11 +200,12 @@ class UserAddressList extends Component {
         tipMsg = '确定删除该地址吗?'
         break;
       case 'USE':
+        this.currentItem = item;
         if (!item.stock) {
           this.toggleTipState();
           return;
         }
-        callback = this.sureUseAddress.bind(this, index, item);
+        callback = this.sureUseAddress.bind(this, item);
         tipMsg = '确定使用该地址吗?';
         break;
       default:
@@ -231,20 +236,10 @@ class UserAddressList extends Component {
   }
 
   //确定使用这个地址作为收货地址
-  sureUseAddress(index, item) {
-    const {indexActions} = this.props;
+  sureUseAddress(item) {
     if (item.stock) {
-      //确定下单了??
-      this.generateOrder(item)
-        .then(() => {
-          this.context.router.push({
-            pathname: ''
-          })
-        }, (error) => {
-          if (error.errorCode !== 'RBF100300') {
-            indexActions.setErrorMessage(error.message);
-          }
-        })
+      //确定下单
+      this.generateOrder(item);
     } else {
       //提示
       this.toggleTipState();
@@ -259,7 +254,9 @@ class UserAddressList extends Component {
     this.toggleActionTipState();
   }
 
-  generateOrder(item) {
+  // 生成订单
+  generateOrder(item, waitFor) {
+    const {setModalCloseCallback, indexActions} = this.props;
     let _ret = {
       gifRecordId: this.giftRecordId,
       receiverName: item.name,
@@ -282,29 +279,87 @@ class UserAddressList extends Component {
 
     item.fullAddress && (_ret.receiverAddress = item.fullAddress);
 
-    return callApi({
+    const identifier = getSessionStorage('identifier');
+    callApi({
       url: 'giftRecordOrder/createOrderAddress',
       body: _ret,
       needAuth: true
-    })
+    }).then((json) => {
+      if (waitFor) {
+        this.toggleActionTipState();
+        this.setState({
+          waitforModal: true
+        });
+      } else {
+        this.context.router.replace(`hongbao/detail/${identifier}`);
+      }
+    }, (error) => {
+      if (error.errorCode !== 'RBF100300') {
+        indexActions.setErrorMessage(error.message);
+      }
+      setModalCloseCallback(() => {
+        this.context.router.replace(`hongbao/detail/${identifier}`);
+      });
+    });
   }
 
   //等待补货
-  //FIXME 待联调
   waitForGoods() {
-    const {indexActions} = this.props;
-    const url = '';
-    const body = {};
+    const {indexActions, address} = this.props;
+    const url = 'wait/stock';
     const identifier = getSessionStorage('identifier');
+    const giftRecordId = getSessionStorage('giftRecordId');
+    const body = {
+      identifier
+    };
+
     callApi({url, body}).then(
       (res) => {
-        this.context.router.replace(`hongbao/detail/${identifier}`);
+        this.generateOrder(this.currentItem || address[0], true);
       }, (error) => {
         if (error.errorCode !== 'RBF100300') {
           indexActions.setErrorMessage(error.message);
         }
       }
     );
+  }
+
+  onModalClose() {
+    this.setState({
+      waitforModal: false
+    });
+    const identifier = getSessionStorage('identifier');
+    this.context.router.replace(`hongbao/detail/${identifier}`);
+  }
+
+  renderModal() {
+    const {waitforModal} = this.state;
+    if (waitforModal) {
+      const footer = (
+        <div className="text-center">
+          <button className="btn btn-primary" onTouchTap={this.onModalClose}>
+            我知道了
+          </button>
+        </div>
+      );
+      return (
+        <Modal
+          visible={waitforModal}
+          style={{width: '70%'}}
+          bodyStyle={{height: '7rem'}}
+          onClose={this.onModalClose}
+          footer={footer}
+          animation
+          maskAnimation
+          preventTouchmove
+          closable={false}
+        >
+          <div className="text-center">
+            奖品是否有货，取决于京东补货速度。实物红包无法保证奖品寄出具体时间，您可联系客服咨询。客服电话：95118
+          </div>
+        </Modal>
+      );
+    }
   }
 
   //渲染地址列表
@@ -331,7 +386,7 @@ class UserAddressList extends Component {
       return (
         <div key={item.id}>
           <div className="hb-bd-t row hb-bg-white item"
-               onClick={() => this.showTipWhenAction('USE', index, item)}>
+               onTouchTap={() => this.showTipWhenAction('USE', index, item)}>
             <div className="col-6 text-truncate">{item.name}</div>
             <div className="col-10 ">{item.mobile}</div>
             <div className="col-24 hb-gray-l-t address-text text-truncate-2">
@@ -341,16 +396,16 @@ class UserAddressList extends Component {
           <div className="row hb-bg-white opt-item hb-bd-t hb-bd-b slt-radio-panel">
             <i className="line-v"></i>
 
-            <label forHtml="slt-circle0" onClick={() => this.showTipWhenAction('SET_DFT', index, item)}
+            <label forHtml="slt-circle0" onTouchTap={() => this.showTipWhenAction('SET_DFT', index, item)}
                    className={(item.addressDefault ? 'checked' : '') + ' col-3'}></label>
                     <span className="col-8 push-2 hb-gray-l-t"
-                          onClick={() => this.showTipWhenAction('SET_DFT', index, item)}>设为默认</span>
+                          onTouchTap={() => this.showTipWhenAction('SET_DFT', index, item)}>设为默认</span>
 
             {this.showStock(item)}
 
-            <span className="col-4 text-center" onClick={() => this.editAddress(index, item)}>编辑</span>
+            <span className="col-4 text-center" onTouchTap={() => this.editAddress(index, item)}>编辑</span>
                     <span className="col-4 text-center"
-                          onClick={() => this.showTipWhenAction('DELETE', index, item)}>删除</span>
+                          onTouchTap={() => this.showTipWhenAction('DELETE', index, item)}>删除</span>
           </div>
         </div>
       );
@@ -360,6 +415,7 @@ class UserAddressList extends Component {
   render() {
     return (
       <div className="hb-address-panel">
+        {this.renderModal()}
         <div className="hb-bd-t hb-bd-b row hb-bg-white item">
           <div className="col-21" onTouchTap={this.goAddAddress}>新建收货地址</div>
           <div className="col-3  arrow-hollow-right"></div>
@@ -380,8 +436,8 @@ class UserAddressList extends Component {
                 <h2 className="hb-f-16 tip-item title">您所选择的收货地址无货</h2>
                 <div className="hb-f-12 sub-title">您可以有如下选择</div>
               </div>
-              <div className="text-red tip-item hb-bd-b" onClick={this.waitForGoods}>等待京东补货</div>
-              <div className="text-red tip-item" onClick={this.toggleTipState}>取消</div>
+              <div className="text-red tip-item hb-bd-b" onTouchTap={() => this.waitForGoods()}>等待京东补货</div>
+              <div className="text-red tip-item" onTouchTap={this.toggleTipState}>取消</div>
             </div>
           </div>
         </div>
@@ -398,9 +454,9 @@ class UserAddressList extends Component {
               </div>
               <div className="btn-panel">
                 <a href="#" className="btn-cancel text-red tip-item hb-bd-r"
-                   onClick={this.toggleActionTipState}>取消</a>
+                   onTouchTap={this.toggleActionTipState}>取消</a>
                 <a href="#" className="btn-sure text-red tip-item"
-                   onClick={this.sureAction}>确定</a>
+                   onTouchTap={this.sureAction}>确定</a>
               </div>
             </div>
           </div>
@@ -429,6 +485,7 @@ UserAddressList.propTypes = {
   setDefaultAddress: PropTypes.func,
   initTmpUserAddress: PropTypes.func,
   deleteUserAddress: PropTypes.func,
+  setModalCloseCallback: PropTypes.func,
 };
 
 

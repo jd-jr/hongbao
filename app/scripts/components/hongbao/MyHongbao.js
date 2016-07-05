@@ -22,6 +22,8 @@ class MyHongbao extends Component {
       setClientInfo((login) => {
         if (login) {
           this.loadData();
+        } else {
+          this.context.router.goBack();
         }
       });
     } else {

@@ -345,7 +345,7 @@ class Home extends Component {
               <span>同意并接受</span> <a href="#">《京东钱包实物红包服务协议》</a>
             </p>
             <p className="text-center f-sm m-t-2 text-muted">中奖者未领取实物，可于7天后申请退款</p>
-            <p className="text-center">
+            <p className="text-center hb-logo-pos">
               <i className="hb-logo"></i>
             </p>
           </section>

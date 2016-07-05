@@ -118,7 +118,7 @@ class Initiate extends Component {
     if (visible) {
       const footer = (
         <div className="text-center">
-          <button className="btn btn-secondary" onClick={this.onClose}>
+          <button className="btn btn-secondary" onTouchTap={this.onClose}>
             确认
           </button>
         </div>

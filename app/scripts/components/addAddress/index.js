@@ -37,10 +37,7 @@ class AddAddress extends Component {
         val: e.target.value,
         valid: -1
       }
-    }, () => {
-      console.log(this.state)
     })
-
   }
 
   //如果检测项不合法 提示错误
@@ -198,13 +195,15 @@ class AddAddress extends Component {
         submitState: false
       });
     }).then((res) => {
-      const stock = res.json.data;
-      addedAddress.stock = stock;
-      updateUserAddress({index: index || 0, addedAddress});
+      if (res) {
+        const stock = res.json.data;
+        addedAddress.stock = stock;
+        updateUserAddress({index: index || 0, addedAddress});
 
-      this.context.router.replace({
-        pathname: '/myaddress'
-      })
+        this.context.router.replace({
+          pathname: '/myaddress'
+        })
+      }
     }, (error) => {
       //请求失败按照无货处理
       addedAddress.stock = false;
@@ -280,7 +279,7 @@ class AddAddress extends Component {
               'hb-hidden': this.state.mobile.valid === 1
             })}>+</i>
           </div>
-          <div className="wg-address-item" onClick={this.goSltCity.bind(this)}>
+          <div className="wg-address-item" onTouchTap={this.goSltCity.bind(this)}>
             <span className=" item-title">所在省市</span>
             <div className=" item-input">
               <input className="hb-input" type="text" disabled placeholder="请选择所在省市"
@@ -303,7 +302,7 @@ class AddAddress extends Component {
           </div>
         </div>
 
-        <a className="sure-btn" onClick={this.sureAction}>确定</a>
+        <a className="sure-btn" onTouchTap={this.sureAction}>确定</a>
 
       </div>
 

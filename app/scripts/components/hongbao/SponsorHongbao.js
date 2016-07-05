@@ -30,6 +30,34 @@ class SponsorHongbao extends Component {
   }
 
   /*eslint-disable indent*/
+  /**
+   * 红包状态字段：status
+   INIT("初始化"),
+   WAIT_PAY("等待付款"),
+   PAY_SUCC("支付成功"),
+   RECEIVE_COMPLETE("领取完成"),
+   EXPIRED("已过期"),
+   REFUNDED("已退款"),
+   FORBIDDEN_REFUND("禁止退款"),
+   REDBAGWHOLEREFUND("红包可全额退款"),
+   REDBAGGOODSREFOUND("红包实物可退款"),
+   REDBAGGOODTRANSFER("红包实物可转发")
+
+   礼品状态 :GiftStatus
+   NOT_GAIN    未领取
+   GAINED    已领取
+   GIVEING    发放中
+   GIVE_FAIL    发放失败
+   GIVE_OUT    已发放
+   REFUNED    已退款
+   EXPIRED    已过期
+   * @param status
+   * @param giftStatus
+   * @param giftGainedNum
+   * @param giftNum
+   * @param goodNum
+   * @returns {*}
+   */
   getStatus({status, giftStatus, giftGainedNum, giftNum, goodNum}) {
     switch (status) {
       case 'RECEIVE_COMPLETE':
@@ -47,7 +75,7 @@ class SponsorHongbao extends Component {
       case 'EXPIRED':
         return (
           <div>
-            已过期
+            <span>已过期 </span> <span className="text-primary">可退款</span>
           </div>
         );
       case 'REFUNDED':

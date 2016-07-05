@@ -38,6 +38,7 @@ class App extends Component {
         if (info.auth && String(info.isLogin) === '1') {
           if (!info.jdPin) {
             // bindJdPin 没有提供回调参数，故还需重新处理
+            // FIXME ios 后退没有调用回调函数
             walletApi.bindJdPin(() => {
               walletApi.getClientInfo((info) => {
                 info = perfect.parseJSON(info) || {};
@@ -46,6 +47,7 @@ class App extends Component {
                   this.updateClientInfo(info, callback);
                 } else {
                   walletApi.alert('您还没有绑定京东账户，请重新绑定');
+                  callback(false);
                 }
               });
             });
@@ -128,7 +130,7 @@ class App extends Component {
     return (
       <Modal
         visible={errorMessage !== null}
-        style={{width: '70%', zIndex: 30000}}
+        style={{width: '70%'}}
         bodyStyle={{height: '5rem'}}
         onClose={this.onClose}
         title="温馨提示"
