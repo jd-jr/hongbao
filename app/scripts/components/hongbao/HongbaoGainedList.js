@@ -12,7 +12,7 @@ class HongbaoGainedList extends Component {
   }
 
   componentWillMount() {
-    this.loadMore();
+    this.loadMore(true);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -24,12 +24,17 @@ class HongbaoGainedList extends Component {
     return false;
   }
 
-  loadMore() {
+  loadMore(first) {
     const {hongbaoDetailAction, identifier} = this.props;
     const body = {
       identifier
     };
-    hongbaoDetailAction.getParticipantList(body);
+    hongbaoDetailAction.getParticipantList(body)
+      .then((res) => {
+        if (first) {
+          this.props.delayShowFoot();
+        }
+      });
   }
 
   render() {
@@ -84,6 +89,7 @@ HongbaoGainedList.propTypes = {
   hongbaoDetailAction: PropTypes.object,
   identifier: PropTypes.string,
   participantPagination: PropTypes.object,
+  delayShowFoot: PropTypes.func
 };
 
 export default HongbaoGainedList;

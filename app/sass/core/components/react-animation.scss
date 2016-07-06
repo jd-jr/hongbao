@@ -39,6 +39,33 @@
   transition: translate 500ms ease-in;
 }
 
+//右侧进入
+/*.hb-right-appear {
+  transform: translate(100%, 0);
+}
+.hb-right-appear.hb-right-appear-active {
+  transform: translate(90%, 0);
+  transition: transform 500ms ease-in;
+}*/
+
+.hb-right-enter {
+  transform: translate(100%, 0);
+}
+
+.hb-right-enter.hb-right-enter-active {
+  transform: translate(0, 0);
+  transition: transform 100ms ease-in;
+}
+
+.hb-right-leave {
+  transform: translate(0, 0);
+}
+
+.hb-right-leave.hb-right-leave-active {
+  transform: translate(-100%, 0);
+  transition: translate 100ms ease-in;
+}
+
 //从下往上动画效果
 .hb-burst-in-enter {
   opacity: 0.01;

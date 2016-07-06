@@ -11,9 +11,6 @@ import noItems from '../../../images/no_items.png';
 class ProductList extends Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      productChecked: null
-    };
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
     this.handleSelectTab = this.handleSelectTab.bind(this);
@@ -57,22 +54,21 @@ class ProductList extends Component {
 
   // 选择商品
   handleChecked(skuId) {
-    this.setState({
-      productChecked: skuId
-    });
+    const {productActions} = this.props;
+    productActions.selectProduct(skuId);
   }
 
   //选择商品
   selectProduct() {
-    const {productChecked} = this.state;
-    if (!productChecked) {
+    const {selectedProduct} = this.props;
+    if (!selectedProduct) {
       return;
     }
     const {
       productPagination: {entity}
     } = this.props;
 
-    const {skuName, skuId, bizPrice, indexImg} = entity[productChecked];
+    const {skuName, skuId, bizPrice, indexImg} = entity[selectedProduct];
 
     let detail = perfect.stringifyJSON({skuName, skuId, bizPrice, indexImg});
     detail = Base64.encode(detail);
@@ -90,19 +86,20 @@ class ProductList extends Component {
   //切换标签
   handleSelectTab(e, id) {
     const {productActions, priceOrder} = this.props;
-    const {switchCategory, clearProductList, getProductList} = productActions;
+    const {switchCategory, clearProductList, getProductList, clearSelectProduct} = productActions;
     switchCategory(id);
     clearProductList();
     getProductList({
       category: id,
       priceOrder
     });
+    clearSelectProduct();
   }
 
   // 排序
   handleOrder(e) {
     const {productActions, priceOrder, activeCategory} = this.props;
-    const {switchPriceOrder, clearProductList, getProductList} = productActions;
+    const {switchPriceOrder, clearProductList, getProductList, clearSelectProduct} = productActions;
     const _priceOrder = priceOrder === 'asc' ? 'desc' : 'asc';
     switchPriceOrder(_priceOrder);
     clearProductList();
@@ -110,6 +107,7 @@ class ProductList extends Component {
       category: activeCategory,
       priceOrder: _priceOrder
     });
+    clearSelectProduct();
   }
 
   handleTouchStart(e) {
@@ -229,11 +227,11 @@ class ProductList extends Component {
 
   renderProductItem(item) {
     const {skuId, skuName, indexImg, bizPrice} = item;
-    const {productChecked} = this.state;
+    const {selectedProduct} = this.props;
     return (
       <li key={skuId} className="row flex-items-middle">
         <div className="col-3 text-right">
-          <i className={`hb-radio-gray${productChecked === skuId ? ' checked' : ''}`}
+          <i className={`hb-radio-gray${selectedProduct === skuId ? ' checked' : ''}`}
              onTouchTap={() => this.handleChecked(skuId)}></i>
         </div>
         <div className="col-4"
@@ -292,7 +290,7 @@ class ProductList extends Component {
   }
 
   render() {
-    const {productChecked} = this.state;
+    const {selectedProduct} = this.props;
     return (
       <div>
         <header className="hb-product-nav">
@@ -304,7 +302,7 @@ class ProductList extends Component {
         <footer className="hb-footer-fixed">
           <button className="btn btn-block btn-primary btn-lg btn-flat"
                   onTouchTap={this.selectProduct}
-                  disabled={!productChecked}>
+                  disabled={!selectedProduct}>
             确认商品
           </button>
         </footer>
@@ -326,6 +324,7 @@ ProductList.propTypes = {
     PropTypes.string
   ]),
   priceOrder: PropTypes.string,
+  selectedProduct: PropTypes.string,
 };
 
 export default ProductList;

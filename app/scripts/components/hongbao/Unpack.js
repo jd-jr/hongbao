@@ -59,17 +59,22 @@ class Unpack extends Component {
         if (HONGBAO_INVALID_STATUS.indexOf(status) !== -1) {
           if (status === 'NEED_PAY') {
             indexActions.setErrorMessage('该红包还未支付！');
-          } else {
+          } else if (status === 'REDBAG_NOT_FOUND') {
             indexActions.setErrorMessage('该红包不存在或已被删除');
           }
         } else {
-          this.setState({
-            unpackModal: true,
-            hongbaoStatus: status,
-            user
-          }, () => {
+          //如果领取过，直接打开
+          if (status === 'HAS_RECEIVE') {
             showDetail();
-          });
+          } else {
+            this.setState({
+              unpackModal: true,
+              hongbaoStatus: status,
+              user
+            }, () => {
+              showDetail();
+            });
+          }
         }
       },
       (error) => {
@@ -79,7 +84,16 @@ class Unpack extends Component {
   }
 
   // 拆开红包
-  unpack() {
+  unpack(e) {
+    //防点透处理
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+    setTimeout(() => {
+      this.setState({
+        unpackModal: false, //隐藏红包
+      });
+    }, 100);
+
     setSessionStorage('unpacked', 'true');
     if (this.state.unpackStatus) {
       return;
@@ -87,7 +101,6 @@ class Unpack extends Component {
     //防重处理
     this.setState({
       unpackStatus: true,
-      unpackModal: false, //隐藏红包
     });
     const {hongbaoStatus} = this.state;
     const {identifier} = this.props;
@@ -123,7 +136,10 @@ class Unpack extends Component {
   hongbaoDetail() {
     const {identifier} = this.props;
     setSessionStorage('unpacked', 'true');
-    this.context.router.replace(`/hongbao/detail/${identifier}`);
+    this.setState({
+      unpackStatus: false
+    });
+    this.props.closeUnpack();
   }
 
   modalBody() {
@@ -177,7 +193,7 @@ class Unpack extends Component {
         </div>
         {
           hongbaoStatus !== 'RECEIVE_COMPLETE' ? (
-            <div className="hb-btn-circle flex-items-middle flex-items-center" onTouchTap={this.unpack}>開</div>
+            <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold" onTouchTap={this.unpack}>開</div>
           ) : null
         }
         <div className="hb-luck-link" onTouchTap={this.hongbaoDetail}>
@@ -220,7 +236,8 @@ Unpack.contextTypes = {
 Unpack.propTypes = {
   identifier: PropTypes.string,
   indexActions: PropTypes.object,
-  showDetail: PropTypes.func
+  showDetail: PropTypes.func,
+  closeUnpack: PropTypes.func
 };
 
 export default Unpack;

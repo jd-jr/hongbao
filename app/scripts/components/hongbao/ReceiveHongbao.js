@@ -7,6 +7,7 @@ import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import ScrollLoad from '../../ui/ScrollLoad';
 import classnames from 'classnames';
 import perfect from '../../utils/perfect';
+import {setSessionStorage} from '../../utils/sessionStorage';
 
 class ReceiveHongbao extends Component {
   constructor(props, context) {
@@ -16,6 +17,7 @@ class ReceiveHongbao extends Component {
     };
     this.switchTab = this.switchTab.bind(this);
     this.withdraw = this.withdraw.bind(this);
+    this.reward = this.reward.bind(this);
   }
 
   componentDidMount() {
@@ -43,6 +45,7 @@ class ReceiveHongbao extends Component {
     this.adjustArrow();
   }
 
+  //加载更多
   loadMore() {
     const {hongbaoActions} = this.props;
     const accountType = perfect.getAccountType();
@@ -75,6 +78,15 @@ class ReceiveHongbao extends Component {
     jdWalletApi.openModule({name: 'BALANCE'});
   }
 
+  //兑奖
+  reward({giftRecordId, skuId, identifier}) {
+    setSessionStorage('skuId', skuId);
+    setSessionStorage('giftRecordId', giftRecordId);
+    setSessionStorage('identifier', identifier);
+    this.context.router.push('/myaddress');
+  }
+
+  //调整已收红包和手气最佳箭头按钮
   adjustArrow() {
     const {type} = this.state;
     let tabEl;
@@ -119,58 +131,82 @@ class ReceiveHongbao extends Component {
    * @param skuIcon
    * @returns {*}
    */
-  getStatus({status, giftStatus, giftAmount, giftType, skuIcon}) {
+  getStatus({giftStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId}) {
+    let link = `/hongbao/detail/${identifier}`;
+    let isReward = false;
+    let contentEl;
     if (giftType === 'CASH') {
-      return (
+      contentEl = (
         <div>
           {(giftAmount / 100).toFixed(2)}元
         </div>
       );
+    } else {
+      switch (giftStatus) {
+        case 'GIVE_OUT':
+          contentEl = (
+            <div className="hb-img-text-thumb">
+              <img src={skuIcon} alt=""/>
+              <div className="label-text bg-info">已领取</div>
+            </div>
+          );
+          break;
+        case 'EXPIRED':
+          contentEl = (
+            <div className="hb-img-text-thumb">
+              <img src={skuIcon} alt=""/>
+              <div className="label-text bg-muted">已过期</div>
+            </div>
+          );
+          break;
+        default:
+          isReward = true;
+          contentEl = (
+            <div className="hb-img-text-thumb">
+              <img src={skuIcon} alt=""/>
+              <div className="label-text bg-primary">去领取</div>
+            </div>
+          );
+          break;
+      }
     }
 
-    switch (giftStatus) {
-      case 'GIVE_OUT':
-        return (
-          <div className="hb-img-text-thumb">
-            <img src={skuIcon} alt=""/>
-            <div className="label-text bg-info">已领取</div>
-          </div>
-        );
-      case 'EXPIRED':
-        return (
-          <div className="hb-img-text-thumb">
-            <img src={skuIcon} alt=""/>
-            <div className="label-text bg-muted">已过期</div>
-          </div>
-        );
-      default:
-        return (
-          <div className="hb-img-text-thumb">
-            <img src={skuIcon} alt=""/>
-            <div className="label-text bg-primary">未领取</div>
-          </div>
-        );
+    if (isReward) {
+      return (
+        <div className="col-6 text-right" onTouchTap={() => this.reward({giftRecordId, skuId, identifier})}>
+          {contentEl}
+        </div>
+      );
     }
+
+    return (
+      <div className="col-6 text-right">
+        <Link to={link} className="hb-link-block">
+          {contentEl}
+        </Link>
+      </div>
+    );
   }
 
   renderItem(item) {
-    let {identifier, skuIcon, createdDate, giftAmount, status, giftStatus, giftType, thirdAccountUserInfoDtoList} = item;
+    let {
+      identifier, skuIcon, createdDate, giftAmount, giftStatus, giftType,
+      thirdAccountUserInfoDtoList, giftRecordId, skuId
+    } = item;
     let nickName;
     if (thirdAccountUserInfoDtoList && thirdAccountUserInfoDtoList.length > 0) {
       nickName = thirdAccountUserInfoDtoList[0].nickName;
     }
     let link = `/hongbao/detail/${identifier}`;
     return (
-      <li key={identifier}>
-        <Link to={link} className="hb-link-block row flex-items-middle">
-          <div className="col-18">
+      <li className="row flex-items-middle" key={identifier}>
+        <div className="col-18">
+          <Link to={link} className="hb-link-block">
             <div className="text-truncate">{nickName}</div>
             <div className="text-muted f-sm">{perfect.formatDate(createdDate)}</div>
-          </div>
-          <div className="col-6 text-right">
-            {this.getStatus({status, giftStatus, giftAmount, giftType, skuIcon})}
-          </div>
-        </Link>
+          </Link>
+        </div>
+        {this.getStatus({giftStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId})}
       </li>
     );
   }
@@ -246,7 +282,7 @@ class ReceiveHongbao extends Component {
           <div>
             {
               deviceEnv.inJdWallet ? (
-                <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">提现</button>
+                <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">去提现</button>
               ) : (
                 <a href="https://qianbao.jd.com/p/page/download.htm?module=BALANCE"
                    className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</a>

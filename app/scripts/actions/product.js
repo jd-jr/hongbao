@@ -2,7 +2,7 @@ import {
   PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAILURE, PRODUCT_LIST_CLEAR,
   CATEGORY_LIST_REQUEST, CATEGORY_LIST_SUCCESS, CATEGORY_LIST_FAILURE,
   PRODUCT_REQUEST, PRODUCT_SUCCESS, PRODUCT_FAILURE, PRODUCT_CLEAR,
-  SWITCH_CATEGORY, PRICE_ORDER
+  SWITCH_CATEGORY, PRICE_ORDER, SELECTED_PRODUCT, CLEAR_SELECT_PRODUCT
 } from '../constants/ProductActionTypes';
 
 import ProductSchemas from '../models/ProductSchemas';
@@ -118,3 +118,17 @@ export function switchPriceOrder(order) {
   }
 }
 
+// 已选中的商品 skuId ，目前是单选，后续多选的话，修改成数组
+export function selectProduct(skuId) {
+  return {
+    type: SELECTED_PRODUCT,
+    skuId
+  }
+}
+
+//清空选中的商品
+export function clearSelectProduct() {
+  return {
+    type: CLEAR_SELECT_PRODUCT
+  }
+}

@@ -6,23 +6,10 @@ import { assign } from 'lodash'
 
 /*eslint-disable*/
 var resetTmp = {
-  name: {
-    val: '',
-    valid: -1
-  },
-  mobile: {
-    val: '',
-    valid: -1
-  },
-  fullAddress: {
-    val: '',
-    valid: -1
-  },
-  addressDetail: {
-    val: '',
-    valid: -1
-  },
-  canSub: false
+  id: null,
+  name: '',
+  mobile: '',
+  addressDetail: ''
 };
 
 export default function tmpUserAddress(state = resetTmp, action) {

@@ -7,7 +7,6 @@ import ProductList from '../components/product/ProductList';
 import Product from '../components/product/Product';
 import HongbaoDetailPage from '../containers/HongbaoDetailPage';
 import MyHongbaoPage from '../containers/MyHongbaoPage';
-import InitiatePage from '../containers/InitiatePage';
 
 import UserAddressList from '../components/userAddressList/'
 import AddAddress from '../components/addAddress/'
@@ -21,6 +20,8 @@ export default (
   <Route path="/" component={App}>
     <IndexRoute component={HomePage}
                 onEnter={() => enterHandler('home')}/>
+    <Route path="initiate" component={HomePage}
+           onEnter={() => enterHandler('initiate')}/>
     <Route path="product" component={ProductPage}>
       <IndexRoute component={ProductList}
                   onEnter={() => enterHandler('productList')}/>
@@ -29,8 +30,6 @@ export default (
       <Route path="detail/:view/:skuId" component={Product}
              onEnter={() => enterHandler('productView')}/>
     </Route>
-    <Route path="initiate" component={InitiatePage}
-           onEnter={() => enterHandler('initiate')}/>
     <Route path="unpack/:identifier" component={HongbaoDetailPage}
            onEnter={() => enterHandler('unpack')}/>
     <Route path="hongbao/detail/:identifier" component={HongbaoDetailPage}

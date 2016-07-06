@@ -10,127 +10,64 @@ import callApi from '../../fetch/'
 import Loading from '../../ui/Loading';
 import {getSessionStorage} from '../../utils/sessionStorage';
 
+//添加和修改地址
 class AddAddress extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
-    this.sureAction = this.sureAction.bind(this);
+    this.state = {
+      id: null,
+      name: '',
+      mobile: '',
+      addressDetail: '',
+      sltInfo: null, //省市区信息
+      submitState: false //提交状态
+    };
     this.skuId = getSessionStorage('skuId');
     this.giftRecordId = getSessionStorage('giftRecordId');
+    this.sureAction = this.sureAction.bind(this);
+    this.setValue = this.setValue.bind(this);
+    this.goSltCity = this.goSltCity.bind(this);
   }
 
   componentWillMount() {
     const {tmpUserAddress, params} = this.props;
-    this.setState(tmpUserAddress);
+    const {id, name, mobile, addressDetail, sltInfo} = tmpUserAddress;
+    this.setState({id, name, mobile, addressDetail, sltInfo});
 
-    if (params.index) {
-      this.setState({
-        tmpFullAddress: tmpUserAddress.fullAddress.val.replace(tmpUserAddress.addressDetail.val, '')
-      });
-    }
+    console.info(tmpUserAddress);
+
   }
 
   //将输入的值设置到state上
   setValue(type, e) {
     this.setState({
-      [type]: {
-        val: e.target.value,
-        valid: -1
-      }
+      [type]: e.target.value
     })
   }
 
-  //如果检测项不合法 提示错误
-  showError(type, e) {
-    const {updateTmpUserAddress} = this.props;
-    if (type === 'addressDetail') {
-      if (this.checkValid(type)) {
-        this.setState({
-          [type]: {
-            val: e.target.value,
-            valid: 1
-          }
-        })
-        updateTmpUserAddress({
-          addressDetail: {
-            val: e.target.value,
-            valid: 1
-          }
-        })
-      } else {
-        const val = e.target.value.replace(/^\s*|\s*$/, '')
-        if (val !== '') {
-          this.setState({
-            [type]: {
-              val: e.target.value,
-              valid: 0
-            }
-          })
-        }
-      }
-    } else {
-      if (!this.checkValid(type)) {
-        this.setState({
-          [type]: {
-            val: e.target.value,
-            valid: 0
-          }
-        })
-      } else {
-        this.setState({
-          [type]: {
-            val: e.target.value,
-            valid: 1
-          }
-        });
-        updateTmpUserAddress({
-          [type]: {
-            val: e.target.value,
-            valid: 1
-          }
-        })
-      }
-    }
-  }
-
-  checkValid(type) {
-    const val = this.state[type].val.replace(/^\s*|\s*$/, '');
-    /*eslint-disable indent*/
-    switch (type) {
-      case 'name':
-        return val.length > 0;
-      case 'mobile':
-        return (/^1[3-9]\d{9}$/g).test(val);
-      case 'addressDetail':
-        return val.length > 0;
-      default:
-        return false;
-    }
-  }
-
+  //进入省市列表
   goSltCity() {
     const {initTmpUserAddress} = this.props;
-    initTmpUserAddress(this.state)
+    initTmpUserAddress(this.state);
     this.context.router.push({
       pathname: 'selectcity'
     })
   }
 
   checkCanSub() {
-    const t = this.props.tmpUserAddress;
-    if (t.name.valid !== 1) {
+    const {name, mobile, addressDetail} = this.state;
+
+    if (name === '') {
       return '请输入姓名';
     }
-    if (trim(this.refs.mobile.value) === '') {
+    if (mobile === '') {
       return '请输入手机号码';
     }
-    if (t.mobile.valid !== 1) {
+    if (!(/^1[3-9]\d{9}$/g).test(mobile)) {
       return '您输入的手机号格式不正确，请重新输入';
     }
-    if (t.fullAddress.valid !== 1) {
-      return '请选择所在省市';
-    }
-    if (t.addressDetail.valid !== 1) {
+    //FIXME 省市区校验
+    if (addressDetail === '') {
       return '请输入详细地址';
     }
     return true;
@@ -170,20 +107,19 @@ class AddAddress extends Component {
       body,
       needAuth: true
     }).then((res) => {
-      const addressId = index ? addressEntity.id : res.json.data;
-      if (addressId) {
-        addedAddress = assign({}, addressEntity, {addressId});
+      const id = index ? addressEntity.id : res.json.data;
+      if (id) {
+        addedAddress = assign({}, addressEntity, {id});
         if (index) {
           updateUserAddress({index, addedAddress});
         } else {
           addUserAddress(addedAddress);
         }
-
         //设置新增地址的货源状态
         return callApi({
           url: 'user/address/areastock',
           body: {
-            addressId,
+            addressId: id,
             skuId: this.skuId
           },
           needAuth: true
@@ -215,70 +151,63 @@ class AddAddress extends Component {
     });
   }
 
+  //返回地址信息
   generateParams() {
-    const {tmpUserAddress, params} = this.props;
-    const fullAddress = params.index ?
-    this.state.tmpFullAddress + tmpUserAddress.addressDetail.val :
-    tmpUserAddress.fullAddress.val + tmpUserAddress.addressDetail.val;
+    const {id, name, mobile, addressDetail, sltInfo} = this.state;
 
+    const {cityName, countyName, provinceName, townName} = sltInfo;
+    let provinceCity = provinceName + cityName + countyName + (townName || '');
     const _ret = {
       addressDefault: false,
-      name: tmpUserAddress.name.val,
-      mobile: tmpUserAddress.mobile.val,
-      fullAddress,
-      addressDetail: tmpUserAddress.addressDetail.val
+      name,
+      mobile,
+      fullAddress: provinceCity + addressDetail,
+      addressDetail
     };
 
-    /*eslint-disable*/
-    if (params.index) {
-      for (let k in tmpUserAddress) {
-        const _val = tmpUserAddress[k];
-        if (k != null && !(({}).toString.call(_val) === '[object Object]')) {
-          _ret[k] = _val;
-        }
-      }
-
-      delete _ret.stock;
-      delete _ret.tmpFullAddress;
+    const {params} = this.props;
+    const {index} = params;
+    if (index) {
+      _ret.id = id;
     }
-
-    return assign({}, _ret, tmpUserAddress.sltInfo)
+    return assign({}, _ret, sltInfo);
   }
 
   render() {
-    const state = this.state;
-    const index = this.props.params.index;
-    const fullAddress = index ? state.tmpFullAddress : state.fullAddress.val;
+    let {name, mobile, sltInfo, addressDetail, submitState} = this.state;
+    let provinceCity = '';
+    if (sltInfo) {
+      const {cityName, countyName, provinceName, townName} = sltInfo;
+      provinceCity = provinceName + cityName + countyName + (townName || '');
+    }
 
     return (
       <div>
         {
-          state.submitState ? <Loading/> : null
+          submitState ? <Loading/> : null
         }
         <div className="mg-t-10 wg-address-panel">
           <div className="wg-address-item">
             <span className=" item-title">收货人</span>
             <div className=" item-input">
               <input className="hb-input" type="text" placeholder="请输入姓名" maxLength="20"
-                     value={state.name.val}
-                     onChange={this.setValue.bind(this, 'name')}
-                     onBlur={this.showError.bind(this, 'name')}/>
+                     value={name}
+                     onChange={(e) => this.setValue('name', e)}/>
             </div>
           </div>
           <div className="wg-address-item">
             <span className=" item-title">手机号码</span>
             <div className=" item-input">
-              <input ref="mobile" className="hb-input" type="tel" placeholder="请输入手机号码" maxLength="11"
-                     value={state.mobile.val}
-                     onChange={this.setValue.bind(this, 'mobile')}
-                     onBlur={this.showError.bind(this, 'mobile')}/>
+              <input className="hb-input" type="tel" placeholder="请输入手机号码" maxLength="11"
+                     value={mobile}
+                     onChange={(e) => this.setValue('mobile', e)}/>
             </div>
           </div>
-          <div className="wg-address-item" onTouchTap={this.goSltCity.bind(this)}>
+          <div className="wg-address-item" onTouchTap={this.goSltCity}>
             <span className=" item-title">所在省市</span>
             <div className=" item-input">
               <input className="hb-input" type="text" readOnly placeholder="请选择所在省市"
-                     value={fullAddress}/>
+                     value={provinceCity}/>
             </div>
             <i className="arrow-hollow-right"></i>
           </div>
@@ -286,9 +215,8 @@ class AddAddress extends Component {
             <span className="fl item-title">详细地址</span>
             <div className="fl item-input">
               <textarea className="hb-textarea" placeholder="请输入详细地址" maxLength="40"
-                        value={state.addressDetail.val}
-                        onChange={this.setValue.bind(this, 'addressDetail')}
-                        onBlur={this.showError.bind(this, 'addressDetail')}></textarea>
+                        value={addressDetail}
+                        onChange={(e) => this.setValue('addressDetail', e)}></textarea>
             </div>
           </div>
         </div>

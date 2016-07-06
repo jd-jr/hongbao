@@ -39,6 +39,11 @@ h1, h2, h3, h4, h5, h6 {
   margin-left: 0.3rem;
 }
 
+.p-y-0-5 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
 .#{$prefixCls} {
   &link-block {
     color: $gray-dark;
@@ -181,6 +186,7 @@ h1, h2, h3, h4, h5, h6 {
     }
   }
 
+  // 自定义弹框样式
   &modal {
     .rc-modal-dialog {
       margin-left: 2rem;
@@ -194,6 +200,16 @@ h1, h2, h3, h4, h5, h6 {
     .rc-modal-body {
       padding: 0;
     }
+  }
+
+  &btn-close{
+    position: absolute;
+    top: -1.5rem;
+    z-index: 1;
+    transform: rotate(45deg);
+    color: #b1433d;
+    font-size: 2.5rem;
+    padding: 1rem;
   }
 
   &alert {

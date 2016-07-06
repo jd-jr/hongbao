@@ -5,6 +5,7 @@
     right: 0;
     // 解决 ios 下底部会有1px空白
     bottom: -1px;
+    z-index: 1;
     padding: .875rem 0;
 
     /*background-color: rgba(255, 255, 255, 0.6);*/
@@ -12,10 +13,10 @@
     color: #666;
     font-size: 1.125rem;
     border-top: 1px solid $gray-lightest;
+  }
 
-    .#{$prefixCls}active-btn {
-      color: $brand-primary;
-    }
+  &active-btn {
+    color: $brand-primary;
   }
 
   &footer-fixed {

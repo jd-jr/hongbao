@@ -7,7 +7,7 @@ class ProductPage extends Component {
   render() {
     const {
       children, location, productActions, productPagination, categoryList,
-      activeCategory, priceOrder, productDetail, skuId, view
+      activeCategory, priceOrder, productDetail, skuId, view, selectedProduct
     } = this.props;
 
     return (
@@ -20,6 +20,7 @@ class ProductPage extends Component {
           activeCategory,
           priceOrder,
           productDetail,
+          selectedProduct,
           skuId,
           view
         })}
@@ -40,6 +41,7 @@ ProductPage.propTypes = {
     PropTypes.string
   ]),
   priceOrder: PropTypes.string,
+  selectedProduct: PropTypes.string,
   productDetail: PropTypes.object,
   skuId: PropTypes.string,
   view: PropTypes.string,
@@ -48,7 +50,7 @@ ProductPage.propTypes = {
 function mapStateToProps(state, ownProps) {
   const {skuId, view} = ownProps.params;
   const {
-    product: {productPagination, categoryList, activeCategory, priceOrder},
+    product: {productPagination, categoryList, activeCategory, priceOrder, selectedProduct},
     entity: {productDetail}
   } = state;
 
@@ -57,6 +59,7 @@ function mapStateToProps(state, ownProps) {
     categoryList,
     activeCategory,
     priceOrder,
+    selectedProduct,
     productDetail: productDetail || {},
     skuId,
     view

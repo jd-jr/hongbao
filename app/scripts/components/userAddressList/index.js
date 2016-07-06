@@ -123,25 +123,17 @@ class UserAddressList extends Component {
    */
   editAddress(index, item) {
     const {initTmpUserAddress} = this.props;
-    const tmp = assign({}, item, {
-      name: {
-        val: item.name,
-        valid: 1
-      },
-      mobile: {
-        val: item.mobile,
-        valid: 1
-      },
-      fullAddress: {
-        val: item.fullAddress,
-        valid: 1
-      },
-      addressDetail: {
-        val: item.addressDetail,
-        valid: 1
-      }
-    })
-    initTmpUserAddress(tmp)
+    const {
+      id, name, mobile, addressDetail,
+      cityId, cityName, countyId, countyName, provinceId, provinceName, townId, townName
+    } = item;
+    const sltInfo = {
+      cityId, cityName, countyId, countyName, provinceId, provinceName, townId, townName
+    };
+    const tmp = {
+      id, name, mobile, addressDetail, sltInfo
+    };
+    initTmpUserAddress(tmp);
     this.context.router.push({
       pathname: `editaddress/${index}`
     })
@@ -345,7 +337,7 @@ class UserAddressList extends Component {
         <Modal
           visible={waitforModal}
           style={{width: '70%'}}
-          bodyStyle={{height: '7rem'}}
+          bodyStyle={{height: '7.5rem'}}
           onClose={this.onModalClose}
           footer={footer}
           animation
@@ -452,9 +444,9 @@ class UserAddressList extends Component {
                 {this.state.actionTip}
               </div>
               <div className="btn-panel">
-                <a href="#" className="btn-cancel text-red tip-item hb-bd-r"
+                <a href="#" className="btn-cancel text-red tip-item hb-bd-r hb-link-block"
                    onTouchTap={this.toggleActionTipState}>取消</a>
-                <a href="#" className="btn-sure text-red tip-item"
+                <a href="#" className="btn-sure text-red tip-item hb-link-block"
                    onTouchTap={this.sureAction}>确定</a>
               </div>
             </div>

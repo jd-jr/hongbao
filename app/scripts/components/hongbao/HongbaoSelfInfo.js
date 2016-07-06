@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import {setSessionStorage} from '../../utils/sessionStorage';
 import perfect from '../../utils/perfect';
 import callApi from '../../fetch';
+import Modal from 'reactjs-modal';
 
 /**
  * 发起者和领取者
@@ -20,11 +20,12 @@ class HongbaoSelfInfo extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      refundStatus: props.refundStatus
+      refundStatus: props.refundStatus,
+      visible: false
     };
-    this.reward = this.reward.bind(this);
     this.logistics = this.logistics.bind(this);
-    this.refund = this.refund.bind(this);
+    this.refundPrompt = this.refundPrompt.bind(this);
+    this.onClose = this.onClose.bind(this);
   }
 
   //物流详情
@@ -33,13 +34,19 @@ class HongbaoSelfInfo extends Component {
     this.context.router.push(`/logistics/${giftRecordId}`);
   }
 
-  //兑奖
-  reward(giftRecordId, skuId) {
-    const {identifier} = this.props;
-    setSessionStorage('skuId', skuId);
-    setSessionStorage('giftRecordId', giftRecordId);
-    setSessionStorage('identifier', identifier);
-    this.context.router.push('/myaddress');
+  onClose(type) {
+    this.setState({
+      visible: false
+    });
+    if (type === 'ok') {
+      this.refund();
+    }
+  }
+
+  refundPrompt() {
+    this.setState({
+      visible: true
+    });
   }
 
   //退款
@@ -98,10 +105,7 @@ class HongbaoSelfInfo extends Component {
               <span className="hb-money text-primary">中奖啦</span>
             </div>
             <div>
-              <button onTouchTap={() => this.reward(giftRecordId, skuId)}
-                      className="btn btn-primary btn-sm btn-arc">
-                立即领奖
-              </button>
+              <Link to="/my" className="btn btn-primary btn-sm btn-arc">立即领奖</Link>
             </div>
           </div>
         );
@@ -130,14 +134,15 @@ class HongbaoSelfInfo extends Component {
     if (refundStatus === 'ALLOW_REFUND') {
       return (
         <div>
-          <button onTouchTap={this.refund} className="btn btn-primary btn-outline-primary btn-sm btn-arc">申请退款
+          <button onTouchTap={this.refundPrompt}
+                  className="btn btn-primary btn-sm btn-arc">申请退款
           </button>
         </div>
       );
     } else if (refundStatus === 'REFUNDED') {
       return (
-        <div className="text-muted">
-          已退款
+        <div>
+          - 已退款 -
         </div>
       );
     }
@@ -152,7 +157,7 @@ class HongbaoSelfInfo extends Component {
         </div>
         <div>
           <Link to="/my"
-                className="btn btn-primary btn-sm hb-fillet-1">{deviceEnv.inJdWallet ? '提现' : '去京东钱包提现'}</Link>
+                className="btn btn-primary btn-sm hb-fillet-1">{deviceEnv.inJdWallet ? '去提现' : '去京东钱包提现'}</Link>
         </div>
       </div>
     );
@@ -190,9 +195,36 @@ class HongbaoSelfInfo extends Component {
   }
 
   render() {
+    const {visible} = this.state;
+    const footer = (
+      <div className="row text-center">
+        <div className="col-12 border-second border-right hb-active-btn p-y-0-5" onClick={() => this.onClose('cancel')}>
+          取消
+        </div>
+        <div className="col-12 hb-active-btn p-y-0-5" onClick={() => this.onClose('ok')}>确定</div>
+      </div>
+    );
+
     return (
       <div>
         {this.renderStatus()}
+        <Modal
+          className="hb-alert"
+          visible={visible}
+          style={{width: '70%'}}
+          footerStyle={{padding: '0 10px'}}
+          onClose={this.onClose}
+          footer={footer}
+          animation
+          maskAnimation
+          preventTouchmove
+          closable={false}
+        >
+          <div className="text-center">
+            <h2>温馨提示</h2>
+            <div>退款需收取5%平台服务费</div>
+          </div>
+        </Modal>
       </div>
     );
   }

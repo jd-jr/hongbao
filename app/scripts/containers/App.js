@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import walletApi from 'jd-wallet-sdk';
@@ -152,15 +153,21 @@ class App extends Component {
     return (
       <div>
         {this.alert()}
-        {children && React.cloneElement(children, {
-          key: location.pathname,
-          caches,
-          cacheActions,
-          errorMessage,
-          indexActions,
-          setClientInfo: this.setClientInfo,
-          setModalCloseCallback: this.setModalCloseCallback
-        })}
+        <ReactCSSTransitionGroup
+          component="div"
+          transitionName="hb-right"
+          transitionEnterTimeout={100}
+          transitionLeaveTimeout={100}>
+          {children && React.cloneElement(children, {
+            key: location.pathname,
+            caches,
+            cacheActions,
+            errorMessage,
+            indexActions,
+            setClientInfo: this.setClientInfo,
+            setModalCloseCallback: this.setModalCloseCallback
+          })}
+        </ReactCSSTransitionGroup>
       </div>
     );
   }

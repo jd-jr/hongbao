@@ -20,6 +20,7 @@ class Initiate extends Component {
     this.sponsor = this.sponsor.bind(this);
     this.onClose = this.onClose.bind(this);
     this.closeShareGuide = this.closeShareGuide.bind(this);
+    this.closeHongbao = this.closeHongbao.bind(this);
 
     if (mystic === 'true') {
       skuIcon = MYSTIC_GIFT;
@@ -69,6 +70,7 @@ class Initiate extends Component {
     });
   }
 
+  //关闭错误提示信息
   onClose(e) {
     this.setState({
       visible: false
@@ -77,14 +79,26 @@ class Initiate extends Component {
     this.context.router.replace('/');
   }
 
+  //微信中关闭指导
   closeShareGuide() {
     this.setState({
       weixinGuide: false
     });
   }
 
+  //关闭发送红包
+  closeHongbao(e) {
+    //防点透处理
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+    setTimeout(() => {
+      this.props.closeHongbao();
+    }, 100);
+  }
+
   render() {
     const {success, visible, weixinGuide} = this.state;
+    const {closable} = this.props;
     if (success) {
       return (
         <div>
@@ -96,13 +110,14 @@ class Initiate extends Component {
             maskAnimation
           >
             <div className="hb-ellipse-arc-mask">
+              {closable ? <span className="hb-btn-close" onTouchTap={this.closeHongbao}>+</span> : null}
               <div className="hb-ellipse-arc-flat flex-items-middle flex-items-center flex">
                 <div>
                   <h2 className="h1">红包已包好</h2>
-                  <h4>实物和现金红包</h4>
+                  <h4>实物红包</h4>
                 </div>
               </div>
-              <div className="hb-btn-circle flex-items-middle flex-items-center" onTouchTap={this.sponsor}>发红包</div>
+              <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold" onTouchTap={this.sponsor}>发红包</div>
             </div>
           </Modal>
           {weixinGuide ? (
@@ -150,7 +165,9 @@ Initiate.propTypes = {
   identifier: PropTypes.string,
   status: PropTypes.string,
   skuIcon: PropTypes.string,
-  mystic: PropTypes.string
+  mystic: PropTypes.string,
+  closable: PropTypes.bool,
+  closeHongbao: PropTypes.func
 };
 
 Initiate.contextTypes = {

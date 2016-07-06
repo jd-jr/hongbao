@@ -7,6 +7,7 @@ import {
 } from '../constants/AddressActionTypes';
 
 /*eslint-disable indent*/
+//地址列表
 export default function address(state = null, action) {
   let newState = (state || []).concat();
   switch (action.type) {

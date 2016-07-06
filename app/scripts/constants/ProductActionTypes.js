@@ -19,3 +19,7 @@ export const PRODUCT_CLEAR = 'PRODUCT_CLEAR';
 export const SWITCH_CATEGORY = 'SWITCH_CATEGORY';
 //价格排序
 export const PRICE_ORDER = 'PRICE_ORDER';
+//商品列表已选中的商品
+export const SELECTED_PRODUCT = 'SELECTED_PRODUCT';
+//清空选中的商品
+export const CLEAR_SELECT_PRODUCT = 'CLEAR_SELECT_PRODUCT';

@@ -5,7 +5,7 @@ import * as ProductActionTypes from '../constants/ProductActionTypes';
 const {
   PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAILURE, PRODUCT_LIST_CLEAR,
   CATEGORY_LIST_REQUEST, CATEGORY_LIST_SUCCESS, CATEGORY_LIST_FAILURE,
-  SWITCH_CATEGORY, PRICE_ORDER
+  SWITCH_CATEGORY, PRICE_ORDER, SELECTED_PRODUCT, CLEAR_SELECT_PRODUCT
 } = ProductActionTypes;
 
 const product = combineReducers({
@@ -34,6 +34,17 @@ const product = combineReducers({
       return action.order;
     }
     return state;
+  },
+
+  selectedProduct: (state = null, action) => {
+    switch (action.type) {
+      case SELECTED_PRODUCT:
+        return action.skuId;
+      case CLEAR_SELECT_PRODUCT:
+        return null;
+      default:
+        return state;
+    }
   }
 
 });

@@ -14,7 +14,8 @@ class SelectCity extends Component {
     this.state = {
       list: [],
       type: 0
-    }
+    };
+
     this.areaTypes = [
       {
         search: 'getProvices',
@@ -31,7 +32,6 @@ class SelectCity extends Component {
       }
 
     ];
-    this.fullAddress = '';
     this.sltInfo = {};
   }
 
@@ -72,26 +72,19 @@ class SelectCity extends Component {
           this.setState({
             list: res.json.data,
             type: ++_index
-          })
+          });
           this.sltInfo[key + 'Name'] = item.name;
           this.sltInfo[key + 'Id'] = item.id;
-          this.fullAddress += item.name;
         } else {
           //选择完成了
           this.sltInfo[key + 'Name'] = item.name;
           this.sltInfo[key + 'Id'] = item.id;
-          this.fullAddress += item.name;
           updateTmpUserAddress({
-            fullAddress: {
-              val: this.fullAddress,
-              valid: 1
-            }
-          })
-          updateTmpUserAddress({
-            sltInfo: this.sltInfo
-          })
+            sltInfo: this.sltInfo //省市区信息
+          });
 
-          window.history.go(-1)
+          this.context.router.goBack();
+          //window.history.go(-1)
         }
 
       }, (error) => {

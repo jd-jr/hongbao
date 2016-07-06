@@ -11,7 +11,6 @@ class MyHongbao extends Component {
     super(props, context);
     this.state = {
       type: props.type || 'receive',
-      loaded: false
     };
     this.switchTab = this.switchTab.bind(this);
   }
@@ -49,11 +48,7 @@ class MyHongbao extends Component {
       accountId: thirdAccId
     };
 
-    hongbaoActions.getUserInfo(body).then((json) => {
-      this.setState({
-        loaded: true
-      });
-    });
+    hongbaoActions.getUserInfo(body);
   }
 
   switchTab(e, type) {
@@ -64,15 +59,11 @@ class MyHongbao extends Component {
   }
 
   render() {
-    const {type, loaded} = this.state;
+    const {type} = this.state;
     const {
       hongbaoActions, receivePagination, sponsorPagination, userInfo,
       caches, cacheActions
     } = this.props;
-
-    if (!loaded) {
-      return null;
-    }
 
     const receiveProps = {
       hongbaoActions,

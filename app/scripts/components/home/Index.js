@@ -9,6 +9,7 @@ import callApi from '../../fetch';
 import {HONGBAO_TITLE} from '../../constants/common';
 import perfect from '../../utils/perfect'
 import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
+import Initiate from './Initiate';
 
 const {Base64} = base64;
 
@@ -264,12 +265,25 @@ class Home extends Component {
   }
 
   render() {
-    let {giftNum, title, bizPrice, skuName, indexImg, selecting, checked, loadingStatus, mystic} = this.state;
-
+    let {
+      giftNum, title, bizPrice, skuName, indexImg,
+      selecting, checked, loadingStatus, mystic
+    } = this.state;
+    const {pathname} = this.props;
     bizPrice = (bizPrice / 100).toFixed(2);
+
+    let initiateCom = null;
+    if (pathname && pathname.indexOf('/initiate') !== -1) {
+      const {skuName, title, identifier, status, skuIcon, mystic} = this.props;
+      const initiateProps = {skuName, title, identifier, status, skuIcon, mystic};
+      initiateCom = (
+        <Initiate {...initiateProps}/>
+      );
+    }
 
     return (
       <div>
+        {initiateCom}
         {loadingStatus ? (<Loading loadingStatus={loadingStatus}/>) : null}
         {this.renderH5PayForm()}
         <article className="hb-wrap m-t-2">
@@ -306,7 +320,7 @@ class Home extends Component {
                     </div>
                   </div>
                   <p className="f-xs m-l-1 text-muted">
-                    <i className={`hb-radio${mystic ? ' checked' : ''}`} onTouchTap={this.handleMystery}></i>
+                    <i className={`hb-radio-gray${mystic ? ' checked' : ''}`} onTouchTap={this.handleMystery}></i>
                     隐藏实物图片和名称，给小伙伴们发神秘奖品
                   </p>
                 </div>
@@ -342,7 +356,7 @@ class Home extends Component {
                     onTouchTap={this.payBefore}>发起实物红包
             </button>
             <p className="text-center f-sm m-t-2 text-muted">
-              <i className={`hb-radio${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>
+              <i className={`hb-radio-gray${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>
               <span>同意并接受</span> <a href="#">《京东钱包实物红包服务协议》</a>
             </p>
             <p className="text-center f-sm m-t-2 text-muted">中奖者未领取实物，可于7天后申请退款</p>
@@ -362,6 +376,13 @@ Home.propTypes = {
   detail: PropTypes.string,
   indexActions: PropTypes.object,
   setClientInfo: PropTypes.func,
+  skuName: PropTypes.string,
+  title: PropTypes.string,
+  identifier: PropTypes.string,
+  status: PropTypes.string,
+  skuIcon: PropTypes.string,
+  mystic: PropTypes.string,
+  pathname: PropTypes.string,
 };
 
 Home.contextTypes = {

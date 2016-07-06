@@ -6,21 +6,29 @@ import Unpack from './Unpack';
 import {HONGBAO_TITLE} from '../../constants/common';
 import HongbaoSelfInfo from './HongbaoSelfInfo';
 import HongbaoGainedList from './HongbaoGainedList';
+import Initiate from '../home/Initiate';
 
+// 红包详情
 class HongbaoDetail extends Component {
   constructor(props, context) {
     super(props, context);
     const isUnPack = location.href.indexOf('/unpack') !== -1;
     this.state = {
-      showFoot: true,
+      showFoot: false,
       unpack: isUnPack,
       detail: isUnPack ? 'none' : 'block',
+      sponsorGoal: 'new',
+      showInitiate: false
     };
 
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.showDetail = this.showDetail.bind(this);
+    this.reSponsor = this.reSponsor.bind(this);
+    this.closeHongbao = this.closeHongbao.bind(this);
+    this.delayShowFoot = this.delayShowFoot.bind(this);
+    this.closeUnpack = this.closeUnpack.bind(this);
   }
 
   componentWillMount() {
@@ -34,12 +42,22 @@ class HongbaoDetail extends Component {
       thirdAccId
     };
 
-    hongbaoDetailAction.getHongbaoDetail(body);
+    hongbaoDetailAction.getHongbaoDetail(body)
+      .then((json) => {
+        const {res} = json || {};
+        const {hongbaoInfo} = res || {};
+        const {giftGainedNum, giftNum, status} = hongbaoInfo || {};
+        if (giftGainedNum < giftNum && status !== 'EXPIRED') {
+          this.setState({
+            sponsorGoal: 'again'
+          });
+        }
+      });
 
     //滚动窗口显示底部 banner，停止隐藏
-    window.addEventListener('touchstart', this.onTouchStart, false);
-    window.addEventListener('touchmove', this.onTouchMove, false);
-    window.addEventListener('touchend', this.onTouchEnd, false);
+    /*window.addEventListener('touchstart', this.onTouchStart, false);
+     window.addEventListener('touchmove', this.onTouchMove, false);
+     window.addEventListener('touchend', this.onTouchEnd, false);*/
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -89,6 +107,42 @@ class HongbaoDetail extends Component {
   showDetail() {
     this.setState({
       detail: true
+    });
+  }
+
+  //延迟显示底部按钮
+  delayShowFoot() {
+    //解决 IOS 下底部按钮设置 fixed 的问题
+    setTimeout(() => {
+      this.setState({
+        showFoot: true
+      });
+    }, 100);
+  }
+
+  //重新发起
+  reSponsor() {
+    const {sponsorGoal} = this.state;
+    if (sponsorGoal === 'new') {
+      this.context.router.replace('/');
+    } else {
+      this.setState({
+        showInitiate: true
+      });
+    }
+  }
+
+  // 关闭发送红包
+  closeHongbao() {
+    this.setState({
+      showInitiate: false
+    });
+  }
+
+  // 关闭抢红包窗口
+  closeUnpack() {
+    this.setState({
+      unpack: false
     });
   }
 
@@ -168,18 +222,34 @@ class HongbaoDetail extends Component {
 
     const {giftRecordId} = selfInfo || {};
     const showDetail = this.showDetail;
-    const unpackProps = {identifier, indexActions, showDetail};
-    const {unpack, detail} = this.state;
+    const unpackProps = {identifier, indexActions, showDetail, closeUnpack: this.closeUnpack};
+    const {unpack, detail, sponsorGoal, showInitiate} = this.state;
 
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
       identifier, indexActions, setModalCloseCallback
     };
 
-    const gainedListProps = {hongbaoDetailAction, identifier, participantPagination};
+    const gainedListProps = {
+      hongbaoDetailAction, identifier, participantPagination,
+      delayShowFoot: this.delayShowFoot
+    };
+
+    let initiateCom = null;
+    if (sponsorGoal === 'again' && showInitiate) {
+      const initiateProps = {
+        skuName, title, identifier,
+        status: 'true', skuIcon, closable: true,
+        closeHongbao: this.closeHongbao
+      };
+      initiateCom = (
+        <Initiate {...initiateProps}/>
+      );
+    }
 
     return (
       <div>
+        {initiateCom}
         {unpack ? <Unpack {...unpackProps}/> : null}
         <article className="hb-wrap-mb" style={{display: detail}}>
           <section>
@@ -212,8 +282,9 @@ class HongbaoDetail extends Component {
           </section>
           {
             this.state.showFoot ? (
-              <div className="hb-footer text-center" style={{backgroundColor: 'rgba(255, 255, 255, 0.7)'}}>
-                <Link className="hb-active-btn" to="/">发起实物红包</Link>
+              <div className="hb-footer text-center"
+                   onTouchTap={this.reSponsor}>
+                <span className="hb-active-btn">{sponsorGoal === 'new' ? '发起实物红包' : '继续发送'}</span>
               </div>
             ) : null
           }
