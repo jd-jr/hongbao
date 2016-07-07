@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import Modal from 'reactjs-modal';
 import callApi from '../../fetch';
 import {HONGBAO_INVALID_STATUS, HONGBAO_TITLE} from '../../constants/common';
-import prefect from '../../utils/perfect';
+import perfect from '../../utils/perfect';
 import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
 
 class Unpack extends Component {
@@ -15,7 +15,7 @@ class Unpack extends Component {
       unpackStatus: false
     };
     this.unpack = this.unpack.bind(this);
-    this.hongbaoDetail = this.hongbaoDetail.bind(this);
+    this.hideUnpack = this.hideUnpack.bind(this);
     const unpacked = getSessionStorage('unpacked');
     if (unpacked === 'true') {
       const {identifier} = props;
@@ -44,8 +44,8 @@ class Unpack extends Component {
   validateHongbao() {
     const url = 'prepare/receive';
     const {identifier, indexActions, showDetail} = this.props;
-    const accountType = prefect.getAccountType();
-    const thirdAccId = prefect.getThirdAccId();
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
     // id 表示红包 id
     const body = {
       identifier,
@@ -104,8 +104,8 @@ class Unpack extends Component {
     });
     const {hongbaoStatus} = this.state;
     const {identifier} = this.props;
-    const accountType = prefect.getAccountType();
-    const thirdAccId = prefect.getThirdAccId();
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
     if (hongbaoStatus === 'HAS_RECEIVE') {
       this.context.router.replace(`/hongbao/detail/${identifier}`);
       return;
@@ -119,27 +119,40 @@ class Unpack extends Component {
 
     callApi({url, body}).then(
       ({json, response}) => {
-        this.setState({
-          unpackStatus: false
-        });
-        this.context.router.replace(`/hongbao/detail/${identifier}`);
+        this.hideUnpack(true);
       },
       (error) => {
-        this.setState({
-          unpackStatus: false
-        });
-        this.context.router.replace(`/hongbao/detail/${identifier}`);
+        this.hideUnpack(true);
       }
     );
   }
 
-  hongbaoDetail() {
-    const {identifier} = this.props;
+  hideUnpack(reLoad) {
+    const {hongbaoDetailAction, identifier} = this.props;
     setSessionStorage('unpacked', 'true');
     this.setState({
       unpackStatus: false
     });
     this.props.closeUnpack();
+    if (reLoad) {
+      let body = {
+        identifier
+      };
+      hongbaoDetailAction.clearHongbaoDetail();
+      hongbaoDetailAction.clearParticipant();
+      hongbaoDetailAction.getParticipantList(body);
+
+      const accountType = perfect.getAccountType();
+      const thirdAccId = perfect.getThirdAccId();
+      body = {
+        identifier,
+        accountType,
+        thirdAccId
+      };
+
+      hongbaoDetailAction.getHongbaoDetail(body)
+    }
+    //this.context.router.replace(`/hongbao/detail/${identifier}`);
   }
 
   modalBody() {
@@ -193,10 +206,11 @@ class Unpack extends Component {
         </div>
         {
           hongbaoStatus !== 'RECEIVE_COMPLETE' ? (
-            <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold" onTouchTap={this.unpack}>開</div>
+            <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold"
+                 onTouchTap={this.unpack}>開</div>
           ) : null
         }
-        <div className="hb-luck-link" onTouchTap={this.hongbaoDetail}>
+        <div className="hb-luck-link" onTouchTap={this.hideUnpack}>
           看看大家的手气
         </div>
       </div>
@@ -237,7 +251,8 @@ Unpack.propTypes = {
   identifier: PropTypes.string,
   indexActions: PropTypes.object,
   showDetail: PropTypes.func,
-  closeUnpack: PropTypes.func
+  closeUnpack: PropTypes.func,
+  hongbaoDetailAction: PropTypes.object,
 };
 
 export default Unpack;

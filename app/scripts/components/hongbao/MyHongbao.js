@@ -11,7 +11,7 @@ class MyHongbao extends Component {
     super(props, context);
     this.state = {
       type: props.type || 'receive',
-      isLogin: false
+      isLogin: !deviceEnv.inJdWallet
     };
     this.switchTab = this.switchTab.bind(this);
   }
@@ -74,7 +74,8 @@ class MyHongbao extends Component {
       receivePagination,
       userInfo,
       caches,
-      cacheActions
+      cacheActions,
+      type
     };
 
     const sponsorProps = {
@@ -82,7 +83,8 @@ class MyHongbao extends Component {
       sponsorPagination,
       userInfo,
       caches,
-      cacheActions
+      cacheActions,
+      type
     };
 
     return (

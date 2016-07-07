@@ -62,8 +62,13 @@ class Home extends Component {
 
   componentDidMount() {
     const hbHelpEl = document.querySelector('#hbHelp .hb-help');
+    const documentEl = document.documentElement;
+    hbHelpEl.style.top = `${documentEl.clientHeight * 0.75}px`;
+    hbHelpEl.style.left = `${documentEl.clientWidth - 40}px`;
     /*eslint-disable no-new*/
-    new Draggabilly(hbHelpEl);
+    new Draggabilly(hbHelpEl, {
+      containment: document.documentElement
+    });
   }
 
   handleChange(e, type) {

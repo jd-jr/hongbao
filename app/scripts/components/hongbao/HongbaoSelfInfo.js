@@ -120,7 +120,7 @@ class HongbaoSelfInfo extends Component {
    * @param skuId
    * @returns {XML}
    */
-  winningStatus(confirmAddress, giftRecordId, skuId) {
+  winningStatus(confirmAddress) {
     /*eslint-disable indent*/
     switch (confirmAddress) {
       case 'FORBIDDEN_CONFIRME':
@@ -154,7 +154,7 @@ class HongbaoSelfInfo extends Component {
         return (
           <div>
             <button onTouchTap={this.logistics}
-                    className="btn btn-primary btn-outline-primary btn-sm btn-arc">
+                    className="btn btn-primary btn-sm btn-arc">
               物流详情
             </button>
           </div>
@@ -170,7 +170,14 @@ class HongbaoSelfInfo extends Component {
     }
   }
 
-  //退款状态
+  /**
+   * 退款状态
+   * @param refundStatus
+   * ALLOW_REFUND 允许退款
+   * REFUNDED 已退款
+   * FORBIDDEN_REFUND 禁止退款
+   * @returns {XML}
+   */
   renderRefundStatus(refundStatus) {
     if (refundStatus === 'ALLOW_REFUND') {
       return (
@@ -217,20 +224,25 @@ class HongbaoSelfInfo extends Component {
   }
 
   renderStatus() {
-    const {selfInfo, giftRecordId, skuId, redbagSelf} = this.props;
+    const {selfInfo, redbagSelf, type} = this.props;
     const {refundStatus} = this.state;
-    //发起者
-    if (redbagSelf) {
+    //FIXME 发起者，不用后台返回的值判断，用前端的来源来判断
+    //if (redbagSelf) {
+    if (type && type === 'sponsor') {
       if (selfInfo) { //自己抢到红包
         const {giftType, giftAmount, confirmAddress} = selfInfo;
         if (giftType === 'CASH') { //现金
+          // 优先判断是否可以退款
+          if (refundStatus && refundStatus !== 'FORBIDDEN_REFUND') {
+            return this.renderRefundStatus(refundStatus);
+          }
           return this.cashStatus(giftAmount);
         } else { // 实物
           // 优先判断是否可以退款
-          if (refundStatus) {
+          if (refundStatus && refundStatus !== 'FORBIDDEN_REFUND') {
             return this.renderRefundStatus(refundStatus);
           }
-          return this.winningStatus(confirmAddress, giftRecordId, skuId);
+          return this.winningStatus(confirmAddress);
         }
       } else { //自己没有抢自己的红包
         return this.renderRefundStatus(refundStatus);
@@ -241,7 +253,7 @@ class HongbaoSelfInfo extends Component {
         if (giftType === 'CASH') { //现金
           return this.cashStatus(giftAmount);
         } else { // 实物
-          return this.winningStatus(confirmAddress, giftRecordId, skuId);
+          return this.winningStatus(confirmAddress);
         }
       }
     }
@@ -294,7 +306,8 @@ HongbaoSelfInfo.propTypes = {
   refundStatus: PropTypes.string,
   identifier: PropTypes.string,
   indexActions: PropTypes.object,
-  setModalCloseCallback: PropTypes.func
+  setModalCloseCallback: PropTypes.func,
+  type: PropTypes.string
 };
 
 export default HongbaoSelfInfo;

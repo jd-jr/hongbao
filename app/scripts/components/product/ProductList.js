@@ -11,6 +11,9 @@ import noItems from '../../../images/no_items.png';
 class ProductList extends Component {
   constructor(props, context) {
     super(props, context);
+    this.state = {
+      showFoot: false,
+    };
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
     this.handleSelectTab = this.handleSelectTab.bind(this);
@@ -23,6 +26,16 @@ class ProductList extends Component {
     this.touchMaxDistance = 0; //移动最大距离
     this.touchOffset = 0; // 移动的偏移量
     this.startX = 0; //开始坐标
+  }
+
+
+  componentWillMount() {
+    //延迟显示底部按钮，解决 IOS 下底部按钮设置 fixed 的问题
+    setTimeout(() => {
+      this.setState({
+        showFoot: true
+      });
+    }, 150);
   }
 
   componentDidMount() {
@@ -291,6 +304,7 @@ class ProductList extends Component {
 
   render() {
     const {selectedProduct} = this.props;
+    const {showFoot} = this.state;
     return (
       <div>
         <header className="hb-product-nav">
@@ -299,13 +313,17 @@ class ProductList extends Component {
         <article className="hb-wrap-mb">
           {this.renderProduct()}
         </article>
-        <footer className="hb-footer-fixed">
-          <button className="btn btn-block btn-primary btn-lg btn-flat"
-                  onTouchTap={this.selectProduct}
-                  disabled={!selectedProduct}>
-            确认商品
-          </button>
-        </footer>
+        {
+          showFoot ? (
+            <footer className="hb-footer-fixed">
+              <button className="btn btn-block btn-primary btn-lg btn-flat"
+                      onTouchTap={this.selectProduct}
+                      disabled={!selectedProduct}>
+                确认商品
+              </button>
+            </footer>
+          ) : null
+        }
       </div>
     );
   }

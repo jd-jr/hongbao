@@ -10,6 +10,7 @@ const entitykeys = ['participantPagination'];
 
 function mapStateToProps(state, ownProps) {
   const {identifier} = ownProps.params;
+  const {type} = ownProps.location.query;
 
   const {
     hongbaoDetail,
@@ -33,7 +34,8 @@ function mapStateToProps(state, ownProps) {
 
   let objects = {
     identifier,
-    hongbaoInfo: hongbaoInfo || {}
+    hongbaoInfo: hongbaoInfo || {},
+    type
   };
 
   lists.forEach((item) => {

@@ -52,9 +52,9 @@ class HongbaoDetail extends Component {
     hongbaoDetailAction.getHongbaoDetail(body)
       .then((json) => {
         const {res} = json || {};
-        const {hongbaoInfo} = res || {};
+        const {hongbaoInfo, redbagSelf} = res || {};
         const {giftGainedNum, giftNum, status} = hongbaoInfo || {};
-        if (giftGainedNum < giftNum) {
+        if (giftGainedNum < giftNum && redbagSelf && status === 'EXPIRED') {
           this.setState({
             sponsorGoal: 'again'
           });
@@ -187,7 +187,7 @@ class HongbaoDetail extends Component {
   render() {
     const {
       hongbaoInfo, identifier, indexActions,
-      hongbaoDetailAction, participantPagination, setModalCloseCallback
+      hongbaoDetailAction, participantPagination, setModalCloseCallback, type
     } = this.props;
 
     /**
@@ -219,12 +219,13 @@ class HongbaoDetail extends Component {
 
     const {giftRecordId} = selfInfo || {};
     const showDetail = this.showDetail;
-    const unpackProps = {identifier, indexActions, showDetail, closeUnpack: this.closeUnpack};
+    const unpackProps = {identifier, indexActions, showDetail, 
+      closeUnpack: this.closeUnpack, hongbaoDetailAction};
     const {unpack, detail, sponsorGoal, showInitiate} = this.state;
 
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
-      identifier, indexActions, setModalCloseCallback
+      identifier, indexActions, setModalCloseCallback, type
     };
 
     const gainedListProps = {
@@ -303,7 +304,8 @@ HongbaoDetail.propTypes = {
   participantPagination: PropTypes.object,
   hongbaoDetailAction: PropTypes.object,
   indexActions: PropTypes.object,
-  setModalCloseCallback: PropTypes.func
+  setModalCloseCallback: PropTypes.func,
+  type: PropTypes.string
 };
 
 export default HongbaoDetail;

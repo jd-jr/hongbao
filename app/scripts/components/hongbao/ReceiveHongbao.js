@@ -132,7 +132,8 @@ class ReceiveHongbao extends Component {
    * @returns {*}
    */
   getStatus({giftStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId}) {
-    let link = `/hongbao/detail/${identifier}`;
+    const {type} = this.props;
+    let link = `/hongbao/detail/${identifier}?type=${type}`;
     let isReward = false;
     let contentEl;
     if (giftType === 'CASH') {
@@ -189,6 +190,7 @@ class ReceiveHongbao extends Component {
   }
 
   renderItem(item) {
+    const {type} = this.props;
     let {
       identifier, skuIcon, createdDate, giftAmount, giftStatus, giftType,
       thirdAccountUserInfoDtoList, giftRecordId, skuId
@@ -197,7 +199,7 @@ class ReceiveHongbao extends Component {
     if (thirdAccountUserInfoDtoList && thirdAccountUserInfoDtoList.length > 0) {
       nickName = thirdAccountUserInfoDtoList[0].nickName;
     }
-    let link = `/hongbao/detail/view/${identifier}`;
+    let link = `/hongbao/detail/view/${identifier}?type=${type}`;
     return (
       <li className="row flex-items-middle" key={identifier}>
         <div className="col-18">
@@ -319,6 +321,7 @@ ReceiveHongbao.propTypes = {
   userInfo: PropTypes.object,
   caches: PropTypes.object,
   cacheActions: PropTypes.object,
+  type: PropTypes.string
 };
 
 export default ReceiveHongbao;

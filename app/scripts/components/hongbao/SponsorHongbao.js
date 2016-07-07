@@ -105,7 +105,7 @@ class SponsorHongbao extends Component {
   //渲染列表
   renderList() {
     const {
-      sponsorPagination
+      sponsorPagination, type
     } = this.props;
 
     let {list, isFetching, lastPage} = sponsorPagination;
@@ -131,7 +131,7 @@ class SponsorHongbao extends Component {
         <ul className="hb-list">
           {list.map((item) => {
             const {identifier, skuIcon, createdDate, amount, status, giftStatus, giftGainedNum, giftNum, goodNum} = item;
-            let link = `/hongbao/detail/view/${identifier}`;
+            let link = `/hongbao/detail/view/${identifier}?type=${type}`;
 
             return (
               <li key={identifier}>
@@ -199,6 +199,7 @@ SponsorHongbao.propTypes = {
   userInfo: PropTypes.object,
   caches: PropTypes.object,
   cacheActions: PropTypes.object,
+  type: PropTypes.string
 };
 
 export default SponsorHongbao;
