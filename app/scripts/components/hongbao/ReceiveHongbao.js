@@ -197,7 +197,7 @@ class ReceiveHongbao extends Component {
     if (thirdAccountUserInfoDtoList && thirdAccountUserInfoDtoList.length > 0) {
       nickName = thirdAccountUserInfoDtoList[0].nickName;
     }
-    let link = `/hongbao/detail/${identifier}`;
+    let link = `/hongbao/detail/view/${identifier}`;
     return (
       <li className="row flex-items-middle" key={identifier}>
         <div className="col-18">

@@ -277,7 +277,7 @@ class UserAddressList extends Component {
       needAuth: true
     }).then((json) => {
       if (waitFor) {
-        this.toggleActionTipState();
+        this.toggleTipState();
         this.setState({
           waitforModal: true
         });

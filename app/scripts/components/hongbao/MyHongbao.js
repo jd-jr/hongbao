@@ -11,6 +11,7 @@ class MyHongbao extends Component {
     super(props, context);
     this.state = {
       type: props.type || 'receive',
+      isLogin: false
     };
     this.switchTab = this.switchTab.bind(this);
   }
@@ -21,6 +22,9 @@ class MyHongbao extends Component {
       setClientInfo((login) => {
         if (login) {
           this.loadData();
+          this.setState({
+            isLogin: true
+          });
         } else {
           this.context.router.goBack();
         }
@@ -59,7 +63,7 @@ class MyHongbao extends Component {
   }
 
   render() {
-    const {type} = this.state;
+    const {type, isLogin} = this.state;
     const {
       hongbaoActions, receivePagination, sponsorPagination, userInfo,
       caches, cacheActions
@@ -106,10 +110,13 @@ class MyHongbao extends Component {
               </section>
             ) : null
           }
-
-          {type === 'receive' ?
-            (<ReceiveHongbao {...receiveProps}/>) :
-            (<SponsorHongbao {...sponsorProps}/>)}
+          {
+            isLogin ? (
+              type === 'receive' ?
+                (<ReceiveHongbao {...receiveProps}/>) :
+                (<SponsorHongbao {...sponsorProps}/>)
+            ) : null
+          }
         </article>
 
         <BottomNav type="receive"/>

@@ -6,8 +6,19 @@ class BottomNav extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.state = {
+      showBottomNav: false
+    };
     this.createOrder = this.createOrder.bind(this);
     this.myHongbao = this.myHongbao.bind(this);
+  }
+
+  componentWillMount() {
+    setTimeout(() => {
+      this.setState({
+        showBottomNav: true
+      });
+    }, 150);
   }
 
   createOrder() {
@@ -20,6 +31,9 @@ class BottomNav extends Component {
 
   render() {
     const {type} = this.props;
+    if (!this.state.showBottomNav) {
+      return null;
+    }
     return (
       <footer className="hb-footer">
         <div className="row text-center">

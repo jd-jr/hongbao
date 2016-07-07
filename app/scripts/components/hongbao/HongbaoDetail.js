@@ -12,7 +12,8 @@ import Initiate from '../home/Initiate';
 class HongbaoDetail extends Component {
   constructor(props, context) {
     super(props, context);
-    const isUnPack = location.href.indexOf('/unpack') !== -1;
+    const href = location.href;
+    const isUnPack = href.indexOf('/unpack') !== -1;
     this.state = {
       showFoot: false,
       unpack: isUnPack,
@@ -27,11 +28,17 @@ class HongbaoDetail extends Component {
     this.showDetail = this.showDetail.bind(this);
     this.reSponsor = this.reSponsor.bind(this);
     this.closeHongbao = this.closeHongbao.bind(this);
-    this.delayShowFoot = this.delayShowFoot.bind(this);
     this.closeUnpack = this.closeUnpack.bind(this);
   }
 
   componentWillMount() {
+    //延迟显示底部按钮，解决 IOS 下底部按钮设置 fixed 的问题
+    setTimeout(() => {
+      this.setState({
+        showFoot: true
+      });
+    }, 150);
+
     //加载红包详情
     const {hongbaoDetailAction, identifier} = this.props;
     const accountType = perfect.getAccountType();
@@ -47,7 +54,7 @@ class HongbaoDetail extends Component {
         const {res} = json || {};
         const {hongbaoInfo} = res || {};
         const {giftGainedNum, giftNum, status} = hongbaoInfo || {};
-        if (giftGainedNum < giftNum && status !== 'EXPIRED') {
+        if (giftGainedNum < giftNum) {
           this.setState({
             sponsorGoal: 'again'
           });
@@ -108,16 +115,6 @@ class HongbaoDetail extends Component {
     this.setState({
       detail: true
     });
-  }
-
-  //延迟显示底部按钮
-  delayShowFoot() {
-    //解决 IOS 下底部按钮设置 fixed 的问题
-    setTimeout(() => {
-      this.setState({
-        showFoot: true
-      });
-    }, 100);
   }
 
   //重新发起
@@ -231,8 +228,7 @@ class HongbaoDetail extends Component {
     };
 
     const gainedListProps = {
-      hongbaoDetailAction, identifier, participantPagination,
-      delayShowFoot: this.delayShowFoot
+      hongbaoDetailAction, identifier, participantPagination
     };
 
     let initiateCom = null;
@@ -271,7 +267,7 @@ class HongbaoDetail extends Component {
                      src={ownerHeadpic} alt=""/>
               </div>
               <h3 className="m-t-2">{ownerNickname}的红包</h3>
-              <p className="text-muted">{title}</p>
+              <p className="text-muted f-lg">{title}</p>
               <HongbaoSelfInfo {...selfInfoProps}/>
             </div>
           </section>

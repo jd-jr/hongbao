@@ -131,7 +131,7 @@ class SponsorHongbao extends Component {
         <ul className="hb-list">
           {list.map((item) => {
             const {identifier, skuIcon, createdDate, amount, status, giftStatus, giftGainedNum, giftNum, goodNum} = item;
-            let link = `/hongbao/detail/${identifier}`;
+            let link = `/hongbao/detail/view/${identifier}`;
 
             return (
               <li key={identifier}>

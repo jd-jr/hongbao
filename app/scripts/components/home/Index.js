@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import base64 from 'js-base64';
+import Draggabilly from 'draggabilly';
 import BottomNav from '../BottomNav';
 import Help from '../Help';
 import Loading from '../../ui/Loading';
@@ -57,6 +58,12 @@ class Home extends Component {
         this.pay();
       });
     }
+  }
+
+  componentDidMount() {
+    const hbHelpEl = document.querySelector('#hbHelp .hb-help');
+    /*eslint-disable no-new*/
+    new Draggabilly(hbHelpEl);
   }
 
   handleChange(e, type) {
@@ -365,7 +372,9 @@ class Home extends Component {
         <p className="text-center hb-logo-pos">
           <i className="hb-logo"></i>
         </p>
-        <Help/>
+        <div id="hbHelp">
+          <Help/>
+        </div>
         <BottomNav type="sponsor"/>
       </div>
     );

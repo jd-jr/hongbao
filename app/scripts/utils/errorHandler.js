@@ -18,11 +18,13 @@ const errorMapping = {
   failed: '服务器累了，请稍后重试，谢谢您的合作！'
 };
 
+//没有登录或未知异常，不用处理错误信息
+const shieldErrors = ['RBF100300', 'RBE200001', 'RBF100001'];
 export default function (error, errorMsg) {
-  //没有登录或未知异常，不用处理错误信息
-  if (error.errorCode === 'RBF100300' || error.errorCode === 'RBE200001') {
+  if (shieldErrors.indexOf(error.errorCode !== -1)) {
     return;
   }
+
   if (errorMsg) {
     return errorMsg;
   }

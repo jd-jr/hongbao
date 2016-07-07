@@ -30,12 +30,9 @@ class AddAddress extends Component {
   }
 
   componentWillMount() {
-    const {tmpUserAddress, params} = this.props;
+    const {tmpUserAddress} = this.props;
     const {id, name, mobile, addressDetail, sltInfo} = tmpUserAddress;
     this.setState({id, name, mobile, addressDetail, sltInfo});
-
-    console.info(tmpUserAddress);
-
   }
 
   //将输入的值设置到state上
@@ -55,7 +52,7 @@ class AddAddress extends Component {
   }
 
   checkCanSub() {
-    const {name, mobile, addressDetail} = this.state;
+    const {name, mobile, addressDetail, sltInfo} = this.state;
 
     if (name === '') {
       return '请输入姓名';
@@ -66,7 +63,11 @@ class AddAddress extends Component {
     if (!(/^1[3-9]\d{9}$/g).test(mobile)) {
       return '您输入的手机号格式不正确，请重新输入';
     }
-    //FIXME 省市区校验
+
+    if (!sltInfo || !sltInfo.provinceId) {
+      return '请选择所在省市区';
+    }
+
     if (addressDetail === '') {
       return '请输入详细地址';
     }

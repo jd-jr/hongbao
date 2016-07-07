@@ -107,6 +107,9 @@ class App extends Component {
     indexActions.resetErrorMessage();
     if (this.modalCloseCallback && typeof this.modalCloseCallback === 'function') {
       this.modalCloseCallback();
+      setTimeout(() => {
+        this.modalCloseCallback = null;
+      }, 300);
     }
   }
 
@@ -155,7 +158,7 @@ class App extends Component {
         {this.alert()}
         <ReactCSSTransitionGroup
           component="div"
-          transitionName="hb-right"
+          transitionName="hb-animate-right"
           transitionEnterTimeout={100}
           transitionLeaveTimeout={100}>
           {children && React.cloneElement(children, {
