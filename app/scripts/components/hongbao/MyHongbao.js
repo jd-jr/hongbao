@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import BottomNav from '../BottomNav';
 import ReceiveHongbao from './ReceiveHongbao';
@@ -112,13 +113,19 @@ class MyHongbao extends Component {
               </section>
             ) : null
           }
-          {
-            isLogin ? (
-              type === 'receive' ?
-                (<ReceiveHongbao {...receiveProps}/>) :
-                (<SponsorHongbao {...sponsorProps}/>)
-            ) : null
-          }
+          <ReactCSSTransitionGroup
+            component="div"
+            transitionName="hb-animate-right"
+            transitionEnterTimeout={100}
+            transitionLeaveTimeout={100}>
+            {
+              isLogin ? (
+                type === 'receive' ?
+                  (<ReceiveHongbao key="receive" {...receiveProps}/>) :
+                  (<SponsorHongbao key="sponsor" {...sponsorProps}/>)
+              ) : null
+            }
+          </ReactCSSTransitionGroup>
         </article>
 
         <BottomNav type="receive"/>

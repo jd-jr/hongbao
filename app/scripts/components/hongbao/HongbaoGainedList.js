@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import classnames from 'classnames';
 import ScrollLoad from '../../ui/ScrollLoad';
 import perfect from '../../utils/perfect';
 
@@ -41,6 +42,7 @@ class HongbaoGainedList extends Component {
         <ScrollLoad loadMore={this.loadMore}
                     hasMore={!lastPage}
                     isLoading={isFetching}
+                    className={classnames({loading: isFetching})}
                     loader={<div className=""></div>}>
           <ul className="hb-list">
             {list.map((item) => {

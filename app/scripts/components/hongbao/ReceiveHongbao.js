@@ -18,6 +18,7 @@ class ReceiveHongbao extends Component {
     this.switchTab = this.switchTab.bind(this);
     this.withdraw = this.withdraw.bind(this);
     this.reward = this.reward.bind(this);
+    this.loadMore = this.loadMore.bind(this);
   }
 
   componentDidMount() {
@@ -239,9 +240,9 @@ class ReceiveHongbao extends Component {
         <div className="arrow-hollow-top hb-arrows-active" ref="arrow"></div>
         <ReactCSSTransitionGroup
           component="div"
-          transitionName="hb-opacity"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}>
+          transitionName="hb-animate-right"
+          transitionEnterTimeout={100}
+          transitionLeaveTimeout={100}>
           <ScrollLoad loadMore={this.loadMore}
                       hasMore={!lastPage}
                       isLoading={isFetching}
