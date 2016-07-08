@@ -13,6 +13,7 @@ class ProductList extends Component {
     super(props, context);
     this.state = {
       showFoot: false,
+      reset: false
     };
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
@@ -46,6 +47,10 @@ class ProductList extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    const {reset} = nextState;
+    if (reset === true) {
+      return true;
+    }
     const {
       categoryList,
       productPagination
@@ -98,6 +103,9 @@ class ProductList extends Component {
 
   //切换标签
   handleSelectTab(e, id) {
+    this.setState({
+      reset: true
+    });
     const {productActions, priceOrder} = this.props;
     const {switchCategory, clearProductList, getProductList, clearSelectProduct} = productActions;
     switchCategory(id);

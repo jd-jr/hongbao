@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
 import Unpack from './Unpack';
@@ -14,12 +15,18 @@ class HongbaoDetail extends Component {
     super(props, context);
     const href = location.href;
     const isUnPack = href.indexOf('/unpack') !== -1;
+    const thirdAccId = perfect.getThirdAccId();
+    let isAuthorize = true;
+    if (deviceEnv.inWx) {
+      isAuthorize = Boolean(thirdAccId);
+    }
     this.state = {
       showFoot: false,
       unpack: isUnPack,
       detail: isUnPack ? 'none' : 'block',
       sponsorGoal: 'new',
-      showInitiate: false
+      showInitiate: false,
+      isAuthorize// 在微信中是否授权
     };
 
     this.onTouchStart = this.onTouchStart.bind(this);
@@ -32,6 +39,9 @@ class HongbaoDetail extends Component {
   }
 
   componentWillMount() {
+    if (!this.state.isAuthorize) {
+      return;
+    }
     //延迟显示底部按钮，解决 IOS 下底部按钮设置 fixed 的问题
     setTimeout(() => {
       this.setState({
@@ -219,8 +229,10 @@ class HongbaoDetail extends Component {
 
     const {giftRecordId} = selfInfo || {};
     const showDetail = this.showDetail;
-    const unpackProps = {identifier, indexActions, showDetail, 
-      closeUnpack: this.closeUnpack, hongbaoDetailAction};
+    const unpackProps = {
+      identifier, indexActions, showDetail,
+      closeUnpack: this.closeUnpack, hongbaoDetailAction
+    };
     const {unpack, detail, sponsorGoal, showInitiate} = this.state;
 
     const selfInfoProps = {
@@ -275,7 +287,7 @@ class HongbaoDetail extends Component {
 
           <section className="m-t-3">
             {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
-            <HongbaoGainedList {...gainedListProps}/>
+            {this.state.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
           </section>
           {
             this.state.showFoot ? (
