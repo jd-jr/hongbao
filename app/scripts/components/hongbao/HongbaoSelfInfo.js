@@ -229,24 +229,8 @@ class HongbaoSelfInfo extends Component {
     //FIXME 发起者，不用后台返回的值判断，用前端的来源来判断
     //if (redbagSelf) {
     if (type && type === 'sponsor') {
-      if (selfInfo) { //自己抢到红包
-        const {giftType, giftAmount, confirmAddress} = selfInfo;
-        if (giftType === 'CASH') { //现金
-          // 优先判断是否可以退款
-          if (refundStatus && refundStatus !== 'FORBIDDEN_REFUND') {
-            return this.renderRefundStatus(refundStatus);
-          }
-          return this.cashStatus(giftAmount);
-        } else { // 实物
-          // 优先判断是否可以退款
-          if (refundStatus && refundStatus !== 'FORBIDDEN_REFUND') {
-            return this.renderRefundStatus(refundStatus);
-          }
-          return this.winningStatus(confirmAddress);
-        }
-      } else { //自己没有抢自己的红包
-        return this.renderRefundStatus(refundStatus);
-      }
+      // 从自己发起入口进入，只允许退款
+      return this.renderRefundStatus(refundStatus);
     } else { // 接收者
       if (selfInfo) {
         const {giftType, giftAmount, confirmAddress} = selfInfo;

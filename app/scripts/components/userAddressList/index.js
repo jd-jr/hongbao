@@ -282,14 +282,14 @@ class UserAddressList extends Component {
           waitforModal: true
         });
       } else {
-        this.context.router.replace(`hongbao/detail/${identifier}`);
+        this.context.router.replace(`hongbao/detail/view/${identifier}`);
       }
     }, (error) => {
       if (error.errorCode !== 'RBF100300') {
         indexActions.setErrorMessage(error.message);
       }
       setModalCloseCallback(() => {
-        this.context.router.replace(`hongbao/detail/${identifier}`);
+        this.context.router.replace(`hongbao/detail/view/${identifier}`);
       });
     });
   }
@@ -320,7 +320,7 @@ class UserAddressList extends Component {
       waitforModal: false
     });
     const identifier = getSessionStorage('identifier');
-    this.context.router.replace(`hongbao/detail/${identifier}`);
+    this.context.router.replace(`hongbao/detail/view/${identifier}`);
   }
 
   renderModal() {

@@ -32,6 +32,9 @@ export default (
     </Route>
     <Route path="unpack/:identifier" component={HongbaoDetailPage}
            onEnter={() => enterHandler('unpack')}/>
+    /* hongbao/detail/:identifier 是从抢红包入口进入
+    * hongbao/detail/view/:identifier 是从红包列表进入查看红包详情
+    * */
     <Route path="hongbao/detail/:identifier" component={HongbaoDetailPage}
            onEnter={() => enterHandler('detail')}/>
     <Route path="hongbao/detail/view/:identifier" component={HongbaoDetailPage}
