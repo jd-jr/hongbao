@@ -247,7 +247,11 @@ class ProductList extends Component {
   }
 
   renderProductItem(item) {
-    const {skuId, skuName, indexImg, bizPrice} = item;
+    let {skuId, skuName, indexImg, bizPrice, itemTag} = item;
+    if (itemTag) {
+      itemTag = itemTag.split(',');
+    }
+
     const {selectedProduct} = this.props;
     return (
       <li key={skuId} className="row flex-items-middle">
@@ -264,6 +268,28 @@ class ProductList extends Component {
           <div className="text-truncate">{skuName}</div>
           <div className="f-sm hb-product-info">
             <span>¥ {(bizPrice / 100).toFixed(2)}</span>
+            {
+              itemTag && itemTag.map((item, index) => {
+                let tagClass;
+                /*eslint-disable indent*/
+                switch (item) {
+                  case '火爆':
+                    tagClass = 'hb-product-tag-primary';
+                    break;
+                  case '新品':
+                    tagClass = 'hb-product-tag-info';
+                    break;
+                  case '流行':
+                    tagClass = 'hb-product-tag-success';
+                    break;
+                  default:
+                    tagClass = '';
+                }
+                return (
+                  <span key={index} className={`hb-product-tag ${tagClass}`}>{item}</span>
+                );
+              })
+            }
           </div>
         </div>
         <div className="col-3 text-center"

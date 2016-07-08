@@ -293,7 +293,7 @@ class HongbaoDetail extends Component {
             this.state.showFoot ? (
               <div className="hb-footer text-center"
                    onTouchTap={this.reSponsor}>
-                <span className="hb-active-btn">{sponsorGoal === 'new' ? '发起实物红包' : '继续发送'}</span>
+                <span className="hb-active-btn">{sponsorGoal === 'new' ? '我要发红包' : '继续发送'}</span>
               </div>
             ) : null
           }

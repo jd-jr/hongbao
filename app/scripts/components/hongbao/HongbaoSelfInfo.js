@@ -31,7 +31,6 @@ class HongbaoSelfInfo extends Component {
     this.refundPrompt = this.refundPrompt.bind(this);
     this.onClose = this.onClose.bind(this);
     this.reward = this.reward.bind(this);
-    this.withdraw = this.withdraw.bind(this);
 
     this.submitStatus = false;
   }
@@ -140,11 +139,14 @@ class HongbaoSelfInfo extends Component {
             <div>
               {
                 this.isView ? (
-                  <button className="btn btn-primary btn-sm btn-arc" onTouchTap={this.reward}>
-                    立即领奖
-                  </button>
+                  <div>
+                    <button className="btn btn-primary btn-sm btn-arc" onTouchTap={this.reward}>
+                      立即领奖
+                    </button>
+                    <p className="f-xs" style={{marginTop: '0.3rem'}}>（ 温馨提示：请在15天内尽快维护收货地址 ）</p>
+                  </div>
                 ) : (
-                  <Link to="/my" className="btn btn-primary btn-sm btn-arc">立即领奖</Link>
+                  <Link to="/my" className="btn btn-primary btn-sm btn-arc">查看我的红包</Link>
                 )
               }
             </div>
@@ -185,7 +187,7 @@ class HongbaoSelfInfo extends Component {
           <span onClick={this.refundPrompt}
                   className="btn btn-primary btn-sm btn-arc">申请退款
           </span>
-          <p className="f-xs" style={{marginTop: '0.3rem'}}>（ 温馨提示：退款需收取5%平台服务费 ）</p>
+          <p className="f-xs" style={{marginTop: '0.3rem'}}>（ 温馨提示：退款需收取部分平台服务费或继续发送 ）</p>
         </div>
       );
     } else if (refundStatus === 'REFUNDED') {
@@ -208,14 +210,14 @@ class HongbaoSelfInfo extends Component {
           {
             this.isView ? (
               deviceEnv.inJdWallet ? (
-                <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">去提现</button>
+                <span onTouchTap={() => {this.withdraw()}} className="btn btn-primary btn-sm hb-fillet-1">去提现</span>
               ) : (
                 <a href="https://qianbao.jd.com/p/page/download.htm?module=BALANCE"
                    className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</a>
               )
             ) : (
               <Link to="/my"
-                    className="btn btn-primary btn-sm hb-fillet-1">{deviceEnv.inJdWallet ? '去提现' : '去京东钱包提现'}</Link>
+                    className="btn btn-primary btn-sm hb-fillet-1">查看我的红包</Link>
             )
           }
         </div>

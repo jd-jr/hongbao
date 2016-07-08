@@ -311,7 +311,7 @@ class Home extends Component {
                   )
                 }
               </div>
-              <p className="f-sm m-l-1 text-muted">未中奖用户可随机获得钱包补贴的现金红包</p>
+              <p className="f-sm m-l-1 text-muted">未中实物用户可随机获得钱包补贴的现金红包</p>
             </div>
 
             {
@@ -331,10 +331,6 @@ class Home extends Component {
                       </div>
                     </div>
                   </div>
-                  <p className="f-xs m-l-1 text-muted">
-                    <i className={`hb-radio-gray${mystic ? ' checked' : ''}`} onTouchTap={this.handleMystery}></i>
-                    隐藏实物图片和名称，给小伙伴们发神秘奖品
-                  </p>
                 </div>
               ) : null
             }
@@ -348,7 +344,7 @@ class Home extends Component {
                   <span className="pull-right">个</span>
                 </div>
               </div>
-              <p className="f-sm m-l-1 text-muted">包含实物和现金红包</p>
+              <p className="f-sm m-l-1 text-muted">可发送1个红包送给你想送的人</p>
             </div>
 
             <div>
@@ -371,7 +367,7 @@ class Home extends Component {
               <i className={`hb-radio-gray${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>
               <span>同意并接受</span> <a href="#">《京东钱包实物红包服务协议》</a>
             </p>
-            <p className="text-center f-sm m-t-2 text-muted">中奖者未领取实物，可于7天后申请退款</p>
+            <p className="text-center f-sm m-t-2 text-muted">中奖者未领取实物，可于15天后申请退款</p>
           </section>
         </article>
         <p className="text-center hb-logo-pos">

@@ -29,14 +29,28 @@ const routeSetting = {
 
   //进入一个新的路由触发的事件
   enterHandler(key) {
-    if (key === 'home' || key === 'unpack') {
-      const params = perfect.getLocationParams() || {};
-      const {thirdAccId, accountType} = params;
-      const _thirdAccId = getSessionStorage('thirdAccId');
-      const _accountType = getSessionStorage('accountType');
+    //如果在微信端，并且没有返回 accountId，需要微信授权
+    if (deviceEnv.inWx) {
+      //当上一次路由不等于 unpack 时，开始记录判断退出的路由
+      /*const unpackRouter = getSessionStorage('unpackRouter');
+      if (unpackRouter && unpackRouter.indexOf('/unpack') === -1) {
+        const lastPathname = getSessionStorage('lastPathname');
+        if ((lastPathname && lastPathname.indexOf('/unpack') !== -1 && location.pathname.indexOf('/unpack') > -1)) {
+          window.history.go(-1);
+        }
+        //设置当前 url
+        setSessionStorage('lastPathname', location.pathname);
+      } else {
+        //记录路由不等于 unpack 等情况
+        setSessionStorage('unpackRouter', location.pathname);
+      }*/
 
-      //如果在微信端，并且没有返回 accountId，需要微信授权
-      if (deviceEnv.inWx) {
+      if (key === 'home' || key === 'unpack') {
+        const params = perfect.getLocationParams() || {};
+        const {thirdAccId, accountType} = params;
+        const _thirdAccId = getSessionStorage('thirdAccId');
+        const _accountType = getSessionStorage('accountType');
+
         if (thirdAccId && accountType) {
           setSessionStorage('thirdAccId', thirdAccId);
           setSessionStorage('accountType', accountType);
@@ -62,7 +76,6 @@ const routeSetting = {
 
   // 离开一个路由触发的事件
   leaveHandler(key) {
-
   }
 };
 
