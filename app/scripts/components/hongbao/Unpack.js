@@ -3,6 +3,8 @@ import Modal from 'reactjs-modal';
 import callApi from '../../fetch';
 import {HONGBAO_INVALID_STATUS, HONGBAO_TITLE} from '../../constants/common';
 import perfect from '../../utils/perfect';
+import circleSm from '../../../images/circle-sm.png';
+import defaultHeadPic from '../../../images/headpic.png';
 
 class Unpack extends Component {
   constructor(props, context) {
@@ -12,6 +14,7 @@ class Unpack extends Component {
       hongbaoStatus: null, //红包状态
       user: null, //用户信息
       sku: null, // 商品信息
+      owner: false, //是否为自己发的红包
       unpackStatus: false //防止重复提交
     };
     this.unpack = this.unpack.bind(this);
@@ -48,7 +51,7 @@ class Unpack extends Component {
 
     callApi({url, body}).then(
       ({json, response}) => {
-        const {status, user, sku} = json.data;
+        const {status, user, sku, owner} = json.data;
         if (HONGBAO_INVALID_STATUS.indexOf(status) !== -1) {
           if (status === 'NEED_PAY') {
             indexActions.setErrorMessage('该红包还未支付！');
@@ -64,6 +67,7 @@ class Unpack extends Component {
               unpackModal: true,
               hongbaoStatus: status,
               user,
+              owner,
               sku: (sku && sku.length > 0) ? sku[0] : null
             }, () => {
               showDetail(true);
@@ -149,9 +153,11 @@ class Unpack extends Component {
 
   // 红包弹框内容
   modalBody() {
-    const {user, hongbaoStatus, sku} = this.state;
-    const {face, nickname, title} = user || {};
+    const {user, hongbaoStatus, sku, owner} = this.state;
+    let {face, nickname, title} = user || {};
     const {skuIcon, skuName} = sku || {};
+
+    face = face || defaultHeadPic;
 
     let hongbaoTitle = null;
     /**
@@ -214,6 +220,14 @@ class Unpack extends Component {
         <div className="hb-luck-link" onTouchTap={this.hideUnpack}>
           看看大家的手气
         </div>
+        {
+          !owner ? (
+            <div className="hb-unpack-circle p-x-1 clearfix">
+              <img className="pull-left" src={circleSm} alt=""/>
+              <img className="pull-right" src={circleSm} alt=""/>
+            </div>
+          ) : null
+        }
       </div>
     );
   }

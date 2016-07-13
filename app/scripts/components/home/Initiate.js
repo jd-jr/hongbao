@@ -118,6 +118,9 @@ class Initiate extends Component {
                 </div>
               </div>
               <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold" onTouchTap={this.sponsor}>发红包</div>
+              <p className="text-center hb-logo-pos">
+                <i className="hb-logo"></i>
+              </p>
             </div>
           </Modal>
           {weixinGuide ? (

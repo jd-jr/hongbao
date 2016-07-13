@@ -365,13 +365,14 @@ class Home extends Component {
             </button>
             <p className="text-center f-sm m-t-2 text-muted">
               <i className={`hb-radio-gray${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>
-              <span>同意并接受</span> <a href="#">《京东钱包京东红包服务协议》</a>
+              <span>同意并接受</span>
+              <Link to="/protocol">《京东钱包京东红包服务协议》</Link>
             </p>
             <p className="text-center f-sm m-t-2 text-muted">中奖者未领取实物，可于15天后申请退款</p>
           </section>
         </article>
-        <p className="text-center hb-logo-pos">
-          <i className="hb-logo"></i>
+        <p className="text-center hb-logo-gray-pos">
+          <i className="hb-logo-gray"></i>
         </p>
         <div id="hbHelp">
           <Help/>

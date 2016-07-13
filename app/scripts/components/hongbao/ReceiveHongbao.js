@@ -8,6 +8,7 @@ import ScrollLoad from '../../ui/ScrollLoad';
 import classnames from 'classnames';
 import perfect from '../../utils/perfect';
 import {setSessionStorage} from '../../utils/sessionStorage';
+import defaultHeadPic from '../../../images/headpic.png';
 
 class ReceiveHongbao extends Component {
   constructor(props, context) {
@@ -231,7 +232,7 @@ class ReceiveHongbao extends Component {
     } else if (list.length === 0) {
       return (
         <div className="m-t-3 text-center text-muted">
-          没有记录
+          暂无记录
         </div>
       );
     }
@@ -269,6 +270,8 @@ class ReceiveHongbao extends Component {
     const {userInfo} = this.props;
     const {giftAndThirdAccUserInfoDto, redbagAssemblyRetDto} = userInfo;
     let {nickName, headpic} = (giftAndThirdAccUserInfoDto || {});
+
+    headpic = headpic || defaultHeadPic;
 
     let {gainCashBalance, gainGoodNum, gainNum} = (redbagAssemblyRetDto || {});
     if (gainCashBalance === undefined) {

@@ -17,3 +17,6 @@ export const REDIRECT_URI = 'https://m.jdpay.com/webchat/ahthorize?';
 
 //神秘礼物图片链接
 export const MYSTIC_GIFT = 'https://static.jdpay.com/m-hongbao/images/mystic-gift-sm.png';
+
+//默认头像
+export const HEAD_PIC = 'https://static.jdpay.com/m-hongbao/images/headpic.png';

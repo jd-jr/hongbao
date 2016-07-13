@@ -12,6 +12,8 @@ import UserAddressList from '../components/userAddressList/'
 import AddAddress from '../components/addAddress/'
 import SelectCity from '../components/selectCity/'
 import Logistics from '../components/logisticsInfo/'
+import Help from '../components/explain/Help';
+import Protocol from '../components/explain/Protocol';
 import routeSetting from './routeSetting';
 const {enterHandler} = routeSetting;
 
@@ -51,5 +53,9 @@ export default (
            onEnter={() => enterHandler('selectcity')}/>
     <Route path="logistics/:giftRecordId" component={Logistics}
            onEnter={() => enterHandler('logistics')}/>
+    <Route path="help" component={Help}
+           onEnter={() => enterHandler('help')}/>
+    <Route path="protocol" component={Protocol}
+           onEnter={() => enterHandler('protocol')}/>
   </Route>
 );

@@ -340,12 +340,32 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 3rem;
   }
 
-  &logo {
+  &logo-gray-pos {
+    position: absolute;
+    width: 100%;
+    bottom: 3rem;
+  }
+
+  &logo-gray {
     background: url("../images/wallet-logo-gray.png") no-repeat;
     display: inline-block;
     background-size: 100%;
     width: 62px;
     height: 17px;
+  }
+
+  &logo {
+    background: url("../images/wallet-logo.png") no-repeat;
+    display: inline-block;
+    background-size: 100%;
+    width: 62px;
+    height: 17px;
+  }
+
+  &logo-pos {
+    position: absolute;
+    width: 100%;
+    bottom: -1rem;
   }
 
   &help {
@@ -367,6 +387,17 @@ h1, h2, h3, h4, h5, h6 {
     bottom: 1.5rem;
     width: 100%;
     text-align: center;
+  }
+
+  &unpack-circle {
+    position: absolute;
+    bottom: 1rem;
+    width: 100%;
+
+    > img {
+      width: 5px;
+      height: 5px;
+    }
   }
 
   &iscroll.iscroll-wrapper {
@@ -405,20 +436,6 @@ h1, h2, h3, h4, h5, h6 {
       text-align: center;
       font-size: $font-size-sm;
     }
-  }
-
-  &logo-concern {
-    display: inline-block;
-    background: url("../images/wallet-logo-concern.png") no-repeat;
-    width: 17.5px;
-    height: 18px;
-    background-size: 100%;
-    vertical-align: top;
-  }
-  &logo-pos {
-    position: absolute;
-    width: 100%;
-    bottom: 3rem;
   }
 
   &radio-gray {

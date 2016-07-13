@@ -8,6 +8,7 @@ import * as actions from '../../actions/userAddressList'
 import className from 'classnames'
 import {assign} from 'lodash'
 import callApi from '../../fetch'
+import errorHandler from '../../utils/errorHandler';
 
 class Logistics extends Component {
   constructor(props) {
@@ -36,7 +37,8 @@ class Logistics extends Component {
         setModalCloseCallback(() => {
           this.context.router.goBack();
         });
-        indexActions.setErrorMessage(error.message);
+        const message = errorHandler(error);
+        indexActions.setErrorMessage(message);
       }
     });
   }

@@ -8,6 +8,7 @@ import {HONGBAO_TITLE} from '../../constants/common';
 import HongbaoSelfInfo from './HongbaoSelfInfo';
 import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
+import defaultHeadPic from '../../../images/headpic.png';
 
 // 红包详情
 class HongbaoDetail extends Component {
@@ -260,6 +261,8 @@ class HongbaoDetail extends Component {
       title, goodsNum, giftNum, giftGainedNum, status, selfInfo, redbagSelf, refundStatus
     } = hongbaoInfo;
 
+    ownerHeadpic = ownerHeadpic || defaultHeadPic;
+
     title = title || HONGBAO_TITLE;
 
     if (!skuId) {
@@ -325,8 +328,8 @@ class HongbaoDetail extends Component {
           </section>
           {this.renderFooter()}
         </article>
-        <p className="text-center hb-logo-pos">
-          <i className="hb-logo"></i>
+        <p className="text-center hb-logo-gray-pos">
+          <i className="hb-logo-gray"></i>
         </p>
       </div>
     );

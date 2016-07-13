@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
+import classnames from 'classnames';
 import ScrollLoad from '../../ui/ScrollLoad';
 import perfect from '../../utils/perfect';
-import classnames from 'classnames';
+import defaultHeadPic from '../../../images/headpic.png';
 
 class SponsorHongbao extends Component {
   constructor(props, context) {
@@ -117,7 +118,7 @@ class SponsorHongbao extends Component {
     } else if (list.length === 0) {
       return (
         <div className="m-t-3 text-center text-muted">
-          没有记录
+          暂无记录
         </div>
       );
     }
@@ -166,6 +167,8 @@ class SponsorHongbao extends Component {
     if (putOutAmount === undefined) {
       putOutAmount = 0;
     }
+
+    headpic = headpic || defaultHeadPic;
 
     return (
       <div>

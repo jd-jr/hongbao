@@ -20,6 +20,8 @@ const routeSetting = {
     editaddress: '编辑地址',
     selectcity: '选择省市区',
     logistics: '物流详情',
+    protocol: '服务协议',
+    help: '帮助'
   },
 
   //设置 Title

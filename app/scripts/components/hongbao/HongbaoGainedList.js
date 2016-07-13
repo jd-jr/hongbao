@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import ScrollLoad from '../../ui/ScrollLoad';
 import perfect from '../../utils/perfect';
+import defaultHeadPic from '../../../images/headpic.png';
 import championNotGain from '../../../images/champion-not-gain.png';
 
 /**
@@ -66,6 +67,7 @@ class HongbaoGainedList extends Component {
               giftGainedDate, giftType, giftStatus, skuName, skuIcon
             } = item;
 
+            headpic = headpic || defaultHeadPic;
             giftAmount = (giftAmount / 100).toFixed(2);
             if (giftType === 'CASH') { //抢到现金
               return (
