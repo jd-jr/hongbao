@@ -23,7 +23,7 @@ class HongbaoSelfInfo extends Component {
     super(props, context);
     this.state = {
       refundStatus: props.refundStatus,
-      visible: false
+      refundVisible: false //显示申请退款弹框
     };
     const href = location.href;
     this.isView = href.indexOf('/hongbao/detail/view') !== -1;
@@ -31,6 +31,7 @@ class HongbaoSelfInfo extends Component {
     this.refundPrompt = this.refundPrompt.bind(this);
     this.onClose = this.onClose.bind(this);
     this.reward = this.reward.bind(this);
+    this.withdraw = this.withdraw.bind(this);
 
     this.submitStatus = false;
   }
@@ -43,7 +44,7 @@ class HongbaoSelfInfo extends Component {
 
   onClose(type) {
     this.setState({
-      visible: false
+      refundVisible: false
     });
     if (type === 'ok') {
       this.refund();
@@ -53,7 +54,9 @@ class HongbaoSelfInfo extends Component {
   }
 
   // 提现
-  withdraw() {
+  withdraw(e) {
+    e.stopPropagation();
+    e.preventDefault();
     jdWalletApi.openModule({name: 'BALANCE'});
   }
 
@@ -72,7 +75,7 @@ class HongbaoSelfInfo extends Component {
     }
     this.submitStatus = true;
     this.setState({
-      visible: true
+      refundVisible: true
     });
   }
 
@@ -143,10 +146,13 @@ class HongbaoSelfInfo extends Component {
                     <button className="btn btn-primary btn-sm btn-arc" onTouchTap={this.reward}>
                       立即领奖
                     </button>
-                    <p className="f-xs" style={{marginTop: '0.3rem'}}>（ 温馨提示：请在15天内尽快维护收货地址 ）</p>
+                    <p className="f-xs text-muted m-t-0-3">（温馨提示：请在15天内尽快维护收货地址）</p>
                   </div>
                 ) : (
-                  <Link to="/my" className="btn btn-primary btn-sm btn-arc">查看我的红包</Link>
+                  <div>
+                    <Link to="/my" className="btn btn-primary btn-sm btn-arc">查看我的红包</Link>
+                    <p className="f-xs text-muted m-t-0-3">（温馨提示：请在15天内尽快维护收货地址）</p>
+                  </div>
                 )
               }
             </div>
@@ -175,19 +181,22 @@ class HongbaoSelfInfo extends Component {
   /**
    * 退款状态
    * @param refundStatus
-   * ALLOW_REFUND 允许退款
-   * REFUNDED 已退款
-   * FORBIDDEN_REFUND 禁止退款
+   * REFUNDED    已退款 我要发红包
+   REDBAG_GOODS_TRANSFER_AND_REFOUND   申请退款、继续发送
+   REDBAG_GOODS_TRANSFER    继续发送
+   REDBAG_PUT_OUT 我要发红包
+   REDBAG_GOODS_REFOUND 申请退款、我要发送红包
+   FORBIDDEN_REFUND 禁止退款 我要发红包
    * @returns {XML}
    */
   renderRefundStatus(refundStatus) {
-    if (refundStatus === 'ALLOW_REFUND') {
+    if (refundStatus === 'REDBAG_GOODS_TRANSFER_AND_REFOUND' || refundStatus === 'REDBAG_GOODS_REFOUND') {
       return (
         <div>
           <span onClick={this.refundPrompt}
                   className="btn btn-primary btn-sm btn-arc">申请退款
           </span>
-          <p className="f-xs" style={{marginTop: '0.3rem'}}>（ 温馨提示：退款需收取部分平台服务费或继续发送 ）</p>
+          <p className="f-xs text-muted m-t-0-3">（温馨提示：退款须收部分平台服务费或继续发送此红包）</p>
         </div>
       );
     } else if (refundStatus === 'REFUNDED') {
@@ -210,7 +219,7 @@ class HongbaoSelfInfo extends Component {
           {
             this.isView ? (
               deviceEnv.inJdWallet ? (
-                <span onTouchTap={() => {this.withdraw()}} className="btn btn-primary btn-sm hb-fillet-1">去提现</span>
+                <span onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">去提现</span>
               ) : (
                 <a href="https://qianbao.jd.com/p/page/download.htm?module=BALANCE"
                    className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</a>
@@ -246,7 +255,7 @@ class HongbaoSelfInfo extends Component {
   }
 
   render() {
-    const {visible} = this.state;
+    const {refundVisible} = this.state;
     const footer = (
       <div className="row text-center">
         <div className="col-12 border-second border-right hb-active-btn p-y-0-5" onClick={() => this.onClose('cancel')}>
@@ -261,8 +270,8 @@ class HongbaoSelfInfo extends Component {
         {this.renderStatus()}
         <Modal
           className="hb-alert"
-          visible={visible}
-          style={{width: '70%'}}
+          visible={refundVisible}
+          style={{width: '90%'}}
           footerStyle={{padding: '0 10px'}}
           onClose={this.onClose}
           footer={footer}
@@ -271,8 +280,20 @@ class HongbaoSelfInfo extends Component {
           preventTouchmove
           closable={false}
         >
-          <div className="text-center">
-            <div>您确定要退款吗？</div>
+          <div>
+            <h3 className="text-center">服务费说明</h3>
+            <div className="row">
+              <div className="col-12">
+                <div>商品价格0-114元</div>
+                <div>商品价格114-2000元</div>
+                <div>商品价格2000元以上</div>
+              </div>
+              <div className="col-12">
+                <div>费率=价格*8.5%+运费</div>
+                <div>费率=价格*8.5%</div>
+                <div>费率=180元</div>
+              </div>
+            </div>
           </div>
         </Modal>
       </div>

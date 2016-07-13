@@ -3,14 +3,14 @@ import Modal from 'reactjs-modal';
 import prefect from '../../utils/perfect';
 import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import {HONGBAO_TITLE, HONGBAO_MYSTIC} from '../../constants/common';
+import {HONGBAO_TITLE} from '../../constants/common';
 import weixinShareGuide from '../../../images/weixin-share-guide.png';
 import {MYSTIC_GIFT} from '../../config';
 
 class Initiate extends Component {
   constructor(props) {
     super(props);
-    let {status, skuIcon, mystic} = this.props;
+    let {status} = this.props;
     this.state = {
       success: status === 'true',
       visible: true,
@@ -22,13 +22,11 @@ class Initiate extends Component {
     this.closeShareGuide = this.closeShareGuide.bind(this);
     this.closeHongbao = this.closeHongbao.bind(this);
 
-    if (mystic === 'true') {
-      skuIcon = MYSTIC_GIFT;
-    }
     //设置分享图片
     if (deviceEnv.inJdWallet) {
-      walletApi.shareIconURL(skuIcon, 'hongbao');
+      walletApi.shareIconURL(MYSTIC_GIFT, 'hongbao');
     }
+    this.clientWidth = document.documentElement.clientWidth;
   }
 
   //发红包
@@ -46,16 +44,12 @@ class Initiate extends Component {
   share() {
     //调起分享
     const urlRoot = prefect.getLocationRoot();
-    let {identifier, title, skuName, skuIcon, mystic} = this.props;
-    if (mystic === 'true') {
-      skuName = HONGBAO_MYSTIC;
-      skuIcon = MYSTIC_GIFT;
-    }
+    let {identifier, title, skuName} = this.props;
     walletApi.share({
-      url: `${urlRoot}unpack/${identifier}`,
+      url: `${urlRoot}authorize/${identifier}`,
       title: title || HONGBAO_TITLE,
       desc: skuName,
-      imgUrl: skuIcon,
+      imgUrl: MYSTIC_GIFT,
       channel: 'WX',
       debug: true,
       callback: (status) => {
@@ -79,7 +73,7 @@ class Initiate extends Component {
     this.context.router.replace('/');
   }
 
-  //微信中关闭指导
+  //微信中关闭提示
   closeShareGuide() {
     this.setState({
       weixinGuide: false
@@ -98,14 +92,14 @@ class Initiate extends Component {
 
   render() {
     const {success, visible, weixinGuide} = this.state;
-    const {closable} = this.props;
+    let {skuName, skuIcon, closable} = this.props;
     if (success) {
       return (
         <div>
           <Modal
             visible={visible}
             className="hb-modal"
-            bodyStyle={{height: '32rem'}}
+            bodyStyle={{height: '33rem'}}
             animation
             maskAnimation
           >
@@ -114,7 +108,13 @@ class Initiate extends Component {
               <div className="hb-ellipse-arc-flat flex-items-middle flex-items-center flex">
                 <div>
                   <h2 className="h1">红包已包好</h2>
-                  <h4>实物红包</h4>
+                  <h4>京东红包</h4>
+                  <div className="hb-product-wrap row" style={{minWidth: `${this.clientWidth * 0.7}px`}}>
+                    <div className="col-7">
+                      <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
+                    </div>
+                    <div className="col-17 text-truncate-2 product-name">{skuName}</div>
+                  </div>
                 </div>
               </div>
               <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold" onTouchTap={this.sponsor}>发红包</div>
@@ -165,7 +165,6 @@ Initiate.propTypes = {
   identifier: PropTypes.string,
   status: PropTypes.string,
   skuIcon: PropTypes.string,
-  mystic: PropTypes.string,
   closable: PropTypes.bool,
   closeHongbao: PropTypes.func
 };

@@ -11,6 +11,6 @@ export const WEIXIN_AUTHORIZE = 'https://open.weixin.qq.com/connect/oauth2/autho
 // 微信授权后台 url
 export const REDIRECT_URI = 'http://rmk.jdpay.com:8011/webchat/ahthorize';
 
-//神秘礼物链接
+//神秘礼物图片链接
 export const MYSTIC_GIFT = 'http://hongbao.jdpay.com:8083/images/mystic-gift-sm.png';
 

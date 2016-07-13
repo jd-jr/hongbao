@@ -20,7 +20,8 @@ class AddAddress extends Component {
       mobile: '',
       addressDetail: '',
       sltInfo: null, //省市区信息
-      submitState: false //提交状态
+      submitState: false, //提交状态
+      addressDefault: false, //是否为默认地址
     };
     this.skuId = getSessionStorage('skuId');
     this.giftRecordId = getSessionStorage('giftRecordId');
@@ -31,8 +32,8 @@ class AddAddress extends Component {
 
   componentWillMount() {
     const {tmpUserAddress} = this.props;
-    const {id, name, mobile, addressDetail, sltInfo} = tmpUserAddress;
-    this.setState({id, name, mobile, addressDetail, sltInfo});
+    const {id, name, mobile, addressDetail, sltInfo, addressDefault} = tmpUserAddress;
+    this.setState({id, name, mobile, addressDetail, sltInfo, addressDefault});
   }
 
   //将输入的值设置到state上
@@ -154,12 +155,12 @@ class AddAddress extends Component {
 
   //返回地址信息
   generateParams() {
-    const {id, name, mobile, addressDetail, sltInfo} = this.state;
+    const {id, name, mobile, addressDetail, sltInfo, addressDefault} = this.state;
 
     const {cityName, countyName, provinceName, townName} = sltInfo;
     let provinceCity = provinceName + cityName + countyName + (townName || '');
     const _ret = {
-      addressDefault: false,
+      addressDefault,
       name,
       mobile,
       fullAddress: provinceCity + addressDetail,

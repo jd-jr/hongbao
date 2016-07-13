@@ -12,22 +12,15 @@ class Unpack extends Component {
       unpackModal: false, //拆红包弹框
       hongbaoStatus: null, //红包状态
       user: null, //用户信息
-      unpackStatus: false
+      unpackStatus: false //防止重复提交
     };
     this.unpack = this.unpack.bind(this);
     this.hideUnpack = this.hideUnpack.bind(this);
-    const unpacked = getSessionStorage('unpacked');
-    if (unpacked === 'true') {
-      const {identifier} = props;
-      context.router.replace(`/hongbao/detail/${identifier}`);
-    }
+    this.clientWidth = document.documentElement.clientWidth;
   }
 
   componentDidMount() {
-    const {unpacked} = this.state;
-    if (!unpacked) {
-      this.validateHongbao();
-    }
+    this.validateHongbao();
   }
 
   /**
@@ -65,14 +58,14 @@ class Unpack extends Component {
         } else {
           //如果领取过，直接打开
           if (status === 'HAS_RECEIVE') {
-            showDetail();
+            showDetail(true);
           } else {
             this.setState({
               unpackModal: true,
               hongbaoStatus: status,
               user
             }, () => {
-              showDetail();
+              showDetail(true);
             });
           }
         }
@@ -94,7 +87,6 @@ class Unpack extends Component {
       });
     }, 100);
 
-    setSessionStorage('unpacked', 'true');
     if (this.state.unpackStatus) {
       return;
     }
@@ -107,7 +99,7 @@ class Unpack extends Component {
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
     if (hongbaoStatus === 'HAS_RECEIVE') {
-      this.context.router.replace(`/hongbao/detail/${identifier}`);
+      this.hideUnpack();
       return;
     }
     const url = 'receive';
@@ -127,13 +119,17 @@ class Unpack extends Component {
     );
   }
 
+  /**
+   * 隐藏拆红包弹框
+   * @param reLoad 如果为 true 则重新加载红包详情数据
+   */
   hideUnpack(reLoad) {
-    const {hongbaoDetailAction, identifier} = this.props;
-    setSessionStorage('unpacked', 'true');
+    const {hongbaoDetailAction, identifier, showDetail} = this.props;
     this.setState({
       unpackStatus: false
     });
-    this.props.closeUnpack();
+    showDetail();
+
     if (reLoad) {
       let body = {
         identifier
@@ -152,12 +148,13 @@ class Unpack extends Component {
 
       hongbaoDetailAction.getHongbaoDetail(body)
     }
-    //this.context.router.replace(`/hongbao/detail/${identifier}`);
   }
 
+  // 红包弹框内容
   modalBody() {
-    const {user, hongbaoStatus} = this.state;
+    const {user, hongbaoStatus, sku} = this.state;
     const {face, nickname, title} = user || {};
+    const {skuIcon, skuName} = sku || {};
 
     let hongbaoTitle = null;
     /**
@@ -174,17 +171,17 @@ class Unpack extends Component {
       case 'OK':
       case 'HAS_RECEIVE':
         hongbaoTitle = (
-          <h2 className="m-t-2">{title || HONGBAO_TITLE}</h2>
+          <h2 className="m-t-1 text-truncate-2">{title || HONGBAO_TITLE}</h2>
         );
         break;
       case 'RECEIVE_COMPLETE':
         hongbaoTitle = (
-          <h2 className="m-t-2">手慢了，红包派完了</h2>
+          <h2 className="m-t-1 text-truncate-2">手慢了，红包派完了</h2>
         );
         break;
       case 'EXPIRED':
         hongbaoTitle = (
-          <h2 className="m-t-2">该红包已超过24小时。如已领取，可在“我的红包”中查看</h2>
+          <h2 className="m-t-1 text-truncate-2">该红包已超过24小时。如已领取，可在“我的红包”中查看</h2>
         );
         break;
       default:
@@ -195,17 +192,24 @@ class Unpack extends Component {
     return (
       <div className="hb-ellipse-arc-mask">
         <div className="hb-ellipse-arc-flat text-center">
-          <section className="m-t-2">
+          <section className="m-t-0-5">
             <div>
               <img className="img-circle img-thumbnail hb-figure" src={face} alt=""/>
             </div>
             <div className="m-t-1">{nickname}</div>
-            <div>发了一个实物红包</div>
+            <div>发了一个京东红包</div>
           </section>
+          <section className="hb-product-wrap row" style={{minWidth: `${this.clientWidth * 0.7}px`}}>
+            <div className="col-7 text-left">
+              <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
+            </div>
+            <div className="col-17 text-truncate-2 product-name">{skuName}</div>
+          </section>
+
           {hongbaoTitle}
         </div>
         {
-          hongbaoStatus !== 'RECEIVE_COMPLETE' ? (
+          hongbaoStatus !== 'RECEIVE_COMPLETE' && hongbaoStatus !== 'EXPIRED' ? (
             <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold"
                  onTouchTap={this.unpack}>開</div>
           ) : null
@@ -224,7 +228,7 @@ class Unpack extends Component {
       <Modal
         visible={unpackModal}
         className="hb-modal"
-        bodyStyle={{height: '33rem'}}
+        bodyStyle={{height: '35rem'}}
         animation
         maskAnimation
       >
@@ -251,7 +255,6 @@ Unpack.propTypes = {
   identifier: PropTypes.string,
   indexActions: PropTypes.object,
   showDetail: PropTypes.func,
-  closeUnpack: PropTypes.func,
   hongbaoDetailAction: PropTypes.object,
 };
 

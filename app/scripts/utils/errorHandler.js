@@ -21,7 +21,7 @@ const errorMapping = {
 //没有登录或未知异常，不用处理错误信息
 const shieldErrors = ['RBF100300', 'RBE200001', 'RBF100001'];
 export default function (error, errorMsg) {
-  if (shieldErrors.indexOf(error.errorCode !== -1)) {
+  if (shieldErrors.indexOf(error.errorCode) !== -1) {
     return;
   }
 

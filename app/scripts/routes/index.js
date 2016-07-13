@@ -5,9 +5,9 @@ import HomePage from '../containers/HomePage';
 import ProductPage from '../containers/ProductPage';
 import ProductList from '../components/product/ProductList';
 import Product from '../components/product/Product';
+import Authorize from '../components/hongbao/Authorize';
 import HongbaoDetailPage from '../containers/HongbaoDetailPage';
 import MyHongbaoPage from '../containers/MyHongbaoPage';
-
 import UserAddressList from '../components/userAddressList/'
 import AddAddress from '../components/addAddress/'
 import SelectCity from '../components/selectCity/'
@@ -30,13 +30,13 @@ export default (
       <Route path="detail/:view/:skuId" component={Product}
              onEnter={() => enterHandler('productView')}/>
     </Route>
-    <Route path="unpack/:identifier" component={HongbaoDetailPage}
-           onEnter={() => enterHandler('unpack')}/>
-    /* hongbao/detail/:identifier 是从抢红包入口进入
+    <Route path="authorize/:identifier" component={Authorize}
+           onEnter={() => enterHandler('authorize')}/>
+    /* unpack/:identifier 是从抢红包入口进入
     * hongbao/detail/view/:identifier 是从红包列表进入查看红包详情
     * */
-    <Route path="hongbao/detail/:identifier" component={HongbaoDetailPage}
-           onEnter={() => enterHandler('detail')}/>
+    <Route path="unpack/:identifier" component={HongbaoDetailPage}
+           onEnter={() => enterHandler('unpack')}/>
     <Route path="hongbao/detail/view/:identifier" component={HongbaoDetailPage}
            onEnter={() => enterHandler('detail')}/>
     <Route path="my" component={MyHongbaoPage}

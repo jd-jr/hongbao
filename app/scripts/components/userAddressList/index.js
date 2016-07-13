@@ -125,13 +125,13 @@ class UserAddressList extends Component {
     const {initTmpUserAddress} = this.props;
     const {
       id, name, mobile, addressDetail,
-      cityId, cityName, countyId, countyName, provinceId, provinceName, townId, townName
+      cityId, cityName, countyId, countyName, provinceId, provinceName, townId, townName, addressDefault
     } = item;
     const sltInfo = {
       cityId, cityName, countyId, countyName, provinceId, provinceName, townId, townName
     };
     const tmp = {
-      id, name, mobile, addressDetail, sltInfo
+      id, name, mobile, addressDetail, sltInfo, addressDefault
     };
     initTmpUserAddress(tmp);
     this.context.router.push({
@@ -346,7 +346,7 @@ class UserAddressList extends Component {
           closable={false}
         >
           <div className="text-center">
-            奖品是否有货，取决于京东补货速度。实物红包无法保证奖品寄出具体时间，您可联系客服咨询。客服电话：95118
+            奖品是否有货，取决于京东补货速度。京东红包无法保证奖品寄出具体时间，您可联系客服咨询。客服电话：95118
           </div>
         </Modal>
       );
@@ -444,10 +444,10 @@ class UserAddressList extends Component {
                 {this.state.actionTip}
               </div>
               <div className="btn-panel">
-                <a href="#" className="btn-cancel text-red tip-item hb-bd-r hb-link-block"
-                   onTouchTap={this.toggleActionTipState}>取消</a>
-                <a href="#" className="btn-sure text-red tip-item hb-link-block"
-                   onTouchTap={this.sureAction}>确定</a>
+                <span className="btn-cancel text-red tip-item hb-bd-r"
+                   onTouchTap={this.toggleActionTipState}>取消</span>
+                <span className="btn-sure text-red tip-item"
+                   onTouchTap={this.sureAction}>确定</span>
               </div>
             </div>
           </div>

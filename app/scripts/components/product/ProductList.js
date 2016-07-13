@@ -36,7 +36,7 @@ class ProductList extends Component {
       this.setState({
         showFoot: true
       });
-    }, 150);
+    }, 300);
   }
 
   componentDidMount() {

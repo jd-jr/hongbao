@@ -14,32 +14,34 @@ class HongbaoDetail extends Component {
   constructor(props, context) {
     super(props, context);
     const href = location.href;
+    //是否从拆红包入口进入
     const isUnPack = href.indexOf('/unpack') !== -1;
+    this.isUnPack = isUnPack; // 从拆红包入口进入
     const thirdAccId = perfect.getThirdAccId();
     let isAuthorize = true;
     if (deviceEnv.inWx) {
       isAuthorize = Boolean(thirdAccId);
     }
+    this.isAuthorize = isAuthorize; // 在微信中是否授权
     this.state = {
       showFoot: false,
-      unpack: isUnPack,
+      unpack: isUnPack, //如果是从拆红包入口进入，则显示拆红包弹框
+      // 如果是从拆红包入口进入，初始隐藏，等弹出抢红包窗口，再显示。这里没有用 state unpack，
+      // 主要 unpack 和 detail 两个状态处理的场景不一致
       detail: isUnPack ? 'none' : 'block',
-      sponsorGoal: 'new',
-      showInitiate: false,
-      isAuthorize// 在微信中是否授权
+      sponsorGoal: 'new', // 判断底部显示状态，是重新发起，还是继续发送
+      showInitiate: false, // 继续发送状态
     };
 
-    this.onTouchStart = this.onTouchStart.bind(this);
-    this.onTouchMove = this.onTouchMove.bind(this);
-    this.onTouchEnd = this.onTouchEnd.bind(this);
     this.showDetail = this.showDetail.bind(this);
     this.reSponsor = this.reSponsor.bind(this);
     this.closeHongbao = this.closeHongbao.bind(this);
-    this.closeUnpack = this.closeUnpack.bind(this);
+    this.guide = this.guide.bind(this);
   }
 
   componentWillMount() {
-    if (!this.state.isAuthorize) {
+    // 如果在微信中还没有授权，则直接返回
+    if (!this.isAuthorize) {
       return;
     }
     //延迟显示底部按钮，解决 IOS 下底部按钮设置 fixed 的问题
@@ -50,7 +52,7 @@ class HongbaoDetail extends Component {
     }, 150);
 
     //加载红包详情
-    const {hongbaoDetailAction, identifier} = this.props;
+    const {hongbaoDetailAction, identifier, type} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
     let body = {
@@ -62,19 +64,34 @@ class HongbaoDetail extends Component {
     hongbaoDetailAction.getHongbaoDetail(body)
       .then((json) => {
         const {res} = json || {};
-        const {hongbaoInfo, redbagSelf} = res || {};
-        const {giftGainedNum, giftNum, status} = hongbaoInfo || {};
-        if (giftGainedNum < giftNum && redbagSelf && status === 'EXPIRED') {
+
+        /*const {hongbaoInfo} = res || {};
+         const {giftGainedNum, giftNum, status} = hongbaoInfo || {};
+         //如果红包已过期，并且红包还没有抢完，而且是发起者进入，则显示继续发送
+         if (type && type === 'sponsor' && status === 'EXPIRED' && giftGainedNum < giftNum) {
+         this.setState({
+         sponsorGoal: 'again'
+         });
+         }*/
+
+        /**
+         REFUNDED    已退款 我要发红包
+         REDBAG_GOODS_TRANSFER_AND_REFOUND   申请退款、继续发送
+         REDBAG_GOODS_TRANSFER    继续发送
+         REDBAG_PUT_OUT 我要发红包
+         REDBAG_GOODS_REFOUND 申请退款、我要发送红包
+         FORBIDDEN_REFUND 禁止退款 我要发红包
+         */
+        const againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER'];
+        const {hongbaoInfo} = res || {};
+        const {refundStatus} = hongbaoInfo || {};
+        //如果红包已过期，并且红包还没有抢完，而且是发起者进入，则显示继续发送
+        if (againSend.indexOf(refundStatus) !== -1) {
           this.setState({
             sponsorGoal: 'again'
           });
         }
       });
-
-    //滚动窗口显示底部 banner，停止隐藏
-    /*window.addEventListener('touchstart', this.onTouchStart, false);
-     window.addEventListener('touchmove', this.onTouchMove, false);
-     window.addEventListener('touchend', this.onTouchEnd, false);*/
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -86,48 +103,29 @@ class HongbaoDetail extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('touchstart', this.onTouchStart, false);
-    window.removeEventListener('touchmove', this.onTouchMove, false);
-    window.removeEventListener('touchend', this.onTouchEnd, false);
-
     const {hongbaoDetailAction} = this.props;
     hongbaoDetailAction.clearHongbaoDetail();
     hongbaoDetailAction.clearParticipant();
   }
 
-  onTouchStart(e) {
-    const el = e.changedTouches[0];
-    const pageY = el.pageY;
-    this.pageY = pageY;
-  }
-
-  onTouchMove(e) {
-    // 解决 Android bug 这会触发一次 touchstart， 一次 touchmove， touchend 不触发
-    // http://www.imooc.com/video/9579
-    //e.preventDefault();
-    const el = e.changedTouches[0];
-    const pageY = el.pageY;
-    const offset = pageY - this.pageY;
-    if (offset < -20 || offset > 20) {//向下滑动
+  /**
+   * 显示红包详情
+   * @param first 设为 true，表示红包弹框加载完，显示
+   * 不传入值或设为 false 表示直接关闭抢红包弹框
+   */
+  showDetail(first) {
+    if (first) {
       this.setState({
-        showFoot: false
+        detail: true
+      });
+    } else {
+      this.setState({
+        unpack: false
       });
     }
   }
 
-  onTouchEnd(e) {
-    this.setState({
-      showFoot: true
-    });
-  }
-
-  showDetail() {
-    this.setState({
-      detail: true
-    });
-  }
-
-  //重新发起
+  //重新发起或继续发送
   reSponsor() {
     const {sponsorGoal} = this.state;
     if (sponsorGoal === 'new') {
@@ -139,17 +137,15 @@ class HongbaoDetail extends Component {
     }
   }
 
+  // 红包攻略 TODO
+  guide() {
+
+  }
+
   // 关闭发送红包
   closeHongbao() {
     this.setState({
       showInitiate: false
-    });
-  }
-
-  // 关闭抢红包窗口
-  closeUnpack() {
-    this.setState({
-      unpack: false
     });
   }
 
@@ -171,27 +167,63 @@ class HongbaoDetail extends Component {
       case 'OK': //领取中
       case 'PAY_SUCC':
         return (
-          <div className="m-l-1 text-muted">
+          <div className="pull-left text-muted">
             已领取{giftGainedNum}/{giftNum}，共{goodsNum}个奖品{momeyText}。
           </div>
         );
       case 'RECEIVE_COMPLETE':
         return (
-          <div className="m-l-1 text-muted">共{goodsNum}个奖品{momeyText}。
+          <div className="pull-left text-muted">共{goodsNum}个奖品{momeyText}。
             {perfect.formatMillisecond(finishedDate - createdDate)}抢光
           </div>
         );
       case 'EXPIRED':
         return (
-          <div className="m-l-1 text-muted">共{goodsNum}个奖品{momeyText}。该红包已过期</div>
+          <div className="pull-left text-muted">共{goodsNum}个奖品{momeyText}。该红包已过期</div>
         );
       case 'REFUNDED': //已退款
         return (
-          <div className="m-l-1 text-muted">共{goodsNum}个奖品{momeyText}。该红包已退款</div>
+          <div className="pull-left text-muted">共{goodsNum}个奖品{momeyText}。该红包已退款</div>
         );
       default:
         return null;
     }
+  }
+
+  /**
+   * 显示底部按钮
+   * 如果是拆红包，则显示红包攻略和我要发红包
+   * 如果是发送者显示。。。
+   * 如果是接收者显示。。。
+   * @returns {*}
+   */
+  renderFooter() {
+    const {showFoot, sponsorGoal} = this.state;
+    const {type} = this.props;
+    const isUnPack = this.isUnPack;
+    if (!showFoot) {
+      return;
+    }
+
+    return isUnPack ? (
+      <footer className="hb-footer">
+        <div className="row text-center">
+          <div className="col-12 border-second border-right hb-active-btn"
+               onTouchTap={this.guide}>
+            红包攻略
+          </div>
+          <div className="col-12 hb-active-btn"
+               onTouchTap={this.reSponsor}>
+            我要发红包
+          </div>
+        </div>
+      </footer>
+    ) : (
+      <div className="hb-footer text-center"
+           onTouchTap={this.reSponsor}>
+        <span className="hb-active-btn">{type === 'receive' ? '我要发红包' : (sponsorGoal === 'new' ? '我要发红包' : '继续发送')}</span>
+      </div>
+    );
   }
 
   render() {
@@ -230,8 +262,7 @@ class HongbaoDetail extends Component {
     const {giftRecordId} = selfInfo || {};
     const showDetail = this.showDetail;
     const unpackProps = {
-      identifier, indexActions, showDetail,
-      closeUnpack: this.closeUnpack, hongbaoDetailAction
+      identifier, indexActions, showDetail, hongbaoDetailAction
     };
     const {unpack, detail, sponsorGoal, showInitiate} = this.state;
 
@@ -262,18 +293,6 @@ class HongbaoDetail extends Component {
         {unpack ? <Unpack {...unpackProps}/> : null}
         <article className="hb-wrap-mb" style={{display: detail}}>
           <section>
-            <div className="hb-single m-t-1 m-b-1">
-              <Link className="hb-link-block row flex-items-middle" to={`/product/detail/view/${skuId}`}>
-                <div className="col-4">
-                  <img className="img-fluid" src={skuIcon} alt=""/>
-                </div>
-                <div className="col-16">
-                  <div className="text-truncate">{skuName}</div>
-                  <div className="text-muted f-sm">发起时间：{perfect.formatDate(createdDate)}</div>
-                </div>
-              </Link>
-            </div>
-
             <div className="text-center m-t-3">
               <div>
                 <img className="img-circle img-thumbnail hb-figure"
@@ -286,17 +305,15 @@ class HongbaoDetail extends Component {
           </section>
 
           <section className="m-t-3">
-            {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
-            {this.state.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
-          </section>
-          {
-            this.state.showFoot ? (
-              <div className="hb-footer text-center"
-                   onTouchTap={this.reSponsor}>
-                <span className="hb-active-btn">{sponsorGoal === 'new' ? '我要发红包' : '继续发送'}</span>
+            <div className="m-x-1 m-b-0-3 clearfix">
+              {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
+              <div className="pull-right">
+                <Link to={`/product/detail/view/${skuId}`}>查看实物详情</Link>
               </div>
-            ) : null
-          }
+            </div>
+            {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
+          </section>
+          {this.renderFooter()}
         </article>
         <p className="text-center hb-logo-pos">
           <i className="hb-logo"></i>

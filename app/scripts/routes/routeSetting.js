@@ -6,14 +6,15 @@ import {setSessionStorage, getSessionStorage} from '../utils/sessionStorage';
 
 const routeSetting = {
   titles: {
-    home: '实物红包',
+    home: '京东红包',
+    initiate: '京东红包',
     productList: '选择商品',
     product: '商品详情',
     productView: '商品详情',
-    initiate: '实物红包',
-    unpack: '',
+    authorize: '京东红包',
+    unpack: '红包详情',
     detail: '红包详情',
-    my: '实物红包',
+    my: '京东红包',
     myaddress: '我的收货地址',
     addaddress: '新增地址',
     editaddress: '编辑地址',
@@ -31,21 +32,18 @@ const routeSetting = {
   enterHandler(key) {
     //如果在微信端，并且没有返回 accountId，需要微信授权
     if (deviceEnv.inWx) {
-      //当上一次路由不等于 unpack 时，开始记录判断退出的路由
-      /*const unpackRouter = getSessionStorage('unpackRouter');
-      if (unpackRouter && unpackRouter.indexOf('/unpack') === -1) {
-        const lastPathname = getSessionStorage('lastPathname');
-        if ((lastPathname && lastPathname.indexOf('/unpack') !== -1 && location.pathname.indexOf('/unpack') > -1)) {
-          window.history.go(-1);
-        }
-        //设置当前 url
-        setSessionStorage('lastPathname', location.pathname);
-      } else {
-        //记录路由不等于 unpack 等情况
-        setSessionStorage('unpackRouter', location.pathname);
-      }*/
+      const pathname = location.pathname;
+      //如果再一次后退到抢红包页面，则直接退出
+      if (pathname.indexOf('/authorize') !== -1 && getSessionStorage('goBack') === 'true') {
+        window.history.go(-1);
+      }
 
-      if (key === 'home' || key === 'unpack') {
+      //如果进入不是授权路由，则设置 goBack 为 true
+      if (pathname.indexOf('/authorize') === -1) {
+        setSessionStorage('goBack', 'true');
+      }
+
+      if (key === 'home' || key === 'authorize' || key === 'unpack') {
         const params = perfect.getLocationParams() || {};
         const {thirdAccId, accountType} = params;
         const _thirdAccId = getSessionStorage('thirdAccId');
@@ -59,7 +57,8 @@ const routeSetting = {
            * 例子
            * https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx70b5cd13e1f6b778&redirect_uri=URL&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect
            */
-          let currentUrl = location.href;
+          const href = location.href;
+          let currentUrl = key === 'authorize' ? href.replace('authorize', 'unpack') : href;
           currentUrl = encodeURIComponent(currentUrl);
           const requestNo = perfect.getRequestNo();
           let redirectUri = `${REDIRECT_URI}?requestNo=${requestNo}&skip_url=${currentUrl}`;

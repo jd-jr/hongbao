@@ -7,7 +7,7 @@ import {connect} from 'react-redux'
 import * as actions from '../../actions/userAddressList'
 import className from 'classnames'
 import {assign} from 'lodash'
-import callApi from '../../fetch/'
+import callApi from '../../fetch'
 
 class Logistics extends Component {
   constructor(props) {
@@ -17,21 +17,25 @@ class Logistics extends Component {
       orderId: '',
       phone: '',
       customerName: '',
-      address: ''
+      address: '',
+      showConent: false
     }
   }
 
   componentWillMount() {
-    const {params, indexActions} = this.props;
+    const {params, indexActions, setModalCloseCallback} = this.props;
     callApi({
       url: 'giftRecordOrder/logistics',
       body: {
         gifRecordId: params.giftRecordId
       }
     }).then((res) => {
-      this.setState(res.json.data);
+      this.setState(assign({}, res.json.data, {showConent: true}));
     }, (error) => {
       if (error.errorCode !== 'RBF100300') {
+        setModalCloseCallback(() => {
+          this.context.router.goBack();
+        });
         indexActions.setErrorMessage(error.message);
       }
     });
@@ -39,6 +43,9 @@ class Logistics extends Component {
 
   render() {
     const infoList = this.state.detail;
+    if (!this.showConent) {
+      return null;
+    }
 
     return (
       <div>
@@ -84,7 +91,8 @@ class Logistics extends Component {
             </ul>
           </div>
         </div>
-      </div>)
+      </div>
+    )
   }
 }
 
@@ -98,6 +106,7 @@ Logistics.contextTypes = {
 Logistics.propTypes = {
   params: PropTypes.object,
   indexActions: PropTypes.object,
+  setModalCloseCallback: PropTypes.func
 };
 
 function mapDispatchToProps(dispatch) {

@@ -9,7 +9,8 @@ var resetTmp = {
   id: null,
   name: '',
   mobile: '',
-  addressDetail: ''
+  addressDetail: '',
+  addressDefault: false
 };
 
 export default function tmpUserAddress(state = resetTmp, action) {

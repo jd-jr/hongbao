@@ -75,7 +75,9 @@ class ReceiveHongbao extends Component {
   }
 
   // 提现
-  withdraw() {
+  withdraw(e) {
+    e.stopPropagation();
+    e.preventDefault();
     jdWalletApi.openModule({name: 'BALANCE'});
   }
 
@@ -134,7 +136,7 @@ class ReceiveHongbao extends Component {
    */
   getStatus({giftStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId}) {
     const {type} = this.props;
-    let link = `/hongbao/detail/${identifier}?type=${type}`;
+    let link = `/hongbao/detail/view/${identifier}?type=${type}`;
     let isReward = false;
     let contentEl;
     if (giftType === 'CASH') {

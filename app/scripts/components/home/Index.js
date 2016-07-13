@@ -302,7 +302,7 @@ class Home extends Component {
           <section>
             <div>
               <div className="hb-single" onTouchTap={this.selectProduct}>
-                <span>发实物红包</span>
+                <span>发京东红包</span>
                 {
                   selecting ? (
                     <span className="pull-right arrow-hollow-right"></span>
@@ -344,7 +344,7 @@ class Home extends Component {
                   <span className="pull-right">个</span>
                 </div>
               </div>
-              <p className="f-sm m-l-1 text-muted">可发送1个红包送给你想送的人</p>
+              <p className="f-sm m-l-1 text-muted">可发1个红包，送给你想送的人</p>
             </div>
 
             <div>
@@ -361,11 +361,11 @@ class Home extends Component {
 
           <section className="m-t-2">
             <button className="btn btn-block btn-primary btn-lg" disabled={selecting || giftNum === ''}
-                    onTouchTap={this.payBefore}>发起实物红包
+                    onTouchTap={this.payBefore}>发起京东红包
             </button>
             <p className="text-center f-sm m-t-2 text-muted">
               <i className={`hb-radio-gray${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>
-              <span>同意并接受</span> <a href="#">《京东钱包实物红包服务协议》</a>
+              <span>同意并接受</span> <a href="#">《京东钱包京东红包服务协议》</a>
             </p>
             <p className="text-center f-sm m-t-2 text-muted">中奖者未领取实物，可于15天后申请退款</p>
           </section>

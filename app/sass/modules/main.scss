@@ -35,8 +35,20 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 200;
 }
 
+.m-t-0-3 {
+  margin-top: 0.3rem;
+}
+
+.m-t-0-5 {
+  margin-top: 0.5rem;
+}
+
 .m-l-0-3 {
   margin-left: 0.3rem;
+}
+
+.m-b-0-3 {
+  margin-bottom: 0.3rem;
 }
 
 .p-y-0-5 {
@@ -73,6 +85,10 @@ h1, h2, h3, h4, h5, h6 {
         border-bottom: 0;
       }
     }
+  }
+
+  &list-border {
+    border-top: 1px solid $gray-lightest;
   }
 
   &figure {
@@ -186,6 +202,25 @@ h1, h2, h3, h4, h5, h6 {
     }
   }
 
+  &product-wrap {
+    border: 1px solid #e47771;
+    color: #eeaaa6;
+    border-radius: 4rem;
+    margin: 1rem .5rem;
+    padding: 0.5rem 0;
+
+    .product-name {
+      text-align: left;
+      padding-right: 2rem;
+      padding-top: 0.5rem;
+      height: 3.5rem;
+    }
+    .hb-figure {
+      width: 4rem;
+      height: 4rem;
+    }
+  }
+
   // 自定义弹框样式
   &modal {
     .rc-modal-dialog {
@@ -236,12 +271,12 @@ h1, h2, h3, h4, h5, h6 {
 
   &ellipse-arc-flat {
     width: 100%;
-    height: 70%;
+    height: 76%;
     border-radius: 50%/20%;
     @include border-top-radius(5px);
     background: #dd554d;
     position: absolute;
-    bottom: 30%;
+    bottom: 24%;
     box-shadow: 0 0 0.5rem #c94a43;
     color: #fee1b4;
     text-align: center;
@@ -256,7 +291,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 50%;
     left: 50%;
     margin-left: -3.5rem;
-    bottom: 23%;
+    bottom: 14%;
     border: 1px solid #d0b17f;
     color: #3b3b3b;
     box-shadow: 0 0 0 0.5rem #dcbc88;
@@ -330,7 +365,7 @@ h1, h2, h3, h4, h5, h6 {
   &luck-link {
     color: #fee1b4;
     position: absolute;
-    bottom: 2rem;
+    bottom: 1.5rem;
     width: 100%;
     text-align: center;
   }
@@ -414,6 +449,23 @@ h1, h2, h3, h4, h5, h6 {
       transform: translate(-50%, 70%) rotate(-45deg);
     }
   }
+
+  &champion-header {
+    position: relative;
+
+    &:before {
+      position: absolute;
+      top: -0.8rem;
+      content: ' ';
+      background: url("../images/champion.png") no-repeat transparent;
+      width: 100%;
+      height: 100%;
+      background-size: 100%;
+    }
+    &.gray:before {
+      background-image: url("../images/champion-gray.png");
+    }
+  }
 }
 
 .weixin-share-guide {
@@ -422,7 +474,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 //拖拽样式
-.is-pointer-down .hb-help-icon{
+.is-pointer-down .hb-help-icon {
   background-color: #666;
   border-radius: 50%;
 }

@@ -140,7 +140,7 @@ class SponsorHongbao extends Component {
                     <img className="img-fluid" src={skuIcon} alt=""/>
                   </div>
                   <div className="col-12">
-                    <div className="text-truncate">实物红包</div>
+                    <div className="text-truncate">京东红包</div>
                     <div className="text-muted f-sm">{perfect.formatDate(createdDate)}</div>
                   </div>
                   <div className="col-8 text-right">

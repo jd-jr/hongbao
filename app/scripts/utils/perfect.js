@@ -6,7 +6,7 @@ const doc = document;
 const docEl = doc.documentElement;
 const resizeEvt = 'orientationchange' in win ? 'orientationchange' : 'resize';
 
-// 实物红包 utils 函数
+// 京东红包 utils 函数
 const perfect = {
   adjustFontSize () {
     function recalc() {
