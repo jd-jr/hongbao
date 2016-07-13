@@ -45,12 +45,15 @@ class HongbaoSelfInfo extends Component {
   onClose(type) {
     this.setState({
       refundVisible: false
+    }, () => {
+      setTimeout(() => {
+        if (type === 'ok') {
+          this.refund();
+        } else {
+          this.submitStatus = false;
+        }
+      }, 300);
     });
-    if (type === 'ok') {
-      this.refund();
-    } else {
-      this.submitStatus = false;
-    }
   }
 
   // 提现
@@ -81,7 +84,7 @@ class HongbaoSelfInfo extends Component {
 
   //退款
   refund() {
-    const {identifier, indexActions, setModalCloseCallback} = this.props;
+    const {identifier, indexActions, setModalCloseCallback, updateSponsorGoal} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
     const url = 'refund';
@@ -100,6 +103,7 @@ class HongbaoSelfInfo extends Component {
           });
         });
         this.submitStatus = false;
+        updateSponsorGoal('new');
       },
       (error) => {
         this.submitStatus = false;
@@ -194,7 +198,7 @@ class HongbaoSelfInfo extends Component {
       return (
         <div>
           <span onClick={this.refundPrompt}
-                  className="btn btn-primary btn-sm btn-arc">申请退款
+                className="btn btn-primary btn-sm btn-arc">申请退款
           </span>
           <p className="f-xs text-muted m-t-0-3">（温馨提示：退款须收部分平台服务费或继续发送此红包）</p>
         </div>
@@ -314,7 +318,8 @@ HongbaoSelfInfo.propTypes = {
   identifier: PropTypes.string,
   indexActions: PropTypes.object,
   setModalCloseCallback: PropTypes.func,
-  type: PropTypes.string
+  type: PropTypes.string,
+  updateSponsorGoal: PropTypes.func
 };
 
 export default HongbaoSelfInfo;

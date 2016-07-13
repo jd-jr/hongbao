@@ -119,6 +119,9 @@ class ProductList extends Component {
 
   // 排序
   handleOrder(e) {
+    this.setState({
+      reset: true
+    });
     const {productActions, priceOrder, activeCategory} = this.props;
     const {switchPriceOrder, clearProductList, getProductList, clearSelectProduct} = productActions;
     const _priceOrder = priceOrder === 'asc' ? 'desc' : 'asc';

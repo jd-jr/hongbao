@@ -37,6 +37,7 @@ class HongbaoDetail extends Component {
     this.reSponsor = this.reSponsor.bind(this);
     this.closeHongbao = this.closeHongbao.bind(this);
     this.guide = this.guide.bind(this);
+    this.updateSponsorGoal = this.updateSponsorGoal.bind(this);
   }
 
   componentWillMount() {
@@ -142,6 +143,13 @@ class HongbaoDetail extends Component {
 
   }
 
+  //在 HongbaoSelfInfo 中处理逻辑后，需要修改 sponsorGoal，来判断是继续发送，还是我要发红包
+  updateSponsorGoal(sponsorGoal) {
+    this.setState({
+      sponsorGoal
+    });
+  }
+
   // 关闭发送红包
   closeHongbao() {
     this.setState({
@@ -221,7 +229,8 @@ class HongbaoDetail extends Component {
     ) : (
       <div className="hb-footer text-center"
            onTouchTap={this.reSponsor}>
-        <span className="hb-active-btn">{type === 'receive' ? '我要发红包' : (sponsorGoal === 'new' ? '我要发红包' : '继续发送')}</span>
+        <span
+          className="hb-active-btn">{type === 'receive' ? '我要发红包' : (sponsorGoal === 'new' ? '我要发红包' : '继续发送')}</span>
       </div>
     );
   }
@@ -268,7 +277,8 @@ class HongbaoDetail extends Component {
 
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
-      identifier, indexActions, setModalCloseCallback, type
+      identifier, indexActions, setModalCloseCallback, type,
+      updateSponsorGoal: this.updateSponsorGoal
     };
 
     const gainedListProps = {

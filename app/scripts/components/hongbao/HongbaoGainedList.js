@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import classnames from 'classnames';
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import ScrollLoad from '../../ui/ScrollLoad';
 import perfect from '../../utils/perfect';
 import championNotGain from '../../../images/champion-not-gain.png';
@@ -30,6 +31,9 @@ class HongbaoGainedList extends Component {
     const {hongbaoDetailAction, identifier} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
+    if (deviceEnv.inWx && !thirdAccId) {
+      return;
+    }
     const body = {
       identifier,
       accountType,

@@ -3,7 +3,6 @@ import Modal from 'reactjs-modal';
 import callApi from '../../fetch';
 import {HONGBAO_INVALID_STATUS, HONGBAO_TITLE} from '../../constants/common';
 import perfect from '../../utils/perfect';
-import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
 
 class Unpack extends Component {
   constructor(props, context) {
@@ -12,6 +11,7 @@ class Unpack extends Component {
       unpackModal: false, //拆红包弹框
       hongbaoStatus: null, //红包状态
       user: null, //用户信息
+      sku: null, // 商品信息
       unpackStatus: false //防止重复提交
     };
     this.unpack = this.unpack.bind(this);
@@ -48,7 +48,7 @@ class Unpack extends Component {
 
     callApi({url, body}).then(
       ({json, response}) => {
-        const {status, user} = json.data;
+        const {status, user, sku} = json.data;
         if (HONGBAO_INVALID_STATUS.indexOf(status) !== -1) {
           if (status === 'NEED_PAY') {
             indexActions.setErrorMessage('该红包还未支付！');
@@ -63,7 +63,8 @@ class Unpack extends Component {
             this.setState({
               unpackModal: true,
               hongbaoStatus: status,
-              user
+              user,
+              sku: (sku && sku.length > 0) ? sku[0] : null
             }, () => {
               showDetail(true);
             });
@@ -131,22 +132,18 @@ class Unpack extends Component {
     showDetail();
 
     if (reLoad) {
-      let body = {
-        identifier
-      };
-      hongbaoDetailAction.clearHongbaoDetail();
-      hongbaoDetailAction.clearParticipant();
-      hongbaoDetailAction.getParticipantList(body);
-
       const accountType = perfect.getAccountType();
       const thirdAccId = perfect.getThirdAccId();
-      body = {
+
+      let body = {
         identifier,
         accountType,
         thirdAccId
       };
-
-      hongbaoDetailAction.getHongbaoDetail(body)
+      hongbaoDetailAction.clearHongbaoDetail();
+      hongbaoDetailAction.clearParticipant();
+      hongbaoDetailAction.getParticipantList(body);
+      hongbaoDetailAction.getHongbaoDetail(body);
     }
   }
 
