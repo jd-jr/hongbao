@@ -295,7 +295,8 @@ class HongbaoDetail extends Component {
       const initiateProps = {
         skuName, title, identifier,
         status: 'true', skuIcon, closable: true,
-        closeHongbao: this.closeHongbao
+        closeHongbao: this.closeHongbao,
+        activate: true
       };
       initiateCom = (
         <Initiate {...initiateProps}/>

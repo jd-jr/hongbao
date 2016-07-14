@@ -1,6 +1,5 @@
 /**
  * 用户的收获地址列表
- *
  */
 import React, {Component, PropTypes} from 'react'
 import {bindActionCreators} from 'redux'
@@ -11,6 +10,7 @@ import Modal from 'reactjs-modal';
 import * as actions from '../../actions/userAddressList'
 import callApi from '../../fetch'
 import {getSessionStorage} from '../../utils/sessionStorage';
+import Loading from '../../ui/Loading';
 //图片
 import noItems from '../../../images/no_items.png';
 
@@ -21,7 +21,8 @@ class UserAddressList extends Component {
       showTip: false,
       showActionTip: false,
       actionTip: '确认使用该收货地址？',
-      waitforModal: false
+      waitforModal: false,
+      loading: false
     };
 
     this.skuId = getSessionStorage('skuId');
@@ -50,10 +51,16 @@ class UserAddressList extends Component {
         const list = res.json.data || []
         setUserAddressList(list)
         this.checkGoodsStock(list)
+        this.setState({
+          loading: false
+        });
       }, (error) => {
         if (error.errorCode !== 'RBF100300') {
           indexActions.setErrorMessage(error.message);
         }
+        this.setState({
+          loading: false
+        });
       });
     }
   }
@@ -389,14 +396,14 @@ class UserAddressList extends Component {
 
             <label forHtml="slt-circle0" onTouchTap={() => this.showTipWhenAction('SET_DFT', index, item)}
                    className={(item.addressDefault ? 'checked' : '') + ' col-3'}></label>
-                    <span className="col-8 push-2 hb-gray-l-t"
-                          onTouchTap={() => this.showTipWhenAction('SET_DFT', index, item)}>设为默认</span>
+            <span className="col-8 push-2 hb-gray-l-t"
+                  onTouchTap={() => this.showTipWhenAction('SET_DFT', index, item)}>设为默认</span>
 
             {this.showStock(item)}
 
             <span className="col-4 text-center" onTouchTap={() => this.editAddress(index, item)}>编辑</span>
-                    <span className="col-4 text-center"
-                          onTouchTap={() => this.showTipWhenAction('DELETE', index, item)}>删除</span>
+            <span className="col-4 text-center"
+                  onTouchTap={() => this.showTipWhenAction('DELETE', index, item)}>删除</span>
           </div>
         </div>
       );
@@ -404,6 +411,11 @@ class UserAddressList extends Component {
   }
 
   render() {
+    const {loading} = this.state;
+    if (loading) {
+      return (<Loading/>)
+    }
+
     return (
       <div className="hb-address-panel">
         {this.renderModal()}
@@ -445,9 +457,9 @@ class UserAddressList extends Component {
               </div>
               <div className="btn-panel">
                 <span className="btn-cancel text-red tip-item hb-bd-r"
-                   onTouchTap={this.toggleActionTipState}>取消</span>
+                      onTouchTap={this.toggleActionTipState}>取消</span>
                 <span className="btn-sure text-red tip-item"
-                   onTouchTap={this.sureAction}>确定</span>
+                      onTouchTap={this.sureAction}>确定</span>
               </div>
             </div>
           </div>

@@ -6,6 +6,8 @@ import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import {HONGBAO_TITLE, HONGBAO_DESC} from '../../constants/common';
 import weixinShareGuide from '../../../images/weixin-share-guide.png';
 import {MYSTIC_GIFT} from '../../config';
+import callApi from '../../fetch';
+import perfect from '../../utils/perfect';
 
 class Initiate extends Component {
   constructor(props) {
@@ -27,16 +29,50 @@ class Initiate extends Component {
       walletApi.shareIconURL(MYSTIC_GIFT, 'hongbao');
     }
     this.clientWidth = document.documentElement.clientWidth;
+    //判断是否再次激活成功
+    this.againActivate = false;
   }
 
   componentWillMount() {
-    if (deviceEnv.inWx) {
-      this.share();
+    const {activate, identifier} = this.props;
+    if (activate) { // 再次激活
+      const accountType = perfect.getAccountType();
+      const thirdAccId = perfect.getThirdAccId();
+      const url = 'activation';
+      const body = {
+        identifier,
+        thirdAccId,
+        accountType
+      };
+
+      callApi({url, body, needAuth: true}).then(
+        ({json, response}) => {
+          if (deviceEnv.inWx && window.wx) {
+            window.wx.showOptionMenu();
+            this.share();
+          }
+          this.againActivate = true;
+        },
+        (error) => {
+          this.againActivate = false;
+
+        }
+      );
+    } else {
+      if (deviceEnv.inWx) {
+        this.share();
+      }
     }
   }
 
   //发红包
   sponsor() {
+    const {activate} = this.props;
+    // 如果再次激活失败，则返回
+    if (activate && this.againActivate === false) {
+      return;
+    }
+
     if (deviceEnv.inWx) {
       this.setState({
         weixinGuide: true
@@ -181,7 +217,8 @@ Initiate.propTypes = {
   status: PropTypes.string,
   skuIcon: PropTypes.string,
   closable: PropTypes.bool,
-  closeHongbao: PropTypes.func
+  closeHongbao: PropTypes.func,
+  activate: PropTypes.bool,
 };
 
 Initiate.contextTypes = {
