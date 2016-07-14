@@ -46,7 +46,7 @@ class BottomNav extends Component {
             发起红包
           </div>
           <div className={`col-12${type === 'receive' ? ' hb-active-btn' : ''}`}
-               onTouchTap={this.myHongbao}>
+               onClick={this.myHongbao}>
             我的红包
           </div>
         </div>
