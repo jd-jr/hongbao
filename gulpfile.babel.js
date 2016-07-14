@@ -50,13 +50,24 @@ gulp.task('styles:example', () => {
 
 //复制替换文件，分开发、正式环境和本地服务环境
 //备选插件 https://www.npmjs.com/package/gulp-copy-rex
-//服务环境
+//服务环境，测试环境
 gulp.task('copy:server', () => {
   const paths = [
     {src: 'app/scripts/config/index.dev.js', dest: 'app/scripts/config/index.js'},
     {src: 'app/scripts/store/configureStore.dev.js', dest: 'app/scripts/store/index.js'},
     {src: 'app/scripts/containers/Root.dev.js', dest: 'app/scripts/containers/Root.js'},
-    {src: 'node_modules/eruda/dist/eruda.min.js', dest: 'app/eruda.min.js'},
+    {src: 'node_modules/eruda/eruda.min.js', dest: 'app/eruda.min.js'},
+  ];
+  return $.copy2(paths);
+});
+
+// 线上环境
+gulp.task('copy:server:prod', () => {
+  const paths = [
+    {src: 'app/scripts/config/index.prod.js', dest: 'app/scripts/config/index.js'},
+    {src: 'app/scripts/store/configureStore.dev.js', dest: 'app/scripts/store/index.js'},
+    {src: 'app/scripts/containers/Root.dev.js', dest: 'app/scripts/containers/Root.js'},
+    {src: 'node_modules/eruda/eruda.min.js', dest: 'app/eruda.min.js'},
   ];
   return $.copy2(paths);
 });
@@ -68,7 +79,7 @@ gulp.task('copy:dev', ['clean'], () => {
     {src: 'app/scripts/store/configureStore.prod.js', dest: 'app/scripts/store/index.js'},
     {src: 'app/scripts/containers/Root.prod.js', dest: 'app/scripts/containers/Root.js'},
     {src: 'app/favicon.ico', dest: 'dist/favicon.ico'},
-    {src: 'node_modules/eruda/dist/eruda.min.js', dest: 'dist/eruda.min.js'},
+    {src: 'node_modules/eruda/eruda.min.js', dest: 'dist/eruda.min.js'},
     {src: 'app/images/mystic-gift-sm.png', dest: 'dist/images/mystic-gift-sm.png'},
   ];
   return $.copy2(paths);
@@ -81,7 +92,7 @@ gulp.task('copy:prod', ['clean'], () => {
     {src: 'app/scripts/store/configureStore.prod.js', dest: 'app/scripts/store/index.js'},
     {src: 'app/scripts/containers/Root.prod.js', dest: 'app/scripts/containers/Root.js'},
     {src: 'app/favicon.ico', dest: 'dist/favicon.ico'},
-    {src: 'node_modules/eruda/dist/eruda.min.js', dest: 'dist/eruda.min.js'},
+    {src: 'node_modules/eruda/eruda.min.js', dest: 'dist/eruda.min.js'},
     {src: 'app/images/mystic-gift-sm.png', dest: 'dist/images/mystic-gift-sm.png'},
   ];
   return $.copy2(paths);
@@ -139,6 +150,11 @@ gulp.task('clean', () => {
 
 gulp.task('webpack:server', () => {
   const {webpackConfig, ip, port} = config;
+
+  if (port === 443) {
+    webpackConfig.devServer.https = true;
+  }
+
   // Start a webpack-dev-server
   const compiler = webpack(webpackConfig);
 
@@ -152,7 +168,7 @@ gulp.task('webpack:server', () => {
 
     // Chrome is google chrome on OS X, google-chrome on Linux and chrome on Windows.
     // app 在 OS X 中是 google chrome, 在 Windows 为 chrome ,在 Linux 为 google-chrome
-    opn(port === '80' ? `http://${ip}` : `http://${ip}:${port}/m-hongbao/`, {app: 'google chrome'});
+    opn(port === 443 ? `https://${ip}/m-hongbao/` : `http://${ip}:${port}/m-hongbao/`, {app: 'google chrome'});
   });
 
 });
@@ -203,7 +219,7 @@ gulp.task('server', ['styles', 'copy:server'], () => {
 });
 
 //生产环境，启动服务
-gulp.task('server:prod', ['styles', 'copy:prod'], () => {
+gulp.task('server:prod', ['styles', 'copy:server:prod'], () => {
   gulp.start(['webpack:server']);
   gulp.watch('app/sass/**/*.scss', ['styles']);
   gulp.watch(['app/scripts/config/index.prod.js', 'app/scripts/containers/Root.prod.js', 'app/scripts/store/configureStore.prod.js'], ['copy:prod']);

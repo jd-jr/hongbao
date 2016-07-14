@@ -29,13 +29,18 @@ class Initiate extends Component {
     this.clientWidth = document.documentElement.clientWidth;
   }
 
+  componentWillMount() {
+    if (deviceEnv.inWx) {
+      this.share();
+    }
+  }
+
   //发红包
   sponsor() {
     if (deviceEnv.inWx) {
       this.setState({
         weixinGuide: true
       });
-      this.share();
     } else if (deviceEnv.inJdWallet) {
       this.share();
     }
@@ -45,13 +50,14 @@ class Initiate extends Component {
     //调起分享
     const urlRoot = prefect.getLocationRoot();
     let {identifier, title, skuName} = this.props;
+
     walletApi.share({
       url: `${urlRoot}authorize/${identifier}`,
       title: title || HONGBAO_TITLE,
       desc: skuName,
       imgUrl: MYSTIC_GIFT,
       channel: 'WX',
-      debug: true,
+      debug: Boolean(window.eruda),
       callback: (status) => {
         if (status === 'SUCCESS') {
           this.setState({

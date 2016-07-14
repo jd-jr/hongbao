@@ -30,9 +30,10 @@ class Product extends Component {
   }
 
   selectProduct() {
-    const {productDetail, view} = this.props;
+    const {productDetail, view, params} = this.props;
     if (view === 'view') {
-      this.context.router.goBack();
+      const {identifier} = params;
+      this.context.router.replace(`/hongbao/detail/view/${identifier}`);
       return;
     }
     const {skuName, skuId, bizPrice, indexImg} = productDetail;
@@ -106,6 +107,7 @@ Product.propTypes = {
   productDetail: PropTypes.object,
   skuId: PropTypes.string,
   view: PropTypes.string,
+  params: PropTypes.object,
 };
 
 export default Product;

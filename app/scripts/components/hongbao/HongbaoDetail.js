@@ -321,7 +321,7 @@ class HongbaoDetail extends Component {
             <div className="m-x-1 m-b-0-3 clearfix">
               {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
               <div className="pull-right">
-                <Link to={`/product/detail/view/${skuId}`}>查看实物详情</Link>
+                <Link to={`/product/detail/view/${skuId}?identifier=${identifier}`}>查看实物详情</Link>
               </div>
             </div>
             {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}

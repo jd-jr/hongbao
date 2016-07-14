@@ -3,6 +3,9 @@ import walletApi from 'jd-wallet-sdk';
 import {WEIXIN_AUTHORIZE, REDIRECT_URI} from '../config';
 import perfect from '../utils/perfect';
 import {setSessionStorage, getSessionStorage} from '../utils/sessionStorage';
+import {HONGBAO_TITLE} from '../constants/common';
+import {MYSTIC_GIFT} from '../config';
+import prefect from '../utils/perfect';
 
 const routeSetting = {
   titles: {
@@ -24,10 +27,33 @@ const routeSetting = {
     help: '帮助'
   },
 
+  shareFilter: ['home'],
   //设置 Title
   setTitle(key) {
     //设置标题
     walletApi.setTitle(this.titles[key] || '');
+  },
+
+  //微信分享
+  weixinShare (key) {
+    //初始化微信分享
+    /*walletApi.share({
+      url: location.href,
+      title: HONGBAO_TITLE,
+      desc: '京东红包',
+      imgUrl: MYSTIC_GIFT,
+      channel: 'WX',
+      debug: Boolean(window.eruda),
+      callback: (status) => {
+        if (status === 'SUCCESS') {
+          this.setState({
+            visible: false
+          });
+          //回到首页
+          this.context.router.replace('/');
+        }
+      }
+    });*/
   },
 
   //进入一个新的路由触发的事件
@@ -69,6 +95,9 @@ const routeSetting = {
           document.location.href = `${WEIXIN_AUTHORIZE}&redirect_uri=${redirectUri}&response_type=code&scope=snsapi_base&state=state#wechat_redirect`
         }
       }
+
+      //微信分享
+      this.weixinShare(key);
     }
 
     //设置 title

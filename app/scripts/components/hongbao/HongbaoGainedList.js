@@ -104,7 +104,7 @@ class HongbaoGainedList extends Component {
                   <div className="text-muted f-sm">{gainedDate}</div>
                 </div>
 
-                <div className="col-4">
+                <div className="col-4 p-a-0">
                   <img className="img-fluid" src={skuIcon} alt={skuName}/>
                 </div>
                 <div className="col-2">
