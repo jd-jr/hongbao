@@ -27,8 +27,8 @@ class ProductList extends Component {
     this.touchMaxDistance = 0; //移动最大距离
     this.touchOffset = 0; // 移动的偏移量
     this.startX = 0; //开始坐标
+    this.debounceInt = 20; //防抖处理
   }
-
 
   componentWillMount() {
     //延迟显示底部按钮，解决 IOS 下底部按钮设置 fixed 的问题
@@ -36,7 +36,7 @@ class ProductList extends Component {
       this.setState({
         showFoot: true
       });
-    }, 300);
+    }, 500);
   }
 
   componentDidMount() {
@@ -77,7 +77,12 @@ class ProductList extends Component {
   }
 
   //选择商品
-  selectProduct() {
+  selectProduct(e) {
+    e.preventDefault;
+    e.stopPropagation();
+    e.nativeEvent.preventDefault;
+    e.nativeEvent.stopPropagation();
+
     const {selectedProduct} = this.props;
     if (!selectedProduct) {
       return;
@@ -147,6 +152,10 @@ class ProductList extends Component {
     const nativeEvent = e.nativeEvent;
     const touchObj = nativeEvent.changedTouches[0];
     let offset = this.startX - touchObj.clientX;
+    if (Math.abs(offset) < this.debounceInt) {
+      return;
+    }
+
     //向左滑动
     if (offset > 0) {
       if (offset + this.touchOffset > this.touchMaxDistance) {
@@ -354,7 +363,7 @@ class ProductList extends Component {
           showFoot ? (
             <footer className="hb-footer-fixed">
               <button className="btn btn-block btn-primary btn-lg btn-flat"
-                      onTouchTap={this.selectProduct}
+                      onClick={this.selectProduct}
                       disabled={!selectedProduct}>
                 确认商品
               </button>

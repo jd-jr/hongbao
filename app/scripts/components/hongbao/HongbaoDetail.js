@@ -33,6 +33,7 @@ class HongbaoDetail extends Component {
       detail: isUnPack ? 'none' : 'block',
       sponsorGoal: 'new', // 判断底部显示状态，是重新发起，还是继续发送
       showInitiate: false, // 继续发送状态
+      hongbaoExpired: false //红包是否过期
     };
 
     this.showDetail = this.showDetail.bind(this);
@@ -87,11 +88,17 @@ class HongbaoDetail extends Component {
          */
         const againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER'];
         const {hongbaoInfo} = res || {};
-        const {refundStatus} = hongbaoInfo || {};
-        //如果红包已过期，并且红包还没有抢完，而且是发起者进入，则显示继续发送
-        if (againSend.indexOf(refundStatus) !== -1) {
+        const {refundStatus, status} = hongbaoInfo || {};
+        //如果红包已过期，而且是发起者进入，则显示继续发送
+        if (type && type === 'sponsor' && againSend.indexOf(refundStatus) !== -1) {
           this.setState({
             sponsorGoal: 'again'
+          });
+        }
+
+        if (status === 'EXPIRED') {
+          this.setState({
+            hongbaoExpired: true
           });
         }
       });
@@ -129,7 +136,12 @@ class HongbaoDetail extends Component {
   }
 
   //重新发起或继续发送
-  reSponsor() {
+  reSponsor(e) {
+    e.preventDefault;
+    e.stopPropagation();
+    e.nativeEvent.preventDefault;
+    e.nativeEvent.stopPropagation();
+
     const {sponsorGoal} = this.state;
     if (sponsorGoal === 'new') {
       this.context.router.replace('/');
@@ -219,11 +231,11 @@ class HongbaoDetail extends Component {
       <footer className="hb-footer">
         <div className="row text-center">
           <div className="col-12 border-second border-right hb-active-btn"
-               onTouchTap={this.guide}>
+               onClick={this.guide}>
             红包攻略
           </div>
           <div className="col-12 hb-active-btn"
-               onTouchTap={this.reSponsor}>
+               onClick={this.reSponsor}>
             我要发红包
           </div>
         </div>
@@ -278,7 +290,7 @@ class HongbaoDetail extends Component {
     const unpackProps = {
       identifier, indexActions, showDetail, hongbaoDetailAction
     };
-    const {unpack, detail, sponsorGoal, showInitiate} = this.state;
+    const {unpack, detail, sponsorGoal, showInitiate, hongbaoExpired} = this.state;
 
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
@@ -296,7 +308,8 @@ class HongbaoDetail extends Component {
         skuName, title, identifier,
         status: 'true', skuIcon, closable: true,
         closeHongbao: this.closeHongbao,
-        activate: true
+        hongbaoExpired,
+        indexActions
       };
       initiateCom = (
         <Initiate {...initiateProps}/>

@@ -94,8 +94,8 @@ h1, h2, h3, h4, h5, h6 {
   &figure {
     display: inline-block;
     text-align: center;
-    width: 5rem;
-    height: 5rem;
+    width: 70px;
+    height: 70px;
   }
 
   &nav-btn-group {
@@ -173,8 +173,7 @@ h1, h2, h3, h4, h5, h6 {
   &swiper-img {
     display: block;
     margin: 0 auto;
-    width: auto;
-    max-height: 30rem;
+    width: 100%;
     min-height: 10rem;
   }
 

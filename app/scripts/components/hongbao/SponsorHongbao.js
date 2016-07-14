@@ -132,11 +132,11 @@ class SponsorHongbao extends Component {
                   loader={<div className=""></div>}>
         <ul className="hb-list">
           {list.map((item) => {
-            const {identifier, skuIcon, createdDate, amount, status, giftStatus, giftGainedNum, giftNum, goodNum} = item;
+            const {identifier, giftRecordId, skuIcon, createdDate, amount, status, giftStatus, giftGainedNum, giftNum, goodNum} = item;
             let link = `/hongbao/detail/view/${identifier}?type=${type}`;
 
             return (
-              <li key={identifier}>
+              <li key={identifier + giftRecordId}>
                 <Link to={link} className="hb-link-block row flex-items-middle">
                   <div className="col-4">
                     <img className="img-fluid" src={skuIcon} alt=""/>

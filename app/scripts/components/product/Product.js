@@ -8,6 +8,18 @@ class Product extends Component {
   constructor(props, context) {
     super(props, context);
     this.selectProduct = this.selectProduct.bind(this);
+    this.state = {
+      showFoot: false,
+    };
+  }
+
+  componentWillMount() {
+    //延迟显示底部按钮，解决 IOS 下底部按钮设置 fixed 的问题
+    setTimeout(() => {
+      this.setState({
+        showFoot: true
+      });
+    }, 400);
   }
 
   componentDidMount() {
@@ -29,7 +41,12 @@ class Product extends Component {
     productActions.clearProduct();
   }
 
-  selectProduct() {
+  selectProduct(e) {
+    e.preventDefault;
+    e.stopPropagation();
+    e.nativeEvent.preventDefault;
+    e.nativeEvent.stopPropagation();
+
     const {productDetail, view, identifier} = this.props;
     console.info(identifier);
     if (view === 'view') {
@@ -51,6 +68,7 @@ class Product extends Component {
   }
 
   render() {
+    const {showFoot} = this.state;
     const {productDetail, view} = this.props;
     let {skuId, skuName, bizPrice, images, bigDetail} = productDetail;
     if (!skuId) {
@@ -86,13 +104,13 @@ class Product extends Component {
             </div>
           </section>
         </article>
-
-        <footer className="hb-footer-fixed">
-          <button className="btn btn-block btn-primary btn-lg btn-flat" onTouchTap={this.selectProduct}>
-            {view === 'view' ? '返回' : '确认商品'}
-          </button>
-        </footer>
-
+        {showFoot ? (
+          <footer className="hb-footer-fixed">
+            <button className="btn btn-block btn-primary btn-lg btn-flat" onClick={this.selectProduct}>
+              {view === 'view' ? '返回' : '确认商品'}
+            </button>
+          </footer>
+        ) : null}
       </div>
     );
   }

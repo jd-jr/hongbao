@@ -34,8 +34,8 @@ class Initiate extends Component {
   }
 
   componentWillMount() {
-    const {activate, identifier} = this.props;
-    if (activate) { // 再次激活
+    const {hongbaoExpired, identifier, indexActions} = this.props;
+    if (hongbaoExpired) { // 再次激活
       const accountType = perfect.getAccountType();
       const thirdAccId = perfect.getThirdAccId();
       const url = 'activation';
@@ -55,11 +55,14 @@ class Initiate extends Component {
         },
         (error) => {
           this.againActivate = false;
-
+          if (error.errorCode !== 'RBF100202') {
+            indexActions.setErrorMessage(error.message);
+          }
         }
       );
     } else {
-      if (deviceEnv.inWx) {
+      if (deviceEnv.inWx && window.wx) {
+        window.wx.showOptionMenu();
         this.share();
       }
     }
@@ -67,9 +70,9 @@ class Initiate extends Component {
 
   //发红包
   sponsor() {
-    const {activate} = this.props;
+    const {hongbaoExpired} = this.props;
     // 如果再次激活失败，则返回
-    if (activate && this.againActivate === false) {
+    if (hongbaoExpired && this.againActivate === false) {
       return;
     }
 
@@ -218,7 +221,8 @@ Initiate.propTypes = {
   skuIcon: PropTypes.string,
   closable: PropTypes.bool,
   closeHongbao: PropTypes.func,
-  activate: PropTypes.bool,
+  hongbaoExpired: PropTypes.bool,
+  indexActions: PropTypes.object,
 };
 
 Initiate.contextTypes = {

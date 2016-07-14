@@ -134,6 +134,12 @@ class Home extends Component {
       indexActions.setErrorMessage('请输入红包个数');
       return;
     }
+
+    if (bizPrice <= 5000 && giftNum > 10) {
+      indexActions.setErrorMessage('红包个数不能超过10个');
+      return;
+    }
+
     if (giftNum > limit) {
       indexActions.setErrorMessage(`红包个数不能超过${limit}个`);
       return;

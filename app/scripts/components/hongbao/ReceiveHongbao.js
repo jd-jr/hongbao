@@ -205,7 +205,7 @@ class ReceiveHongbao extends Component {
     }
     let link = `/hongbao/detail/view/${identifier}?type=${type}`;
     return (
-      <li className="row flex-items-middle" key={identifier}>
+      <li className="row flex-items-middle" key={identifier + giftRecordId}>
         <div className="col-18">
           <Link to={link} className="hb-link-block">
             <div className="text-truncate">{nickName}</div>

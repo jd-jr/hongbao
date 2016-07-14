@@ -22,12 +22,16 @@ class BottomNav extends Component {
   }
 
   createOrder(e) {
+    e.preventDefault;
+    e.stopPropagation();
     e.nativeEvent.preventDefault;
     e.nativeEvent.stopPropagation();
     this.context.router.push('/');
   }
 
   myHongbao(e) {
+    e.preventDefault;
+    e.stopPropagation();
     e.nativeEvent.preventDefault;
     e.nativeEvent.stopPropagation();
     this.context.router.push('/my');
@@ -42,7 +46,7 @@ class BottomNav extends Component {
       <footer className="hb-footer">
         <div className="row text-center">
           <div className={`col-12 border-second border-right${type === 'sponsor' ? ' hb-active-btn' : ''}`}
-               onTouchTap={this.createOrder}>
+               onClick={this.createOrder}>
             发起红包
           </div>
           <div className={`col-12${type === 'receive' ? ' hb-active-btn' : ''}`}
