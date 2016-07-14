@@ -9,6 +9,7 @@ import HongbaoSelfInfo from './HongbaoSelfInfo';
 import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
+import {NICKNAME} from '../../constants/common';
 
 // 红包详情
 class HongbaoDetail extends Component {
@@ -176,23 +177,23 @@ class HongbaoDetail extends Component {
       case 'OK': //领取中
       case 'PAY_SUCC':
         return (
-          <div className="pull-left text-muted">
+          <div className="text-muted">
             已领取{giftGainedNum}/{giftNum}，共{goodsNum}个奖品{momeyText}。
           </div>
         );
       case 'RECEIVE_COMPLETE':
         return (
-          <div className="pull-left text-muted">共{goodsNum}个奖品{momeyText}。
+          <div className="text-muted">共{goodsNum}个奖品{momeyText}。
             {perfect.formatMillisecond(finishedDate - createdDate)}抢光
           </div>
         );
       case 'EXPIRED':
         return (
-          <div className="pull-left text-muted">共{goodsNum}个奖品{momeyText}。该红包已过期</div>
+          <div className="text-muted">共{goodsNum}个奖品{momeyText}。该红包已过期</div>
         );
       case 'REFUNDED': //已退款
         return (
-          <div className="pull-left text-muted">共{goodsNum}个奖品{momeyText}。该红包已退款</div>
+          <div className="text-muted">共{goodsNum}个奖品{momeyText}。该红包已退款</div>
         );
       default:
         return null;
@@ -262,6 +263,7 @@ class HongbaoDetail extends Component {
     } = hongbaoInfo;
 
     ownerHeadpic = ownerHeadpic || defaultHeadPic;
+    ownerNickname = ownerNickname || NICKNAME;
 
     title = title || HONGBAO_TITLE;
 
@@ -285,7 +287,7 @@ class HongbaoDetail extends Component {
     };
 
     const gainedListProps = {
-      hongbaoDetailAction, identifier, participantPagination
+      hongbaoDetailAction, identifier, skuId, participantPagination
     };
 
     let initiateCom = null;
@@ -318,11 +320,8 @@ class HongbaoDetail extends Component {
           </section>
 
           <section className="m-t-3">
-            <div className="m-x-1 m-b-0-3 clearfix">
+            <div className="m-x-1 m-b-0-3">
               {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
-              <div className="pull-right">
-                <Link to={`/product/detail/view/${skuId}?identifier=${identifier}`}>查看实物详情</Link>
-              </div>
             </div>
             {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
           </section>

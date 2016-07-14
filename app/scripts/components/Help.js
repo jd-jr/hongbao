@@ -1,15 +1,27 @@
 import React, {Component, PropTypes} from 'react';
-import {Link} from 'react-router';
 
 //帮助按钮
-const Help = function() {
-  return (
-    <div className="hb-help">
-      <Link to="/help">
+class Help extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.enterHelp = this.enterHelp.bind(this);
+  }
+
+  enterHelp() {
+    this.context.router.push('/help');
+  }
+
+  render() {
+    return (
+      <div className="hb-help" onTouchTap={this.enterHelp}>
         <i className="hb-help-icon"></i>
-      </Link>
-    </div>
-  );
+      </div>
+    );
+  }
+}
+
+Help.contextTypes = {
+  router: PropTypes.object.isRequired,
 };
 
 export default Help;

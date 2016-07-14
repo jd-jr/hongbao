@@ -21,11 +21,15 @@ class BottomNav extends Component {
     }, 150);
   }
 
-  createOrder() {
+  createOrder(e) {
+    e.nativeEvent.preventDefault;
+    e.nativeEvent.stopPropagation();
     this.context.router.push('/');
   }
 
-  myHongbao() {
+  myHongbao(e) {
+    e.nativeEvent.preventDefault;
+    e.nativeEvent.stopPropagation();
     this.context.router.push('/my');
   }
 

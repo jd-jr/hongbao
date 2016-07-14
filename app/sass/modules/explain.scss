@@ -1,9 +1,52 @@
 .#{$prefixCls} {
   &help {
+    position: fixed;
+    z-index: 1000;
+  }
 
+  &help-icon {
+    background: url("../images/help.png") no-repeat;
+    display: inline-block;
+    background-size: 100%;
+    width: 30px;
+    height: 30px;
+  }
+
+  &help-panel {
+    padding: 1rem;
+    h3 {
+      color: #f49b00;
+    }
+    p {
+      text-indent: 2em;
+      color: $text-muted;
+    }
+    ol, ul {
+      padding-left: 2em;
+      list-style-position: inside;
+    }
+
+    table {
+      border: 1px solid $text-muted;
+      margin-left: 1rem;
+      margin-bottom: 0.5rem;
+      td {
+        border-right: 1px solid $text-muted;
+        border-bottom: 1px solid $text-muted;
+        color: $text-muted;
+        padding: 0.3rem;
+      }
+    }
   }
 
   &protocol {
+    padding: 1rem;
+    ol, ul {
+      padding-left: 0;
+      list-style-position: inside;
+    }
 
+    p {
+    }
   }
 }

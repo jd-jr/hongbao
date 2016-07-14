@@ -185,7 +185,6 @@ h1, h2, h3, h4, h5, h6 {
 
   &product-detail {
     background: #fff;
-    padding: 1rem;
     img {
       display: block;
       width: 100%;
@@ -368,19 +367,6 @@ h1, h2, h3, h4, h5, h6 {
     bottom: -1rem;
   }
 
-  &help {
-    position: fixed;
-    z-index: 1000;
-  }
-
-  &help-icon {
-    background: url("../images/help.png") no-repeat;
-    display: inline-block;
-    background-size: 100%;
-    width: 30px;
-    height: 30px;
-  }
-
   &luck-link {
     color: #fee1b4;
     position: absolute;
@@ -495,6 +481,8 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 50%;
 }
 
-.rc-modal-mask {
-  background-color: rgba(0, 0, 0, 0.7);
+.hb-modal {
+  .rc-modal-mask {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
 }

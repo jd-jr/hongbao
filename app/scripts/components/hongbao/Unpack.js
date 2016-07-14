@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import Modal from 'reactjs-modal';
 import callApi from '../../fetch';
-import {HONGBAO_INVALID_STATUS, HONGBAO_TITLE} from '../../constants/common';
+import {HONGBAO_INVALID_STATUS, HONGBAO_TITLE, NICKNAME} from '../../constants/common';
 import perfect from '../../utils/perfect';
 import circleSm from '../../../images/circle-sm.png';
 import defaultHeadPic from '../../../images/headpic.png';
@@ -51,7 +51,7 @@ class Unpack extends Component {
 
     callApi({url, body}).then(
       ({json, response}) => {
-        const {status, user, sku, owner} = json.data;
+        const {status, user, sku, owner, title} = json.data;
         if (HONGBAO_INVALID_STATUS.indexOf(status) !== -1) {
           if (status === 'NEED_PAY') {
             indexActions.setErrorMessage('该红包还未支付！');
@@ -68,7 +68,8 @@ class Unpack extends Component {
               hongbaoStatus: status,
               user,
               owner,
-              sku: (sku && sku.length > 0) ? sku[0] : null
+              sku: (sku && sku.length > 0) ? sku[0] : null,
+              title
             }, () => {
               showDetail(true);
             });
@@ -153,11 +154,12 @@ class Unpack extends Component {
 
   // 红包弹框内容
   modalBody() {
-    const {user, hongbaoStatus, sku, owner} = this.state;
-    let {face, nickname, title} = user || {};
+    const {user, hongbaoStatus, sku, owner, title} = this.state;
+    let {face, nickname} = user || {};
     const {skuIcon, skuName} = sku || {};
 
     face = face || defaultHeadPic;
+    nickname = nickname || NICKNAME;
 
     let hongbaoTitle = null;
     /**

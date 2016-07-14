@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import ScrollLoad from '../../ui/ScrollLoad';
 import perfect from '../../utils/perfect';
 import defaultHeadPic from '../../../images/headpic.png';
+import {NICKNAME} from '../../constants/common';
 
 class SponsorHongbao extends Component {
   constructor(props, context) {
@@ -169,6 +170,7 @@ class SponsorHongbao extends Component {
     }
 
     headpic = headpic || defaultHeadPic;
+    nickName = nickName || NICKNAME;
 
     return (
       <div>

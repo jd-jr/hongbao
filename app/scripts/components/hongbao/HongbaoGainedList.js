@@ -1,10 +1,12 @@
 import React, {Component, PropTypes} from 'react';
+import {Link} from 'react-router';
 import classnames from 'classnames';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import ScrollLoad from '../../ui/ScrollLoad';
 import perfect from '../../utils/perfect';
 import defaultHeadPic from '../../../images/headpic.png';
 import championNotGain from '../../../images/champion-not-gain.png';
+import {NICKNAME} from '../../constants/common';
 
 /**
  * 渲染获取者列表
@@ -44,7 +46,7 @@ class HongbaoGainedList extends Component {
   }
 
   render() {
-    const {participantPagination} = this.props;
+    const {participantPagination, skuId, identifier} = this.props;
     const {list, isFetching, lastPage} = participantPagination;
 
     if (!list) {
@@ -68,6 +70,8 @@ class HongbaoGainedList extends Component {
             } = item;
 
             headpic = headpic || defaultHeadPic;
+            nickName = nickName || NICKNAME;
+
             giftAmount = (giftAmount / 100).toFixed(2);
             if (giftType === 'CASH') { //抢到现金
               return (
@@ -105,10 +109,14 @@ class HongbaoGainedList extends Component {
                 </div>
 
                 <div className="col-4 p-a-0">
-                  <img className="img-fluid" src={skuIcon} alt={skuName}/>
+                  <Link to={`/product/detail/view/${skuId}?identifier=${identifier}`}>
+                    <img className="img-fluid" src={skuIcon} alt={skuName}/>
+                  </Link>
                 </div>
                 <div className="col-2">
-                  <span className="arrow-hollow-right" style={{marginLeft: '-1.5rem'}}></span>
+                  <Link to={`/product/detail/view/${skuId}?identifier=${identifier}`}>
+                    <span className="arrow-hollow-right" style={{marginLeft: '-1.5rem'}}></span>
+                  </Link>
                 </div>
               </li>
             );
@@ -123,6 +131,7 @@ HongbaoGainedList.propTypes = {
   hongbaoDetailAction: PropTypes.object,
   identifier: PropTypes.string,
   participantPagination: PropTypes.object,
+  skuId: PropTypes.string,
 };
 
 export default HongbaoGainedList;

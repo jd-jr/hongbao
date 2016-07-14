@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import offset from 'perfect-dom/lib/offset';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import jdWalletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import ScrollLoad from '../../ui/ScrollLoad';
@@ -9,6 +8,7 @@ import classnames from 'classnames';
 import perfect from '../../utils/perfect';
 import {setSessionStorage} from '../../utils/sessionStorage';
 import defaultHeadPic from '../../../images/headpic.png';
+import {NICKNAME} from '../../constants/common';
 
 class ReceiveHongbao extends Component {
   constructor(props, context) {
@@ -241,26 +241,20 @@ class ReceiveHongbao extends Component {
     return (
       <section className="m-t-1">
         <div className="arrow-hollow-top hb-arrows-active" ref="arrow"></div>
-        <ReactCSSTransitionGroup
-          component="div"
-          transitionName="hb-animate-right"
-          transitionEnterTimeout={100}
-          transitionLeaveTimeout={100}>
-          <ScrollLoad loadMore={this.loadMore}
-                      hasMore={!lastPage}
-                      isLoading={isFetching}
-                      className={classnames({loading: isFetching})}
-                      loader={<div className=""></div>}
-                      key={type}>
-            <ul className="hb-list">
-              {
-                list ? list.map((item) => {
-                  return this.renderItem(item);
-                }) : null
-              }
-            </ul>
-          </ScrollLoad>
-        </ReactCSSTransitionGroup>
+        <ScrollLoad loadMore={this.loadMore}
+                    hasMore={!lastPage}
+                    isLoading={isFetching}
+                    className={classnames({loading: isFetching})}
+                    loader={<div className=""></div>}
+                    key={type}>
+          <ul className="hb-list">
+            {
+              list ? list.map((item) => {
+                return this.renderItem(item);
+              }) : null
+            }
+          </ul>
+        </ScrollLoad>
       </section>
     );
   }
@@ -272,6 +266,7 @@ class ReceiveHongbao extends Component {
     let {nickName, headpic} = (giftAndThirdAccUserInfoDto || {});
 
     headpic = headpic || defaultHeadPic;
+    nickName = nickName || NICKNAME;
 
     let {gainCashBalance, gainGoodNum, gainNum} = (redbagAssemblyRetDto || {});
     if (gainCashBalance === undefined) {

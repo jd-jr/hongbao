@@ -3,7 +3,7 @@ import Modal from 'reactjs-modal';
 import prefect from '../../utils/perfect';
 import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import {HONGBAO_TITLE} from '../../constants/common';
+import {HONGBAO_TITLE, HONGBAO_DESC} from '../../constants/common';
 import weixinShareGuide from '../../../images/weixin-share-guide.png';
 import {MYSTIC_GIFT} from '../../config';
 
@@ -54,11 +54,15 @@ class Initiate extends Component {
     walletApi.share({
       url: `${urlRoot}authorize/${identifier}`,
       title: title || HONGBAO_TITLE,
-      desc: skuName,
+      desc: HONGBAO_DESC,
       imgUrl: MYSTIC_GIFT,
       channel: 'WX',
       debug: Boolean(window.eruda),
       callback: (status) => {
+        if (deviceEnv.inWx) {
+          //回到首页
+          this.context.router.replace('/');
+        }
         if (status === 'SUCCESS') {
           this.setState({
             visible: false
@@ -123,7 +127,9 @@ class Initiate extends Component {
                   </div>
                 </div>
               </div>
-              <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold" onTouchTap={this.sponsor}>发红包</div>
+              <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold"
+                   onTouchTap={this.sponsor}>发红包
+              </div>
               <p className="text-center hb-logo-pos">
                 <i className="hb-logo"></i>
               </p>

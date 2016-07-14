@@ -9,6 +9,7 @@ import className from 'classnames'
 import {assign} from 'lodash'
 import callApi from '../../fetch'
 import errorHandler from '../../utils/errorHandler';
+import Loading from '../../ui/Loading';
 
 class Logistics extends Component {
   constructor(props) {
@@ -19,7 +20,8 @@ class Logistics extends Component {
       phone: '',
       customerName: '',
       address: '',
-      showConent: false
+      showConent: false,
+      loading: true
     }
   }
 
@@ -31,9 +33,10 @@ class Logistics extends Component {
         gifRecordId: params.giftRecordId
       }
     }).then((res) => {
-      this.setState(assign({}, res.json.data, {showConent: true}));
+      this.setState(assign({}, res.json.data, {showConent: true, loading: false}));
     }, (error) => {
       if (error.errorCode !== 'RBF100300') {
+        this.setState({loading: false});
         setModalCloseCallback(() => {
           this.context.router.goBack();
         });
@@ -44,8 +47,13 @@ class Logistics extends Component {
   }
 
   render() {
-    const infoList = this.state.detail;
-    if (!this.showConent) {
+    const {detail, showConent, loading} = this.state;
+    if (loading) {
+      return (
+        <Loading/>
+      );
+    }
+    if (!showConent) {
       return null;
     }
 
@@ -61,38 +69,44 @@ class Logistics extends Component {
             <span>{this.state.address}</span>
           </div>
         </div>
-        <div className="order-state-panel hb-bg-white hb-bd-b hb-bd-t">
-          <div>订单编号：{this.state.orderId}</div>
-          <div>承运人：京东快递</div>
-          <div className="hb-hidden">预计送达时间：2016-06-18</div>
 
-          <div className="order-tip-panel hb-bd-t clearfix">
-            <span className="info-tip-icon"></span>
-            <span>如果您对奖品配送状态有疑问，请拨打电话95118咨询。</span>
-          </div>
+        {
+          detail && detail.length > 0 ? (
+            <div>
+              <div className="order-state-panel hb-bg-white hb-bd-b hb-bd-t">
+                <div>订单编号：{this.state.orderId}</div>
+                <div>承运人：京东快递</div>
+                <div className="hb-hidden">预计送达时间：2016-06-18</div>
 
-        </div>
-        <div className="hb-bd-t order-info-panel">
-          <div className="new-order-flow new-p-re">
+                <div className="order-tip-panel hb-bd-t clearfix">
+                  <span className="info-tip-icon"></span>
+                  <span>如果您对奖品配送状态有疑问，请拨打电话95118咨询。</span>
+                </div>
+              </div>
+              <div className="hb-bd-t order-info-panel">
+                <div className="new-order-flow new-p-re">
 
-            <ul className="new-of-storey">
-              {
-                infoList.map((item, index) => {
-                  return (
-                    <li key={index}>
+                  <ul className="new-of-storey">
+                    {
+                      detail && detail.map((item, index) => {
+                        return (
+                          <li key={index}>
                     <span className={className({
                       icon: true,
                       on: index === 0
                     })}></span>
-                      <span>{item.info}&nbsp;&nbsp;{item.operator}</span>
-                      <span>{item.operatorTime}</span>
-                    </li>
-                  );
-                })
-              }
-            </ul>
-          </div>
-        </div>
+                            <span>{item.info}&nbsp;&nbsp;{item.operator}</span>
+                            <span>{item.operatorTime}</span>
+                          </li>
+                        );
+                      })
+                    }
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ) : (<h3 className="text-center text-muted m-t-3">正在处理中...</h3>)
+        }
       </div>
     )
   }
