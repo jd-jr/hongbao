@@ -8,17 +8,13 @@ class Test extends Component {
   constructor(props, context) {
     super(props, context);
     this.weixinShare = this.weixinShare.bind(this);
+    this.closeWindow = this.closeWindow.bind(this);
   }
 
   componentWillMount() {
     if (deviceEnv.inWx && window.wx) {
       window.wx.showOptionMenu();
     }
-    /*const {indexActions, setModalCloseCallback} = this.props;
-    indexActions.setErrorMessage('大家帮看看，分享图片是否可见！');
-    setModalCloseCallback(() => {
-      this.context.router.replace('/');
-    });*/
   }
 
   weixinShare() {
@@ -47,10 +43,22 @@ class Test extends Component {
     });
   }
 
+  closeWindow() {
+    if (window.wx) {
+      window.wx.closeWindow();
+    }
+  }
+
   render() {
     return (
-      <div>
-        <button type="button" onClick={this.weixinShare}>微信分享</button>
+      <div className="m-a-2">
+        <p>
+          <button type="button" onClick={this.weixinShare}>微信分享</button>
+        </p>
+
+        <p>
+          <button type="button" onClick={this.closeWindow}>关闭窗口</button>
+        </p>
       </div>
     );
   }

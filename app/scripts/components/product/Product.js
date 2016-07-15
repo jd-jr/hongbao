@@ -58,10 +58,9 @@ class Product extends Component {
     e.nativeEvent.preventDefault;
     e.nativeEvent.stopPropagation();
 
-    const {productDetail, view, identifier} = this.props;
-    console.info(identifier);
+    const {productDetail, view} = this.props;
     if (view === 'view') {
-      this.context.router.replace(`/hongbao/detail/view/${identifier}`);
+      this.context.router.goBack();
       return;
     }
     const {skuName, skuId, bizPrice, indexImg} = productDetail;
@@ -136,7 +135,6 @@ Product.propTypes = {
   productDetail: PropTypes.object,
   skuId: PropTypes.string,
   view: PropTypes.string,
-  identifier: PropTypes.string,
 };
 
 export default Product;

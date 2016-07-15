@@ -45,24 +45,27 @@ const routeSetting = {
   weixinShare (key) {
   },
 
-  //微信授权
-  wxAuthorize (key) {
-    //如果在微信端，并且没有返回 accountId，需要微信授权
-
+  //监听退出
+  monitorExit() {
     const pathname = location.pathname;
     //如果再一次后退到抢红包页面，则直接退出
     if (pathname.indexOf('/authorize') !== -1 && getSessionStorage('goBack') === 'true') {
-      if (window.wx) {
-        window.wx.closeWindow();
-      }
+      setInterval(() => {
+        if (window.wx) {
+          window.wx.closeWindow();
+        }
+      }, 100);
+      return;
     }
-
     //如果进入不是授权路由，则设置 goBack 为 true
     if (pathname.indexOf('/authorize') === -1) {
       setSessionStorage('goBack', 'true');
     }
+  },
 
-
+  //微信授权
+  wxAuthorize (key) {
+    //如果在微信端，并且没有返回 accountId，需要微信授权
     if (key === 'home' || key === 'authorize' || key === 'unpack') {
       const params = perfect.getLocationParams() || {};
       const {thirdAccId, accountType} = params;
@@ -121,6 +124,7 @@ const routeSetting = {
 
     if (deviceEnv.inWx) {
       this.wxAuthorize(key);
+      this.monitorExit();
       if (verifySignature) {
         //微信分享
         this.weixinShare(key);

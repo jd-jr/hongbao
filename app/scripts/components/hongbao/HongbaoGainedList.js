@@ -109,12 +109,12 @@ class HongbaoGainedList extends Component {
                 </div>
 
                 <div className="col-4 p-a-0">
-                  <Link to={`/product/detail/view/${skuId}?identifier=${identifier}`}>
+                  <Link to={`/product/detail/view/${skuId}`}>
                     <img className="img-fluid" src={skuIcon} alt={skuName}/>
                   </Link>
                 </div>
                 <div className="col-2">
-                  <Link to={`/product/detail/view/${skuId}?identifier=${identifier}`}>
+                  <Link to={`/product/detail/view/${skuId}`}>
                     <span className="arrow-hollow-right" style={{marginLeft: '-1.5rem'}}></span>
                   </Link>
                 </div>
