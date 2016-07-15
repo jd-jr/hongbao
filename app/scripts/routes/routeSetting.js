@@ -124,7 +124,7 @@ const routeSetting = {
       if (verifySignature) {
         //微信分享
         this.weixinShare(key);
-        if (key === 'initiate') {
+        if (key === 'initiate' || key === 'test') {
           this.wxShowOptionMenu();
           this.wxShowMenuItems();
         } else {

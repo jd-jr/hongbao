@@ -34,7 +34,7 @@ class App extends Component {
       }
       this.toastTimeoutId = setTimeout(() => {
         indexActions.clearToast();
-      }, 3000);
+      }, 1500);
     }
   }
 

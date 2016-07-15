@@ -107,7 +107,7 @@ class MyHongbao extends Component {
                   <img className="img-fluid" src={emsCnpl} alt=""/>
                 </div>
                 <div className="col-19 flex flex-items-center flex-items-column">
-                  <div>关注京东钱包，查看后续中奖信息！</div>
+                  <div>关注京东钱包，及时查看红包信息！</div>
                   <div className="text-muted">长按识别二维码</div>
                 </div>
               </section>

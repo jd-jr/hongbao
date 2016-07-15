@@ -51,7 +51,7 @@ function fireScroll() {
     //如果滚动停下来，则显示元素
     hideElement.style.display = hideElementDisplay;
     offset = null;
-  }, 500);
+  }, 300);
 }
 
 /**

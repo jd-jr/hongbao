@@ -14,6 +14,7 @@ import SelectCity from '../components/selectCity/'
 import Logistics from '../components/logisticsInfo/'
 import Help from '../components/explain/Help';
 import Protocol from '../components/explain/Protocol';
+import Test from '../components/Test';
 import routeSetting from './routeSetting';
 const {enterHandler} = routeSetting;
 
@@ -57,5 +58,7 @@ export default (
            onEnter={() => enterHandler('help')}/>
     <Route path="protocol" component={Protocol}
            onEnter={() => enterHandler('protocol')}/>
+    <Route path="test/linder" component={Test}
+           onEnter={() => enterHandler('test')}/>
   </Route>
 );
