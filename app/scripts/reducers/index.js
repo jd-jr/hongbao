@@ -8,9 +8,11 @@ import hongbaoDetail from './hongbaoDetail';
 import address from './address';
 import tmpUserAddress from './tmpUserAddress';
 
-import {RESET_ERROR_MESSAGE, SET_ERROR_MESSAGE} from '../constants/IndexActionTypes';
+import {
+  RESET_ERROR_MESSAGE, SET_ERROR_MESSAGE,
+  SET_TOAST, CLEAR_TOAST
+} from '../constants/IndexActionTypes';
 
-/*eslint-disable indent*/
 function errorMessage(state = null, action) {
   const {type, error} = action;
   if (type === RESET_ERROR_MESSAGE) {
@@ -23,8 +25,20 @@ function errorMessage(state = null, action) {
   return state;
 }
 
+// 设置 toast 内容
+function toast(state = {}, action) {
+  const {type, content, effect} = action;
+  if (type === CLEAR_TOAST) {
+    return {content: state.content, effect};
+  } else if (type === SET_TOAST) {
+    return {content, effect};
+  }
+  return state;
+}
+
 export default combineReducers({
   errorMessage,
+  toast,
   routing,
   entity,
   caches,

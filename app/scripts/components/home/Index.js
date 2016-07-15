@@ -72,6 +72,8 @@ class Home extends Component {
   }
 
   handleChange(e, type) {
+    const {indexActions} = this.props;
+    const {bizPrice, giftNum} = this.state;
     let value = e.target.value;
     if (type === 'giftNum') {
       if (value === '') {
@@ -84,12 +86,27 @@ class Home extends Component {
         return;
       }
       value = parseInt(value, 10);
-      if (value > 100) {
+
+      if (bizPrice <= 5000 && value > 10) {
+        indexActions.setToast('商品价格小于50元，红包个数不可超过10个');
+        this.setState({
+          giftNum: 10
+        });
+        return;
+      }
+
+      const limit = bizPrice <= 100 ? bizPrice - 1 : 100;
+      if (value > limit) {
+        indexActions.setToast(`红包个数不能超过${limit}个`);
         this.setState({
           giftNum: 100
         });
         return;
       }
+
+      this.setState({
+        value
+      });
     } else if (type === 'title') {
       if (value.length > 25) {
         return;
@@ -125,31 +142,31 @@ class Home extends Component {
     const {indexActions} = this.props;
     const {checked, giftNum, title, bizPrice, skuId} = this.state;
     if (!skuId) {
-      indexActions.setErrorMessage('请选择商品');
+      indexActions.setToast('请选择商品');
       return;
     }
 
     let limit = bizPrice <= 100 ? bizPrice - 1 : 100;
     if (giftNum === '') {
-      indexActions.setErrorMessage('请输入红包个数');
+      indexActions.setToast('请输入红包个数');
       return;
     }
 
     if (bizPrice <= 5000 && giftNum > 10) {
-      indexActions.setErrorMessage('红包个数不能超过10个');
+      indexActions.setToast('商品价格小于50元，红包个数不可超过10个');
       return;
     }
 
     if (giftNum > limit) {
-      indexActions.setErrorMessage(`红包个数不能超过${limit}个`);
+      indexActions.setToast(`红包个数不能超过${limit}个`);
       return;
     }
     if (title.length > 25) {
-      indexActions.setErrorMessage('红包标题最多输入25个字');
+      indexActions.setToast('红包标题最多输入25个字');
       return;
     }
     if (!checked) {
-      indexActions.setErrorMessage('请勾选服务协议，谢谢您的合作');
+      indexActions.setToast('请勾选服务协议，谢谢您的合作');
       return;
     }
     return true;
@@ -317,7 +334,7 @@ class Home extends Component {
                   )
                 }
               </div>
-              <p className="f-sm m-l-1 text-muted">未中实物用户可随机获得钱包补贴的现金红包</p>
+              <p className="f-sm m-l-0-75 text-muted">未中礼物用户可随机获得钱包补贴的现金红包</p>
             </div>
 
             {
@@ -350,7 +367,7 @@ class Home extends Component {
                   <span className="pull-right">个</span>
                 </div>
               </div>
-              <p className="f-sm m-l-1 text-muted">可发1个红包，送给你想送的人</p>
+              <p className="f-sm m-l-0-75 text-muted">可发1个红包，送给你想送的人</p>
             </div>
 
             <div>

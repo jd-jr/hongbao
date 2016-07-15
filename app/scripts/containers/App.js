@@ -19,6 +19,23 @@ class App extends Component {
     this.setModalCloseCallback = this.setModalCloseCallback.bind(this);
     this.modalCloseCallback = function () {
     };
+
+    this.toastTimeoutId;
+  }
+
+  componentDidUpdate() {
+    const {
+      toast, indexActions
+    } = this.props;
+
+    if (toast && toast.content) {
+      if (this.toastTimeoutId) {
+        clearTimeout(this.toastTimeoutId);
+      }
+      this.toastTimeoutId = setTimeout(() => {
+        indexActions.clearToast();
+      }, 3000);
+    }
   }
 
   //跳转到设置客户端信息
@@ -102,6 +119,7 @@ class App extends Component {
     }
   }
 
+  //关闭 Modal
   onClose() {
     const {indexActions} = this.props;
     indexActions.resetErrorMessage();
@@ -113,6 +131,7 @@ class App extends Component {
     }
   }
 
+  //设置关闭模态窗口回调函数
   setModalCloseCallback(callback) {
     this.modalCloseCallback = callback;
   }
@@ -134,7 +153,7 @@ class App extends Component {
     return (
       <Modal
         className="hb-alert"
-        visible={errorMessage !== null}
+        visible={Boolean(errorMessage)}
         style={{width: '70%'}}
         onClose={this.onClose}
         footer={footer}
@@ -148,6 +167,21 @@ class App extends Component {
     );
   }
 
+  // toast 组件
+  renderToast() {
+    const {
+      toast
+    } = this.props;
+    const {content, effect} = toast;
+
+    const classname = `toast-panel flex flex-items-center flex-items-middle ${effect}`;
+    return (
+      <div className={classname}>
+        <div className="toast">{content}</div>
+      </div>
+    );
+  }
+
   render() {
     const {
       children, location, caches, cacheActions, errorMessage, indexActions
@@ -156,6 +190,7 @@ class App extends Component {
     return (
       <div>
         {this.alert()}
+        {this.renderToast()}
         <ReactCSSTransitionGroup
           component="div"
           transitionName="hb-animate-right"
@@ -182,14 +217,16 @@ App.propTypes = {
   cacheActions: PropTypes.object,
   caches: PropTypes.object,
   errorMessage: PropTypes.string,
+  toast: PropTypes.object,
   indexActions: PropTypes.object,
 };
 
 function mapStateToProps(state, ownProps) {
-  const {caches, errorMessage} = state;
+  const {caches, errorMessage, toast} = state;
   return {
     caches,
     errorMessage,
+    toast,
   };
 }
 

@@ -2,6 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import ProductSwiper from './ProductSwiper';
 import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
+import {scrollEvent, unmountScrollEvent} from '../../utils/scrollHideFixedElement';
+
 const {Base64} = base64;
 
 class Product extends Component {
@@ -36,9 +38,18 @@ class Product extends Component {
     return false;
   }
 
+  componentDidUpdate() {
+    if (this.state.showFoot) {
+      scrollEvent({
+        hideElement: this.refs.footer
+      });
+    }
+  }
+
   componentWillUnmount() {
     const {productActions} = this.props;
     productActions.clearProduct();
+    unmountScrollEvent();
   }
 
   selectProduct(e) {
@@ -105,7 +116,7 @@ class Product extends Component {
           </section>
         </article>
         {showFoot ? (
-          <footer className="hb-footer-fixed">
+          <footer className="hb-footer-fixed" ref="footer">
             <button className="btn btn-block btn-primary btn-lg btn-flat" onClick={this.selectProduct}>
               {view === 'view' ? '返回' : '确认商品'}
             </button>

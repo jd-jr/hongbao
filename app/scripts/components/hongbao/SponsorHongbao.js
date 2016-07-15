@@ -34,16 +34,11 @@ class SponsorHongbao extends Component {
   /*eslint-disable indent*/
   /**
    * 红包状态字段：status
-   INIT("初始化"),
-   WAIT_PAY("等待付款"),
-   PAY_SUCC("支付成功"),
-   RECEIVE_COMPLETE("领取完成"),
-   EXPIRED("已过期"),
-   REFUNDED("已退款"),
-   FORBIDDEN_REFUND("禁止退款"),
-   REDBAGWHOLEREFUND("红包可全额退款"),
-   REDBAGGOODSREFOUND("红包实物可退款"),
-   REDBAGGOODTRANSFER("红包实物可转发")
+   REFUNDED    已退款
+   REDBAGGOODTRANSFERANDREFOUND 已过期，可退款
+   RECEIVE_COMPLETE 已抢光
+   EXPIRED 已过期
+   FORBIDDEN_REFUND 禁止退款
 
    礼品状态 :GiftStatus
    NOT_GAIN    未领取
@@ -60,7 +55,7 @@ class SponsorHongbao extends Component {
    * @param goodNum
    * @returns {*}
    */
-  getStatus({status, giftStatus, giftGainedNum, giftNum, goodNum}) {
+  getStatus({status, giftGainedNum, giftNum}) {
     switch (status) {
       case 'RECEIVE_COMPLETE':
         return (
@@ -68,14 +63,19 @@ class SponsorHongbao extends Component {
             已抢光 {giftGainedNum}/{giftNum}个
           </div>
         );
-      case 'OK':
-      case 'PAY_SUCC':
+      case 'FORBIDDEN_REFUND':
         return (
           <div>
             {giftGainedNum}/{giftNum}个
           </div>
         );
       case 'EXPIRED':
+        return (
+          <div>
+            <span>已过期 </span>
+          </div>
+        );
+      case 'REDBAGGOODTRANSFERANDREFOUND':
         return (
           <div>
             <span>已过期 </span> <span className="text-primary">可退款</span>
@@ -148,7 +148,7 @@ class SponsorHongbao extends Component {
                   <div className="col-8 text-right">
                     <div>{(amount / 100).toFixed(2)}元</div>
                     <div className="text-muted f-sm">
-                      {this.getStatus({status, giftStatus, giftGainedNum, giftNum, goodNum})}
+                      {this.getStatus({status, giftGainedNum, giftNum})}
                     </div>
                   </div>
                 </Link>

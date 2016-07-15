@@ -1,12 +1,14 @@
 import React, {Component, PropTypes} from 'react';
-import iScroll from 'iscroll/build/iscroll-probe';
-import ReactIScroll from 'reactjs-iscroll';
+import classnames from 'classnames';
+import ScrollLoad from '../../ui/ScrollLoad';
 import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
-const {Base64} = base64;
+import {scrollEvent, unmountScrollEvent} from '../../utils/scrollHideFixedElement';
 
 //图片
 import noItems from '../../../images/no_items.png';
+
+const {Base64} = base64;
 
 class ProductList extends Component {
   constructor(props, context) {
@@ -19,9 +21,9 @@ class ProductList extends Component {
     this.handleTouchMove = this.handleTouchMove.bind(this);
     this.handleSelectTab = this.handleSelectTab.bind(this);
     this.handleOrder = this.handleOrder.bind(this);
-    this.handleRefresh = this.handleRefresh.bind(this);
     this.handleChecked = this.handleChecked.bind(this);
     this.selectProduct = this.selectProduct.bind(this);
+    this.loadMore = this.loadMore.bind(this);
 
     this.touchEnable = false; //是否可以移动
     this.touchMaxDistance = 0; //移动最大距离
@@ -36,7 +38,7 @@ class ProductList extends Component {
       this.setState({
         showFoot: true
       });
-    }, 500);
+    }, 400);
   }
 
   componentDidMount() {
@@ -68,6 +70,15 @@ class ProductList extends Component {
       const navSW = this.refs.categoryNav.scrollWidth;
       this.touchMaxDistance = navSW - navCW;
     }
+    if (this.state.showFoot) {
+      scrollEvent({
+        hideElement: this.refs.footer
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    unmountScrollEvent();
   }
 
   // 选择商品
@@ -76,7 +87,7 @@ class ProductList extends Component {
     productActions.selectProduct(skuId);
   }
 
-  //选择商品
+  // 选择商品后点击确认
   selectProduct(e) {
     e.preventDefault;
     e.stopPropagation();
@@ -175,35 +186,25 @@ class ProductList extends Component {
     this.refs.categoryNav.style.transform = `translateX(-${this.touchOffset}px)`;
   }
 
+  // 进入商品详情
   productDetail(e, url) {
     e.preventDefault();
     e.stopPropagation();
     this.context.router.push(url);
   }
 
-  //调用 IScroll refresh 后回调函数
-  handleRefresh(downOrUp, callback) {
+  //加载更多
+  loadMore() {
     const {
-      productPagination, productActions, activeCategory, priceOrder
+      productActions, activeCategory, priceOrder
     } = this.props;
-    const {clearProductList, getProductList} = productActions;
 
-    if (downOrUp === 'up') { // 加载更多
-      getProductList({
-        category: activeCategory,
-        priceOrder
-      }).then(() => {
-        callback();
-      });
-    } else { // 刷新
-      clearProductList();
-      getProductList({
-        category: activeCategory,
-        priceOrder
-      }).then(() => {
-        callback();
-      });
-    }
+    const {getProductList} = productActions;
+
+    getProductList({
+      category: activeCategory,
+      priceOrder
+    });
   }
 
   //渲染商品分类
@@ -267,9 +268,8 @@ class ProductList extends Component {
     const {selectedProduct} = this.props;
     return (
       <li key={skuId} className="row flex-items-middle">
-        <div className="col-3 text-right">
-          <i className={`hb-radio-gray${selectedProduct === skuId ? ' checked' : ''}`}
-             onTouchTap={() => this.handleChecked(skuId)}></i>
+        <div className="col-3 text-right p-y-1" onTouchTap={() => this.handleChecked(skuId)}>
+          <i className={`hb-radio-gray${selectedProduct === skuId ? ' checked' : ''}`}></i>
         </div>
         <div className="col-4"
              onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`)}>
@@ -317,7 +317,7 @@ class ProductList extends Component {
       productPagination
     } = this.props;
 
-    const {ids, entity, lastPage} = productPagination;
+    const {ids, entity, lastPage, isFetching} = productPagination;
 
     if (!ids) {
       return (
@@ -333,10 +333,11 @@ class ProductList extends Component {
     }
 
     return (
-      <ReactIScroll iScroll={iScroll}
-                    handleRefresh={this.handleRefresh}
-                    pullUp={!lastPage}
-                    className="hb-iscroll">
+      <ScrollLoad loadMore={this.loadMore}
+                  hasMore={!lastPage}
+                  isLoading={isFetching}
+                  className={classnames({loading: isFetching})}
+                  loader={<div className=""></div>}>
         <ul className="hb-list">
           {
             ids ? ids.map((item) => {
@@ -344,7 +345,7 @@ class ProductList extends Component {
             }) : null
           }
         </ul>
-      </ReactIScroll>
+      </ScrollLoad>
     );
   }
 
@@ -361,7 +362,7 @@ class ProductList extends Component {
         </article>
         {
           showFoot ? (
-            <footer className="hb-footer-fixed">
+            <footer className="hb-footer-fixed" ref="footer">
               <button className="btn btn-block btn-primary btn-lg btn-flat"
                       onClick={this.selectProduct}
                       disabled={!selectedProduct}>

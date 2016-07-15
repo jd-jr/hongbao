@@ -127,7 +127,6 @@ class MyHongbao extends Component {
             }
           </ReactCSSTransitionGroup>
         </article>
-
         <BottomNav type="receive"/>
       </div>
     );

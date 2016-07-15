@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {Link} from 'react-router';
+import {scrollEvent, unmountScrollEvent} from '../utils/scrollHideFixedElement';
 
 // 底部导航
 class BottomNav extends Component {
@@ -19,6 +19,18 @@ class BottomNav extends Component {
         showBottomNav: true
       });
     }, 150);
+  }
+
+  componentDidUpdate() {
+    if (this.state.showBottomNav) {
+      scrollEvent({
+        hideElement: this.refs.footer
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    unmountScrollEvent();
   }
 
   createOrder(e) {
@@ -43,7 +55,7 @@ class BottomNav extends Component {
       return null;
     }
     return (
-      <footer className="hb-footer">
+      <footer className="hb-footer" ref="footer">
         <div className="row text-center">
           <div className={`col-12 border-second border-right${type === 'sponsor' ? ' hb-active-btn' : ''}`}
                onClick={this.createOrder}>

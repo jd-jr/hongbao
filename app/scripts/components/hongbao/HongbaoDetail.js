@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import {Link} from 'react-router';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
@@ -10,6 +9,7 @@ import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
+import {scrollEvent, unmountScrollEvent} from '../../utils/scrollHideFixedElement';
 
 // 红包详情
 class HongbaoDetail extends Component {
@@ -112,10 +112,19 @@ class HongbaoDetail extends Component {
     return false;
   }
 
+  componentDidUpdate() {
+    if (this.state.showFoot) {
+      scrollEvent({
+        hideElement: this.refs.footer
+      });
+    }
+  }
+
   componentWillUnmount() {
     const {hongbaoDetailAction} = this.props;
     hongbaoDetailAction.clearHongbaoDetail();
     hongbaoDetailAction.clearParticipant();
+    unmountScrollEvent();
   }
 
   /**
@@ -144,7 +153,7 @@ class HongbaoDetail extends Component {
 
     const {sponsorGoal} = this.state;
     if (sponsorGoal === 'new') {
-      this.context.router.replace('/');
+      this.context.router.push('/');
     } else {
       this.setState({
         showInitiate: true
@@ -228,7 +237,7 @@ class HongbaoDetail extends Component {
     }
 
     return isUnPack ? (
-      <footer className="hb-footer">
+      <footer className="hb-footer" ref="footer">
         <div className="row text-center">
           <div className="col-12 border-second border-right hb-active-btn"
                onClick={this.guide}>
