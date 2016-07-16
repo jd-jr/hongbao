@@ -44,6 +44,8 @@ class Home extends Component {
     this.payBefore = this.payBefore.bind(this);
     this.handleChecked = this.handleChecked.bind(this);
     this.handleMystery = this.handleMystery.bind(this);
+    this.replaceProduct = this.replaceProduct.bind(this);
+
   }
 
   componentWillMount() {
@@ -57,6 +59,11 @@ class Home extends Component {
       }, () => {
         this.pay();
       });
+    }
+
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_home_enter');
     }
   }
 
@@ -118,6 +125,13 @@ class Home extends Component {
     });
   }
 
+  //焦点离开时
+  handleBlur(type) {
+    if (window.MtaH5) {
+      MtaH5.clickStat(type === 'title' ? 'hongbao_home_title' : 'hongbao_home_quantity');
+    }
+  }
+
   handleChecked() {
     const {checked} = this.state;
     this.setState({
@@ -134,6 +148,10 @@ class Home extends Component {
 
   //选择商品
   selectProduct() {
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_home_select_product');
+    }
     this.context.router.push('/product');
   }
 
@@ -256,6 +274,18 @@ class Home extends Component {
         loadingStatus: false
       });
     });
+
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_home_btn_sponsor');
+    }
+  }
+
+  replaceProduct() {
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_home_replace_product');
+    }
   }
 
   //渲染支付表单
@@ -350,7 +380,7 @@ class Home extends Component {
                         <div className="text-muted f-sm">{bizPrice ? `￥${bizPrice}` : ''}</div>
                       </div>
                       <div className="col-4 border-left border-second text-center">
-                        <Link to="/product">更换</Link>
+                        <Link to="/product" onTouchTap={this.replaceProduct}>更换</Link>
                       </div>
                     </div>
                   </div>
@@ -363,6 +393,7 @@ class Home extends Component {
                 <span>红包个数</span>
                 <div className="pull-right">
                   <input value={giftNum} onChange={(e) => this.handleChange(e, 'giftNum')}
+                         onBlur={() => this.handleBlur('giftNum')}
                          className="hb-input text-right" type="tel" placeholder="填写个数"/>
                   <span className="pull-right">个</span>
                 </div>
@@ -373,6 +404,7 @@ class Home extends Component {
             <div>
               <div className="hb-single">
                 <textarea maxLength="25" value={title} onChange={(e) => this.handleChange(e, 'title')}
+                          onBlur={() => this.handleBlur('title')}
                           className="hb-textarea" placeholder={HONGBAO_TITLE}></textarea>
               </div>
             </div>

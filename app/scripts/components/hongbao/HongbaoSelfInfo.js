@@ -288,9 +288,9 @@ class HongbaoSelfInfo extends Component {
             <h3 className="text-center">服务费说明</h3>
             <div className="row">
               <div className="col-12">
-                <div>商品价格0-114元</div>
-                <div>商品价格114-2000元</div>
-                <div>商品价格2000元以上</div>
+                <div>商品价格0-113元</div>
+                <div>商品价格114-2179元</div>
+                <div>商品价格2180元以上</div>
               </div>
               <div className="col-12">
                 <div>费率=价格*8.5%+运费</div>

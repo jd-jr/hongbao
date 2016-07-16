@@ -153,7 +153,7 @@
     "linebreak-style": 0,//验证 unix (LF) or windows (CRLF)
     "lines-around-comment": 0,//注释的规范写法
     "max-depth": [0, 10],//限制语句块最大嵌套深度
-    "max-len": [0, 000, 0, {"ignoreUrls": true}], //限定每行最大长度
+    //"max-len": [120, 2, {"ignoreUrls": true, "ignoreComments": true, "ignorePattern": true}], //限定每行最大长度
     "max-nested-callbacks": [0, 3], // 限定回调函数最大深度
     "max-params": [0, 4], //限定函数参数最大个数
     "max-statements": [0, 30, {"ignoreTopLevelFunctions": true}],// 在一个函数中限定声明表达式最多个数,内部函数会或略
@@ -307,7 +307,9 @@
     }
   },
   "globals": {//定义全局的变量
-    "android": true
+    "android": true,
+    "MtaH5": true,
+    "wx": true
   },
   "extends": [//配置不检测的js文件
 

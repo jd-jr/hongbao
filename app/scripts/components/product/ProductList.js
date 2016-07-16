@@ -7,6 +7,25 @@ import {scrollEvent, unmountScrollEvent} from '../../utils/scrollHideFixedElemen
 
 //图片
 import noItems from '../../../images/no_items.png';
+//商品分类
+const productCategory = {
+  bjts: '并肩同事',
+  jdzn: '京东智能',
+  dnbg: '电脑办公',
+  jd: '家电',
+  sjsm: '手机数码',
+  jjsh: '家具生活',
+  mzxh: '美妆洗护',
+  xbscp: '箱包奢侈品',
+  mywj: '母婴玩具',
+  spbj: '食品保健',
+  ydhw: '运动户外'
+};
+
+const productCategoryValueKey = Object.keys(productCategory).reduce((result, item) => {
+  result[productCategory[item]] = item;
+  return result;
+}, {});
 
 const {Base64} = base64;
 
@@ -39,6 +58,10 @@ class ProductList extends Component {
         showFoot: true
       });
     }, 400);
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_product_enter');
+    }
   }
 
   componentDidMount() {
@@ -98,6 +121,12 @@ class ProductList extends Component {
     if (!selectedProduct) {
       return;
     }
+
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_product_confirm');
+    }
+
     const {
       productPagination: {entity}
     } = this.props;
@@ -118,7 +147,7 @@ class ProductList extends Component {
   }
 
   //切换标签
-  handleSelectTab(e, id) {
+  handleSelectTab(e, id, categoryName) {
     this.setState({
       reset: true
     });
@@ -131,6 +160,12 @@ class ProductList extends Component {
       priceOrder
     });
     clearSelectProduct();
+
+    const enventId = categoryName ? (productCategoryValueKey[categoryName] || 'all') : 'all';
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat(`hongbao_product_${enventId}`);
+    }
   }
 
   // 排序
@@ -148,6 +183,10 @@ class ProductList extends Component {
       priceOrder: _priceOrder
     });
     clearSelectProduct();
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_product_price');
+    }
   }
 
   handleTouchStart(e) {
@@ -187,9 +226,13 @@ class ProductList extends Component {
   }
 
   // 进入商品详情
-  productDetail(e, url) {
+  productDetail(e, url, index) {
     e.preventDefault();
     e.stopPropagation();
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat(`hongbao_product_goods_${index + 1}`);
+    }
     this.context.router.push(url);
   }
 
@@ -240,7 +283,7 @@ class ProductList extends Component {
                   return (
                     <span key={id}
                           className={`hb-product-nav-btn${activeCategory === id ? ' active' : ''}`}
-                          onTouchTap={(e) => this.handleSelectTab(e, id)}>
+                          onTouchTap={(e) => this.handleSelectTab(e, id, categoryName)}>
                     {categoryName}
                   </span>
                   );
@@ -259,7 +302,7 @@ class ProductList extends Component {
     );
   }
 
-  renderProductItem(item) {
+  renderProductItem(item, index) {
     let {skuId, skuName, indexImg, bizPrice, itemTag} = item;
     if (itemTag) {
       itemTag = itemTag.split(',');
@@ -272,11 +315,11 @@ class ProductList extends Component {
           <i className={`hb-radio-gray${selectedProduct === skuId ? ' checked' : ''}`}></i>
         </div>
         <div className="col-4"
-             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`)}>
+             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
           <img className="img-fluid" src={indexImg} alt=""/>
         </div>
         <div className="col-14"
-             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`)}>
+             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
           <div className="text-truncate">{skuName}</div>
           <div className="f-sm hb-product-info">
             <span>¥ {(bizPrice / 100).toFixed(2)}</span>
@@ -305,7 +348,7 @@ class ProductList extends Component {
           </div>
         </div>
         <div className="col-3 text-center"
-             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`)}>
+             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
           <span className="arrow-hollow-right"></span>
         </div>
       </li>
@@ -340,8 +383,8 @@ class ProductList extends Component {
                   loader={<div className=""></div>}>
         <ul className="hb-list">
           {
-            ids ? ids.map((item) => {
-              return this.renderProductItem(entity[item]);
+            ids ? ids.map((item, index) => {
+              return this.renderProductItem(entity[item], index);
             }) : null
           }
         </ul>

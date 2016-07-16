@@ -38,6 +38,11 @@ class BottomNav extends Component {
     e.stopPropagation();
     e.nativeEvent.preventDefault;
     e.nativeEvent.stopPropagation();
+
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_home_tab_sponsor');
+    }
     this.context.router.push('/');
   }
 

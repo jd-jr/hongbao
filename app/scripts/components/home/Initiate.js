@@ -31,6 +31,8 @@ class Initiate extends Component {
     this.clientWidth = document.documentElement.clientWidth;
     //判断是否再次激活成功
     this.againActivate = false;
+    //微信授权
+    this.intervalId;
   }
 
   componentWillMount() {
@@ -47,10 +49,6 @@ class Initiate extends Component {
 
       callApi({url, body, needAuth: true}).then(
         ({json, response}) => {
-          if (deviceEnv.inWx && window.wx) {
-            window.wx.showOptionMenu();
-            this.share();
-          }
           this.againActivate = true;
         },
         (error) => {
@@ -60,11 +58,6 @@ class Initiate extends Component {
           }
         }
       );
-    } else {
-      if (deviceEnv.inWx && window.wx) {
-        window.wx.showOptionMenu();
-        this.share();
-      }
     }
   }
 
@@ -80,9 +73,23 @@ class Initiate extends Component {
       this.setState({
         weixinGuide: true
       });
+      this.intervalId = setInterval(() => {
+        if (window.wx && walletApi.signatureStatus()) {
+          window.wx.showOptionMenu();
+          this.share();
+          clearInterval(this.intervalId);
+        }
+      }, 50);
+
     } else if (deviceEnv.inJdWallet) {
       this.share();
     }
+
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_sponsor');
+    }
+
   }
 
   share() {

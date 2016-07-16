@@ -22,6 +22,10 @@ class Product extends Component {
         showFoot: true
       });
     }, 400);
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_product_detail_enter');
+    }
   }
 
   componentDidMount() {
@@ -63,6 +67,12 @@ class Product extends Component {
       this.context.router.goBack();
       return;
     }
+
+    //埋点
+    if (window.MtaH5) {
+      MtaH5.clickStat('hongbao_product_detail_confirm');
+    }
+
     const {skuName, skuId, bizPrice, indexImg} = productDetail;
     let detail = perfect.stringifyJSON({skuName, skuId, bizPrice, indexImg});
     detail = Base64.encode(detail);
