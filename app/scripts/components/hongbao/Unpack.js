@@ -19,7 +19,6 @@ class Unpack extends Component {
     };
     this.unpack = this.unpack.bind(this);
     this.hideUnpack = this.hideUnpack.bind(this);
-    this.clientWidth = document.documentElement.clientWidth;
   }
 
   componentDidMount() {
@@ -221,7 +220,7 @@ class Unpack extends Component {
             <div className="m-t-1">{nickname}</div>
             <div>发了一个京东红包</div>
           </section>
-          <section className="hb-product-wrap row" style={{minWidth: `${this.clientWidth * 0.7}px`}}>
+          <section className="hb-product-wrap row">
             <div className="col-7 text-left">
               <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
             </div>

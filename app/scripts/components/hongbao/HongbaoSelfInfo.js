@@ -125,6 +125,7 @@ class HongbaoSelfInfo extends Component {
 
   //查看我的红包，主要埋点用
   viewMyhb() {
+    const {type} = this.props;
     //埋点
     perfect.setBuriedPoint(`hongbao${type && type === 'sponsor' ? '_my' : ''}_view_myhb`);
   }

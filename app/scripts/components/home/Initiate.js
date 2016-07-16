@@ -28,7 +28,6 @@ class Initiate extends Component {
     if (deviceEnv.inJdWallet) {
       walletApi.shareIconURL(MYSTIC_GIFT, 'hongbao');
     }
-    this.clientWidth = document.documentElement.clientWidth;
     //判断是否再次激活成功
     this.againActivate = false;
     //微信授权
@@ -159,10 +158,10 @@ class Initiate extends Component {
             <div className="hb-ellipse-arc-mask">
               {closable ? <span className="hb-btn-close" onTouchTap={this.closeHongbao}>+</span> : null}
               <div className="hb-ellipse-arc-flat flex-items-middle flex-items-center flex">
-                <div>
+                <div style={{width: '100%'}}>
                   <h2 className="h1">红包已包好</h2>
                   <h4>京东红包</h4>
-                  <div className="hb-product-wrap row" style={{minWidth: `${this.clientWidth * 0.7}px`}}>
+                  <div className="hb-product-wrap row">
                     <div className="col-7">
                       <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
                     </div>
