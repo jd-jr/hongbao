@@ -15,6 +15,7 @@ class MyHongbao extends Component {
       isLogin: !deviceEnv.inJdWallet
     };
     this.switchTab = this.switchTab.bind(this);
+    this.focusonQrCode = this.focusonQrCode.bind(this);
   }
 
   componentWillMount() {
@@ -60,7 +61,16 @@ class MyHongbao extends Component {
     this.setState({
       type
     });
+    //埋点
+    perfect.setBuriedPoint(type === 'receive' ? 'hongbao_my_receive' : 'hongbao_my_sponsor');
     history.replaceState(null, null, `?type=${type}`);
+  }
+
+  // 关注二维码
+  focusonQrCode() {
+    const {type} = this.props;
+    //埋点
+    perfect.setBuriedPoint(`hongbao_${type || 'receive'}_qrcode`);
   }
 
   render() {
@@ -103,7 +113,7 @@ class MyHongbao extends Component {
           {
             deviceEnv.inWx ? (
               <section className="hb-single row m-a-1">
-                <div className="col-5">
+                <div className="col-5" onTouchTap={this.focusonQrCode}>
                   <img className="img-fluid" src={emsCnpl} alt=""/>
                 </div>
                 <div className="col-19 flex flex-items-center flex-items-column">

@@ -32,12 +32,15 @@ class HongbaoSelfInfo extends Component {
     this.onClose = this.onClose.bind(this);
     this.reward = this.reward.bind(this);
     this.withdraw = this.withdraw.bind(this);
+    this.viewMyhb = this.viewMyhb.bind(this);
 
     this.submitStatus = false;
   }
 
   //物流详情
   logistics() {
+    //埋点
+    perfect.setBuriedPoint('hongbao_received_logistics');
     const {giftRecordId} = this.props;
     this.context.router.push(`/logistics/${giftRecordId}`);
   }
@@ -58,9 +61,13 @@ class HongbaoSelfInfo extends Component {
 
   // 提现
   withdraw(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    jdWalletApi.openModule({name: 'BALANCE'});
+    if (deviceEnv.inJdWallet) {
+      e.stopPropagation();
+      e.preventDefault();
+      jdWalletApi.openModule({name: 'BALANCE'});
+    }
+    //埋点
+    perfect.setBuriedPoint('hongbao_received_withdraw');
   }
 
   //兑奖
@@ -69,6 +76,8 @@ class HongbaoSelfInfo extends Component {
     setSessionStorage('skuId', skuId);
     setSessionStorage('giftRecordId', giftRecordId);
     setSessionStorage('identifier', identifier);
+    //埋点
+    perfect.setBuriedPoint('hongbao_received_reward');
     this.context.router.push('/myaddress');
   }
 
@@ -80,6 +89,8 @@ class HongbaoSelfInfo extends Component {
     this.setState({
       refundVisible: true
     });
+    //埋点
+    perfect.setBuriedPoint('hongbao_sponsored_refund');
   }
 
   //退款
@@ -110,6 +121,12 @@ class HongbaoSelfInfo extends Component {
         indexActions.setErrorMessage(error.message);
       }
     );
+  }
+
+  //查看我的红包，主要埋点用
+  viewMyhb() {
+    //埋点
+    perfect.setBuriedPoint(`hongbao${type && type === 'sponsor' ? '_my' : ''}_view_myhb`);
   }
 
   /**
@@ -154,7 +171,7 @@ class HongbaoSelfInfo extends Component {
                   </div>
                 ) : (
                   <div>
-                    <Link to="/my" className="btn btn-primary btn-sm btn-arc">查看我的红包</Link>
+                    <Link to="/my" onTouchTap={this.viewMyhb} className="btn btn-primary btn-sm btn-arc">查看我的红包</Link>
                     <p className="f-xs text-muted m-t-0-3">（温馨提示：请在15天内尽快维护收货地址）</p>
                   </div>
                 )
@@ -225,7 +242,7 @@ class HongbaoSelfInfo extends Component {
               deviceEnv.inJdWallet ? (
                 <span onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">去提现</span>
               ) : (
-                <a href="https://qianbao.jd.com/p/page/download.htm?module=BALANCE"
+                <a onTouchTap={this.withdraw} href="https://qianbao.jd.com/p/page/download.htm?module=BALANCE"
                    className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</a>
               )
             ) : (

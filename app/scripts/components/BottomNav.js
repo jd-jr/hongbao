@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {scrollEvent, unmountScrollEvent} from '../utils/scrollHideFixedElement';
+import perfect from '../utils/perfect';
 
 // 底部导航
 class BottomNav extends Component {
@@ -40,9 +41,7 @@ class BottomNav extends Component {
     e.nativeEvent.stopPropagation();
 
     //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat('hongbao_home_tab_sponsor');
-    }
+    perfect.setBuriedPoint('hongbao_home_tab_sponsor');
     this.context.router.push('/');
   }
 
@@ -51,6 +50,8 @@ class BottomNav extends Component {
     e.stopPropagation();
     e.nativeEvent.preventDefault;
     e.nativeEvent.stopPropagation();
+    //埋点
+    perfect.setBuriedPoint('hongbao_tab_my');
     this.context.router.push('/my');
   }
 

@@ -58,10 +58,6 @@ class ProductList extends Component {
         showFoot: true
       });
     }, 400);
-    //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat('hongbao_product_enter');
-    }
   }
 
   componentDidMount() {
@@ -123,9 +119,7 @@ class ProductList extends Component {
     }
 
     //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat('hongbao_product_confirm');
-    }
+    perfect.setBuriedPoint('hongbao_product_confirm');
 
     const {
       productPagination: {entity}
@@ -163,9 +157,7 @@ class ProductList extends Component {
 
     const enventId = categoryName ? (productCategoryValueKey[categoryName] || 'all') : 'all';
     //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat(`hongbao_product_${enventId}`);
-    }
+    perfect.setBuriedPoint(`hongbao_product_${enventId}`);
   }
 
   // 排序
@@ -184,9 +176,7 @@ class ProductList extends Component {
     });
     clearSelectProduct();
     //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat('hongbao_product_price');
-    }
+    perfect.setBuriedPoint('hongbao_product_price');
   }
 
   handleTouchStart(e) {
@@ -230,9 +220,7 @@ class ProductList extends Component {
     e.preventDefault();
     e.stopPropagation();
     //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat(`hongbao_product_goods_${index + 1}`);
-    }
+    perfect.setBuriedPoint(`hongbao_product_goods_${index + 1}`);
     this.context.router.push(url);
   }
 

@@ -33,12 +33,25 @@ const routeSetting = {
     help: '帮助'
   },
 
+  //埋点
+  buriedPoint: {
+    home: 'hongbao_home_enter',
+    productList: 'hongbao_product_enter',
+    product: 'hongbao_product_detail_enter',
+    authorize: 'hangbao_prepare_unpack',
+  },
+
   shareFilter: ['home'],
 
   //设置 Title
   setTitle(key) {
     //设置标题
     walletApi.setTitle(this.titles[key] || '');
+  },
+
+  //设置埋点
+  setBuriedPoint(key) {
+    perfect.setBuriedPoint(this.buriedPoint[key]);
   },
 
   //微信分享
@@ -167,6 +180,8 @@ const routeSetting = {
 
     //设置 title
     this.setTitle(key);
+    //设置埋点
+    this.setBuriedPoint(key);
   },
 
   // 离开一个路由触发的事件

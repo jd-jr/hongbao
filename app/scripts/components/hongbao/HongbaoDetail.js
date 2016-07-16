@@ -151,19 +151,31 @@ class HongbaoDetail extends Component {
     e.nativeEvent.preventDefault;
     e.nativeEvent.stopPropagation();
 
-    const {sponsorGoal} = this.state;
+    const {sponsorGoal, type} = this.state;
+
     if (sponsorGoal === 'new') {
+      //埋点
+      perfect.setBuriedPoint(this.isUnPack ?
+        `hongbao${type && type === 'sponsor' ? '_my' : ''}_wantto_sponsor`
+        : `hongbao${type && type === 'sponsor' ? '_sponsored' : '_received'}_wantto`);
+
       this.context.router.push('/');
     } else {
+      //埋点
+      perfect.setBuriedPoint(this.isUnPack ? 'hongbao_my_continue' : 'hongbao_sponsored_continue');
+
       this.setState({
         showInitiate: true
       });
     }
   }
 
-  // 红包攻略 TODO
+  // 红包攻略
   guide() {
-
+    const {type} = this.props;
+    //埋点
+    perfect.setBuriedPoint(`hongbao${type && type === 'sponsor' ? '_my' : ''}_guide`);
+    // TODO
   }
 
   //在 HongbaoSelfInfo 中处理逻辑后，需要修改 sponsorGoal，来判断是继续发送，还是我要发红包
@@ -308,7 +320,8 @@ class HongbaoDetail extends Component {
     };
 
     const gainedListProps = {
-      hongbaoDetailAction, identifier, skuId, participantPagination
+      hongbaoDetailAction, identifier, skuId, participantPagination, type,
+      isUnpack: this.isUnPack
     };
 
     let initiateCom = null;

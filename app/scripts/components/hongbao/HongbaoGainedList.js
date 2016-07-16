@@ -15,6 +15,7 @@ class HongbaoGainedList extends Component {
   constructor(props, context) {
     super(props, context);
     this.loadMore = this.loadMore.bind(this);
+    this.prize = this.prize.bind(this);
   }
 
   componentWillMount() {
@@ -43,6 +44,14 @@ class HongbaoGainedList extends Component {
       thirdAccId
     };
     hongbaoDetailAction.getParticipantList(body);
+  }
+
+  //点击中奖图片埋点
+  prize() {
+    const {type, isUnpack} = this.props;
+    //埋点
+    perfect.setBuriedPoint(isUnpack ? `hongbao${type && type === 'sponsor' ? '_my' : ''}prize`
+      : 'hongbao_received_prize');
   }
 
   render() {
@@ -108,12 +117,12 @@ class HongbaoGainedList extends Component {
                   <div className="text-muted f-sm">{gainedDate}</div>
                 </div>
 
-                <div className="col-4 p-a-0">
+                <div className="col-4 p-a-0" onTouchTap={this.prize}>
                   <Link to={`/product/detail/view/${skuId}`}>
                     <img className="img-fluid" src={skuIcon} alt={skuName}/>
                   </Link>
                 </div>
-                <div className="col-2">
+                <div className="col-2" onTouchTap={this.prize}>
                   <Link to={`/product/detail/view/${skuId}`}>
                     <span className="arrow-hollow-right" style={{marginLeft: '-1.5rem'}}></span>
                   </Link>
@@ -132,6 +141,8 @@ HongbaoGainedList.propTypes = {
   identifier: PropTypes.string,
   participantPagination: PropTypes.object,
   skuId: PropTypes.string,
+  type: PropTypes.string,
+  isUnpack: PropTypes.bool
 };
 
 export default HongbaoGainedList;

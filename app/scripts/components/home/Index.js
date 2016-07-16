@@ -60,11 +60,6 @@ class Home extends Component {
         this.pay();
       });
     }
-
-    //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat('hongbao_home_enter');
-    }
   }
 
   componentDidMount() {
@@ -127,9 +122,7 @@ class Home extends Component {
 
   //焦点离开时
   handleBlur(type) {
-    if (window.MtaH5) {
-      MtaH5.clickStat(type === 'title' ? 'hongbao_home_title' : 'hongbao_home_quantity');
-    }
+    perfect.setBuriedPoint(type === 'title' ? 'hongbao_home_title' : 'hongbao_home_quantity');
   }
 
   handleChecked() {
@@ -149,9 +142,7 @@ class Home extends Component {
   //选择商品
   selectProduct() {
     //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat('hongbao_home_select_product');
-    }
+    perfect.setBuriedPoint('hongbao_home_select_product');
     this.context.router.push('/product');
   }
 
@@ -276,16 +267,12 @@ class Home extends Component {
     });
 
     //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat('hongbao_home_btn_sponsor');
-    }
+    perfect.setBuriedPoint('hongbao_home_btn_sponsor');
   }
 
   replaceProduct() {
     //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat('hongbao_home_replace_product');
-    }
+    perfect.setBuriedPoint('hongbao_home_replace_product');
   }
 
   //渲染支付表单

@@ -270,6 +270,15 @@ const perfect = {
       return 'WALLET';
     }
     return 'WECHAT';
+  },
+
+  /**
+   * 设置腾讯埋点
+   */
+  setBuriedPoint(enventId) {
+    if (window.MtaH5) {
+      MtaH5.clickStat(enventId)
+    }
   }
 };
 

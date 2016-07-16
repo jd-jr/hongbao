@@ -117,19 +117,22 @@ class Unpack extends Component {
 
     callApi({url, body}).then(
       ({json, response}) => {
-        this.hideUnpack(true);
+        this.hideUnpack({reLoad: true});
       },
       (error) => {
-        this.hideUnpack(true);
+        this.hideUnpack({reLoad: true});
       }
     );
+
+    //埋点
+    perfect.setBuriedPoint(this.state.owner ? 'hongbao_my_unpack' : 'hongbao_unpack');
   }
 
   /**
    * 隐藏拆红包弹框
    * @param reLoad 如果为 true 则重新加载红包详情数据
    */
-  hideUnpack(reLoad) {
+  hideUnpack({reLoad, buriedPoint}) {
     const {hongbaoDetailAction, identifier, showDetail} = this.props;
     this.setState({
       unpackStatus: false
@@ -149,6 +152,20 @@ class Unpack extends Component {
       hongbaoDetailAction.clearParticipant();
       hongbaoDetailAction.getParticipantList(body);
       hongbaoDetailAction.getHongbaoDetail(body);
+    }
+
+    if (buriedPoint) {
+      //埋点
+      let eventId;
+      const {owner, hongbaoStatus} = this.state;
+      let status = 'progress';
+      if (hongbaoStatus === 'EXPIRED') {
+        status = 'expire';
+      } else if (hongbaoStatus === 'RECEIVE_COMPLETE') {
+        status = 'gone';
+      }
+      eventId = `hangbao_${owner ? '_my' : ''}_${status}_luck`;
+      perfect.setBuriedPoint(eventId);
     }
   }
 
@@ -219,7 +236,7 @@ class Unpack extends Component {
                  onTouchTap={this.unpack}>開</div>
           ) : null
         }
-        <div className="hb-luck-link" onTouchTap={this.hideUnpack}>
+        <div className="hb-luck-link" onTouchTap={() => this.hideUnpack({buriedPoint: true})}>
           看看大家的手气
         </div>
         {

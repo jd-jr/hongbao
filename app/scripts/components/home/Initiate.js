@@ -86,10 +86,7 @@ class Initiate extends Component {
     }
 
     //埋点
-    if (window.MtaH5) {
-      MtaH5.clickStat('hongbao_sponsor');
-    }
-
+    perfect.setBuriedPoint('hongbao_sponsor');
   }
 
   share() {
