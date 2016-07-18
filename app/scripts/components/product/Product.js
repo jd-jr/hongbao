@@ -44,6 +44,20 @@ class Product extends Component {
         hideElement: this.refs.footer
       });
     }
+    const {skuId} = this.props;
+    if (skuId) {
+      //为 Text 文本包裹 p 标签
+      const detailEl = this.refs.detail;
+      const childNodes = detailEl.childNodes;
+      for (let i = 0, len = childNodes.length; i < len; i++) {
+        const node = childNodes[i];
+        if (node.nodeType === 3) {
+          const _node = document.createElement('p');
+          _node.innerHTML = node.data;
+          detailEl.replaceChild(_node, node);
+        }
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -53,9 +67,9 @@ class Product extends Component {
   }
 
   selectProduct(e) {
-    e.preventDefault;
+    e.preventDefault();
     e.stopPropagation();
-    e.nativeEvent.preventDefault;
+    e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
 
     const {productDetail, view} = this.props;
@@ -97,7 +111,8 @@ class Product extends Component {
       bigDetail = bigDetail.replace(/<script[^>]*?>[\s\S]*?<\/script>/ig, ''); //替换script标签
       bigDetail = bigDetail.replace(/<style[^>]*?>[\s\S]*?<\/style>/ig, ''); //替换style标签
       bigDetail = bigDetail.replace(/<(?!img)[^>]+>/ig, ''); //去掉除了 img 标签的所有标签
-      bigDetail = bigDetail.replace(/\n/g, '');
+      bigDetail = bigDetail.replace(/&lt;[^&lt;]+&gt;/ig, ''); //替换掉转移 html 标签
+      bigDetail = bigDetail.replace(/[\r\n]/g, ''); //去掉回车换行
     }
     /*eslint-disable react/no-danger*/
     return (
@@ -113,15 +128,15 @@ class Product extends Component {
             )}
           </section>
           <section className="m-t-1">
-            <h3 className="text-center f-lg">－ 商品详情 －</h3>
-            <div className="hb-product-detail" dangerouslySetInnerHTML={{__html: bigDetail}}>
+            <h3 className="text-center f-lg">－ 礼物详情 －</h3>
+            <div ref="detail" className="hb-product-detail" dangerouslySetInnerHTML={{__html: bigDetail}}>
             </div>
           </section>
         </article>
         {showFoot ? (
           <footer className="hb-footer-fixed" ref="footer">
             <button className="btn btn-block btn-primary btn-lg btn-flat" onClick={this.selectProduct}>
-              {view === 'view' ? '返回' : '确认商品'}
+              {view === 'view' ? '返回' : '确认礼物'}
             </button>
           </footer>
         ) : null}

@@ -25,7 +25,7 @@ function errorMessage(state = null, action) {
   return state;
 }
 
-// 设置 toast 内容
+// 设置 toast 内容和效果
 function toast(state = {}, action) {
   const {type, content, effect} = action;
   if (type === CLEAR_TOAST) {

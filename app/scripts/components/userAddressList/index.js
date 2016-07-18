@@ -166,6 +166,8 @@ class UserAddressList extends Component {
   //切换显示删除 等操作提示弹窗
   toggleActionTipState(e) {
     if (e) {
+      e.stopPropagation();
+      e.preventDefault();
       e.nativeEvent.preventDefault();
       e.nativeEvent.stopPropagation();
     }
@@ -246,6 +248,8 @@ class UserAddressList extends Component {
 
   //点击确认按钮
   sureAction(e) {
+    e.stopPropagation();
+    e.preventDefault();
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
     this.state.sureAction();

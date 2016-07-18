@@ -75,9 +75,14 @@ class Home extends Component {
 
   handleChange(e, type) {
     const {indexActions} = this.props;
-    const {bizPrice, giftNum} = this.state;
+    const {bizPrice, giftNum, selecting} = this.state;
     let value = e.target.value;
     if (type === 'giftNum') {
+      if (selecting) {
+        indexActions.setToast('请先选择礼物');
+        this.context.router.push('/product');
+        return;
+      }
       if (value === '') {
         this.setState({
           giftNum: ''
@@ -90,7 +95,7 @@ class Home extends Component {
       value = parseInt(value, 10);
 
       if (bizPrice <= 5000 && value > 10) {
-        indexActions.setToast('商品价格小于50元，红包个数不可超过10个');
+        indexActions.setToast('礼物价格小于50元，红包个数不可超过10个');
         this.setState({
           giftNum: 10
         });
@@ -139,7 +144,7 @@ class Home extends Component {
     });
   }
 
-  //选择商品
+  //选择礼物
   selectProduct() {
     //埋点
     perfect.setBuriedPoint('hongbao_home_select_product');
@@ -151,7 +156,7 @@ class Home extends Component {
     const {indexActions} = this.props;
     const {checked, giftNum, title, bizPrice, skuId} = this.state;
     if (!skuId) {
-      indexActions.setToast('请选择商品');
+      indexActions.setToast('请选择礼物');
       return;
     }
 
@@ -162,7 +167,7 @@ class Home extends Component {
     }
 
     if (bizPrice <= 5000 && giftNum > 10) {
-      indexActions.setToast('商品价格小于50元，红包个数不可超过10个');
+      indexActions.setToast('礼物价格小于50元，红包个数不可超过10个');
       return;
     }
 

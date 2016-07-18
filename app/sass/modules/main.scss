@@ -127,19 +127,15 @@
 
   &product-detail {
     background: #fff;
+    padding-top: 1px;
+    p {
+      margin: 1rem 0.5rem;
+      text-indent: 2em;
+    }
     img {
       display: block;
       width: 100%;
       height: auto;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-    }
-    img:first-child {
-      margin-top: 0;
-    }
-    img + img {
-      margin-top: 0;
-      margin-bottom: 0;
     }
   }
 
@@ -313,6 +309,7 @@
     color: #fee1b4;
     position: absolute;
     bottom: 1.5rem;
+    padding: 1rem 0;
     width: 100%;
     text-align: center;
   }

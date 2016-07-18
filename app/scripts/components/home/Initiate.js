@@ -135,6 +135,8 @@ class Initiate extends Component {
   //关闭发送红包
   closeHongbao(e) {
     //防点透处理
+    e.preventDefault();
+    e.stopPropagation();
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
     setTimeout(() => {

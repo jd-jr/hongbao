@@ -28,13 +28,16 @@ class App extends Component {
       toast, indexActions
     } = this.props;
 
-    if (toast && toast.content) {
+    if (toast && toast.effect === 'enter') {
       if (this.toastTimeoutId) {
         clearTimeout(this.toastTimeoutId);
+        this.toastTimeoutId = null;
+      } else {
+        this.toastTimeoutId = setTimeout(() => {
+          indexActions.clearToast();
+          this.toastTimeoutId = null;
+        }, 1500);
       }
-      this.toastTimeoutId = setTimeout(() => {
-        indexActions.clearToast();
-      }, 1500);
     }
   }
 

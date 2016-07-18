@@ -108,9 +108,9 @@ class ProductList extends Component {
 
   // 选择商品后点击确认
   selectProduct(e) {
-    e.preventDefault;
+    e.preventDefault();
     e.stopPropagation();
-    e.nativeEvent.preventDefault;
+    e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
 
     const {selectedProduct} = this.props;
@@ -397,7 +397,7 @@ class ProductList extends Component {
               <button className="btn btn-block btn-primary btn-lg btn-flat"
                       onClick={this.selectProduct}
                       disabled={!selectedProduct}>
-                确认商品
+                确认礼物
               </button>
             </footer>
           ) : null

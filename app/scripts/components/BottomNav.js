@@ -35,9 +35,9 @@ class BottomNav extends Component {
   }
 
   createOrder(e) {
-    e.preventDefault;
+    e.preventDefault();
     e.stopPropagation();
-    e.nativeEvent.preventDefault;
+    e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
 
     //埋点
@@ -46,9 +46,9 @@ class BottomNav extends Component {
   }
 
   myHongbao(e) {
-    e.preventDefault;
+    e.preventDefault();
     e.stopPropagation();
-    e.nativeEvent.preventDefault;
+    e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
     //埋点
     perfect.setBuriedPoint('hongbao_tab_my');

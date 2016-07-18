@@ -163,14 +163,19 @@ class SponsorHongbao extends Component {
   render() {
     const {userInfo} = this.props;
     const {giftAndThirdAccUserInfoDto, redbagAssemblyRetDto} = userInfo;
-    let {nickName, headpic} = (giftAndThirdAccUserInfoDto || {});
     let {putOutNum, putOutAmount} = (redbagAssemblyRetDto || {});
     if (putOutAmount === undefined) {
       putOutAmount = 0;
     }
 
-    headpic = headpic || defaultHeadPic;
-    nickName = nickName || NICKNAME;
+    console.info(giftAndThirdAccUserInfoDto);
+
+    let headpic = '';
+    let nickName = '';
+    if (giftAndThirdAccUserInfoDto) {
+      headpic = giftAndThirdAccUserInfoDto.headpic || defaultHeadPic;
+      nickName = giftAndThirdAccUserInfoDto.nickName || NICKNAME;
+    }
 
     return (
       <div>

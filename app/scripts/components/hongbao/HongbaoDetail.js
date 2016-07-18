@@ -146,9 +146,9 @@ class HongbaoDetail extends Component {
 
   //重新发起或继续发送
   reSponsor(e) {
-    e.preventDefault;
+    e.preventDefault();
     e.stopPropagation();
-    e.nativeEvent.preventDefault;
+    e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
 
     const {sponsorGoal, type} = this.state;

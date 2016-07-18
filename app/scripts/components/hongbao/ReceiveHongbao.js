@@ -20,6 +20,8 @@ class ReceiveHongbao extends Component {
     this.withdraw = this.withdraw.bind(this);
     this.reward = this.reward.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    //实物领取状态
+    this.giftStatusArr = ['GIVEING', 'GIVE_OUT', 'EXPIRED', 'REFUNED'];
   }
 
   componentDidMount() {
@@ -82,6 +84,8 @@ class ReceiveHongbao extends Component {
     if (deviceEnv.inJdWallet) {
       e.stopPropagation();
       e.preventDefault();
+      e.nativeEvent.preventDefault();
+      e.nativeEvent.stopPropagation();
       jdWalletApi.openModule({name: 'BALANCE'});
     }
     //埋点
@@ -142,9 +146,34 @@ class ReceiveHongbao extends Component {
    * @returns {*}
    */
   getStatus({giftStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId}) {
+
+    const goodsStatus = function () {
+      switch (giftStatus) {
+        case 'GIVEING':
+          return (
+            <div className="label-text bg-info">领取中</div>
+          );
+        case 'GIVE_OUT':
+          return (
+            <div className="label-text bg-info">已领取</div>
+          );
+        case 'EXPIRED':
+          return (
+            <div className="label-text bg-muted">已过期</div>
+          );
+        case 'REFUNED':
+          return (
+            <div className="label-text bg-muted">已退款</div>
+          );
+        default:
+          return (
+            <div className="label-text bg-primary">去领取</div>
+          );
+      }
+    };
+
     const {type} = this.props;
     let link = `/hongbao/detail/view/${identifier}?type=${type}`;
-    let isReward = false;
     let contentEl;
     if (giftType === 'CASH') {
       contentEl = (
@@ -153,34 +182,18 @@ class ReceiveHongbao extends Component {
         </div>
       );
     } else {
-      switch (giftStatus) {
-        case 'GIVE_OUT':
-          contentEl = (
-            <div className="hb-img-text-thumb">
-              <img src={skuIcon} alt=""/>
-              <div className="label-text bg-info">已领取</div>
-            </div>
-          );
-          break;
-        case 'EXPIRED':
-          contentEl = (
-            <div className="hb-img-text-thumb">
-              <img src={skuIcon} alt=""/>
-              <div className="label-text bg-muted">已过期</div>
-            </div>
-          );
-          break;
-        default:
-          isReward = true;
-          contentEl = (
-            <div className="hb-img-text-thumb">
-              <img src={skuIcon} alt=""/>
-              <div className="label-text bg-primary">去领取</div>
-            </div>
-          );
-          break;
-      }
+      contentEl = (
+        <div className="hb-img-text-thumb">
+          <img src={skuIcon} alt=""/>
+          {
+            goodsStatus()
+          }
+        </div>
+      );
     }
+
+    //去领取，只有去领取状态可以兑奖
+    const isReward = !giftStatus || this.giftStatusArr.indexOf(giftStatus) === -1;
 
     if (isReward) {
       return (
@@ -269,10 +282,15 @@ class ReceiveHongbao extends Component {
     const {type} = this.state;
     const {userInfo} = this.props;
     const {giftAndThirdAccUserInfoDto, redbagAssemblyRetDto} = userInfo;
-    let {nickName, headpic} = (giftAndThirdAccUserInfoDto || {});
 
-    headpic = headpic || defaultHeadPic;
-    nickName = nickName || NICKNAME;
+    console.info(giftAndThirdAccUserInfoDto);
+
+    let headpic = '';
+    let nickName = '';
+    if (giftAndThirdAccUserInfoDto) {
+      headpic = giftAndThirdAccUserInfoDto.headpic || defaultHeadPic;
+      nickName = giftAndThirdAccUserInfoDto.nickName || NICKNAME;
+    }
 
     let {gainCashBalance, gainGoodNum, gainNum} = (redbagAssemblyRetDto || {});
     if (gainCashBalance === undefined) {

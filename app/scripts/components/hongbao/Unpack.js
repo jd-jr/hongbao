@@ -84,6 +84,8 @@ class Unpack extends Component {
   // 拆开红包
   unpack(e) {
     //防点透处理
+    e.stopPropagation();
+    e.preventDefault();
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
     setTimeout(() => {
@@ -131,7 +133,14 @@ class Unpack extends Component {
    * 隐藏拆红包弹框
    * @param reLoad 如果为 true 则重新加载红包详情数据
    */
-  hideUnpack({reLoad, buriedPoint}) {
+  hideUnpack({reLoad, buriedPoint, e}) {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      e.nativeEvent.preventDefault();
+      e.nativeEvent.stopPropagation();
+    }
+
     const {hongbaoDetailAction, identifier, showDetail} = this.props;
     this.setState({
       unpackStatus: false
@@ -171,11 +180,13 @@ class Unpack extends Component {
   // 红包弹框内容
   modalBody() {
     const {user, hongbaoStatus, sku, owner, title} = this.state;
-    let {face, nickname} = user || {};
+    let face = '';
+    let nickname = '';
+    if (user) {
+      face = face || defaultHeadPic;
+      nickname = nickname || NICKNAME;
+    }
     const {skuIcon, skuName} = sku || {};
-
-    face = face || defaultHeadPic;
-    nickname = nickname || NICKNAME;
 
     let hongbaoTitle = null;
     /**
@@ -235,7 +246,7 @@ class Unpack extends Component {
                  onTouchTap={this.unpack}>開</div>
           ) : null
         }
-        <div className="hb-luck-link" onTouchTap={() => this.hideUnpack({buriedPoint: true})}>
+        <div className="hb-luck-link" onTouchTap={(e) => this.hideUnpack({buriedPoint: true, e})}>
           看看大家的手气
         </div>
         {

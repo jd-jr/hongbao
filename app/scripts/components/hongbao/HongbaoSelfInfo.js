@@ -64,6 +64,8 @@ class HongbaoSelfInfo extends Component {
     if (deviceEnv.inJdWallet) {
       e.stopPropagation();
       e.preventDefault();
+      e.nativeEvent.preventDefault();
+      e.nativeEvent.stopPropagation();
       jdWalletApi.openModule({name: 'BALANCE'});
     }
     //埋点
