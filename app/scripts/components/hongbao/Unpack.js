@@ -193,8 +193,8 @@ class Unpack extends Component {
     let face = '';
     let nickname = '';
     if (user) {
-      face = face || defaultHeadPic;
-      nickname = nickname || NICKNAME;
+      face = user.face || defaultHeadPic;
+      nickname = user.nickname || NICKNAME;
     }
     const {skuIcon, skuName} = sku || {};
 

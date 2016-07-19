@@ -95,7 +95,6 @@ class Home extends Component {
     if (type === 'giftNum') {
       if (selecting) {
         indexActions.setToast('请先选择礼物');
-        this.context.router.push('/product');
         return;
       }
       if (value === '') {
@@ -121,7 +120,7 @@ class Home extends Component {
       if (value > limit) {
         indexActions.setToast(`红包个数不能超过${limit}个`);
         this.setState({
-          giftNum: 100
+          giftNum: limit
         });
         return;
       }
@@ -161,6 +160,9 @@ class Home extends Component {
 
   //选择礼物
   selectProduct() {
+    if (!this.state.selecting) {
+      return;
+    }
     //埋点
     perfect.setBuriedPoint('hongbao_home_select_product');
     this.context.router.push('/product');
