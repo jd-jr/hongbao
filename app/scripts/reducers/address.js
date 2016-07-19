@@ -3,7 +3,8 @@ import {
   SET_DEFAULT_ADDRESS,
   DELETE_ADDRESS,
   ADD_USER_ADDRESS,
-  UPDATE_USER_ADDRESS
+  UPDATE_USER_ADDRESS,
+  CLEAR_USER_ADD_LIST
 } from '../constants/AddressActionTypes';
 
 /*eslint-disable indent*/
@@ -13,8 +14,9 @@ export default function address(state = null, action) {
   switch (action.type) {
     case INIT_USER_ADD_LIST:
       return action.state.concat();
-    case SET_DEFAULT_ADDRESS:
-    {
+    case CLEAR_USER_ADD_LIST:
+      return null;
+    case SET_DEFAULT_ADDRESS: {
       const id = action.id;
       newState.forEach((item, index) => {
         if (item.id === id) {
@@ -25,16 +27,14 @@ export default function address(state = null, action) {
       });
       return newState;
     }
-    case DELETE_ADDRESS:
-    {
+    case DELETE_ADDRESS: {
       newState.splice(action.index, 1);
       return newState;
     }
     case ADD_USER_ADDRESS:
       newState.unshift(action.state);
       return newState;
-    case UPDATE_USER_ADDRESS:
-    {
+    case UPDATE_USER_ADDRESS: {
       let _index = Number(action.state.index);
       newState = newState.map((item, index) => {
         if (_index === index) {

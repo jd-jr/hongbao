@@ -67,7 +67,7 @@ const routeSetting = {
         if (window.wx) {
           window.wx.closeWindow();
         }
-      }, 100);
+      }, 50);
       return;
     }
     //如果进入不是授权路由，则设置 goBack 为 true

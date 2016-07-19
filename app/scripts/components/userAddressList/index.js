@@ -38,6 +38,7 @@ class UserAddressList extends Component {
     this.goAddAddress = this.goAddAddress.bind(this);
     this.onModalClose = this.onModalClose.bind(this);
     this.currentItem = null;
+    this.clearData = true;// unmount 时是否清空数据，默认为清空，但是编辑地址，添加地址不再清空
   }
 
   componentWillMount() {
@@ -48,9 +49,9 @@ class UserAddressList extends Component {
         body: {},
         needAuth: true
       }).then((res) => {
-        const list = res.json.data || []
-        setUserAddressList(list)
-        this.checkGoodsStock(list)
+        const list = res.json.data || [];
+        setUserAddressList(list);
+        this.checkGoodsStock(list);
         this.setState({
           loading: false
         });
@@ -62,6 +63,13 @@ class UserAddressList extends Component {
           loading: false
         });
       });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.clearData) {
+      const {clearUserAddressList} = this.props;
+      clearUserAddressList();
     }
   }
 
@@ -95,6 +103,7 @@ class UserAddressList extends Component {
   }
 
   goAddAddress() {
+    this.clearData = false;
     const {resetTmpUserAddress} = this.props;
     resetTmpUserAddress();
     this.context.router.push('/addaddress');
@@ -129,6 +138,7 @@ class UserAddressList extends Component {
    * 1. 先去初始化临时地址数据
    */
   editAddress(index, item) {
+    this.clearData = false;
     const {initTmpUserAddress} = this.props;
     const {
       id, name, mobile, addressDetail,
@@ -493,6 +503,7 @@ UserAddressList.propTypes = {
   initTmpUserAddress: PropTypes.func,
   deleteUserAddress: PropTypes.func,
   setModalCloseCallback: PropTypes.func,
+  clearUserAddressList: PropTypes.func,
 };
 
 

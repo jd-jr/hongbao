@@ -6,7 +6,8 @@ import {
   UPDATE_TMP_USER_ADDRESS,
   RESET_TMP_USER_ADDRESS,
   ADD_USER_ADDRESS,
-  UPDATE_USER_ADDRESS
+  UPDATE_USER_ADDRESS,
+  CLEAR_USER_ADD_LIST
 } from '../constants/AddressActionTypes';
 
 //初始化用户收货地址
@@ -16,6 +17,14 @@ export function setUserAddressList(state) {
     state
   }
 }
+
+//清空用户收货地址
+export function clearUserAddressList() {
+  return {
+    type: CLEAR_USER_ADD_LIST
+  }
+}
+
 //设置成默认地址
 export function setDefaultAddress(id) {
   return {

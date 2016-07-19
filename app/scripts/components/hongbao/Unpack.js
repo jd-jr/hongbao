@@ -19,6 +19,7 @@ class Unpack extends Component {
     };
     this.unpack = this.unpack.bind(this);
     this.hideUnpack = this.hideUnpack.bind(this);
+    this.closeHongbao = this.closeHongbao.bind(this);
   }
 
   componentDidMount() {
@@ -177,6 +178,15 @@ class Unpack extends Component {
     }
   }
 
+  //关闭抢红包页面
+  closeHongbao() {
+    setInterval(() => {
+      if (window.wx) {
+        window.wx.closeWindow();
+      }
+    }, 50);
+  }
+
   // 红包弹框内容
   modalBody() {
     const {user, hongbaoStatus, sku, owner, title} = this.state;
@@ -223,6 +233,7 @@ class Unpack extends Component {
 
     return (
       <div className="hb-ellipse-arc-mask">
+        <span className="hb-btn-close" onTouchTap={this.closeHongbao}>+</span>
         <div className="hb-ellipse-arc-flat text-center">
           <section className="m-t-0-5">
             <div>
