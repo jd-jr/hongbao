@@ -54,7 +54,7 @@
 
 .hb-animate-right-enter.hb-animate-right-enter-active {
   transform: translate(0, 0);
-  transition: transform 100ms ease-in;
+  transition: transform 200ms ease-in;
 }
 
 .hb-animate-right-leave {
@@ -63,7 +63,7 @@
 
 .hb-animate-right-leave.hb-animate-right-leave-active {
   transform: translate(-100%, 0);
-  transition: translate 100ms ease-in;
+  transition: translate 200ms ease-in;
 }
 
 //从下往上动画效果

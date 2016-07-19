@@ -168,8 +168,6 @@ class SponsorHongbao extends Component {
       putOutAmount = 0;
     }
 
-    console.info(giftAndThirdAccUserInfoDto);
-
     let headpic = '';
     let nickName = '';
     if (giftAndThirdAccUserInfoDto) {

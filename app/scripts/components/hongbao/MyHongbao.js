@@ -100,7 +100,7 @@ class MyHongbao extends Component {
 
     return (
       <div>
-        <article className="hb-wrap-mb">
+        <article className="hb-wrap-mb-sm">
           <section className="hb-nav-btn-group row">
             <div className={`col-12 hb-nav-btn-left${type === 'receive' ? ' active' : ''}`}
                  onTouchTap={(e) => this.switchTab(e, 'receive')}>我收到的

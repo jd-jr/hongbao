@@ -388,7 +388,7 @@ class ProductList extends Component {
         <header className="hb-product-nav">
           {this.renderCategory()}
         </header>
-        <article className="hb-wrap-mb">
+        <article className="hb-wrap-mb-sm">
           {this.renderProduct()}
         </article>
         {

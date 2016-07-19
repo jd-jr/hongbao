@@ -35,6 +35,10 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 200;
 }
 
+img[src=""] {
+  visibility: hidden;
+}
+
 .m-t-0-3 {
   margin-top: 0.3rem;
 }

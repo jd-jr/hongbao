@@ -1,9 +1,12 @@
 .#{$prefixCls} {
   &wrap {
     margin: 1rem;
-    margin-bottom: 4rem;
+    margin-bottom: 6rem;
   }
   &wrap-mb {
+    margin-bottom: 6rem;
+  }
+  &wrap-mb-sm {
     margin-bottom: 4rem;
   }
 }

@@ -117,7 +117,7 @@ class Product extends Component {
     /*eslint-disable react/no-danger*/
     return (
       <div>
-        <article className="hb-wrap-mb">
+        <article className="hb-wrap-mb-sm">
           <ProductSwiper items={items}/>
           <section className="hb-product-title">
             <p className="text-truncate-2 f-lg">

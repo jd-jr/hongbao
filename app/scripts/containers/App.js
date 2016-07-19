@@ -197,8 +197,8 @@ class App extends Component {
         <ReactCSSTransitionGroup
           component="div"
           transitionName="hb-animate-right"
-          transitionEnterTimeout={100}
-          transitionLeaveTimeout={100}>
+          transitionEnterTimeout={200}
+          transitionLeaveTimeout={200}>
           {children && React.cloneElement(children, {
             key: location.pathname,
             caches,

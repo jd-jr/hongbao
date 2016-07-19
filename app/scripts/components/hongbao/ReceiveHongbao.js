@@ -283,8 +283,6 @@ class ReceiveHongbao extends Component {
     const {userInfo} = this.props;
     const {giftAndThirdAccUserInfoDto, redbagAssemblyRetDto} = userInfo;
 
-    console.info(giftAndThirdAccUserInfoDto);
-
     let headpic = '';
     let nickName = '';
     if (giftAndThirdAccUserInfoDto) {

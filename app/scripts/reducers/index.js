@@ -7,6 +7,7 @@ import hongbao from './hongbao';
 import hongbaoDetail from './hongbaoDetail';
 import address from './address';
 import tmpUserAddress from './tmpUserAddress';
+import hongbaoInfo from './hongbaoInfo';
 
 import {
   RESET_ERROR_MESSAGE, SET_ERROR_MESSAGE,
@@ -46,5 +47,6 @@ export default combineReducers({
   hongbao,
   hongbaoDetail,
   address,
-  tmpUserAddress
+  tmpUserAddress,
+  hongbaoInfo
 });

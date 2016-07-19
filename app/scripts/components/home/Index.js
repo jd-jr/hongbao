@@ -25,13 +25,20 @@ class Home extends Component {
     }
 
     const {skuName, skuId, bizPrice, indexImg} = (detail || {});
+    const {hongbaoInfo} = props;
+    let giftNum = '';
+    let title = '';
+    if (hongbaoInfo) {
+      giftNum = hongbaoInfo.giftNum;
+      title = hongbaoInfo.title;
+    }
     this.state = {
-      title: '',
+      title,
       bizPrice: bizPrice || 0,
       skuId,
       skuName,
       indexImg,
-      giftNum: '',
+      giftNum,
       selecting: Boolean(!skuId),
       visible: false,
       payDataReady: false,
@@ -71,6 +78,14 @@ class Home extends Component {
     new Draggabilly(hbHelpEl, {
       containment: document.documentElement
     });
+  }
+
+  componentWillUnmount() {
+    // 如果不是从更换点击，则清空红包临时输入信息
+    if (!this.fromReplace) {
+      const {homeAction} = this.props;
+      homeAction.clearHongbaoInfo();
+    }
   }
 
   handleChange(e, type) {
@@ -275,9 +290,24 @@ class Home extends Component {
     perfect.setBuriedPoint('hongbao_home_btn_sponsor');
   }
 
-  replaceProduct() {
+  replaceProduct(e) {
+    //防点透处理
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+
+    //标示是从替换上点击
+    this.fromReplace = true;
+
+    const {homeAction} = this.props;
+    const {giftNum, title} = this.state;
+    homeAction.setHongbaoInfo({
+      giftNum, title
+    });
     //埋点
     perfect.setBuriedPoint('hongbao_home_replace_product');
+    this.context.router.push('/product');
   }
 
   //渲染支付表单
@@ -350,7 +380,10 @@ class Home extends Component {
                 <span>发京东红包</span>
                 {
                   selecting ? (
-                    <span className="pull-right arrow-hollow-right"></span>
+                    <div className="pull-right">
+                      <span>选择礼物</span>
+                      <span className="arrow-hollow-right"></span>
+                    </div>
                   ) : (
                     <span className="pull-right">{bizPrice}元</span>
                   )
@@ -372,7 +405,7 @@ class Home extends Component {
                         <div className="text-muted f-sm">{bizPrice ? `￥${bizPrice}` : ''}</div>
                       </div>
                       <div className="col-4 border-left border-second text-center">
-                        <Link to="/product" onTouchTap={this.replaceProduct}>更换</Link>
+                        <a href="" onTouchTap={this.replaceProduct}>更换</a>
                       </div>
                     </div>
                   </div>
@@ -441,6 +474,8 @@ Home.propTypes = {
   skuIcon: PropTypes.string,
   mystic: PropTypes.string,
   pathname: PropTypes.string,
+  hongbaoInfo: PropTypes.object,
+  homeAction: PropTypes.object
 };
 
 Home.contextTypes = {
