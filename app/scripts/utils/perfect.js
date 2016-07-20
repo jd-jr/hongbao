@@ -1,5 +1,7 @@
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import {getSessionStorage} from '../utils/sessionStorage';
+import {JD_LOGIN_URL, QB_LOGIN_URL} from '../config';
+
 const win = window;
 const doc = document;
 
@@ -102,10 +104,11 @@ const perfect = {
    * 时间格式转换 time ms
    * @param time
    * @param showMs 是否显示毫秒
+   * @param showYear 是否显示年
    * @returns {*}
    */
   /*eslint-disable prefer-template*/
-  formatDate (time, showMs = false) {
+  formatDate ({time, showMs = false, showYear = false}) {
     if (!time) {
       return '';
     }
@@ -117,7 +120,6 @@ const perfect = {
         return '';
       }
     }
-    const today = new Date();
     const H = date.getHours() <= 9 ? '0' + date.getHours() : date.getHours();
     const M = date.getMinutes() <= 9 ? '0' + date.getMinutes() : date.getMinutes();
     const S = date.getSeconds() <= 9 ? '0' + date.getSeconds() : date.getSeconds();
@@ -129,13 +131,14 @@ const perfect = {
     }
 
     const hms = showMs ? ` ${H}:${M}:${S}.${MS}` : ` ${H}:${M}:${S}`;
+    const year = date.getFullYear();
     let month = date.getMonth() + 1;
     month = month <= 9 ? '0' + month : month;
 
     let day = date.getDate();
     day = day <= 9 ? '0' + day : day;
 
-    return month + '-' + day + hms;
+    return (showYear ? year + '-' : '') + month + '-' + day + hms;
   },
 
   /**
@@ -279,6 +282,15 @@ const perfect = {
     if (window.MtaH5) {
       MtaH5.clickStat(enventId)
     }
+  },
+
+  /**
+   * 联合登录
+   * @param url 联合后返回的地址
+   */
+  unionLogin(url) {
+    url = encodeURIComponent(url);
+    location.href = JD_LOGIN_URL + encodeURIComponent(QB_LOGIN_URL + url);
   }
 };
 

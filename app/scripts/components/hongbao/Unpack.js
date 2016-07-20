@@ -243,7 +243,7 @@ class Unpack extends Component {
             <div>发了一个京东红包</div>
           </section>
           <section className="hb-product-wrap row">
-            <div className="col-7 text-left">
+            <div className="col-7 text-left p-r-0">
               <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
             </div>
             <div className="col-17 text-truncate-2 product-name">{skuName}</div>
@@ -257,9 +257,14 @@ class Unpack extends Component {
                  onTouchTap={this.unpack}>開</div>
           ) : null
         }
-        <div className="hb-luck-link" onTouchTap={(e) => this.hideUnpack({buriedPoint: true, e})}>
-          看看大家的手气
-        </div>
+        {
+          hongbaoStatus === 'RECEIVE_COMPLETE' || hongbaoStatus === 'EXPIRED' ? (
+            <div className="hb-luck-link" onTouchTap={(e) => this.hideUnpack({buriedPoint: true, e})}>
+              看看大家的手气
+            </div>
+          ) : null
+        }
+
         {
           !owner ? (
             <div className="hb-unpack-circle p-x-1 clearfix">
@@ -277,7 +282,7 @@ class Unpack extends Component {
     let modal;
     modal = (
       <Modal
-        visible
+        visible={unpackModal}
         className="hb-modal"
         bodyStyle={{height: '35rem'}}
         animation

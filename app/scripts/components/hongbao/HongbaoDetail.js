@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
+import PullRefresh from 'reactjs-pull-refresh';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
 import Unpack from './Unpack';
@@ -33,7 +34,8 @@ class HongbaoDetail extends Component {
       detail: isUnPack ? 'none' : 'block',
       sponsorGoal: 'new', // 判断底部显示状态，是重新发起，还是继续发送
       showInitiate: false, // 继续发送状态
-      hongbaoExpired: false //红包是否过期
+      hongbaoExpired: false, //红包是否过期
+      disabled: document.body.scrollTop !== 0
     };
 
     this.showDetail = this.showDetail.bind(this);
@@ -41,6 +43,12 @@ class HongbaoDetail extends Component {
     this.closeHongbao = this.closeHongbao.bind(this);
     this.guide = this.guide.bind(this);
     this.updateSponsorGoal = this.updateSponsorGoal.bind(this);
+
+    this.loadingFunction = this.loadingFunction.bind(this);
+    this.onPanStart = this.onPanStart.bind(this);
+    this.onPanEnd = this.onPanEnd.bind(this);
+    this.onScroll = this.onScroll.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
   }
 
   componentWillMount() {
@@ -55,6 +63,41 @@ class HongbaoDetail extends Component {
       });
     }, 350);
 
+    this.loadData();
+  }
+
+  componentDidMount() {
+    //添加下拉刷新相关事件
+    window.addEventListener('touchstart', this.onTouchStart, false);
+    window.addEventListener('scroll', this.onScroll, false);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const {hongbaoInfo} = nextProps;
+    if (hongbaoInfo.skuId) {
+      return true;
+    }
+    return false;
+  }
+
+  componentDidUpdate() {
+    if (this.state.showFoot) {
+      scrollEvent({
+        hideElement: this.refs.footer
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const {hongbaoDetailAction} = this.props;
+    hongbaoDetailAction.clearHongbaoDetail();
+    hongbaoDetailAction.clearParticipant();
+    unmountScrollEvent();
+    window.removeEventListener('touchstart', this.onTouchStart, false);
+    window.removeEventListener('scroll', this.onScroll, false);
+  }
+
+  loadData() {
     //加载红包详情
     const {hongbaoDetailAction, identifier, type} = this.props;
     const accountType = perfect.getAccountType();
@@ -65,19 +108,9 @@ class HongbaoDetail extends Component {
       thirdAccId
     };
 
-    hongbaoDetailAction.getHongbaoDetail(body)
+    return hongbaoDetailAction.getHongbaoDetail(body)
       .then((json) => {
         const {res} = json || {};
-
-        /*const {hongbaoInfo} = res || {};
-         const {giftGainedNum, giftNum, status} = hongbaoInfo || {};
-         //如果红包已过期，并且红包还没有抢完，而且是发起者进入，则显示继续发送
-         if (type && type === 'sponsor' && status === 'EXPIRED' && giftGainedNum < giftNum) {
-         this.setState({
-         sponsorGoal: 'again'
-         });
-         }*/
-
         /**
          REFUNDED    已退款 我要发红包
          REDBAG_GOODS_TRANSFER_AND_REFOUND   申请退款、继续发送
@@ -104,27 +137,55 @@ class HongbaoDetail extends Component {
       });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const {hongbaoInfo} = nextProps;
-    if (hongbaoInfo.skuId) {
-      return true;
-    }
-    return false;
+  //滚动监听，当 scrollTop 等于 0 时，激活下拉刷新
+  onScroll(e) {
+    const scrollTop = document.body.scrollTop;
+    this.setState({
+      disabled: scrollTop !== 0
+    });
   }
 
-  componentDidUpdate() {
-    if (this.state.showFoot) {
-      scrollEvent({
-        hideElement: this.refs.footer
-      });
+  onTouchStart(e) {
+    if (this.preventDefault && !this.state.disabled) {
+      e.preventDefault();
     }
   }
 
-  componentWillUnmount() {
-    const {hongbaoDetailAction} = this.props;
-    hongbaoDetailAction.clearHongbaoDetail();
+  // 下拉刷新回调函数
+  loadingFunction() {
+    this.setState({
+      listLoading: false
+    });
+
+    this.loadData();
+
+    // 加载红包列表
+    const {hongbaoDetailAction, identifier} = this.props;
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
+    if (deviceEnv.inWx && !thirdAccId) {
+      return;
+    }
     hongbaoDetailAction.clearParticipant();
-    unmountScrollEvent();
+    const body = {
+      identifier,
+      accountType,
+      thirdAccId
+    };
+    return hongbaoDetailAction.getParticipantList(body);
+  }
+
+  // 下拉滑动开始事件
+  onPanStart() {
+    const {disabled} = this.state;
+    if (!disabled) {
+      this.preventDefault = true;
+    }
+  }
+
+  // 下拉滑动结束事件
+  onPanEnd() {
+    this.preventDefault = false;
   }
 
   /**
@@ -176,6 +237,7 @@ class HongbaoDetail extends Component {
     //埋点
     perfect.setBuriedPoint(`hongbao${type && type === 'sponsor' ? '_my' : ''}_guide`);
     // TODO
+    this.context.router.push('/guide');
   }
 
   //在 HongbaoSelfInfo 中处理逻辑后，需要修改 sponsorGoal，来判断是继续发送，还是我要发红包
@@ -311,7 +373,7 @@ class HongbaoDetail extends Component {
     const unpackProps = {
       identifier, indexActions, showDetail, hongbaoDetailAction
     };
-    const {unpack, detail, sponsorGoal, showInitiate, hongbaoExpired} = this.state;
+    const {unpack, detail, sponsorGoal, showInitiate, hongbaoExpired, disabled} = this.state;
 
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
@@ -341,31 +403,40 @@ class HongbaoDetail extends Component {
     return (
       <div>
         {initiateCom}
-        <Unpack {...unpackProps}/>
-        <article className="hb-wrap-mb" style={{display: detail}}>
-          <section>
-            <div className="text-center m-t-3">
-              <div>
-                <img className="img-circle img-thumbnail hb-figure"
-                     src={ownerHeadpic} alt=""/>
-              </div>
-              <h3 className="m-t-2">{ownerNickname}的红包</h3>
-              <p className="text-muted f-lg">{title}</p>
-              <HongbaoSelfInfo {...selfInfoProps}/>
-            </div>
-          </section>
+        {unpack ? <Unpack {...unpackProps}/> : null}
+        <PullRefresh loadingFunction={this.loadingFunction}
+                     distanceToRefresh={0}
+                     lockInTime={30}
+                     hammerOptions={{touchAction: 'auto'}}
+                     onPanStart={this.onPanStart}
+                     onPanEnd={this.onPanEnd}
+                     disabled={disabled}>
 
-          <section className="m-t-3">
-            <div className="m-x-1 m-b-0-3">
-              {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
-            </div>
-            {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
-          </section>
-          {this.renderFooter()}
-        </article>
-        <p className="text-center hb-logo-gray-pos">
-          <i className="hb-logo-gray"></i>
-        </p>
+          <article className="hb-wrap-mb" style={{display: detail}}>
+            <section>
+              <div className="text-center m-t-3">
+                <div>
+                  <img className="img-circle img-thumbnail hb-figure"
+                       src={ownerHeadpic} alt=""/>
+                </div>
+                <h3 className="m-t-2">{ownerNickname}的红包</h3>
+                <p className="text-muted f-lg">{title}</p>
+                <HongbaoSelfInfo {...selfInfoProps}/>
+              </div>
+            </section>
+
+            <section className="m-t-3">
+              <div className="m-x-1 m-b-0-3">
+                {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
+              </div>
+              {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
+            </section>
+            {this.renderFooter()}
+          </article>
+          <p className="text-center hb-logo-gray-pos">
+            <i className="hb-logo-gray"></i>
+          </p>
+        </PullRefresh>
       </div>
     );
   }

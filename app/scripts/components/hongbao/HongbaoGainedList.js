@@ -90,7 +90,7 @@ class HongbaoGainedList extends Component {
                   </div>
                   <div className="col-13">
                     <div className="text-truncate">{nickName}</div>
-                    <div className="text-muted f-sm">{perfect.formatDate(giftGainedDate)}</div>
+                    <div className="text-muted f-sm">{perfect.formatDate({time: giftGainedDate})}</div>
                   </div>
                   <div className="col-7 text-right">
                     {giftAmount}元

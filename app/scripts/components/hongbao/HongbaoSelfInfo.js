@@ -61,15 +61,19 @@ class HongbaoSelfInfo extends Component {
 
   // 提现
   withdraw(e) {
+    //埋点
+    perfect.setBuriedPoint('hongbao_received_withdraw');
+
     if (deviceEnv.inJdWallet) {
       e.stopPropagation();
       e.preventDefault();
       e.nativeEvent.preventDefault();
       e.nativeEvent.stopPropagation();
       jdWalletApi.openModule({name: 'BALANCE'});
+    } else {
+      //需要先联合登录
+      perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
     }
-    //埋点
-    perfect.setBuriedPoint('hongbao_received_withdraw');
   }
 
   //兑奖
@@ -245,8 +249,8 @@ class HongbaoSelfInfo extends Component {
               deviceEnv.inJdWallet ? (
                 <span onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">去提现</span>
               ) : (
-                <a onTouchTap={this.withdraw} href="https://qianbao.jd.com/p/page/download.htm?module=BALANCE"
-                   className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</a>
+                <button onTouchTap={this.withdraw}
+                        className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</button>
               )
             ) : (
               <Link to="/my"

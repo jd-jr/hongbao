@@ -76,7 +76,6 @@ class ProductList extends Component {
   }
 
   onTouchStart(e) {
-    console.info(this.preventDefault);
     if (this.preventDefault && !this.state.disabled) {
       e.preventDefault();
     }
@@ -95,9 +94,7 @@ class ProductList extends Component {
     return getProductList({
       category: activeCategory,
       priceOrder
-    }).then(() => {
-
-    });
+    })
   }
 
   // 下拉滑动开始事件
@@ -290,8 +287,7 @@ class ProductList extends Component {
                      hammerOptions={{touchAction: 'auto'}}
                      onPanStart={this.onPanStart}
                      onPanEnd={this.onPanEnd}
-                     disabled={disabled}
-                     ref="pullRefresh">
+                     disabled={disabled}>
 
           <ProductCategory {...categoryProps}/>
 

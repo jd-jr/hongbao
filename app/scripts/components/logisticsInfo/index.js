@@ -10,6 +10,7 @@ import {assign} from 'lodash'
 import callApi from '../../fetch'
 import errorHandler from '../../utils/errorHandler';
 import Loading from '../../ui/Loading';
+import perfect from '../../utils/perfect';
 
 class Logistics extends Component {
   constructor(props) {
@@ -46,6 +47,43 @@ class Logistics extends Component {
     });
   }
 
+  renderList(detail) {
+    if (detail && detail.length > 0) {
+      return (
+        <div className="new-order-flow new-p-re">
+          <ul className="new-of-storey">
+            {
+              detail.map((item, index) => {
+                return (
+                  <li key={index}>
+                    <span className={className({
+                      icon: true,
+                      on: index === 0
+                    })}></span>
+                    <span>{item.info}&nbsp;&nbsp;{item.operator}</span>
+                    <span>{item.operatorTime}</span>
+                  </li>
+                )
+              })
+            }
+          </ul>
+        </div>
+      );
+    }
+
+    return (
+      <div className="new-p-re">
+        <ul className="new-of-storey">
+          <li>
+            <span className="icon on" style={{top: '18px'}}></span>
+            <span>礼物领取成功，即将发出。</span>
+            <span>{perfect.formatDate({time: new Date().getTime(), showYear: true})}</span>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
   render() {
     const {detail, showConent, loading} = this.state;
     if (loading) {
@@ -70,43 +108,21 @@ class Logistics extends Component {
           </div>
         </div>
 
-        {
-          detail && detail.length > 0 ? (
-            <div>
-              <div className="order-state-panel hb-bg-white hb-bd-b hb-bd-t">
-                <div>订单编号：{this.state.orderId}</div>
-                <div>承运人：京东快递</div>
-                <div className="hb-hidden">预计送达时间：2016-06-18</div>
+        <div>
+          <div className="order-state-panel hb-bg-white hb-bd-b hb-bd-t">
+            <div>订单编号：{this.state.orderId}</div>
+            <div>承运人：京东快递</div>
+            <div className="hb-hidden">预计送达时间：2016-06-18</div>
 
-                <div className="order-tip-panel hb-bd-t clearfix">
-                  <span className="info-tip-icon"></span>
-                  <span>如果您对奖品配送状态有疑问，请拨打电话95118咨询。</span>
-                </div>
-              </div>
-              <div className="hb-bd-t order-info-panel">
-                <div className="new-order-flow new-p-re">
-
-                  <ul className="new-of-storey">
-                    {
-                      detail && detail.map((item, index) => {
-                        return (
-                          <li key={index}>
-                    <span className={className({
-                      icon: true,
-                      on: index === 0
-                    })}></span>
-                            <span>{item.info}&nbsp;&nbsp;{item.operator}</span>
-                            <span>{item.operatorTime}</span>
-                          </li>
-                        );
-                      })
-                    }
-                  </ul>
-                </div>
-              </div>
+            <div className="order-tip-panel hb-bd-t clearfix">
+              <span className="info-tip-icon"></span>
+              <span>如果您对奖品配送状态有疑问，请拨打电话95118咨询。</span>
             </div>
-          ) : (<h3 className="text-center text-muted m-t-3">正在处理中...</h3>)
-        }
+          </div>
+          <div className="hb-bd-t order-info-panel">
+            {this.renderList(detail)}
+          </div>
+        </div>
       </div>
     )
   }

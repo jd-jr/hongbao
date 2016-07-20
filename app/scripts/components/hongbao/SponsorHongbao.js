@@ -143,7 +143,7 @@ class SponsorHongbao extends Component {
                   </div>
                   <div className="col-12">
                     <div className="text-truncate">京东红包</div>
-                    <div className="text-muted f-sm">{perfect.formatDate(createdDate)}</div>
+                    <div className="text-muted f-sm">{perfect.formatDate({time: createdDate})}</div>
                   </div>
                   <div className="col-8 text-right">
                     <div>{(amount / 100).toFixed(2)}元</div>

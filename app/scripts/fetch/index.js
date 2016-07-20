@@ -1,7 +1,7 @@
 import 'isomorphic-fetch';
 import assign from 'lodash/assign';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import {URL_ROOT, JD_LOGIN_URL, QB_LOGIN_URL} from '../config';
+import {URL_ROOT} from '../config';
 import perfect from '../utils/perfect';
 import {getSessionStorage} from '../utils/sessionStorage';
 // 定义 fetch 默认选项， 看 https://github.com/github/fetch
@@ -81,8 +81,7 @@ function callApi({url, body = {}, options, loginVerify = true, needAuth}) {
           } else {
             activeUrl += '?from=login';
           }
-          activeUrl = encodeURIComponent(activeUrl);
-          location.href = JD_LOGIN_URL + encodeURIComponent(QB_LOGIN_URL + activeUrl);
+          perfect.unionLogin(activeUrl);
         }
         let error = new Error(json.msg);
         error.errorCode = json.code;

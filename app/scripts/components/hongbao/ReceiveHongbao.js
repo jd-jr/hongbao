@@ -81,15 +81,19 @@ class ReceiveHongbao extends Component {
 
   // 提现
   withdraw(e) {
+    //埋点
+    perfect.setBuriedPoint('hongbao_withdraw');
+
     if (deviceEnv.inJdWallet) {
       e.stopPropagation();
       e.preventDefault();
       e.nativeEvent.preventDefault();
       e.nativeEvent.stopPropagation();
       jdWalletApi.openModule({name: 'BALANCE'});
+    } else {
+      //需要先联合登录
+      perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
     }
-    //埋点
-    perfect.setBuriedPoint('hongbao_withdraw');
   }
 
   //兑奖
@@ -228,7 +232,7 @@ class ReceiveHongbao extends Component {
         <div className="col-18">
           <Link to={link} className="hb-link-block">
             <div className="text-truncate">{nickName}</div>
-            <div className="text-muted f-sm">{perfect.formatDate(createdDate)}</div>
+            <div className="text-muted f-sm">{perfect.formatDate({time: createdDate})}</div>
           </Link>
         </div>
         {this.getStatus({giftStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId})}
@@ -309,8 +313,8 @@ class ReceiveHongbao extends Component {
               deviceEnv.inJdWallet ? (
                 <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">去提现</button>
               ) : (
-                <a onTouchTap={this.withdraw} href="https://qianbao.jd.com/p/page/download.htm?module=BALANCE"
-                   className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</a>
+                <button onTouchTap={this.withdraw}
+                   className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</button>
               )
             }
           </div>
