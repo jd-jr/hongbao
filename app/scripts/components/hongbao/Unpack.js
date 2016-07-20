@@ -277,7 +277,7 @@ class Unpack extends Component {
     let modal;
     modal = (
       <Modal
-        visible={unpackModal}
+        visible
         className="hb-modal"
         bodyStyle={{height: '35rem'}}
         animation

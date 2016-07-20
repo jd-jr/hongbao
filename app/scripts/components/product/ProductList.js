@@ -1,31 +1,15 @@
 import React, {Component, PropTypes} from 'react';
+import {findDOMNode} from 'react-dom';
 import classnames from 'classnames';
+import PullRefresh from 'reactjs-pull-refresh';
 import ScrollLoad from '../../ui/ScrollLoad';
 import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
 import {scrollEvent, unmountScrollEvent} from '../../utils/scrollHideFixedElement';
+import ProductCategory from './ProductCategory';
 
 //图片
 import noItems from '../../../images/no_items.png';
-//商品分类
-const productCategory = {
-  bjts: '并肩同事',
-  jdzn: '京东智能',
-  dnbg: '电脑办公',
-  jd: '家电',
-  sjsm: '手机数码',
-  jjsh: '家具生活',
-  mzxh: '美妆洗护',
-  xbscp: '箱包奢侈品',
-  mywj: '母婴玩具',
-  spbj: '食品保健',
-  ydhw: '运动户外'
-};
-
-const productCategoryValueKey = Object.keys(productCategory).reduce((result, item) => {
-  result[productCategory[item]] = item;
-  return result;
-}, {});
 
 const {Base64} = base64;
 
@@ -34,21 +18,18 @@ class ProductList extends Component {
     super(props, context);
     this.state = {
       showFoot: false,
-      reset: false
+      listLoading: true,
+      disabled: document.body.scrollTop !== 0
     };
-    this.handleTouchStart = this.handleTouchStart.bind(this);
-    this.handleTouchMove = this.handleTouchMove.bind(this);
-    this.handleSelectTab = this.handleSelectTab.bind(this);
-    this.handleOrder = this.handleOrder.bind(this);
+
     this.handleChecked = this.handleChecked.bind(this);
     this.selectProduct = this.selectProduct.bind(this);
     this.loadMore = this.loadMore.bind(this);
-
-    this.touchEnable = false; //是否可以移动
-    this.touchMaxDistance = 0; //移动最大距离
-    this.touchOffset = 0; // 移动的偏移量
-    this.startX = 0; //开始坐标
-    this.debounceInt = 20; //防抖处理
+    this.loadingFunction = this.loadingFunction.bind(this);
+    this.onPanStart = this.onPanStart.bind(this);
+    this.onPanEnd = this.onPanEnd.bind(this);
+    this.onScroll = this.onScroll.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
   }
 
   componentWillMount() {
@@ -57,7 +38,7 @@ class ProductList extends Component {
       this.setState({
         showFoot: true
       });
-    }, 400);
+    }, 300);
   }
 
   componentDidMount() {
@@ -65,31 +46,15 @@ class ProductList extends Component {
     const {getProductList, getCategoryList} = productActions;
     getCategoryList();
     getProductList();
-  }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const {reset} = nextState;
-    if (reset === true) {
-      return true;
-    }
-    const {
-      categoryList,
-      productPagination
-    } = nextProps;
-
-    if (categoryList.ids && productPagination.ids) {
-      return true;
-    }
-    return false;
+    //添加下拉刷新相关事件
+    window.addEventListener('touchstart', this.onTouchStart, false);
+    window.addEventListener('scroll', this.onScroll, false);
   }
 
   componentDidUpdate() {
-    if (this.touchEnable) {
-      const navCW = this.refs.categoryNav.clientWidth;
-      const navSW = this.refs.categoryNav.scrollWidth;
-      this.touchMaxDistance = navSW - navCW;
-    }
     if (this.state.showFoot) {
+      //滑动隐藏底部按钮
       scrollEvent({
         hideElement: this.refs.footer
       });
@@ -98,6 +63,54 @@ class ProductList extends Component {
 
   componentWillUnmount() {
     unmountScrollEvent();
+    window.removeEventListener('touchstart', this.onTouchStart, false);
+    window.removeEventListener('scroll', this.onScroll, false);
+  }
+
+  //滚动监听，当 scrollTop 等于 0 时，激活下拉刷新
+  onScroll(e) {
+    const scrollTop = document.body.scrollTop;
+    this.setState({
+      disabled: scrollTop !== 0
+    });
+  }
+
+  onTouchStart(e) {
+    console.info(this.preventDefault);
+    if (this.preventDefault && !this.state.disabled) {
+      e.preventDefault();
+    }
+  }
+
+  // 下拉刷新回调函数
+  loadingFunction() {
+    this.setState({
+      listLoading: false
+    });
+
+    const {productActions, priceOrder, activeCategory} = this.props;
+    const {clearProductList, getProductList, clearSelectProduct} = productActions;
+    clearProductList();
+    clearSelectProduct();
+    return getProductList({
+      category: activeCategory,
+      priceOrder
+    }).then(() => {
+
+    });
+  }
+
+  // 下拉滑动开始事件
+  onPanStart() {
+    const {disabled} = this.state;
+    if (!disabled) {
+      this.preventDefault = true;
+    }
+  }
+
+  // 下拉滑动结束事件
+  onPanEnd() {
+    this.preventDefault = false;
   }
 
   // 选择商品
@@ -140,85 +153,12 @@ class ProductList extends Component {
     });
   }
 
-  //切换标签
-  handleSelectTab(e, id, categoryName) {
-    this.setState({
-      reset: true
-    });
-    const {productActions, priceOrder} = this.props;
-    const {switchCategory, clearProductList, getProductList, clearSelectProduct} = productActions;
-    switchCategory(id);
-    clearProductList();
-    getProductList({
-      category: id,
-      priceOrder
-    });
-    clearSelectProduct();
-
-    const enventId = categoryName ? (productCategoryValueKey[categoryName] || 'all') : 'all';
-    //埋点
-    perfect.setBuriedPoint(`hongbao_product_${enventId}`);
-  }
-
-  // 排序
-  handleOrder(e) {
-    this.setState({
-      reset: true
-    });
-    const {productActions, priceOrder, activeCategory} = this.props;
-    const {switchPriceOrder, clearProductList, getProductList, clearSelectProduct} = productActions;
-    const _priceOrder = priceOrder === 'asc' ? 'desc' : 'asc';
-    switchPriceOrder(_priceOrder);
-    clearProductList();
-    getProductList({
-      category: activeCategory,
-      priceOrder: _priceOrder
-    });
-    clearSelectProduct();
-    //埋点
-    perfect.setBuriedPoint('hongbao_product_price');
-  }
-
-  handleTouchStart(e) {
-    if (!this.touchEnable) {
-      return;
-    }
-    const nativeEvent = e.nativeEvent;
-    const touchObj = nativeEvent.changedTouches[0];
-    this.startX = touchObj.clientX;
-  }
-
-  handleTouchMove(e) {
-    const nativeEvent = e.nativeEvent;
-    const touchObj = nativeEvent.changedTouches[0];
-    let offset = this.startX - touchObj.clientX;
-    if (Math.abs(offset) < this.debounceInt) {
-      return;
-    }
-
-    //向左滑动
-    if (offset > 0) {
-      if (offset + this.touchOffset > this.touchMaxDistance) {
-        this.touchOffset = this.touchMaxDistance;
-      } else {
-        this.touchOffset += offset;
-      }
-    } else {//向右滑动
-      if (offset + this.touchOffset < 0) {
-        this.touchOffset = 0;
-      } else {
-        this.touchOffset += offset;
-      }
-    }
-
-    this.refs.categoryNav.style.webkitTransform = `translateX(-${this.touchOffset}px)`;
-    this.refs.categoryNav.style.transform = `translateX(-${this.touchOffset}px)`;
-  }
-
   // 进入商品详情
   productDetail(e, url, index) {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
     //埋点
     perfect.setBuriedPoint(`hongbao_product_goods_${index + 1}`);
     this.context.router.push(url);
@@ -238,58 +178,6 @@ class ProductList extends Component {
     });
   }
 
-  //渲染商品分类
-  renderCategory() {
-    const {
-      categoryList,
-      activeCategory,
-      priceOrder
-    } = this.props;
-
-    const {ids, entity} = categoryList;
-    const len = ids ? ids.length : 0;
-    if (len > 4) { //开启移动
-      this.touchEnable = true;
-      this.touchMaxDistance = 0;
-    }
-
-    return (
-      <div className="row text-nowrap">
-        <div className="col-3" style={{paddingRight: '0px'}}>
-          <span className={`hb-product-nav-btn${activeCategory === null ? ' active' : ''}`}
-                onTouchTap={(e) => this.handleSelectTab(e, null)}
-                style={{width: '100%'}}>全部</span>
-        </div>
-        <div className="col-17" style={{overflow: 'hidden'}}>
-          <div ref="categoryNav" onTouchStart={this.handleTouchStart}
-               onTouchMove={this.handleTouchMove}>
-            {
-              ids && ids.length > 0 ?
-                ids.map((item, index) => {
-                  const record = entity[item];
-                  const {id, categoryName} = record;
-                  return (
-                    <span key={id}
-                          className={`hb-product-nav-btn${activeCategory === id ? ' active' : ''}`}
-                          onTouchTap={(e) => this.handleSelectTab(e, id, categoryName)}>
-                    {categoryName}
-                  </span>
-                  );
-                }) : null
-            }
-          </div>
-        </div>
-        <div className="col-4 hb-product-nav-btn pos-r" onTouchTap={this.handleOrder}>
-          <span>价格</span>
-          <span className={`arrow-top pos-a m-l-0-3 ${priceOrder === 'asc' ? 'arrow-primary' : 'arrow-gray'}`}
-                style={{top: '0.9rem'}}></span>
-          <span className={`arrow-bottom pos-a m-l-0-3 ${priceOrder === 'desc' ? 'arrow-primary' : 'arrow-gray'}`}
-                style={{bottom: '0.9rem'}}></span>
-        </div>
-      </div>
-    );
-  }
-
   renderProductItem(item, index) {
     let {skuId, skuName, indexImg, bizPrice, itemTag} = item;
     if (itemTag) {
@@ -303,11 +191,11 @@ class ProductList extends Component {
           <i className={`hb-radio-gray${selectedProduct === skuId ? ' checked' : ''}`}></i>
         </div>
         <div className="col-4"
-             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
+             onClick={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
           <img className="img-fluid" src={indexImg} alt=""/>
         </div>
         <div className="col-14"
-             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
+             onClick={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
           <div className="text-truncate">{skuName}</div>
           <div className="f-sm hb-product-info">
             <span>¥ {(bizPrice / 100).toFixed(2)}</span>
@@ -336,7 +224,7 @@ class ProductList extends Component {
           </div>
         </div>
         <div className="col-3 text-center"
-             onTouchTap={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
+             onClick={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
           <span className="arrow-hollow-right"></span>
         </div>
       </li>
@@ -350,9 +238,11 @@ class ProductList extends Component {
 
     const {ids, entity, lastPage, isFetching} = productPagination;
 
+    const {listLoading} = this.state;
+
     if (!ids) {
       return (
-        <div className="page-loading">载入中，请稍后 ...</div>
+        listLoading ? <div className="page-loading">载入中，请稍后 ...</div> : null
       );
     } else if (ids.length === 0) {
       return (
@@ -367,8 +257,7 @@ class ProductList extends Component {
       <ScrollLoad loadMore={this.loadMore}
                   hasMore={!lastPage}
                   isLoading={isFetching}
-                  className={classnames({loading: isFetching})}
-                  loader={<div className=""></div>}>
+                  className={classnames({loading: isFetching})}>
         <ul className="hb-list">
           {
             ids ? ids.map((item, index) => {
@@ -381,22 +270,41 @@ class ProductList extends Component {
   }
 
   render() {
-    const {selectedProduct} = this.props;
-    const {showFoot} = this.state;
+    const {
+      selectedProduct, categoryList, activeCategory, priceOrder, productActions
+    } = this.props;
+    const {showFoot, disabled} = this.state;
+    const btnDisabled = !selectedProduct;
+
+    const categoryProps = {
+      categoryList,
+      activeCategory,
+      priceOrder,
+      productActions
+    };
     return (
       <div>
-        <header className="hb-product-nav">
-          {this.renderCategory()}
-        </header>
-        <article className="hb-wrap-mb-sm">
-          {this.renderProduct()}
-        </article>
+        <PullRefresh loadingFunction={this.loadingFunction}
+                     distanceToRefresh={0}
+                     lockInTime={30}
+                     hammerOptions={{touchAction: 'auto'}}
+                     onPanStart={this.onPanStart}
+                     onPanEnd={this.onPanEnd}
+                     disabled={disabled}
+                     ref="pullRefresh">
+
+          <ProductCategory {...categoryProps}/>
+
+          <article className="hb-wrap-mb-sm">
+            {this.renderProduct()}
+          </article>
+        </PullRefresh>
         {
           showFoot ? (
             <footer className="hb-footer-fixed" ref="footer">
               <button className="btn btn-block btn-primary btn-lg btn-flat"
-                      onClick={this.selectProduct}
-                      disabled={!selectedProduct}>
+                      disabled={btnDisabled}
+                      onClick={this.selectProduct}>
                 确认礼物
               </button>
             </footer>

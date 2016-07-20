@@ -1,6 +1,15 @@
 .rc-pull-container {
 }
 
+.rc-pull-container .rc-pull-ptr {
+  height: 30px;
+  top: -30px;
+}
+
+.rc-pull-container.rc-pull-loading .rc-pull-content {
+  transform: translate3d(0, 35px, 0);
+}
+
 //自定义向下滑动加载样式
 //加载前图标
 .rc-pull-ptr-icon {
@@ -16,7 +25,7 @@
   content: '';
   height: 8px;
   width: 8px;
-  border: 2px solid #d64f48;
+  border: 2px solid #777;
   border-left-width: 0;
   border-bottom-width: 0;
   transform: rotate(-45deg);
@@ -29,7 +38,7 @@
   content: '';
   height: 15px;
   width: 2px;
-  background: #d64f48;
+  background: #777;
   position: absolute;
   top: 4px;
   left: 8px;
@@ -50,44 +59,66 @@
 }
 
 //加载效果
-.rc-pull-ptr-loading:before,
-.rc-pull-ptr-loading:after,
 .rc-pull-ptr-loading {
-  border-radius: 50%;
-  width: 15px;
-  height: 15px;
-  animation-fill-mode: both;
-  animation: loading 1.8s infinite ease-in-out;
-}
-
-.rc-pull-ptr-loading {
-  margin: 0 auto;
   position: relative;
-  text-indent: -9999em;
-  animation-delay: -0.16s;
-}
-
-.rc-pull-ptr-loading:before {
-  left: -20px;
-  animation-delay: -0.32s;
+  top: 5px;
+  margin: 0 auto;
+  width: 24px;
+  height: 24px;
+  transform-origin: 50%;
+  animation: spinner-spin 1s step-end infinite
 }
 
 .rc-pull-ptr-loading:after {
-  left: 20px;
-}
-
-.rc-pull-ptr-loading:before,
-.rc-pull-ptr-loading:after {
+  display: block;
+  width: 100%;
+  height: 100%;
   content: '';
-  position: absolute;
+  background-image: url('data:image/svg+xml;charset=utf-8,<svg viewBox=\'0 0 120 120\' xmlns=\'http://www.w3.org/2000/svg\' xmlns:xlink=\'http://www.w3.org/1999/xlink\'><defs><line id=\'l\' x1=\'60\' x2=\'60\' y1=\'7\' y2=\'27\' stroke=\'%236c6c6c\' stroke-width=\'11\' stroke-linecap=\'round\'/></defs><g><use xlink:href=\'%23l\' opacity=\'.27\'/><use xlink:href=\'%23l\' opacity=\'.27\' transform=\'rotate(30 60,60)\'/><use xlink:href=\'%23l\' opacity=\'.27\' transform=\'rotate(60 60,60)\'/><use xlink:href=\'%23l\' opacity=\'.27\' transform=\'rotate(90 60,60)\'/><use xlink:href=\'%23l\' opacity=\'.27\' transform=\'rotate(120 60,60)\'/><use xlink:href=\'%23l\' opacity=\'.27\' transform=\'rotate(150 60,60)\'/><use xlink:href=\'%23l\' opacity=\'.37\' transform=\'rotate(180 60,60)\'/><use xlink:href=\'%23l\' opacity=\'.46\' transform=\'rotate(210 60,60)\'/><use xlink:href=\'%23l\' opacity=\'.56\' transform=\'rotate(240 60,60)\'/><use xlink:href=\'%23l\' opacity=\'.66\' transform=\'rotate(270 60,60)\'/><use xlink:href=\'%23l\' opacity=\'.75\' transform=\'rotate(300 60,60)\'/><use xlink:href=\'%23l\' opacity=\'.85\' transform=\'rotate(330 60,60)\'/></g></svg>');
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: 100%
 }
 
-@keyframes loading {
-  0%, 80%, 100% {
-    box-shadow: 0 15px 0 -1.3em #d64f48;
+@keyframes spinner-spin {
+  0% {
+    transform: rotate(0deg)
   }
-  40% {
-    box-shadow: 0 15px 0 0 #d64f48;
+  8.33333333% {
+    transform: rotate(30deg)
+  }
+  16.66666667% {
+    transform: rotate(60deg)
+  }
+  25% {
+    transform: rotate(90deg)
+  }
+  33.33333333% {
+    transform: rotate(120deg)
+  }
+  41.66666667% {
+    transform: rotate(150deg)
+  }
+  50% {
+    transform: rotate(180deg)
+  }
+  58.33333333% {
+    transform: rotate(210deg)
+  }
+  66.66666667% {
+    transform: rotate(240deg)
+  }
+  75% {
+    transform: rotate(270deg)
+  }
+  83.33333333% {
+    transform: rotate(300deg)
+  }
+  91.66666667% {
+    transform: rotate(330deg)
+  }
+  100% {
+    transform: rotate(360deg)
   }
 }
 

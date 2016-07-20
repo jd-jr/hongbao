@@ -12,13 +12,20 @@ class MyHongbao extends Component {
     super(props, context);
     this.state = {
       type: props.type || 'receive',
-      isLogin: !deviceEnv.inJdWallet
+      isLogin: !deviceEnv.inJdWallet,
+      showFoot: false,
     };
     this.switchTab = this.switchTab.bind(this);
     this.focusonQrCode = this.focusonQrCode.bind(this);
   }
 
   componentWillMount() {
+    //延迟显示底部按钮，解决 IOS 下底部按钮设置 fixed 的问题
+    setTimeout(() => {
+      this.setState({
+        showFoot: true
+      });
+    }, 300);
     if (deviceEnv.inJdWallet) {
       const {setClientInfo} = this.props;
       setClientInfo((login) => {
@@ -137,7 +144,7 @@ class MyHongbao extends Component {
             }
           </ReactCSSTransitionGroup>
         </article>
-        <BottomNav type="receive"/>
+        {this.state.showFoot ? (<BottomNav type="receive"/>) : null}
       </div>
     );
   }

@@ -53,7 +53,7 @@ class HongbaoDetail extends Component {
       this.setState({
         showFoot: true
       });
-    }, 150);
+    }, 350);
 
     //加载红包详情
     const {hongbaoDetailAction, identifier, type} = this.props;
@@ -341,7 +341,7 @@ class HongbaoDetail extends Component {
     return (
       <div>
         {initiateCom}
-        {unpack ? <Unpack {...unpackProps}/> : null}
+        <Unpack {...unpackProps}/>
         <article className="hb-wrap-mb" style={{display: detail}}>
           <section>
             <div className="text-center m-t-3">

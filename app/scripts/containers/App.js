@@ -31,13 +31,11 @@ class App extends Component {
     if (toast && toast.effect === 'enter') {
       if (this.toastTimeoutId) {
         clearTimeout(this.toastTimeoutId);
-        this.toastTimeoutId = null;
-      } else {
-        this.toastTimeoutId = setTimeout(() => {
-          indexActions.clearToast();
-          this.toastTimeoutId = null;
-        }, 1500);
       }
+      this.toastTimeoutId = setTimeout(() => {
+        indexActions.clearToast();
+        this.toastTimeoutId = null;
+      }, 1500);
     }
   }
 
@@ -177,7 +175,7 @@ class App extends Component {
     } = this.props;
     const {content, effect} = toast;
 
-    const classname = `toast-panel flex flex-items-center flex-items-middle ${effect}`;
+    const classname = `toast-panel flex flex-items-center flex-items-middle ${effect || ''}`;
     return (
       <div className={classname}>
         <div className="toast">{content}</div>

@@ -94,10 +94,10 @@ class ScrollLoad extends Component {
   }
 
   render() {
-    const {children, isLoading, loader, className} = this.props;
+    const {children, className} = this.props;
     return (
       <div className={className} ref="wrapper">
-        {children && React.cloneElement(children, isLoading ? {loader} : {})}
+        {children}
       </div>
     );
   }
@@ -113,7 +113,6 @@ ScrollLoad.propTypes = {
   isLoading: PropTypes.bool,
   useDocument: PropTypes.bool, //使用页面根元素作为滚动容器
   threshold: PropTypes.number, //偏移量
-  loader: PropTypes.element, // loader 元素
   disablePointer: PropTypes.number,
   disablePointerClass: PropTypes.string,
   children: PropTypes.node,
@@ -126,7 +125,6 @@ ScrollLoad.defaultProps = {
   isLoading: false,
   useDocument: true,
   threshold: 10,
-  loader: React.createElement('div', null, 'Loading...'),
   disablePointer: 0,
   disablePointerClass: 'disable-pointer'
 };

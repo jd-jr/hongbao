@@ -44,8 +44,10 @@ class Home extends Component {
       payDataReady: false,
       loadingStatus: false,
       checked: true, //同意条款
-      mystic: false // 是否为神秘奖品
+      mystic: false, // 是否为神秘奖品
+      showFoot: false,
     };
+
     this.selectProduct = this.selectProduct.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.payBefore = this.payBefore.bind(this);
@@ -56,6 +58,14 @@ class Home extends Component {
   }
 
   componentWillMount() {
+    document.body.scrollTop = 0;
+    //延迟显示底部按钮，解决 IOS 下底部按钮设置 fixed 的问题
+    setTimeout(() => {
+      this.setState({
+        showFoot: true
+      });
+    }, 300);
+
     const fromLogin = location.href.indexOf('from=login');
     if (fromLogin !== -1) {
       const title = getSessionStorage('hb_title');
@@ -383,7 +393,7 @@ class Home extends Component {
                 {
                   selecting ? (
                     <div className="pull-right">
-                      <span>选择礼物</span>
+                      <span className="text-muted">选择礼物</span>
                       <span className="arrow-hollow-right"></span>
                     </div>
                   ) : (
@@ -407,7 +417,7 @@ class Home extends Component {
                         <div className="text-muted f-sm">{bizPrice ? `￥${bizPrice}` : ''}</div>
                       </div>
                       <div className="col-4 border-left border-second text-center">
-                        <a href="" onTouchTap={this.replaceProduct}>更换</a>
+                        <a href="" onClick={this.replaceProduct}>更换</a>
                       </div>
                     </div>
                   </div>
@@ -459,7 +469,7 @@ class Home extends Component {
         <div id="hbHelp">
           <Help/>
         </div>
-        <BottomNav type="sponsor"/>
+        {this.state.showFoot ? (<BottomNav type="sponsor"/>) : null}
       </div>
     );
   }

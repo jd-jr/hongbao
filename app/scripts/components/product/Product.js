@@ -21,7 +21,7 @@ class Product extends Component {
       this.setState({
         showFoot: true
       });
-    }, 400);
+    }, 300);
   }
 
   componentDidMount() {
