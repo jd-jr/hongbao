@@ -404,39 +404,30 @@ class HongbaoDetail extends Component {
       <div>
         {initiateCom}
         {unpack ? <Unpack {...unpackProps}/> : null}
-        <PullRefresh loadingFunction={this.loadingFunction}
-                     distanceToRefresh={0}
-                     lockInTime={30}
-                     hammerOptions={{touchAction: 'auto'}}
-                     onPanStart={this.onPanStart}
-                     onPanEnd={this.onPanEnd}
-                     disabled={disabled}>
-
-          <article className="hb-wrap-mb" style={{display: detail}}>
-            <section>
-              <div className="text-center m-t-3">
-                <div>
-                  <img className="img-circle img-thumbnail hb-figure"
-                       src={ownerHeadpic} alt=""/>
-                </div>
-                <h3 className="m-t-2">{ownerNickname}的红包</h3>
-                <p className="text-muted f-lg">{title}</p>
-                <HongbaoSelfInfo {...selfInfoProps}/>
+        <article className="hb-wrap-mb" style={{display: detail}}>
+          <section>
+            <div className="text-center m-t-3">
+              <div>
+                <img className="img-circle img-thumbnail hb-figure"
+                     src={ownerHeadpic} alt=""/>
               </div>
-            </section>
+              <h3 className="m-t-2">{ownerNickname}的红包</h3>
+              <p className="text-muted f-lg">{title}</p>
+              <HongbaoSelfInfo {...selfInfoProps}/>
+            </div>
+          </section>
 
-            <section className="m-t-3">
-              <div className="m-x-1 m-b-0-3">
-                {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
-              </div>
-              {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
-            </section>
-            {this.renderFooter()}
-          </article>
-          <p className="text-center hb-logo-gray-pos">
-            <i className="hb-logo-gray"></i>
-          </p>
-        </PullRefresh>
+          <section className="m-t-3">
+            <div className="m-x-1 m-b-0-3">
+              {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
+            </div>
+            {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
+          </section>
+          {this.renderFooter()}
+        </article>
+        <p className="text-center hb-logo-gray-pos">
+          <i className="hb-logo-gray"></i>
+        </p>
       </div>
     );
   }

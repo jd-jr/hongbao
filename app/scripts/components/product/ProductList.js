@@ -281,20 +281,11 @@ class ProductList extends Component {
     };
     return (
       <div>
-        <PullRefresh loadingFunction={this.loadingFunction}
-                     distanceToRefresh={0}
-                     lockInTime={30}
-                     hammerOptions={{touchAction: 'auto'}}
-                     onPanStart={this.onPanStart}
-                     onPanEnd={this.onPanEnd}
-                     disabled={disabled}>
+        <ProductCategory {...categoryProps}/>
 
-          <ProductCategory {...categoryProps}/>
-
-          <article className="hb-wrap-mb-sm">
-            {this.renderProduct()}
-          </article>
-        </PullRefresh>
+        <article className="hb-wrap-mb-sm">
+          {this.renderProduct()}
+        </article>
         {
           showFoot ? (
             <footer className="hb-footer-fixed" ref="footer">

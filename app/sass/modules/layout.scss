@@ -1,4 +1,34 @@
 .#{$prefixCls} {
+  &footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    // 解决 ios 下底部会有1px空白
+    bottom: -1px;
+    z-index: 1;
+    padding: .875rem 0;
+
+    /*background-color: rgba(255, 255, 255, 0.6);*/
+    background: #fff;
+    color: #666;
+    font-size: 1.125rem;
+    border-top: 1px solid $gray-lightest;
+  }
+
+  &active-btn {
+    color: $brand-primary;
+  }
+
+  &footer-fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    // 解决 ios 下底部会有1px空白
+    bottom: -1px;
+    z-index: 100;
+    background-color: #fff;
+  }
+
   &wrap {
     margin: 1rem;
     margin-bottom: 6rem;

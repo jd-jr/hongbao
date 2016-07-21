@@ -84,17 +84,19 @@ class HongbaoGainedList extends Component {
             giftAmount = (giftAmount / 100).toFixed(2);
             if (giftType === 'CASH') { //抢到现金
               return (
-                <li key={giftRecordId} className="row flex-items-middle">
-                  <div className="col-4">
-                    <img className="img-fluid img-circle" src={headpic} alt=""/>
-                  </div>
-                  <div className="col-13">
-                    <div className="text-truncate">{nickName}</div>
-                    <div className="text-muted f-sm">{perfect.formatDate({time: giftGainedDate})}</div>
-                  </div>
-                  <div className="col-7 text-right">
-                    {giftAmount}元
-                  </div>
+                <li key={giftRecordId}>
+                  <Link to={'/my?type=sponsor'} className="row flex-items-middle hb-link-block">
+                    <div className="col-4">
+                      <img className="img-fluid img-circle" src={headpic} alt=""/>
+                    </div>
+                    <div className="col-13">
+                      <div className="text-truncate">{nickName}</div>
+                      <div className="text-muted f-sm">{perfect.formatDate({time: giftGainedDate})}</div>
+                    </div>
+                    <div className="col-7 text-right">
+                      {giftAmount}元
+                    </div>
+                  </Link>
                 </li>
               );
             }

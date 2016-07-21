@@ -110,7 +110,7 @@ class Initiate extends Component {
             visible: false
           });
           //回到首页
-          this.context.router.replace('/');
+          this.context.router.replace('/my?type=sponsor');
         }
       }
     });
@@ -153,18 +153,18 @@ class Initiate extends Component {
           <Modal
             visible={visible}
             className="hb-modal"
-            bodyStyle={{height: '33rem'}}
+            bodyStyle={{height: '28rem'}}
             animation
             maskAnimation
           >
             <div className="hb-ellipse-arc-mask">
               {closable ? <span className="hb-btn-close" onTouchTap={this.closeHongbao}>+</span> : null}
               <div className="hb-ellipse-arc-flat flex-items-middle flex-items-center flex">
-                <div style={{width: '100%'}}>
+                <div style={{width: '100%', marginTop: '-15px'}}>
                   <h2 className="h1">红包已包好</h2>
                   <h4>京东红包</h4>
                   <div className="hb-product-wrap row">
-                    <div className="col-7">
+                    <div className="col-7 p-r-0">
                       <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
                     </div>
                     <div className="col-17 text-truncate-2 product-name">{skuName}</div>

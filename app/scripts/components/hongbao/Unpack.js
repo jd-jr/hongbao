@@ -20,6 +20,7 @@ class Unpack extends Component {
     this.unpack = this.unpack.bind(this);
     this.hideUnpack = this.hideUnpack.bind(this);
     this.closeHongbao = this.closeHongbao.bind(this);
+    this.iphone4 = window.screen.height <= 480;
   }
 
   componentDidMount() {
@@ -213,17 +214,17 @@ class Unpack extends Component {
       case 'OK':
       case 'HAS_RECEIVE':
         hongbaoTitle = (
-          <h2 className="m-t-1 text-truncate-2">{title || HONGBAO_TITLE}</h2>
+          <h2 className={`${this.iphone4 ? 'h5' : 'm-t-1'} text-truncate-2`}>{title || HONGBAO_TITLE}</h2>
         );
         break;
       case 'RECEIVE_COMPLETE':
         hongbaoTitle = (
-          <h2 className="m-t-1 text-truncate-2">手慢了，红包派完了</h2>
+          <h2 className={`${this.iphone4 ? 'h5' : 'm-t-1'} text-truncate-2`}>手慢了，红包派完了</h2>
         );
         break;
       case 'EXPIRED':
         hongbaoTitle = (
-          <h2 className="m-t-1 text-truncate-2">该红包已超过24小时。如已领取，可在“我的红包”中查看</h2>
+          <h2 className={`${this.iphone4 ? 'h5' : 'm-t-1'} text-truncate-2`}>该红包已超过24小时。如已领取，可在“我的红包”中查看</h2>
         );
         break;
       default:
@@ -235,14 +236,14 @@ class Unpack extends Component {
       <div className="hb-ellipse-arc-mask">
         <span className="hb-btn-close" onTouchTap={this.closeHongbao}>+</span>
         <div className="hb-ellipse-arc-flat text-center">
-          <section className="m-t-0-5">
+          <section>
             <div>
               <img className="img-circle img-thumbnail hb-figure" src={face} alt=""/>
             </div>
-            <div className="m-t-1">{nickname}</div>
+            <div className={this.iphone4 ? '' : 'm-t-0-5'}>{nickname}</div>
             <div>发了一个京东红包</div>
           </section>
-          <section className="hb-product-wrap row">
+          <section className={`hb-product-wrap row ${this.iphone4 ? 'm-a-0' : ''}`}>
             <div className="col-7 text-left p-r-0">
               <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
             </div>
@@ -253,16 +254,13 @@ class Unpack extends Component {
         </div>
         {
           hongbaoStatus !== 'RECEIVE_COMPLETE' && hongbaoStatus !== 'EXPIRED' ? (
-            <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold"
+            <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold h1"
                  onTouchTap={this.unpack}>開</div>
-          ) : null
-        }
-        {
-          hongbaoStatus === 'RECEIVE_COMPLETE' || hongbaoStatus === 'EXPIRED' ? (
+          ) : (
             <div className="hb-luck-link" onTouchTap={(e) => this.hideUnpack({buriedPoint: true, e})}>
               看看大家的手气
             </div>
-          ) : null
+          )
         }
 
         {
@@ -278,13 +276,18 @@ class Unpack extends Component {
   }
 
   renderModal() {
-    const {unpackModal} = this.state;
+    const {unpackModal, hongbaoStatus} = this.state;
     let modal;
+    let height = this.iphone4 ? '28rem' : '32rem';
+    //显示开
+    if (hongbaoStatus === 'RECEIVE_COMPLETE' || hongbaoStatus === 'EXPIRED') {
+      height = '30rem';
+    }
     modal = (
       <Modal
         visible={unpackModal}
         className="hb-modal"
-        bodyStyle={{height: '35rem'}}
+        bodyStyle={{height}}
         animation
         maskAnimation
       >
