@@ -1,6 +1,6 @@
 //项目自定义重置
 html, body {
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 // 处理底部内容始终显示在底部
@@ -31,10 +31,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
 }
 
-.h1 {
-  font-weight: 200;
-}
-
 img[src=""] {
   visibility: hidden;
 }
@@ -60,6 +56,19 @@ img[src=""] {
 }
 
 .p-y-0-5 {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.p-l-0-3 {
+  padding-left: 0.3rem !important;
+}
+
+.h1-lg {
+  font-size: 3.5rem;
+  font-weight: 300;
+}
+
+.line-height-1 {
+  line-height: 1;
 }

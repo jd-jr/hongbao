@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import {scrollEvent, unmountScrollEvent} from '../utils/scrollHideFixedElement';
 import perfect from '../utils/perfect';
 
 // 底部导航
@@ -19,19 +18,7 @@ class BottomNav extends Component {
       this.setState({
         showBottomNav: true
       });
-    }, 150);
-  }
-
-  componentDidUpdate() {
-    if (this.state.showBottomNav) {
-      scrollEvent({
-        hideElement: this.refs.footer
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    unmountScrollEvent();
+    }, 300);
   }
 
   createOrder(e) {
@@ -50,6 +37,7 @@ class BottomNav extends Component {
     e.stopPropagation();
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
+
     //埋点
     perfect.setBuriedPoint('hongbao_tab_my');
     this.context.router.push('/my');

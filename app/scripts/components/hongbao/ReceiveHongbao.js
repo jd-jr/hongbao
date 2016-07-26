@@ -3,12 +3,12 @@ import {Link} from 'react-router';
 import offset from 'perfect-dom/lib/offset';
 import jdWalletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import ScrollLoad from '../../ui/ScrollLoad';
-import classnames from 'classnames';
 import perfect from '../../utils/perfect';
 import {setSessionStorage} from '../../utils/sessionStorage';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
+import PullToRefresh from 'reactjs-pull-to-refresh';
+import QrCode from './QrCode';
 
 class ReceiveHongbao extends Component {
   constructor(props, context) {
@@ -19,9 +19,11 @@ class ReceiveHongbao extends Component {
     this.switchTab = this.switchTab.bind(this);
     this.withdraw = this.withdraw.bind(this);
     this.reward = this.reward.bind(this);
-    this.loadMore = this.loadMore.bind(this);
     //实物领取状态
     this.giftStatusArr = ['GIVEING', 'GIVE_OUT', 'EXPIRED', 'REFUNED'];
+
+    this.refreshCallback = this.refreshCallback.bind(this);
+    this.loadMoreCallback = this.loadMoreCallback.bind(this);
   }
 
   componentDidMount() {
@@ -29,7 +31,7 @@ class ReceiveHongbao extends Component {
     const {caches, cacheActions} = this.props;
     if (!caches.receivePagination) {
       cacheActions.addCache('receivePagination');
-      this.loadMore();
+      this.loadMoreCallback();
     }
   }
 
@@ -49,8 +51,17 @@ class ReceiveHongbao extends Component {
     this.adjustArrow();
   }
 
+  // 下拉刷新回调函数
+  refreshCallback() {
+    return this.loadData(true);
+  }
+
   //加载更多
-  loadMore() {
+  loadMoreCallback() {
+    return this.loadData();
+  }
+
+  loadData(clear) {
     const {hongbaoActions} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
@@ -62,7 +73,7 @@ class ReceiveHongbao extends Component {
     if (this.state.type === 'luck') {
       body.lucky = 'LUCK';
     }
-    hongbaoActions.getHongbaoList(body, 'receive');
+    return hongbaoActions.getHongbaoList(body, 'receive', clear);
   }
 
   //切换已收红包和手气最佳
@@ -73,7 +84,7 @@ class ReceiveHongbao extends Component {
       const {hongbaoActions} = this.props;
       hongbaoActions.clearReceive();
       this.adjustArrow();
-      this.loadMore();
+      this.loadMoreCallback();
     });
     //埋点
     perfect.setBuriedPoint(`hongbao_btn_${type}`);
@@ -228,10 +239,10 @@ class ReceiveHongbao extends Component {
     }
     let link = `/hongbao/detail/view/${identifier}?type=${type}`;
     return (
-      <li className="row flex-items-middle" key={identifier + giftRecordId}>
+      <li className="row" key={identifier + giftRecordId}>
         <div className="col-18">
           <Link to={link} className="hb-link-block">
-            <div className="text-truncate">{nickName}</div>
+            <div className="text-truncate f-lg">{nickName}</div>
             <div className="text-muted f-sm">{perfect.formatDate({time: createdDate})}</div>
           </Link>
         </div>
@@ -264,20 +275,13 @@ class ReceiveHongbao extends Component {
     return (
       <section className="m-t-1">
         <div className="arrow-hollow-top hb-arrows-active" ref="arrow"></div>
-        <ScrollLoad loadMore={this.loadMore}
-                    hasMore={!lastPage}
-                    isLoading={isFetching}
-                    className={classnames({loading: isFetching})}
-                    loader={<div className=""></div>}
-                    key={type}>
-          <ul className="hb-list">
-            {
-              list ? list.map((item) => {
-                return this.renderItem(item);
-              }) : null
-            }
-          </ul>
-        </ScrollLoad>
+        <ul className="hb-list">
+          {
+            list ? list.map((item) => {
+              return this.renderItem(item);
+            }) : null
+          }
+        </ul>
       </section>
     );
   }
@@ -300,13 +304,16 @@ class ReceiveHongbao extends Component {
     }
 
     return (
-      <div>
-        <section className="text-center m-t-2">
+      <PullToRefresh className="hb-product-panel"
+                     refreshCallback={this.refreshCallback}
+                     loadMoreCallback={this.loadMoreCallback}>
+        <QrCode type={type}/>
+        <section className="text-center">
           <div>
             <img className="img-circle img-thumbnail hb-figure" src={headpic} alt=""/>
           </div>
           <h3 className="m-t-1">{nickName}共收到</h3>
-          <div className="h1">{(gainCashBalance / 100).toFixed(2)}</div>
+          <div className="hb-money">{(gainCashBalance / 100).toFixed(2)}</div>
 
           <div>
             {
@@ -314,7 +321,7 @@ class ReceiveHongbao extends Component {
                 <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">去提现</button>
               ) : (
                 <button onTouchTap={this.withdraw}
-                   className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</button>
+                        className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</button>
               )
             }
           </div>
@@ -324,16 +331,16 @@ class ReceiveHongbao extends Component {
           <div className={`col-10 ${type === 'received' ? 'text-primary' : 'text-muted'}`}
                onTouchTap={(e) => this.switchTab(e, 'received')}>
             <div>已收红包</div>
-            <div className="h1" ref="receivedHb">{gainNum}</div>
+            <div className="h1-lg" ref="receivedHb">{gainNum}</div>
           </div>
           <div className={`col-10 offset-4 ${type === 'luck' ? 'text-primary' : 'text-muted'}`}
                onTouchTap={(e) => this.switchTab(e, 'luck')}>
             <div>手气最佳</div>
-            <div className="h1" ref="luckHb">{gainGoodNum}</div>
+            <div className="h1-lg" ref="luckHb">{gainGoodNum}</div>
           </div>
         </section>
         {this.renderList()}
-      </div>
+      </PullToRefresh>
     );
   }
 }

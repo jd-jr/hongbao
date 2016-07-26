@@ -97,7 +97,10 @@ class Logistics extends Component {
 
     return (
       <div>
-        <div className="user-info-panel hb-bg-white hb-bd-b">
+        <a style={{display: 'block'}} className="user-info-panel hb-bg-white hb-bd-b text-center hb-link-block"
+           href="https://qianbao.jd.com/p/page/download.htm">点击下载京东钱包，及时查看礼物配送信息！</a>
+
+        <div className="user-info-panel hb-bg-white hb-bd-b order-state-panel hb-bd-t">
           <div className="name-mobile">
             <span className="text-truncate">{this.state.customerName}</span>
             <span>{this.state.phone}</span>

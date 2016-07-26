@@ -189,10 +189,15 @@ class HongbaoSelfInfo extends Component {
       case 'CONFIRMED':
         return (
           <div>
-            <button onTouchTap={this.logistics}
-                    className="btn btn-primary btn-sm btn-arc">
-              物流详情
-            </button>
+            <div className="text-center">
+              <span className="hb-money text-primary">恭喜你</span>
+            </div>
+            <div>
+              <button onTouchTap={this.logistics}
+                      className="btn btn-primary btn-sm btn-arc">
+                物流详情
+              </button>
+            </div>
           </div>
         );
       case 'WAIT_STOCK':

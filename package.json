@@ -38,7 +38,8 @@
     "reactjs-modal": "^0.2.0",
     "reactjs-pull-refresh": "file:///Users/wangyanjun/gitworkspace/reactjs-ui/reactjs-pull-refresh",
     "redux": "^3.5.2",
-    "redux-thunk": "^2.1.0"
+    "redux-thunk": "^2.1.0",
+    "reactjs-pull-to-refresh": "file:///Users/wangyanjun/gitworkspace/reactjs-ui/reactjs-pull-to-refresh"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.7",

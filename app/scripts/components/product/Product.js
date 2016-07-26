@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react';
 import ProductSwiper from './ProductSwiper';
 import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
-import {scrollEvent, unmountScrollEvent} from '../../utils/scrollHideFixedElement';
 
 const {Base64} = base64;
 
@@ -28,6 +27,8 @@ class Product extends Component {
     const {productActions, skuId} = this.props;
     const {getProductDetail} = productActions;
     getProductDetail(skuId);
+    document.body.style.overflowY = 'auto';
+    document.documentElement.style.overflowY = 'auto';
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -39,11 +40,6 @@ class Product extends Component {
   }
 
   componentDidUpdate() {
-    if (this.state.showFoot) {
-      scrollEvent({
-        hideElement: this.refs.footer
-      });
-    }
     const {skuId} = this.props;
     if (skuId) {
       //为 Text 文本包裹 p 标签
@@ -63,7 +59,6 @@ class Product extends Component {
   componentWillUnmount() {
     const {productActions} = this.props;
     productActions.clearProduct();
-    unmountScrollEvent();
   }
 
   selectProduct(e) {

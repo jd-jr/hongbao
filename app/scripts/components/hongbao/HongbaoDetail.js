@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import PullRefresh from 'reactjs-pull-refresh';
+import PullToRefresh from 'reactjs-pull-to-refresh';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
 import Unpack from './Unpack';
@@ -10,7 +10,6 @@ import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
-import {scrollEvent, unmountScrollEvent} from '../../utils/scrollHideFixedElement';
 
 // 红包详情
 class HongbaoDetail extends Component {
@@ -44,11 +43,8 @@ class HongbaoDetail extends Component {
     this.guide = this.guide.bind(this);
     this.updateSponsorGoal = this.updateSponsorGoal.bind(this);
 
-    this.loadingFunction = this.loadingFunction.bind(this);
-    this.onPanStart = this.onPanStart.bind(this);
-    this.onPanEnd = this.onPanEnd.bind(this);
-    this.onScroll = this.onScroll.bind(this);
-    this.onTouchStart = this.onTouchStart.bind(this);
+    this.refreshCallback = this.refreshCallback.bind(this);
+    this.loadMoreCallback = this.loadMoreCallback.bind(this);
   }
 
   componentWillMount() {
@@ -66,12 +62,6 @@ class HongbaoDetail extends Component {
     this.loadData();
   }
 
-  componentDidMount() {
-    //添加下拉刷新相关事件
-    window.addEventListener('touchstart', this.onTouchStart, false);
-    window.addEventListener('scroll', this.onScroll, false);
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     const {hongbaoInfo} = nextProps;
     if (hongbaoInfo.skuId) {
@@ -80,21 +70,21 @@ class HongbaoDetail extends Component {
     return false;
   }
 
-  componentDidUpdate() {
-    if (this.state.showFoot) {
-      scrollEvent({
-        hideElement: this.refs.footer
-      });
-    }
-  }
-
   componentWillUnmount() {
     const {hongbaoDetailAction} = this.props;
     hongbaoDetailAction.clearHongbaoDetail();
     hongbaoDetailAction.clearParticipant();
-    unmountScrollEvent();
-    window.removeEventListener('touchstart', this.onTouchStart, false);
-    window.removeEventListener('scroll', this.onScroll, false);
+  }
+
+  // 下拉刷新回调函数
+  refreshCallback() {
+    this.loadData();
+    return this.loadList(true);
+  }
+
+  //加载更多
+  loadMoreCallback() {
+    return this.loadList();
   }
 
   loadData() {
@@ -137,28 +127,7 @@ class HongbaoDetail extends Component {
       });
   }
 
-  //滚动监听，当 scrollTop 等于 0 时，激活下拉刷新
-  onScroll(e) {
-    const scrollTop = document.body.scrollTop;
-    this.setState({
-      disabled: scrollTop !== 0
-    });
-  }
-
-  onTouchStart(e) {
-    if (this.preventDefault && !this.state.disabled) {
-      e.preventDefault();
-    }
-  }
-
-  // 下拉刷新回调函数
-  loadingFunction() {
-    this.setState({
-      listLoading: false
-    });
-
-    this.loadData();
-
+  loadList(clear) {
     // 加载红包列表
     const {hongbaoDetailAction, identifier} = this.props;
     const accountType = perfect.getAccountType();
@@ -172,7 +141,7 @@ class HongbaoDetail extends Component {
       accountType,
       thirdAccId
     };
-    return hongbaoDetailAction.getParticipantList(body);
+    return hongbaoDetailAction.getParticipantList(body, clear);
   }
 
   // 下拉滑动开始事件
@@ -273,22 +242,22 @@ class HongbaoDetail extends Component {
       case 'PAY_SUCC':
         return (
           <div className="text-muted">
-            已领取{giftGainedNum}/{giftNum}，共{goodsNum}个奖品{momeyText}。
+            已领取{giftGainedNum}/{giftNum}，共{goodsNum}个礼物{momeyText}。
           </div>
         );
       case 'RECEIVE_COMPLETE':
         return (
-          <div className="text-muted">共{goodsNum}个奖品{momeyText}。
+          <div className="text-muted">共{goodsNum}个礼物{momeyText}。
             {perfect.formatMillisecond(finishedDate - createdDate)}抢光
           </div>
         );
       case 'EXPIRED':
         return (
-          <div className="text-muted">共{goodsNum}个奖品{momeyText}。该红包已过期</div>
+          <div className="text-muted">共{goodsNum}个礼物{momeyText}。该红包已过期</div>
         );
       case 'REFUNDED': //已退款
         return (
-          <div className="text-muted">共{goodsNum}个奖品{momeyText}。该红包已退款</div>
+          <div className="text-muted">共{goodsNum}个礼物{momeyText}。该红包已退款</div>
         );
       default:
         return null;
@@ -313,11 +282,11 @@ class HongbaoDetail extends Component {
     return isUnPack ? (
       <footer className="hb-footer" ref="footer">
         <div className="row text-center">
-          <div className="col-12 border-second border-right hb-active-btn"
+          <div className="col-12 border-second border-right"
                onClick={this.guide}>
             红包攻略
           </div>
-          <div className="col-12 hb-active-btn"
+          <div className="col-12"
                onClick={this.reSponsor}>
             我要发红包
           </div>
@@ -326,8 +295,7 @@ class HongbaoDetail extends Component {
     ) : (
       <div className="hb-footer text-center"
            onTouchTap={this.reSponsor}>
-        <span
-          className="hb-active-btn">{type === 'receive' ? '我要发红包' : (sponsorGoal === 'new' ? '我要发红包' : '继续发送')}</span>
+        <span>{type === 'receive' ? '我要发红包' : (sponsorGoal === 'new' ? '我要发红包' : '继续发送')}</span>
       </div>
     );
   }
@@ -404,30 +372,33 @@ class HongbaoDetail extends Component {
       <div>
         {initiateCom}
         {unpack ? <Unpack {...unpackProps}/> : null}
-        <article className="hb-wrap-mb" style={{display: detail}}>
-          <section>
-            <div className="text-center m-t-3">
-              <div>
-                <img className="img-circle img-thumbnail hb-figure"
-                     src={ownerHeadpic} alt=""/>
+        <PullToRefresh refreshCallback={this.refreshCallback}
+                       loadMoreCallback={this.loadMoreCallback}>
+          <article className="hb-wrap-mb" style={{display: detail}}>
+            <section>
+              <div className="text-center m-t-3">
+                <div>
+                  <img className="img-circle img-thumbnail hb-figure"
+                       src={ownerHeadpic} alt=""/>
+                </div>
+                <h3 className="m-t-2">{ownerNickname}的红包</h3>
+                <p className="text-muted f-sm">{title}</p>
+                <HongbaoSelfInfo {...selfInfoProps}/>
               </div>
-              <h3 className="m-t-2">{ownerNickname}的红包</h3>
-              <p className="text-muted f-lg">{title}</p>
-              <HongbaoSelfInfo {...selfInfoProps}/>
-            </div>
-          </section>
+            </section>
 
-          <section className="m-t-3">
-            <div className="m-x-1 m-b-0-3">
-              {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
-            </div>
-            {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
-          </section>
-          {this.renderFooter()}
-        </article>
-        <p className="text-center hb-logo-gray-pos">
-          <i className="hb-logo-gray"></i>
-        </p>
+            <section className="m-t-3">
+              <div className="m-x-1 m-b-0-3 f-sm">
+                {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
+              </div>
+              {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
+            </section>
+            {this.renderFooter()}
+          </article>
+          <p className="text-center hb-logo-gray-pos">
+            <i className="hb-logo-gray"></i>
+          </p>
+        </PullToRefresh>
       </div>
     );
   }

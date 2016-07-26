@@ -1,10 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
-import classnames from 'classnames';
-import ScrollLoad from '../../ui/ScrollLoad';
 import perfect from '../../utils/perfect';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
+import PullToRefresh from 'reactjs-pull-to-refresh';
+import QrCode from './QrCode';
 
 class SponsorHongbao extends Component {
   constructor(props, context) {
@@ -13,14 +13,16 @@ class SponsorHongbao extends Component {
       type: 'received' // received 已收红包， luck 手气最佳
     };
     this.switchTab = this.switchTab.bind(this);
-    this.loadMore = this.loadMore.bind(this);
+
+    this.refreshCallback = this.refreshCallback.bind(this);
+    this.loadMoreCallback = this.loadMoreCallback.bind(this);
   }
 
   componentDidMount() {
     const {caches, cacheActions} = this.props;
     if (!caches.sponsorPagination) {
       cacheActions.addCache('sponsorPagination');
-      this.loadMore();
+      this.loadData();
     }
   }
 
@@ -29,6 +31,28 @@ class SponsorHongbao extends Component {
     this.setState({
       type
     });
+  }
+
+  // 下拉刷新回调函数
+  refreshCallback() {
+    return this.loadData(true);
+  }
+
+  //加载更多
+  loadMoreCallback() {
+    return this.loadData();
+  }
+
+  loadData(clear) {
+    const {hongbaoActions} = this.props;
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
+    const body = {
+      accountType,
+      accountId: thirdAccId
+    };
+
+    return hongbaoActions.getHongbaoList(body, 'sponsor', clear);
   }
 
   /*eslint-disable indent*/
@@ -92,16 +116,8 @@ class SponsorHongbao extends Component {
     }
   }
 
-  loadMore() {
-    const {hongbaoActions} = this.props;
-    const accountType = perfect.getAccountType();
-    const thirdAccId = perfect.getThirdAccId();
-    const body = {
-      accountType,
-      accountId: thirdAccId
-    };
-
-    hongbaoActions.getHongbaoList(body, 'sponsor');
+  hongbaoDetail(link) {
+    this.context.router.push(link);
   }
 
   //渲染列表
@@ -125,43 +141,37 @@ class SponsorHongbao extends Component {
     }
 
     return (
-      <ScrollLoad loadMore={this.loadMore}
-                  hasMore={!lastPage}
-                  isLoading={isFetching}
-                  className={classnames({loading: isFetching})}
-                  loader={<div className=""></div>}>
-        <ul className="hb-list">
-          {list.map((item) => {
-            const {identifier, giftRecordId, skuIcon, createdDate, amount, status, giftStatus, giftGainedNum, giftNum, goodNum} = item;
-            let link = `/hongbao/detail/view/${identifier}?type=${type}`;
+      <ul className="hb-list">
+        {list.map((item) => {
+          const {identifier, giftRecordId, skuIcon, createdDate, amount, status, giftStatus, giftGainedNum, giftNum, goodNum} = item;
+          let link = `/hongbao/detail/view/${identifier}?type=${type}`;
 
-            return (
-              <li key={identifier + giftRecordId}>
-                <Link to={link} className="hb-link-block row flex-items-middle">
-                  <div className="col-4">
-                    <img className="img-fluid" src={skuIcon} alt=""/>
-                  </div>
-                  <div className="col-12">
-                    <div className="text-truncate">京东红包</div>
-                    <div className="text-muted f-sm">{perfect.formatDate({time: createdDate})}</div>
-                  </div>
-                  <div className="col-8 text-right">
-                    <div>{(amount / 100).toFixed(2)}元</div>
-                    <div className="text-muted f-sm">
-                      {this.getStatus({status, giftGainedNum, giftNum})}
-                    </div>
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </ScrollLoad>
+          return (
+            <li key={identifier + giftRecordId}
+                className="hb-link-block row flex-items-middle"
+                onTouchTap={() => this.hongbaoDetail(link)}>
+              <div className="col-4">
+                <img className="img-fluid" src={skuIcon} alt=""/>
+              </div>
+              <div className="col-12">
+                <div className="text-truncate">京东红包</div>
+                <div className="text-muted f-sm">{perfect.formatDate({time: createdDate})}</div>
+              </div>
+              <div className="col-8 text-right">
+                <div>{(amount / 100).toFixed(2)}元</div>
+                <div className="text-muted f-sm">
+                  {this.getStatus({status, giftGainedNum, giftNum})}
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     );
   }
 
   render() {
-    const {userInfo} = this.props;
+    const {userInfo, type} = this.props;
     const {giftAndThirdAccUserInfoDto, redbagAssemblyRetDto} = userInfo;
     let {putOutNum, putOutAmount} = (redbagAssemblyRetDto || {});
     if (putOutAmount === undefined) {
@@ -176,15 +186,18 @@ class SponsorHongbao extends Component {
     }
 
     return (
-      <div>
+      <PullToRefresh className="hb-product-panel"
+                     refreshCallback={this.refreshCallback}
+                     loadMoreCallback={this.loadMoreCallback}>
+        <QrCode type={type}/>
         <section className="text-center m-t-2">
           <div>
             <img className="img-circle img-thumbnail hb-figure" src={headpic} alt=""/>
           </div>
-          <h3 className="m-t-1">{nickName}共发出</h3>
-          <div className="h1">{(putOutAmount / 100).toFixed(2)}</div>
+          <h3 className="m-t-1 m-b-0">{nickName}共发出</h3>
+          <div className="hb-money line-height-1">{(putOutAmount / 100).toFixed(2)}</div>
 
-          <div className="h3 text-muted">
+          <div className="h4 text-muted m-t-2">
             已发出<span className="text-primary">{putOutNum}</span>个红包
           </div>
         </section>
@@ -192,7 +205,7 @@ class SponsorHongbao extends Component {
         <section className="m-t-1">
           {this.renderList()}
         </section>
-      </div>
+      </PullToRefresh>
     );
   }
 }

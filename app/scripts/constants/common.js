@@ -16,8 +16,8 @@ export const HONGBAO_VALID_STATUS = ['OK', 'RECEIVE_COMPLETE', 'EXPIRED', 'HAS_R
 
 export const HONGBAO_INVALID_STATUS = ['NEED_PAY', 'FAIL', 'REDBAG_NOT_FOUND'];
 
-export const HONGBAO_TITLE = '恭喜发财，京东红包！';
+export const HONGBAO_TITLE = '恭喜发财，好运连连！';
 
-export const HONGBAO_DESC = '一个用快递邮寄的红包！  京东红包';
+export const HONGBAO_DESC = '一个用快递邮寄的红包！\n『点击领取』';
 
 export const NICKNAME = '匿名';

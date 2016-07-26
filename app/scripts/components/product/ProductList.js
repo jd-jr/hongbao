@@ -1,11 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import {findDOMNode} from 'react-dom';
 import classnames from 'classnames';
-import PullRefresh from 'reactjs-pull-refresh';
+import PullToRefresh from 'reactjs-pull-to-refresh';
 import ScrollLoad from '../../ui/ScrollLoad';
 import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
-import {scrollEvent, unmountScrollEvent} from '../../utils/scrollHideFixedElement';
 import ProductCategory from './ProductCategory';
 
 //图片
@@ -24,12 +23,9 @@ class ProductList extends Component {
 
     this.handleChecked = this.handleChecked.bind(this);
     this.selectProduct = this.selectProduct.bind(this);
-    this.loadMore = this.loadMore.bind(this);
-    this.loadingFunction = this.loadingFunction.bind(this);
-    this.onPanStart = this.onPanStart.bind(this);
-    this.onPanEnd = this.onPanEnd.bind(this);
-    this.onScroll = this.onScroll.bind(this);
-    this.onTouchStart = this.onTouchStart.bind(this);
+
+    this.refreshCallback = this.refreshCallback.bind(this);
+    this.loadMoreCallback = this.loadMoreCallback.bind(this);
   }
 
   componentWillMount() {
@@ -52,62 +48,31 @@ class ProductList extends Component {
     window.addEventListener('scroll', this.onScroll, false);
   }
 
-  componentDidUpdate() {
-    if (this.state.showFoot) {
-      //滑动隐藏底部按钮
-      scrollEvent({
-        hideElement: this.refs.footer
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    unmountScrollEvent();
-    window.removeEventListener('touchstart', this.onTouchStart, false);
-    window.removeEventListener('scroll', this.onScroll, false);
-  }
-
-  //滚动监听，当 scrollTop 等于 0 时，激活下拉刷新
-  onScroll(e) {
-    const scrollTop = document.body.scrollTop;
-    this.setState({
-      disabled: scrollTop !== 0
-    });
-  }
-
-  onTouchStart(e) {
-    if (this.preventDefault && !this.state.disabled) {
-      e.preventDefault();
-    }
-  }
-
   // 下拉刷新回调函数
-  loadingFunction() {
-    this.setState({
-      listLoading: false
-    });
-
+  refreshCallback() {
     const {productActions, priceOrder, activeCategory} = this.props;
-    const {clearProductList, getProductList, clearSelectProduct} = productActions;
-    clearProductList();
+    const {getProductList, clearSelectProduct} = productActions;
     clearSelectProduct();
+
     return getProductList({
       category: activeCategory,
       priceOrder
-    })
+    }, true);
+
   }
 
-  // 下拉滑动开始事件
-  onPanStart() {
-    const {disabled} = this.state;
-    if (!disabled) {
-      this.preventDefault = true;
-    }
-  }
+  //加载更多
+  loadMoreCallback() {
+    const {
+      productActions, activeCategory, priceOrder
+    } = this.props;
 
-  // 下拉滑动结束事件
-  onPanEnd() {
-    this.preventDefault = false;
+    const {getProductList} = productActions;
+
+    return getProductList({
+      category: activeCategory,
+      priceOrder
+    });
   }
 
   // 选择商品
@@ -159,20 +124,6 @@ class ProductList extends Component {
     //埋点
     perfect.setBuriedPoint(`hongbao_product_goods_${index + 1}`);
     this.context.router.push(url);
-  }
-
-  //加载更多
-  loadMore() {
-    const {
-      productActions, activeCategory, priceOrder
-    } = this.props;
-
-    const {getProductList} = productActions;
-
-    getProductList({
-      category: activeCategory,
-      priceOrder
-    });
   }
 
   renderProductItem(item, index) {
@@ -235,11 +186,9 @@ class ProductList extends Component {
 
     const {ids, entity, lastPage, isFetching} = productPagination;
 
-    const {listLoading} = this.state;
-
     if (!ids) {
       return (
-        listLoading ? <div className="page-loading">载入中，请稍后 ...</div> : null
+        <div className="page-loading">载入中，请稍后 ...</div>
       );
     } else if (ids.length === 0) {
       return (
@@ -251,10 +200,9 @@ class ProductList extends Component {
     }
 
     return (
-      <ScrollLoad loadMore={this.loadMore}
-                  hasMore={!lastPage}
-                  isLoading={isFetching}
-                  className={classnames({loading: isFetching})}>
+      <PullToRefresh className="hb-product-panel"
+                     refreshCallback={this.refreshCallback}
+                     loadMoreCallback={this.loadMoreCallback}>
         <ul className="hb-list">
           {
             ids ? ids.map((item, index) => {
@@ -262,7 +210,7 @@ class ProductList extends Component {
             }) : null
           }
         </ul>
-      </ScrollLoad>
+      </PullToRefresh>
     );
   }
 
@@ -282,10 +230,7 @@ class ProductList extends Component {
     return (
       <div>
         <ProductCategory {...categoryProps}/>
-
-        <article className="hb-wrap-mb-sm">
-          {this.renderProduct()}
-        </article>
+        {this.renderProduct()}
         {
           showFoot ? (
             <footer className="hb-footer-fixed" ref="footer">

@@ -65,75 +65,69 @@ class HongbaoGainedList extends Component {
       return (<div className="hb-list-border"></div>);
     }
     return (
-      <ScrollLoad loadMore={this.loadMore}
-                  hasMore={!lastPage}
-                  isLoading={isFetching}
-                  className={classnames({loading: isFetching})}
-                  loader={<div className=""></div>}>
-        <ul className="hb-list">
-          {list.map((item) => {
-            // giftStatus 值为 'NOT_GAIN' 表示实物奖品还没有获取
-            let {
-              giftRecordId, nickName, headpic, giftAmount,
-              giftGainedDate, giftType, giftStatus, skuName, skuIcon
-            } = item;
+      <ul className="hb-list">
+        {list.map((item, index) => {
+          // giftStatus 值为 'NOT_GAIN' 表示实物奖品还没有获取
+          let {
+            giftRecordId, nickName, headpic, giftAmount,
+            giftGainedDate, giftType, giftStatus, skuName, skuIcon
+          } = item;
 
-            headpic = headpic || defaultHeadPic;
-            nickName = nickName || NICKNAME;
+          headpic = headpic || defaultHeadPic;
+          nickName = nickName || NICKNAME;
 
-            giftAmount = (giftAmount / 100).toFixed(2);
-            if (giftType === 'CASH') { //抢到现金
-              return (
-                <li key={giftRecordId}>
-                  <Link to={'/my?type=sponsor'} className="row flex-items-middle hb-link-block">
-                    <div className="col-4">
-                      <img className="img-fluid img-circle" src={headpic} alt=""/>
-                    </div>
-                    <div className="col-13">
-                      <div className="text-truncate">{nickName}</div>
-                      <div className="text-muted f-sm">{perfect.formatDate({time: giftGainedDate})}</div>
-                    </div>
-                    <div className="col-7 text-right">
-                      {giftAmount}元
-                    </div>
-                  </Link>
-                </li>
-              );
-            }
-
-            // 抢到实物
-            const title = giftStatus === 'NOT_GAIN' ? '大奖得主' : nickName;
-            const gainedDate = giftStatus === 'NOT_GAIN' ? '等待揭晓' : perfect.formatDate(giftGainedDate);
-            headpic = giftStatus === 'NOT_GAIN' ? championNotGain : headpic;
-            const championHeader = giftStatus === 'NOT_GAIN' ? 'hb-champion-header gray' : 'hb-champion-header';
-
+          giftAmount = (giftAmount / 100).toFixed(2);
+          if (giftType === 'CASH') { //抢到现金
             return (
-              <li key={giftRecordId} className="row flex-items-middle" style={{paddingTop: '1.2rem'}}>
-                <div className="col-4">
-                  <div className={championHeader}>
+              <li key={giftRecordId}>
+                <Link to={'/my?type=sponsor'} className="row flex-items-middle hb-link-block">
+                  <div className="col-4">
                     <img className="img-fluid img-circle" src={headpic} alt=""/>
                   </div>
-                </div>
-                <div className="col-14">
-                  <div className="text-truncate">{title}</div>
-                  <div className="text-muted f-sm">{gainedDate}</div>
-                </div>
-
-                <div className="col-4 p-a-0" onTouchTap={this.prize}>
-                  <Link to={`/product/detail/view/${skuId}`}>
-                    <img className="img-fluid" src={skuIcon} alt={skuName}/>
-                  </Link>
-                </div>
-                <div className="col-2" onTouchTap={this.prize}>
-                  <Link to={`/product/detail/view/${skuId}`}>
-                    <span className="arrow-hollow-right" style={{marginLeft: '-1.5rem'}}></span>
-                  </Link>
-                </div>
+                  <div className="col-13">
+                    <div className="text-truncate">{nickName}</div>
+                    <div className="text-muted f-sm">{perfect.formatDate({time: giftGainedDate})}</div>
+                  </div>
+                  <div className="col-7 text-right">
+                    {giftAmount}元
+                  </div>
+                </Link>
               </li>
             );
-          })}
-        </ul>
-      </ScrollLoad>
+          }
+
+          // 抢到实物
+          const title = giftStatus === 'NOT_GAIN' ? '大奖得主' : nickName;
+          const gainedDate = giftStatus === 'NOT_GAIN' ? '等待揭晓' : perfect.formatDate({time: giftGainedDate});
+          headpic = giftStatus === 'NOT_GAIN' ? championNotGain : headpic;
+          const championHeader = giftStatus === 'NOT_GAIN' ? 'hb-champion-header gray' : 'hb-champion-header';
+
+          return (
+            <li key={giftRecordId} className={`row ${index === 0 ? ' flex-items-middle' : ''}`} style={{paddingTop: '1.2rem'}}>
+              <div className="col-4">
+                <div className={championHeader}>
+                  <img className="img-fluid img-circle" src={headpic} alt=""/>
+                </div>
+              </div>
+              <div className="col-14">
+                <div className="text-truncate">{title}</div>
+                <div className="text-muted f-sm">{gainedDate}</div>
+              </div>
+
+              <div className="col-4 p-a-0" onTouchTap={this.prize}>
+                <Link to={`/product/detail/view/${skuId}`}>
+                  <img className="img-fluid" src={skuIcon} alt={skuName}/>
+                </Link>
+              </div>
+              <div className="col-2 text-right" onTouchTap={this.prize}>
+                <Link to={`/product/detail/view/${skuId}`}>
+                  <span className="arrow-hollow-right" style={{marginLeft: '-0.8rem'}}></span>
+                </Link>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     );
   }
 }

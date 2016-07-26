@@ -16,7 +16,6 @@ class MyHongbao extends Component {
       showFoot: false,
     };
     this.switchTab = this.switchTab.bind(this);
-    this.focusonQrCode = this.focusonQrCode.bind(this);
   }
 
   componentWillMount() {
@@ -73,13 +72,6 @@ class MyHongbao extends Component {
     history.replaceState(null, null, `?type=${type}`);
   }
 
-  // 关注二维码
-  focusonQrCode() {
-    const {type} = this.props;
-    //埋点
-    perfect.setBuriedPoint(`hongbao_${type || 'receive'}_qrcode`);
-  }
-
   render() {
     const {type, isLogin} = this.state;
     const {
@@ -107,29 +99,16 @@ class MyHongbao extends Component {
 
     return (
       <div>
-        <article className="hb-wrap-mb-sm">
-          <section className="hb-nav-btn-group row">
-            <div className={`col-12 hb-nav-btn-left${type === 'receive' ? ' active' : ''}`}
-                 onTouchTap={(e) => this.switchTab(e, 'receive')}>我收到的
-            </div>
-            <div className={`col-12 hb-nav-btn-right${type === 'sponsor' ? ' active' : ''}`}
-                 onTouchTap={(e) => this.switchTab(e, 'sponsor')}>我发出的
-            </div>
-          </section>
+        <header className="hb-nav-btn-group row hb-header">
+          <div className={`col-12 hb-nav-btn-left${type === 'receive' ? ' active' : ''}`}
+               onTouchTap={(e) => this.switchTab(e, 'receive')}>我收到的
+          </div>
+          <div className={`col-12 hb-nav-btn-right${type === 'sponsor' ? ' active' : ''}`}
+               onTouchTap={(e) => this.switchTab(e, 'sponsor')}>我发出的
+          </div>
+        </header>
 
-          {
-            deviceEnv.inWx ? (
-              <section className="hb-single row m-a-1">
-                <div className="col-5" onTouchTap={this.focusonQrCode}>
-                  <img className="img-fluid" src={emsCnpl} alt=""/>
-                </div>
-                <div className="col-19 flex flex-items-center flex-items-column">
-                  <div>关注京东钱包，及时查看红包信息！</div>
-                  <div className="text-muted">长按识别二维码</div>
-                </div>
-              </section>
-            ) : null
-          }
+        <article>
           <ReactCSSTransitionGroup
             component="div"
             transitionName="hb-animate-right"

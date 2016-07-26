@@ -9,7 +9,7 @@ import ProductSchemas from '../models/ProductSchemas';
 import {CALL_API} from '../middleware/api';
 
 //获取商品分页列表
-function fetchProductList(body) {
+function fetchProductList(body, clear) {
   return {
     entity: 'productPagination',
     [CALL_API]: {
@@ -18,21 +18,26 @@ function fetchProductList(body) {
       body,
       schema: ProductSchemas.PRODUCT_LIST,
       paging: true
-    }
+    },
+    clear
   };
 }
 
-export function getProductList(body = {}) {
+export function getProductList(body = {}, clear) {
   return (dispatch, getState) => {
-    const {
-      pageNum = 1, //请求传递的页面
-      isFetching,
-      lastPage //最后一页
-    } = getState().product.productPagination || {};
-    if (isFetching || lastPage) {
-      return null;
+    let pageNum = 1; //请求传递的页面
+    let lastPage; //最后一页
+    const productPagination = getState().product.productPagination || {};
+    const {isFetching} = productPagination;
+    if (!clear) {
+      pageNum = productPagination.pageNum;
+      lastPage = productPagination.lastPage;
     }
-    return dispatch(fetchProductList({...body, pageNum, pageSize: 10}));
+
+    if (isFetching || lastPage) {
+      return Promise.reject();
+    }
+    return dispatch(fetchProductList({...body, pageNum, pageSize: 10}, clear));
   };
 }
 

@@ -1,5 +1,6 @@
 import merge from 'lodash/merge'
 import union from 'lodash/union'
+import assign from 'lodash/assign';
 
 /*eslint-disable indent*/
 /**
@@ -32,8 +33,7 @@ function paginate({types, paging = true, clearType, customTypes}) {
         return merge({}, state, {
           isFetching: true
         });
-      case successType:
-      {
+      case successType: {
         /**
          * pageNum, 当前页
          * pageCount, 总页码
@@ -43,13 +43,29 @@ function paginate({types, paging = true, clearType, customTypes}) {
         // action 中定义的 entity 与 schema 中一致,利用 normalize 会生成 entities 和 ids 的
         const {entity} = action;
         /*f (entities[entity] === undefined) {
-          console.error('action 中的实体名称必须要跟 reducer 和 Schema 一致或者后台返回的数据格式不正确');
-        }*/
+         console.error('action 中的实体名称必须要跟 reducer 和 Schema 一致或者后台返回的数据格式不正确');
+         }*/
+
+        console.info(action);
+        if (action.clear) {
+          return assign({}, paging ? {
+            entity: assign({}, entities[entity]),
+            ids: union([], result),
+            isFetching: false,
+            pageCount,
+            lastPage,
+            pageNum: lastPage ? 1 : 2
+          } : {
+            entity: assign({}, entities[entity]), //合并
+            ids: union([], result),
+            isFetching: false
+          });
+        }
+
         return merge({}, state, paging ? {
           entity: merge({}, state.entity, entities[entity]), //合并
           ids: union(state.ids, result),
           isFetching: false,
-          pageNum,
           pageCount,
           lastPage,
           pageNum: lastPage ? state.pageNum : state.pageNum + 1
@@ -80,8 +96,7 @@ function paginate({types, paging = true, clearType, customTypes}) {
     }
 
     switch (action.type) {
-      case clearType:
-      {
+      case clearType: {
         return paging ? {
           isFetching: false,
           pageNum: 1 //下一页
@@ -91,8 +106,10 @@ function paginate({types, paging = true, clearType, customTypes}) {
       }
       case requestType:
       case successType:
-      case failureType:
-      {
+      case failureType: {
+        if (action.clear) {
+          return assign({}, updatePaginationByFetchType(state, action));
+        }
         return merge({}, state, updatePaginationByFetchType(state, action));
       }
       default:

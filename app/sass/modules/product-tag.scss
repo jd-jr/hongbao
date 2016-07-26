@@ -19,3 +19,18 @@
     margin-top: 0.3rem;
   }
 }
+
+.rc-pull-refresh.hb-product-panel {
+  position: absolute;
+  top: 3.63rem;
+  bottom: 30px;
+}
+
+.hb-product-panel {
+  .rc-scroll {
+    margin-bottom: 7.5rem;
+  }
+  .rc-load-more {
+    bottom: 9rem;
+  }
+}

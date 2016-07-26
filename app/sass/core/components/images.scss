@@ -12,8 +12,7 @@
 // Image thumbnails
 .img-thumbnail {
   padding: 3px;
-  background-color: $thumbnail-bg;
-  border: $thumbnail-border-width solid $thumbnail-border-color;
+  background-color: #fff;
   @include border-radius($thumbnail-border-radius);
   transition: all .2s ease-in-out;
   @include box-shadow($thumbnail-box-shadow);

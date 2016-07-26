@@ -102,14 +102,14 @@ class Initiate extends Component {
       debug: Boolean(window.eruda),
       callback: (status) => {
         if (deviceEnv.inWx) {
-          //回到首页
-          this.context.router.replace('/');
+          //回到领取页面
+          this.context.router.replace('/my?type=sponsor');
         }
         if (status === 'SUCCESS') {
           this.setState({
             visible: false
           });
-          //回到首页
+          //回到领取页面
           this.context.router.replace('/my?type=sponsor');
         }
       }
@@ -164,10 +164,10 @@ class Initiate extends Component {
                   <h2 className="h1">红包已包好</h2>
                   <h4>京东红包</h4>
                   <div className="hb-product-wrap row">
-                    <div className="col-7 p-r-0">
+                    <div className="col-6 p-r-0 p-l-0-3 text-left">
                       <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
                     </div>
-                    <div className="col-17 text-truncate-2 product-name">{skuName}</div>
+                    <div className="col-18 text-truncate-2 product-name">{skuName}</div>
                   </div>
                 </div>
               </div>

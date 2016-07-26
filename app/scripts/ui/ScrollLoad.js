@@ -7,13 +7,15 @@ class ScrollLoad extends Component {
   constructor(props) {
     super(props);
     this.disablePointerTimeout = null;
+    this.startTop; // 记录开始滑动坐标
+    this.timeout;
+  }
+
+  componentDidMount() {
     this.onScroll = this.debounce(() => {
       this.fireScroll()
     }, this.props.debounceInt);
-
     this.listenScroll();
-    this.startTop; // 记录开始滑动坐标
-    this.timeout;
   }
 
   componentWillUnmount() {
@@ -43,21 +45,11 @@ class ScrollLoad extends Component {
       return;
     }
 
-    /*const clientHeight = document.body.clientHeight;
-     const el = ReactDOM.findDOMNode(this);
-     /!*const currentScroll = useDocument ?
-     document.body.scrollTop + offset(el).top : el.scrollTop + el.offsetHeight;*!/
+    const scrollBody = useDocument ? document.body : ReactDOM.findDOMNode(this);
 
-     const currentScroll = document.body.scrollTop + document.body.offsetHeight;
-
-     if (currentScroll + threshold < clientHeight) {
-     return;
-     }*/
-
-    const body = document.body;
-    const viewHeight = document.documentElement.clientHeight;
-    const scrollHeight = body.scrollHeight;
-    const scrollTop = body.scrollTop;
+    const viewHeight = scrollBody.clientHeight;
+    const scrollHeight = scrollBody.scrollHeight;
+    const scrollTop = scrollBody.scrollTop;
     if (scrollTop + viewHeight + threshold > scrollHeight) {
       loadMore();
     }

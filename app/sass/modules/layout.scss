@@ -29,14 +29,34 @@
     background-color: #fff;
   }
 
+  &main {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 3.3rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* 增加该属性，可以增加弹性 */
+    -webkit-overflow-scrolling: touch;
+  }
+
   &wrap {
     margin: 1rem;
-    margin-bottom: 6rem;
   }
+
   &wrap-mb {
     margin-bottom: 6rem;
   }
+
   &wrap-mb-sm {
     margin-bottom: 4rem;
   }
+
+  &header {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    right: 0;
+  }
+
 }

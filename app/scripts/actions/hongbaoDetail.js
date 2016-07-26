@@ -8,7 +8,7 @@ import {CALL_API} from '../middleware/api';
 
 // 红包参与者
 /*eslint-disable indent*/
-function fetchParticipantList(body) {
+function fetchParticipantList(body, clear) {
   return {
     entity: 'participantPagination',
     [CALL_API]: {
@@ -18,11 +18,12 @@ function fetchParticipantList(body) {
       body,
       paging: true,
       needAuth: true
-    }
+    },
+    clear
   };
 }
 
-export function getParticipantList(body = {}) {
+export function getParticipantList(body = {}, clear) {
   return (dispatch, getState) => {
     const state = getState();
     const {
@@ -33,7 +34,7 @@ export function getParticipantList(body = {}) {
     if (isFetching || lastPage) {
       return null;
     }
-    return dispatch(fetchParticipantList({...body, pageNum, pageSize: 20}));
+    return dispatch(fetchParticipantList({...body, pageNum, pageSize: 20}, clear));
   };
 }
 

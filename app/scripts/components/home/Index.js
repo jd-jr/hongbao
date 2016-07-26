@@ -46,6 +46,7 @@ class Home extends Component {
       checked: true, //同意条款
       mystic: false, // 是否为神秘奖品
       showFoot: false,
+      giftTitle: '可发1个红包，送给你想送的人'
     };
 
     this.selectProduct = this.selectProduct.bind(this);
@@ -109,7 +110,8 @@ class Home extends Component {
       }
       if (value === '') {
         this.setState({
-          giftNum: ''
+          giftNum: '',
+          giftTitle: '可发1个红包，送给你想送的人'
         });
         return;
       }
@@ -117,6 +119,10 @@ class Home extends Component {
         return;
       }
       value = parseInt(value, 10);
+
+      this.setState({
+        giftTitle: value > 1 ? '未获得礼物的用户可得京东钱包补贴的现金' : '可发1个红包，送给你想送的人'
+      });
 
       if (bizPrice <= 5000 && value > 10) {
         indexActions.setToast('礼物价格小于50元，红包个数不可超过10个');
@@ -366,7 +372,7 @@ class Home extends Component {
   render() {
     let {
       giftNum, title, bizPrice, skuName, indexImg,
-      selecting, checked, loadingStatus, mystic
+      selecting, checked, loadingStatus, giftTitle
     } = this.state;
     const {pathname} = this.props;
     bizPrice = (bizPrice / 100).toFixed(2);
@@ -385,87 +391,88 @@ class Home extends Component {
         {initiateCom}
         {loadingStatus ? (<Loading loadingStatus={loadingStatus}/>) : null}
         {this.renderH5PayForm()}
-        <article className="hb-wrap m-t-2">
-          <section>
-            <div>
-              <div className="hb-single" onTouchTap={this.selectProduct}>
-                <span>发京东红包</span>
-                {
-                  selecting ? (
-                    <div className="pull-right">
-                      <span className="text-muted">选择礼物</span>
-                      <span className="arrow-hollow-right"></span>
-                    </div>
-                  ) : (
-                    <span className="pull-right">{bizPrice}元</span>
-                  )
-                }
+        <div className="hb-main">
+          <article className="hb-wrap m-t-2">
+            <section>
+              <div>
+                <div className="hb-single p-a-1" style={{marginBottom: '2.5rem'}} onTouchTap={this.selectProduct}>
+                  <span>发京东红包</span>
+                  {
+                    selecting ? (
+                      <div className="pull-right">
+                        <span className="text-muted">选择礼物</span>
+                        <span className="arrow-hollow-right"></span>
+                      </div>
+                    ) : (
+                      <span className="pull-right">{bizPrice}元</span>
+                    )
+                  }
+                </div>
               </div>
-              <p className="f-sm m-l-0-75 text-muted">未中礼物用户可随机获得钱包补贴的现金红包</p>
-            </div>
 
-            {
-              !selecting ? (
-                <div className="m-t-1 m-b-1">
-                  <div className="hb-single">
-                    <div className="row flex-items-middle">
-                      <div className="col-4">
-                        <img className="img-fluid" src={indexImg} alt=""/>
-                      </div>
-                      <div className="col-16">
-                        <div className="text-truncate">{skuName}</div>
-                        <div className="text-muted f-sm">{bizPrice ? `￥${bizPrice}` : ''}</div>
-                      </div>
-                      <div className="col-4 border-left border-second text-center">
-                        <a href="" onClick={this.replaceProduct}>更换</a>
+              {
+                !selecting ? (
+                  <div className="m-t-1 m-b-1">
+                    <div className="hb-single">
+                      <div className="row flex-items-middle">
+                        <div className="col-4">
+                          <img className="img-fluid" src={indexImg} alt=""/>
+                        </div>
+                        <div className="col-16">
+                          <div className="text-truncate">{skuName}</div>
+                          <div className="text-muted f-sm">{bizPrice ? `￥${bizPrice}` : ''}</div>
+                        </div>
+                        <div className="col-4 border-left border-second text-center">
+                          <a href="" onClick={this.replaceProduct}>更换</a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ) : null
-            }
+                ) : null
+              }
 
-            <div>
-              <div className="hb-single">
-                <span>红包个数</span>
-                <div className="pull-right">
-                  <input value={giftNum} onChange={(e) => this.handleChange(e, 'giftNum')}
-                         onBlur={() => this.handleBlur('giftNum')}
-                         className="hb-input text-right" type="tel" placeholder="填写个数"/>
-                  <span className="pull-right">个</span>
+              <div>
+                <div className="hb-single">
+                  <span>红包个数</span>
+                  <div className="pull-right">
+                    <input value={giftNum} onChange={(e) => this.handleChange(e, 'giftNum')}
+                           onBlur={() => this.handleBlur('giftNum')}
+                           className="hb-input text-right" type="tel" placeholder="填写个数"/>
+                    <span className="pull-right">个</span>
+                  </div>
                 </div>
+                <p className="f-sm m-l-0-75 text-muted">{giftTitle}</p>
               </div>
-              <p className="f-sm m-l-0-75 text-muted">可发1个红包，送给你想送的人</p>
-            </div>
 
-            <div>
-              <div className="hb-single">
+              <div>
+                <div className="hb-single">
                 <textarea maxLength="25" value={title} onChange={(e) => this.handleChange(e, 'title')}
                           onBlur={() => this.handleBlur('title')}
                           className="hb-textarea" placeholder={HONGBAO_TITLE}></textarea>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          <section className="text-center hb-money">
-            ¥{bizPrice}
-          </section>
+            <section className="text-center hb-money">
+              ¥{bizPrice}
+            </section>
 
-          <section className="m-t-2">
-            <button className="btn btn-block btn-primary btn-lg" disabled={selecting || giftNum === ''}
-                    onTouchTap={this.payBefore}>发起京东红包
-            </button>
-            <p className="text-center f-sm m-t-2 text-muted">
-              <i className={`hb-radio-gray${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>
-              <span>同意并接受</span>
-              <Link to="/protocol">《京东钱包京东红包服务协议》</Link>
+            <section className="m-t-2">
+              <button className="btn btn-block btn-primary btn-lg" disabled={selecting || giftNum === ''}
+                      onTouchTap={this.payBefore} style={{paddingTop: '0.725rem', paddingBottom: '0.725rem'}}>发起京东红包
+              </button>
+              <p className="text-center f-sm m-t-2 text-muted">
+                <i className={`hb-radio-gray${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>
+                <span>同意并接受</span>
+                <Link to="/protocol">《京东钱包京东红包服务协议》</Link>
+              </p>
+              <p className="text-center f-sm m-t-2 text-muted">好友未领取实物，可于15天后申请退款</p>
+            </section>
+            <p className="text-center hb-logo-gray-pos">
+              <i className="hb-logo-gray"></i>
             </p>
-            <p className="text-center f-sm m-t-2 text-muted">中奖者未领取实物，可于15天后申请退款</p>
-          </section>
-        </article>
-        <p className="text-center hb-logo-gray-pos">
-          <i className="hb-logo-gray"></i>
-        </p>
+          </article>
+        </div>
         <div id="hbHelp">
           <Help/>
         </div>

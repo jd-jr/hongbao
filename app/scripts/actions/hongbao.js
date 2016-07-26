@@ -9,7 +9,8 @@ import {CALL_API} from '../middleware/api';
 
 // 我发起的红包 sponsor 我收到的红包 receive
 /*eslint-disable indent*/
-function fetchHongbaoList(body, type) {
+function fetchHongbaoList(body, type, clear) {
+  console.info(clear);
   switch (type) {
     case 'sponsor':
       return {
@@ -21,7 +22,8 @@ function fetchHongbaoList(body, type) {
           body,
           paging: true,
           needAuth: true
-        }
+        },
+        clear
       };
     case 'receive':
       return {
@@ -33,25 +35,31 @@ function fetchHongbaoList(body, type) {
           body,
           paging: true,
           needAuth: true
-        }
+        },
+        clear
       };
     default:
       return null;
   }
 }
 
-export function getHongbaoList(body = {}, type) {
+export function getHongbaoList(body = {}, type, clear) {
   return (dispatch, getState) => {
     const state = getState();
-    let {
-      pageNum = 1, //请求传递的页面
-      isFetching,
-      lastPage //最后一页
-    } = state.hongbao[`${type}Pagination`] || {};
-    if (isFetching || lastPage) {
-      return null;
+    let pageNum = 1; //请求传递的页面
+    let lastPage; //最后一页
+    const pagination = state.hongbao[`${type}Pagination`] || {};
+    const {isFetching} = pagination;
+
+    if (!clear) {
+      pageNum = pagination.pageNum;
+      lastPage = pagination.lastPage;
     }
-    return dispatch(fetchHongbaoList({...body, pageSize: 20, pageNum}, type));
+
+    if (isFetching || lastPage) {
+      return Promise.reject();
+    }
+    return dispatch(fetchHongbaoList({...body, pageSize: 20, pageNum}, type, clear));
   };
 }
 
