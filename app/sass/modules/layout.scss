@@ -59,4 +59,19 @@
     right: 0;
   }
 
+  &main-panel {
+    position: absolute;
+    top: 3.63rem;
+    bottom: 3.5rem;
+    left: 0;
+    right: 0;
+  }
+
+  &main-panel-noheader {
+    position: absolute;
+    top: 0;
+    bottom: 3.4rem;
+    left: 0;
+    right: 0;
+  }
 }

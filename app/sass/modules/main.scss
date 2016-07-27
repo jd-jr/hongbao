@@ -166,6 +166,10 @@
     }
   }
 
+  &user-info.hb-figure {
+    width: 70px;
+    height: 70px;
+  }
   // 自定义弹框样式
   &modal {
     .rc-modal-dialog {
@@ -320,7 +324,7 @@
     padding: 1rem 0;
     width: 100%;
     text-align: center;
-    .hb-gt{
+    .hb-gt {
       vertical-align: top;
       display: inline-block;
       margin-top: -1px;

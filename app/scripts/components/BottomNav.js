@@ -52,11 +52,11 @@ class BottomNav extends Component {
       <footer className="hb-footer" ref="footer">
         <div className="row text-center">
           <div className={`col-12 border-second border-right${type === 'sponsor' ? ' hb-active-btn' : ''}`}
-               onClick={this.createOrder}>
+               onTouchTap={this.createOrder}>
             发起红包
           </div>
           <div className={`col-12${type === 'receive' ? ' hb-active-btn' : ''}`}
-               onClick={this.myHongbao}>
+               onTouchTap={this.myHongbao}>
             我的红包
           </div>
         </div>

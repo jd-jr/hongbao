@@ -3,6 +3,16 @@ import React, {Component, PropTypes} from 'react';
 // 帮助
 class Help extends Component {
 
+  componentDidMount() {
+    document.body.style.overflowY = 'auto';
+    document.documentElement.style.overflowY = 'auto';
+  }
+
+  componentWillUnmount() {
+    document.body.style.overflowY = 'hidden';
+    document.documentElement.style.overflowY = 'hidden';
+  }
+
   render() {
     return (
       <div className="hb-help-panel">

@@ -1,8 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
-import classnames from 'classnames';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import ScrollLoad from '../../ui/ScrollLoad';
 import perfect from '../../utils/perfect';
 import defaultHeadPic from '../../../images/headpic.png';
 import championNotGain from '../../../images/champion-not-gain.png';
@@ -56,7 +54,7 @@ class HongbaoGainedList extends Component {
 
   render() {
     const {participantPagination, skuId, identifier} = this.props;
-    const {list, isFetching, lastPage} = participantPagination;
+    const {list} = participantPagination;
 
     if (!list) {
       return null;

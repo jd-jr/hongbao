@@ -1,8 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {findDOMNode} from 'react-dom';
-import classnames from 'classnames';
 import PullToRefresh from 'reactjs-pull-to-refresh';
-import ScrollLoad from '../../ui/ScrollLoad';
 import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
 import ProductCategory from './ProductCategory';
@@ -17,8 +15,6 @@ class ProductList extends Component {
     super(props, context);
     this.state = {
       showFoot: false,
-      listLoading: true,
-      disabled: document.body.scrollTop !== 0
     };
 
     this.handleChecked = this.handleChecked.bind(this);
@@ -184,7 +180,7 @@ class ProductList extends Component {
       productPagination
     } = this.props;
 
-    const {ids, entity, lastPage, isFetching} = productPagination;
+    const {ids, entity, lastPage} = productPagination;
 
     if (!ids) {
       return (
@@ -200,9 +196,10 @@ class ProductList extends Component {
     }
 
     return (
-      <PullToRefresh className="hb-product-panel"
+      <PullToRefresh className="hb-main-panel"
                      refreshCallback={this.refreshCallback}
-                     loadMoreCallback={this.loadMoreCallback}>
+                     loadMoreCallback={this.loadMoreCallback}
+                     hasMore={!lastPage}>
         <ul className="hb-list">
           {
             ids ? ids.map((item, index) => {
@@ -218,7 +215,7 @@ class ProductList extends Component {
     const {
       selectedProduct, categoryList, activeCategory, priceOrder, productActions
     } = this.props;
-    const {showFoot, disabled} = this.state;
+    const {showFoot} = this.state;
     const btnDisabled = !selectedProduct;
 
     const categoryProps = {

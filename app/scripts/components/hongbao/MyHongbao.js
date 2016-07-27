@@ -5,7 +5,6 @@ import BottomNav from '../BottomNav';
 import ReceiveHongbao from './ReceiveHongbao';
 import SponsorHongbao from './SponsorHongbao';
 import perfect from '../../utils/perfect';
-import emsCnpl from '../../../images/wallet-ems-cnpl.png';
 
 class MyHongbao extends Component {
   constructor(props, context) {
@@ -16,6 +15,7 @@ class MyHongbao extends Component {
       showFoot: false,
     };
     this.switchTab = this.switchTab.bind(this);
+    this.loadUserInfo = this.loadUserInfo.bind(this);
   }
 
   componentWillMount() {
@@ -29,7 +29,7 @@ class MyHongbao extends Component {
       const {setClientInfo} = this.props;
       setClientInfo((login) => {
         if (login) {
-          this.loadData();
+          this.loadUserInfo();
           this.setState({
             isLogin: true
           });
@@ -38,7 +38,7 @@ class MyHongbao extends Component {
         }
       });
     } else {
-      this.loadData();
+      this.loadUserInfo();
     }
   }
 
@@ -51,7 +51,7 @@ class MyHongbao extends Component {
     cacheActions.resetCacheById('sponsorPagination');
   }
 
-  loadData() {
+  loadUserInfo() {
     const {hongbaoActions} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
@@ -85,7 +85,8 @@ class MyHongbao extends Component {
       userInfo,
       caches,
       cacheActions,
-      type
+      type,
+      loadUserInfo: this.loadUserInfo
     };
 
     const sponsorProps = {
@@ -94,7 +95,8 @@ class MyHongbao extends Component {
       userInfo,
       caches,
       cacheActions,
-      type
+      type,
+      loadUserInfo: this.loadUserInfo
     };
 
     return (

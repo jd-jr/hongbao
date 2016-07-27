@@ -59,6 +59,8 @@ class Product extends Component {
   componentWillUnmount() {
     const {productActions} = this.props;
     productActions.clearProduct();
+    document.body.style.overflowY = 'hidden';
+    document.documentElement.style.overflowY = 'hidden';
   }
 
   selectProduct(e) {

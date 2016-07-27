@@ -44,7 +44,6 @@ class Home extends Component {
       payDataReady: false,
       loadingStatus: false,
       checked: true, //同意条款
-      mystic: false, // 是否为神秘奖品
       showFoot: false,
       giftTitle: '可发1个红包，送给你想送的人'
     };
@@ -53,7 +52,6 @@ class Home extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.payBefore = this.payBefore.bind(this);
     this.handleChecked = this.handleChecked.bind(this);
-    this.handleMystery = this.handleMystery.bind(this);
     this.replaceProduct = this.replaceProduct.bind(this);
 
   }
@@ -167,15 +165,14 @@ class Home extends Component {
     });
   }
 
-  handleMystery() {
-    const {mystic} = this.state;
-    this.setState({
-      mystic: !mystic
-    });
-  }
-
   //选择礼物
-  selectProduct() {
+  selectProduct(e) {
+    //防点透处理
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+
     if (!this.state.selecting) {
       return;
     }
@@ -237,7 +234,7 @@ class Home extends Component {
 
   //支付
   pay() {
-    const {skuId, giftNum, title, loadingStatus, mystic} = this.state;
+    const {skuId, giftNum, title, loadingStatus} = this.state;
     if (loadingStatus) {
       return;
     }
@@ -269,8 +266,7 @@ class Home extends Component {
         identifier = json.data;
         const url = 'pay';
         const body = {
-          identifier,
-          mystic
+          identifier
         };
         return callApi({url, body, needAuth: true});
       },
@@ -379,8 +375,8 @@ class Home extends Component {
 
     let initiateCom = null;
     if (pathname && pathname.indexOf('/initiate') !== -1) {
-      const {skuName, title, identifier, status, skuIcon, mystic} = this.props;
-      const initiateProps = {skuName, title, identifier, status, skuIcon, mystic};
+      const {skuName, title, identifier, status, skuIcon} = this.props;
+      const initiateProps = {skuName, title, identifier, status, skuIcon};
       initiateCom = (
         <Initiate {...initiateProps}/>
       );
@@ -423,7 +419,7 @@ class Home extends Component {
                           <div className="text-muted f-sm">{bizPrice ? `￥${bizPrice}` : ''}</div>
                         </div>
                         <div className="col-4 border-left border-second text-center">
-                          <a href="" onClick={this.replaceProduct}>更换</a>
+                          <a href="" onTouchTap={this.replaceProduct}>更换</a>
                         </div>
                       </div>
                     </div>
@@ -491,7 +487,6 @@ Home.propTypes = {
   identifier: PropTypes.string,
   status: PropTypes.string,
   skuIcon: PropTypes.string,
-  mystic: PropTypes.string,
   pathname: PropTypes.string,
   hongbaoInfo: PropTypes.object,
   homeAction: PropTypes.object

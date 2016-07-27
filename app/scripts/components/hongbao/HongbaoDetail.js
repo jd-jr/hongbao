@@ -34,7 +34,6 @@ class HongbaoDetail extends Component {
       sponsorGoal: 'new', // 判断底部显示状态，是重新发起，还是继续发送
       showInitiate: false, // 继续发送状态
       hongbaoExpired: false, //红包是否过期
-      disabled: document.body.scrollTop !== 0
     };
 
     this.showDetail = this.showDetail.bind(this);
@@ -144,19 +143,6 @@ class HongbaoDetail extends Component {
     return hongbaoDetailAction.getParticipantList(body, clear);
   }
 
-  // 下拉滑动开始事件
-  onPanStart() {
-    const {disabled} = this.state;
-    if (!disabled) {
-      this.preventDefault = true;
-    }
-  }
-
-  // 下拉滑动结束事件
-  onPanEnd() {
-    this.preventDefault = false;
-  }
-
   /**
    * 显示红包详情
    * @param first 设为 true，表示红包弹框加载完，显示
@@ -201,7 +187,12 @@ class HongbaoDetail extends Component {
   }
 
   // 红包攻略
-  guide() {
+  guide(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+
     const {type} = this.props;
     //埋点
     perfect.setBuriedPoint(`hongbao${type && type === 'sponsor' ? '_my' : ''}_guide`);
@@ -305,6 +296,7 @@ class HongbaoDetail extends Component {
       hongbaoInfo, identifier, indexActions,
       hongbaoDetailAction, participantPagination, setModalCloseCallback, type
     } = this.props;
+    const {lastPage} = participantPagination;
 
     /**
      skuId  String  商品SKU
@@ -341,7 +333,7 @@ class HongbaoDetail extends Component {
     const unpackProps = {
       identifier, indexActions, showDetail, hongbaoDetailAction
     };
-    const {unpack, detail, sponsorGoal, showInitiate, hongbaoExpired, disabled} = this.state;
+    const {unpack, detail, sponsorGoal, showInitiate, hongbaoExpired} = this.state;
 
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
@@ -372,13 +364,15 @@ class HongbaoDetail extends Component {
       <div>
         {initiateCom}
         {unpack ? <Unpack {...unpackProps}/> : null}
-        <PullToRefresh refreshCallback={this.refreshCallback}
-                       loadMoreCallback={this.loadMoreCallback}>
-          <article className="hb-wrap-mb" style={{display: detail}}>
+        <PullToRefresh className="hb-main-panel-noheader"
+                       refreshCallback={this.refreshCallback}
+                       loadMoreCallback={this.loadMoreCallback}
+                       hasMore={!lastPage}>
+          <article style={{display: detail}}>
             <section>
               <div className="text-center m-t-3">
                 <div>
-                  <img className="img-circle img-thumbnail hb-figure"
+                  <img className="img-circle img-thumbnail hb-figure hb-user-info"
                        src={ownerHeadpic} alt=""/>
                 </div>
                 <h3 className="m-t-2">{ownerNickname}的红包</h3>
@@ -393,12 +387,12 @@ class HongbaoDetail extends Component {
               </div>
               {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
             </section>
-            {this.renderFooter()}
           </article>
           <p className="text-center hb-logo-gray-pos">
             <i className="hb-logo-gray"></i>
           </p>
         </PullToRefresh>
+        {this.renderFooter()}
       </div>
     );
   }

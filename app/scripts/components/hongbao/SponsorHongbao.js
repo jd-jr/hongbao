@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {Link} from 'react-router';
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../../utils/perfect';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
@@ -9,10 +9,6 @@ import QrCode from './QrCode';
 class SponsorHongbao extends Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      type: 'received' // received 已收红包， luck 手气最佳
-    };
-    this.switchTab = this.switchTab.bind(this);
 
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
@@ -26,15 +22,9 @@ class SponsorHongbao extends Component {
     }
   }
 
-  //切换已收红包和手气最佳
-  switchTab(e, type) {
-    this.setState({
-      type
-    });
-  }
-
   // 下拉刷新回调函数
   refreshCallback() {
+    this.props.loadUserInfo();
     return this.loadData(true);
   }
 
@@ -116,7 +106,11 @@ class SponsorHongbao extends Component {
     }
   }
 
-  hongbaoDetail(link) {
+  hongbaoDetail(e, link) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
     this.context.router.push(link);
   }
 
@@ -126,7 +120,7 @@ class SponsorHongbao extends Component {
       sponsorPagination, type
     } = this.props;
 
-    let {list, isFetching, lastPage} = sponsorPagination;
+    let {list} = sponsorPagination;
 
     if (!list) {
       return (
@@ -149,7 +143,7 @@ class SponsorHongbao extends Component {
           return (
             <li key={identifier + giftRecordId}
                 className="hb-link-block row flex-items-middle"
-                onTouchTap={() => this.hongbaoDetail(link)}>
+                onTouchTap={(e) => this.hongbaoDetail(e, link)}>
               <div className="col-4">
                 <img className="img-fluid" src={skuIcon} alt=""/>
               </div>
@@ -171,12 +165,13 @@ class SponsorHongbao extends Component {
   }
 
   render() {
-    const {userInfo, type} = this.props;
+    const {userInfo, type, sponsorPagination} = this.props;
     const {giftAndThirdAccUserInfoDto, redbagAssemblyRetDto} = userInfo;
     let {putOutNum, putOutAmount} = (redbagAssemblyRetDto || {});
     if (putOutAmount === undefined) {
       putOutAmount = 0;
     }
+    const {lastPage} = sponsorPagination;
 
     let headpic = '';
     let nickName = '';
@@ -186,13 +181,14 @@ class SponsorHongbao extends Component {
     }
 
     return (
-      <PullToRefresh className="hb-product-panel"
+      <PullToRefresh className="hb-main-panel"
                      refreshCallback={this.refreshCallback}
-                     loadMoreCallback={this.loadMoreCallback}>
-        <QrCode type={type}/>
+                     loadMoreCallback={this.loadMoreCallback}
+                     hasMore={!lastPage}>
+        {deviceEnv.inWx ? <QrCode type={type}/> : null}
         <section className="text-center m-t-2">
           <div>
-            <img className="img-circle img-thumbnail hb-figure" src={headpic} alt=""/>
+            <img className="img-circle img-thumbnail hb-figure hb-user-info" src={headpic} alt=""/>
           </div>
           <h3 className="m-t-1 m-b-0">{nickName}共发出</h3>
           <div className="hb-money line-height-1">{(putOutAmount / 100).toFixed(2)}</div>
@@ -220,7 +216,8 @@ SponsorHongbao.propTypes = {
   userInfo: PropTypes.object,
   caches: PropTypes.object,
   cacheActions: PropTypes.object,
-  type: PropTypes.string
+  type: PropTypes.string,
+  loadUserInfo: PropTypes.func
 };
 
 export default SponsorHongbao;

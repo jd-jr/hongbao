@@ -53,6 +53,7 @@ class ReceiveHongbao extends Component {
 
   // 下拉刷新回调函数
   refreshCallback() {
+    this.props.loadUserInfo();
     return this.loadData(true);
   }
 
@@ -257,7 +258,7 @@ class ReceiveHongbao extends Component {
       receivePagination
     } = this.props;
 
-    let {list, isFetching, lastPage} = receivePagination;
+    let {list} = receivePagination;
 
     if (!list) {
       return (
@@ -275,7 +276,7 @@ class ReceiveHongbao extends Component {
     return (
       <section className="m-t-1">
         <div className="arrow-hollow-top hb-arrows-active" ref="arrow"></div>
-        <ul className="hb-list">
+        <ul className="hb-list" key={type}>
           {
             list ? list.map((item) => {
               return this.renderItem(item);
@@ -288,8 +289,9 @@ class ReceiveHongbao extends Component {
 
   render() {
     const {type} = this.state;
-    const {userInfo} = this.props;
+    const {userInfo, receivePagination} = this.props;
     const {giftAndThirdAccUserInfoDto, redbagAssemblyRetDto} = userInfo;
+    const {lastPage} = receivePagination;
 
     let headpic = '';
     let nickName = '';
@@ -304,13 +306,14 @@ class ReceiveHongbao extends Component {
     }
 
     return (
-      <PullToRefresh className="hb-product-panel"
+      <PullToRefresh className="hb-main-panel"
                      refreshCallback={this.refreshCallback}
-                     loadMoreCallback={this.loadMoreCallback}>
-        <QrCode type={type}/>
-        <section className="text-center">
+                     loadMoreCallback={this.loadMoreCallback}
+                     hasMore={!lastPage}>
+        {deviceEnv.inWx ? <QrCode type={type}/> : null}
+        <section className="text-center m-t-1">
           <div>
-            <img className="img-circle img-thumbnail hb-figure" src={headpic} alt=""/>
+            <img className="img-circle img-thumbnail hb-figure hb-user-info" src={headpic} alt=""/>
           </div>
           <h3 className="m-t-1">{nickName}共收到</h3>
           <div className="hb-money">{(gainCashBalance / 100).toFixed(2)}</div>
@@ -355,7 +358,8 @@ ReceiveHongbao.propTypes = {
   userInfo: PropTypes.object,
   caches: PropTypes.object,
   cacheActions: PropTypes.object,
-  type: PropTypes.string
+  type: PropTypes.string,
+  loadUserInfo: PropTypes.func
 };
 
 export default ReceiveHongbao;

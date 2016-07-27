@@ -17,7 +17,7 @@ class QrCode extends Component {
   }
 
   render() {
-    if (!deviceEnv.inWx) {
+    if (deviceEnv.inWx) {
       return (
         <section className="hb-single row m-a-1 p-y-0-5">
           <div className="col-5 text-left p-a-0" onTouchTap={this.focusonQrCode}>
