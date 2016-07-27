@@ -289,6 +289,7 @@ class HongbaoSelfInfo extends Component {
 
   render() {
     const {refundVisible} = this.state;
+    const {giftGainedNum} = this.props;
     const footer = (
       <div className="row text-center">
         <div className="col-12 border-second border-right hb-active-btn p-y-0-5" onClick={() => this.onClose('cancel')}>
@@ -315,18 +316,26 @@ class HongbaoSelfInfo extends Component {
         >
           <div>
             <h3 className="text-center">服务费说明</h3>
-            <div className="row">
-              <div className="col-12">
-                <div>商品价格0-113元</div>
-                <div>商品价格114-2179元</div>
-                <div>商品价格2180元以上</div>
+            {giftGainedNum > 0 ? (
+              <div className="row">
+                <div className="col-12" style={{paddingRight: '0'}}>
+                  <div>商品价格0-2180元(不含)</div>
+                  <div>商品价格2180元以上</div>
+                </div>
+                <div className="col-12">
+                  <div>费率=商品价格*8%</div>
+                  <div>费率=160元</div>
+                </div>
+                <div className="col-24 m-t-1">
+                  退款金额将原路返回，预计1-3个工作日到账。
+                </div>
               </div>
-              <div className="col-12">
-                <div>费率=价格*8.5%+运费</div>
-                <div>费率=价格*8.5%</div>
-                <div>费率=180元</div>
+            ) : (
+              <div>
+                <div>您可申请全额退款，退款金额将原路返回</div>
+                <div>预计1-3个工作日到账</div>
               </div>
-            </div>
+            )}
           </div>
         </Modal>
       </div>
@@ -348,7 +357,8 @@ HongbaoSelfInfo.propTypes = {
   indexActions: PropTypes.object,
   setModalCloseCallback: PropTypes.func,
   type: PropTypes.string,
-  updateSponsorGoal: PropTypes.func
+  updateSponsorGoal: PropTypes.func,
+  giftGainedNum: PropTypes.number
 };
 
 export default HongbaoSelfInfo;

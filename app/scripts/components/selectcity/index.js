@@ -37,6 +37,8 @@ class SelectCity extends Component {
 
   /*eslint-disable react/no-did-mount-set-state*/
   componentDidMount() {
+    document.body.style.overflowY = 'auto';
+    document.documentElement.style.overflowY = 'auto';
     let _index = this.state.type;
     const methodName = this.areaTypes[_index].search;
     this.getNextList(0, methodName)
@@ -46,6 +48,11 @@ class SelectCity extends Component {
           type: ++_index
         })
       })
+  }
+
+  componentWillUnmount() {
+    document.body.style.overflowY = 'hidden';
+    document.documentElement.style.overflowY = 'hidden';
   }
 
   getNextList(areaId, methodName) {

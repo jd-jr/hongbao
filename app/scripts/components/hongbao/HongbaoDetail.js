@@ -338,7 +338,8 @@ class HongbaoDetail extends Component {
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
       identifier, indexActions, setModalCloseCallback, type,
-      updateSponsorGoal: this.updateSponsorGoal
+      updateSponsorGoal: this.updateSponsorGoal,
+      giftGainedNum
     };
 
     const gainedListProps = {

@@ -4,6 +4,16 @@ import {Link} from 'react-router';
 // 红包攻略
 class Guide extends Component {
 
+  componentDidMount() {
+    document.body.style.overflowY = 'auto';
+    document.documentElement.style.overflowY = 'auto';
+  }
+
+  componentWillUnmount() {
+    document.body.style.overflowY = 'hidden';
+    document.documentElement.style.overflowY = 'hidden';
+  }
+
   render() {
     return (
       <div className="hb-guide-panel p-a-3">
