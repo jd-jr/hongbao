@@ -7,8 +7,11 @@ oes2kw1U2d1IpBwRbiIucIS6WWe0
 sessionStorage.setItem('thirdAccId', 'oes2kw1U2d1IpBwRbiIucIS6WWe0');
 
 
-联合登录
+联合登录，线上环境
 https://plogin.m.jd.com/user/login.action?appid=100&returnurl=https%3A%2F%2Fm.jdpay.com%2Fwallet%2Flogin%2Fsid%3FsystemId%3DRBS%26toUrl%3Dhttps%253A%252F%252Fstatic.jdpay.com%252Fm-hongbao%252F%253Ffrom%253Dlogin
+
+联合登录，测试环境
+http://plogin.m.jd.com/user/login.action?appid=100&returnurl=http%3A%2F%2Fm.jdpay.com%2Fwallet%2Flogin%2Fsid%3FsystemId%3DRBS%26toUrl%3Dhttp%253A%252F%252Fhongbao.jdpay.com%253A8083%252Fm-hongbao%252Ffrom%253Dlogin
 
 微信授权
 

@@ -8,6 +8,7 @@ import Product from '../components/product/Product';
 import Authorize from '../components/hongbao/Authorize';
 import HongbaoDetailPage from '../containers/HongbaoDetailPage';
 import MyHongbaoPage from '../containers/MyHongbaoPage';
+import UnpackPage from '../containers/UnpackPage';
 import UserAddressList from '../components/userAddressList/'
 import AddAddress from '../components/addAddress/'
 import SelectCity from '../components/selectCity/'
@@ -39,7 +40,7 @@ export default (
     /* unpack/:identifier 是从抢红包入口进入
     * hongbao/detail/view/:identifier 是从红包列表进入查看红包详情
     * */
-    <Route path="unpack/:identifier" component={HongbaoDetailPage}
+    <Route path="unpack/:identifier" component={UnpackPage}
            onEnter={() => enterHandler('unpack')}/>
     <Route path="hongbao/detail/view/:identifier" component={HongbaoDetailPage}
            onEnter={() => enterHandler('detail')}/>

@@ -22,7 +22,8 @@ class UserAddressList extends Component {
       showActionTip: false,
       actionTip: '确认使用该收货地址？',
       waitforModal: false,
-      loading: false
+      loading: false,
+      goodsAddress: null
     };
 
     this.skuId = getSessionStorage('skuId');
@@ -402,12 +403,21 @@ class UserAddressList extends Component {
     }
 
     return address.map((item, index) => {
+      item.stock = true;
       return (
         <div key={item.id}>
           <div className="hb-bd-t row hb-bg-white item"
                onTouchTap={() => this.showTipWhenAction('USE', index, item)}>
             <div className="col-6 text-truncate">{item.name}</div>
-            <div className="col-10 ">{item.mobile}</div>
+            <div className="col-9">{item.mobile}</div>
+
+            <div className="col-2 p-a-0">
+              <label className="checked hb-radio-encircle"></label>
+            </div>
+
+            <span className="col-7 p-a-0 text-muted"
+                  onTouchTap={() => this.showTipWhenAction('SET_DFT', index, item)}>设为收货地址</span>
+
             <div className="col-24 hb-gray-l-t address-text text-truncate-2">
               {item.fullAddress}
             </div>
@@ -415,8 +425,8 @@ class UserAddressList extends Component {
           <div className="row hb-bg-white opt-item hb-bd-t hb-bd-b slt-radio-panel">
             <i className="line-v"></i>
 
-            <label forHtml="slt-circle0" onTouchTap={() => this.showTipWhenAction('SET_DFT', index, item)}
-                   className={(item.addressDefault ? 'checked' : '') + ' col-3'}></label>
+            <label onTouchTap={() => this.showTipWhenAction('SET_DFT', index, item)}
+                   className={(item.addressDefault ? 'checked slt-radio' : 'slt-radio') + ' col-3'}></label>
             <span className="col-8 push-2 hb-gray-l-t"
                   onTouchTap={() => this.showTipWhenAction('SET_DFT', index, item)}>设为默认</span>
 

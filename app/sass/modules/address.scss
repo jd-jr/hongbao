@@ -65,7 +65,7 @@
   position: relative;
 }
 
-.slt-radio-panel > label {
+.slt-radio {
   width: 25px;
   height: 25px;
   border-radius: 50%;
@@ -77,14 +77,13 @@
   flex: 0 0 25px;
   max-width: 25px;
   transform: scale(0.7);
-
 }
 
-.slt-radio-panel label.checked:after {
+.slt-radio.checked:after {
   background: #ef5557;
 }
 
-.slt-radio-panel > label:after {
+.slt-radio:after {
   content: '';
   position: absolute;
   top: 4px;
@@ -434,4 +433,32 @@ input:focus {
   display: inline-block;
   -webkit-transform: scale(0.7);
   transform: scale(0.7);
+}
+
+.hb-radio-encircle {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  position: relative;
+  border: 1px solid #999;
+  transform: scale(0.7);
+  margin-top: -2px;
+}
+
+.hb-radio-encircle.checked:after {
+  background: #ef5557;
+}
+
+.hb-radio-encircle:after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 2px rgba(236, 235, 235, 0.7);
+  transition: all 0.3s ease;
 }
