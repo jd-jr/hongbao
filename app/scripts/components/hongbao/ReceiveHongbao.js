@@ -104,7 +104,10 @@ class ReceiveHongbao extends Component {
       e.nativeEvent.stopPropagation();
       jdWalletApi.openModule({name: 'BALANCE'});
     } else {
-      const url = 'https://hongbao-api.jdpay.com/user/Classification';
+      //需要先联合登录
+      perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
+
+      /*const url = 'https://hongbao-api.jdpay.com/user/Classification';
       const body = {
         accountType: perfect.getAccountType(),
         thirdAccId: perfect.getThirdAccId()
@@ -127,7 +130,7 @@ class ReceiveHongbao extends Component {
         location.href = 'https://qianbao.jd.com/p/page/download.htm?module=BALANCE';
       }, (error) => {
 
-      });
+      });*/
     }
   }
 
