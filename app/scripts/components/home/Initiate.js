@@ -91,7 +91,7 @@ class Initiate extends Component {
   share() {
     //调起分享
     const urlRoot = prefect.getLocationRoot();
-    let {identifier, title, skuName} = this.props;
+    let {identifier, title} = this.props;
 
     walletApi.share({
       url: `${urlRoot}authorize/${identifier}`,

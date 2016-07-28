@@ -224,12 +224,13 @@ class HongbaoSelfInfo extends Component {
    */
   renderRefundStatus(refundStatus) {
     if (refundStatus === 'REDBAG_GOODS_TRANSFER_AND_REFOUND' || refundStatus === 'REDBAG_GOODS_REFOUND') {
+      const {giftGainedNum} = this.props;
       return (
         <div>
           <span onClick={this.refundPrompt}
                 className="btn btn-primary btn-sm btn-arc">申请退款
           </span>
-          <p className="f-xs text-muted m-t-0-3">（温馨提示：退款须收部分平台服务费或继续发送此红包）</p>
+          <p className="f-xs text-muted m-t-0-3">（温馨提示：{giftGainedNum > 0 ? '退款须收部分平台服务费或继续发送此红包' : '您可继续发送此红包或申请全额退款'}）</p>
         </div>
       );
     } else if (refundStatus === 'REFUNDED') {

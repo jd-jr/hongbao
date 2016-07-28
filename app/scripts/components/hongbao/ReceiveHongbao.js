@@ -9,6 +9,7 @@ import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
 import PullToRefresh from 'reactjs-pull-to-refresh';
 import QrCode from './QrCode';
+import callApi from '../../fetch';
 
 class ReceiveHongbao extends Component {
   constructor(props, context) {
@@ -103,13 +104,30 @@ class ReceiveHongbao extends Component {
       e.nativeEvent.stopPropagation();
       jdWalletApi.openModule({name: 'BALANCE'});
     } else {
+      const url = 'user/Classification';
+      const body = {
+        accountType: perfect.getAccountType(),
+        accountId: perfect.getThirdAccId()
+      };
+
+      callApi({url, body}).then((json) => {
+        console.info(1);
+      }, (error) => {
+
+      });
       //需要先联合登录
-      perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
+      //perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
     }
   }
 
   //兑奖
-  reward({giftRecordId, skuId, identifier}) {
+  reward(e, {giftRecordId, skuId, identifier}) {
+    //防止点透
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+
     setSessionStorage('skuId', skuId);
     setSessionStorage('giftRecordId', giftRecordId);
     setSessionStorage('identifier', identifier);
@@ -208,12 +226,12 @@ class ReceiveHongbao extends Component {
       );
     }
 
-    //去领取，只有去领取状态可以兑奖
-    const isReward = !giftStatus || this.giftStatusArr.indexOf(giftStatus) === -1;
+    //去领取，只有去领取状态可以兑奖，并且是实物
+    const isReward = giftType === 'GOODS' && (!giftStatus || this.giftStatusArr.indexOf(giftStatus) === -1);
 
     if (isReward) {
       return (
-        <div className="col-6 text-right" onTouchTap={() => this.reward({giftRecordId, skuId, identifier})}>
+        <div className="col-6 text-right" onTouchTap={(e) => this.reward(e, {giftRecordId, skuId, identifier})}>
           {contentEl}
         </div>
       );

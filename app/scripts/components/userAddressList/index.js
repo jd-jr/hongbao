@@ -23,7 +23,8 @@ class UserAddressList extends Component {
       actionTip: '确认使用该收货地址？',
       waitforModal: false,
       loading: false,
-      goodsAddress: null
+      goodsAddress: null,
+      showFoot: false,
     };
 
     this.skuId = getSessionStorage('skuId');
@@ -38,11 +39,20 @@ class UserAddressList extends Component {
     this.toggleTipState = this.toggleTipState.bind(this);
     this.goAddAddress = this.goAddAddress.bind(this);
     this.onModalClose = this.onModalClose.bind(this);
+    this.setGoodsAddress = this.setGoodsAddress.bind(this);
+    this.selectAddress = this.selectAddress.bind(this);
     this.currentItem = null;
     this.clearData = true;// unmount 时是否清空数据，默认为清空，但是编辑地址，添加地址不再清空
   }
 
   componentWillMount() {
+    //延迟显示底部按钮，解决 IOS 下底部按钮设置 fixed 的问题
+    setTimeout(() => {
+      this.setState({
+        showFoot: true
+      });
+    }, 300);
+
     const {address, setUserAddressList, indexActions} = this.props;
     if (!address) {
       callApi({
@@ -79,6 +89,22 @@ class UserAddressList extends Component {
     }
     document.body.style.overflowY = 'hidden';
     document.documentElement.style.overflowY = 'hidden';
+  }
+
+  setGoodsAddress(index) {
+    this.setState({
+      goodsAddress: index
+    });
+  }
+
+  selectAddress() {
+    const index = this.state.goodsAddress;
+    if (index === null) {
+      this.props.indexActions.setErrorMessage('请选择收货地址');
+      return;
+    }
+    const item = this.props.address[index];
+    this.showTipWhenAction('USE', index, item);
   }
 
   checkGoodsStock(list) {
@@ -385,6 +411,7 @@ class UserAddressList extends Component {
   //渲染地址列表
   /*eslint-disable prefer-template*/
   renderAddressList() {
+    const {goodsAddress} = this.state;
     const {
       address
     } = this.props;
@@ -403,21 +430,16 @@ class UserAddressList extends Component {
     }
 
     return address.map((item, index) => {
-      item.stock = true;
       return (
         <div key={item.id}>
           <div className="hb-bd-t row hb-bg-white item"
-               onTouchTap={() => this.showTipWhenAction('USE', index, item)}>
+               onTouchTap={() => this.setGoodsAddress(index)}>
             <div className="col-6 text-truncate">{item.name}</div>
             <div className="col-9">{item.mobile}</div>
-
             <div className="col-2 p-a-0">
-              <label className="checked hb-radio-encircle"></label>
+              <label className={`${goodsAddress === index ? 'checked ' : ''}hb-radio-encircle`}></label>
             </div>
-
-            <span className="col-7 p-a-0 text-muted"
-                  onTouchTap={() => this.showTipWhenAction('SET_DFT', index, item)}>设为收货地址</span>
-
+            <span className="col-7 p-a-0 text-muted">设为收货地址</span>
             <div className="col-24 hb-gray-l-t address-text text-truncate-2">
               {item.fullAddress}
             </div>
@@ -442,59 +464,71 @@ class UserAddressList extends Component {
   }
 
   render() {
-    const {loading} = this.state;
+    const {loading, showFoot, goodsAddress} = this.state;
     if (loading) {
       return (<Loading/>)
     }
 
     return (
-      <div className="hb-address-panel">
-        {this.renderModal()}
-        <div className="hb-bd-t hb-bd-b row hb-bg-white item">
-          <div className="col-21" onTouchTap={this.goAddAddress}>新建收货地址</div>
-          <div className="col-3  arrow-hollow-right"></div>
-        </div>
-        <div>
-          {
-            this.renderAddressList()
-          }
-        </div>
+      <div>
+        <div className="hb-address-panel hb-wrap-mb-sm">
+          {this.renderModal()}
+          <div className="hb-bd-t hb-bd-b row hb-bg-white item">
+            <div className="col-21" onTouchTap={this.goAddAddress}>新建收货地址</div>
+            <div className="col-3  arrow-hollow-right"></div>
+          </div>
+          <div>
+            {
+              this.renderAddressList()
+            }
+          </div>
 
-        <div className={className({
+          <div className={className({
           'tip-mask': true,
            'hb-hidden': !this.state.showTip
         })}>
-          <div className="tip-alert">
-            <div className="text-center">
-              <div className="hb-bd-b">
-                <h2 className="hb-f-16 tip-item title">您所选择的收货地址无货</h2>
-                <div className="hb-f-12 sub-title">您可以有如下选择</div>
+            <div className="tip-alert">
+              <div className="text-center">
+                <div className="hb-bd-b">
+                  <h2 className="hb-f-16 tip-item title">您所选择的收货地址无货</h2>
+                  <div className="hb-f-12 sub-title">您可以有如下选择</div>
+                </div>
+                <div className="text-red tip-item hb-bd-b" onTouchTap={() => this.waitForGoods()}>等待京东补货</div>
+                <div className="text-red tip-item" onTouchTap={this.toggleTipState}>取消</div>
               </div>
-              <div className="text-red tip-item hb-bd-b" onTouchTap={() => this.waitForGoods()}>等待京东补货</div>
-              <div className="text-red tip-item" onTouchTap={this.toggleTipState}>取消</div>
             </div>
           </div>
-        </div>
 
-        <div className={className({
+          <div className={className({
           'tip-mask': true,
            'hb-hidden': !this.state.actionShowTip
         })}>
-          <div className="tip-alert">
+            <div className="tip-alert">
 
-            <div className="text-center">
-              <div className="hb-bd-b tip-msg">
-                {this.state.actionTip}
-              </div>
-              <div className="btn-panel">
+              <div className="text-center">
+                <div className="hb-bd-b tip-msg">
+                  {this.state.actionTip}
+                </div>
+                <div className="btn-panel">
                 <span className="btn-cancel text-red tip-item hb-bd-r"
                       onTouchTap={this.toggleActionTipState}>取消</span>
-                <span className="btn-sure text-red tip-item"
-                      onTouchTap={this.sureAction}>确定</span>
+                  <span className="btn-sure text-red tip-item"
+                        onTouchTap={this.sureAction}>确定</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        {showFoot ? (
+          <footer className="hb-footer-fixed">
+            <button className="btn btn-block btn-primary btn-lg btn-flat"
+                    disabled={goodsAddress === null}
+                    onTouchTap={this.selectAddress}>
+              确定
+            </button>
+          </footer>
+        ) : null}
       </div>
     );
   }

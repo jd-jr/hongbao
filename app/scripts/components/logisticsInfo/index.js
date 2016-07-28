@@ -4,6 +4,7 @@
 import React, {Component, PropTypes} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import * as actions from '../../actions/userAddressList'
 import className from 'classnames'
 import {assign} from 'lodash'
@@ -107,8 +108,10 @@ class Logistics extends Component {
 
     return (
       <div>
-        <a style={{display: 'block'}} className="user-info-panel hb-bg-white hb-bd-b text-center hb-link-block"
-           href="https://qianbao.jd.com/p/page/download.htm">点击下载京东钱包，及时查看礼物配送信息！</a>
+        {!deviceEnv.inWx ? (
+          <a style={{display: 'block'}} className="user-info-panel hb-bg-white hb-bd-b text-center"
+             href="https://qianbao.jd.com/p/page/download.htm">点击下载京东钱包，及时查看礼物配送信息！</a>
+        ) : null}
 
         <div className="user-info-panel hb-bg-white hb-bd-b order-state-panel hb-bd-t">
           <div className="name-mobile">

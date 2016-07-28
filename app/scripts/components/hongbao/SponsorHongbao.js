@@ -74,7 +74,7 @@ class SponsorHongbao extends Component {
       case 'RECEIVE_COMPLETE':
         return (
           <div>
-            已抢光 {giftGainedNum}/{giftNum}个
+            礼物已发出 {giftGainedNum}/{giftNum}个
           </div>
         );
       case 'FORBIDDEN_REFUND':
