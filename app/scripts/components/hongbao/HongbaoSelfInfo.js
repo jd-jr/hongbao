@@ -280,7 +280,7 @@ class HongbaoSelfInfo extends Component {
                 className="btn btn-primary btn-sm btn-arc">申请退款
           </span>
           <p className="f-xs text-muted m-t-0-5">
-            （温馨提示：{refundStatus === 'REDBAG_WHOLE_REFUND' || 'REDBAG_WHOLE_REFUND_TRANSFER' ? '您可继续发送此红包或申请全额退款' : '退款须收部分平台服务费或继续发送此红包'}）</p>
+            （温馨提示：{refundStatus === 'REDBAG_WHOLE_REFUND' || refundStatus === 'REDBAG_WHOLE_REFUND_TRANSFER' ? '您可继续发送此红包或申请全额退款' : '退款须收部分平台服务费或继续发送此红包'}）</p>
         </div>
       );
     } else if (refundStatus === 'REFUNDED') {
@@ -339,8 +339,7 @@ class HongbaoSelfInfo extends Component {
   }
 
   render() {
-    const {refundVisible} = this.state;
-    const {giftGainedNum} = this.props;
+    const {refundVisible, refundStatus} = this.state;
     const footer = (
       <div className="row text-center">
         <div className="col-12 border-second border-right hb-active-btn p-y-0-5" onClick={() => this.onClose('cancel')}>
@@ -367,7 +366,12 @@ class HongbaoSelfInfo extends Component {
         >
           <div>
             <h3 className="text-center">服务费说明</h3>
-            {giftGainedNum > 0 ? (
+            {refundStatus === 'REDBAG_WHOLE_REFUND' || refundStatus === 'REDBAG_WHOLE_REFUND_TRANSFER' ? (
+              <div>
+                <div>您可申请全额退款，退款金额将原路返回</div>
+                <div>预计1-3个工作日到账</div>
+              </div>
+            ) : (
               <div className="row">
                 <div className="col-12" style={{paddingRight: '0'}}>
                   <div>商品价格0-2180元(不含)</div>
@@ -380,11 +384,6 @@ class HongbaoSelfInfo extends Component {
                 <div className="col-24 m-t-1">
                   退款金额将原路返回，预计1-3个工作日到账。
                 </div>
-              </div>
-            ) : (
-              <div>
-                <div>您可申请全额退款，退款金额将原路返回</div>
-                <div>预计1-3个工作日到账</div>
               </div>
             )}
           </div>
