@@ -44,6 +44,9 @@ class HongbaoDetail extends Component {
 
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
+
+    //可继续发送状态
+    this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
   }
 
   componentWillMount() {
@@ -104,15 +107,20 @@ class HongbaoDetail extends Component {
          REFUNDED    已退款 我要发红包
          REDBAG_GOODS_TRANSFER_AND_REFOUND   申请退款、继续发送
          REDBAG_GOODS_TRANSFER    继续发送
+         REDBAG_WHOLE_REFUND_TRANSFER 全额退款，可继续发送
          REDBAG_PUT_OUT 我要发红包
          REDBAG_GOODS_REFOUND 申请退款、我要发送红包
          FORBIDDEN_REFUND 禁止退款 我要发红包
+
+         REDBAG_WHOLE_REFUND("红包可全额退款"), //只有现金被领取实物可全退
+         REDBAG_GOODS_REFOUND("红包实物可退款"),
+         RECEIVE_COMPLETE_GOODS_REFUND  已抢光，可退款
          */
-        const againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER'];
+        //this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
         const {hongbaoInfo} = res || {};
         const {refundStatus, status} = hongbaoInfo || {};
         //如果红包已过期，而且是发起者进入，则显示继续发送
-        if (type && type === 'sponsor' && againSend.indexOf(refundStatus) !== -1) {
+        if (type && type === 'sponsor' && this.againSend.indexOf(refundStatus) !== -1) {
           this.setState({
             sponsorGoal: 'again'
           });

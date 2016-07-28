@@ -46,7 +46,6 @@ function paginate({types, paging = true, clearType, customTypes}) {
          console.error('action 中的实体名称必须要跟 reducer 和 Schema 一致或者后台返回的数据格式不正确');
          }*/
 
-        console.info(action);
         if (action.clear) {
           return assign({}, paging ? {
             entity: assign({}, entities[entity]),

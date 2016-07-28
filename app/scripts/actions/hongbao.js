@@ -10,7 +10,6 @@ import {CALL_API} from '../middleware/api';
 // 我发起的红包 sponsor 我收到的红包 receive
 /*eslint-disable indent*/
 function fetchHongbaoList(body, type, clear) {
-  console.info(clear);
   switch (type) {
     case 'sponsor':
       return {

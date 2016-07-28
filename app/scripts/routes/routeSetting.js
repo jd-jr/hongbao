@@ -130,12 +130,13 @@ const routeSetting = {
 
   //进入一个新的路由触发的事件
   enterHandler(key) {
-    if (firstEnter && location.search === '?type=sponsor') {
-      //location.href = `${perfect.getLocationRoot()}my`;
+    if (firstEnter && location.pathname === '/m-hongbao/my' && location.search === '?type=sponsor') {
+      location.href = `${perfect.getLocationRoot()}my`;
     }
     firstEnter = false;
 
     if (deviceEnv.inWx) {
+      //console.info(getSessionStorage('thirdAccId'));
       this.wxAuthorize(key);
       this.monitorExit();
       if (verifySignature) {

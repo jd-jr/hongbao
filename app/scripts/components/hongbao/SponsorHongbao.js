@@ -74,7 +74,13 @@ class SponsorHongbao extends Component {
       case 'RECEIVE_COMPLETE':
         return (
           <div>
-            礼物已发出 {giftGainedNum}/{giftNum}个
+            已抢光 {giftGainedNum}/{giftNum}个
+          </div>
+        );
+      case 'RECEIVE_COMPLETE_GOODS_REFUND':
+        return (
+          <div>
+            已抢光 {giftGainedNum}/{giftNum}个 <span className="text-primary">可退款</span>
           </div>
         );
       case 'FORBIDDEN_REFUND':
@@ -89,7 +95,8 @@ class SponsorHongbao extends Component {
             <span>已过期 </span>
           </div>
         );
-      case 'REDBAGGOODTRANSFERANDREFOUND':
+      case 'REDBAG_WHOLE_REFUND'://红包可全额退款
+      case 'REDBAG_GOODS_REFOUND'://红包实物可退款
         return (
           <div>
             <span>已过期 </span> <span className="text-primary">可退款</span>
@@ -147,11 +154,11 @@ class SponsorHongbao extends Component {
               <div className="col-4">
                 <img className="img-fluid" src={skuIcon} alt=""/>
               </div>
-              <div className="col-12">
+              <div className="col-11">
                 <div className="text-truncate">京东红包</div>
                 <div className="text-muted f-sm">{perfect.formatDate({time: createdDate})}</div>
               </div>
-              <div className="col-8 text-right">
+              <div className="col-9 text-right">
                 <div>{(amount / 100).toFixed(2)}元</div>
                 <div className="text-muted f-sm">
                   {this.getStatus({status, giftGainedNum, giftNum})}

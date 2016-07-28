@@ -35,6 +35,8 @@ class HongbaoSelfInfo extends Component {
     this.viewMyhb = this.viewMyhb.bind(this);
 
     this.submitStatus = false;
+    // 申请退款状态
+    this.refundStatusArr = ['REDBAG_WHOLE_REFUND', 'REDBAG_GOODS_REFOUND', 'RECEIVE_COMPLETE_GOODS_REFUND', 'REDBAG_WHOLE_REFUND_TRANSFER'];
   }
 
   //物流详情
@@ -71,12 +73,34 @@ class HongbaoSelfInfo extends Component {
       e.nativeEvent.stopPropagation();
       jdWalletApi.openModule({name: 'BALANCE'});
     } else {
-      //需要先联合登录
-      perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
+      const url = 'https://hongbao-api.jdpay.com/user/Classification';
+      const body = {
+        accountType: perfect.getAccountType(),
+        thirdAccId: perfect.getThirdAccId()
+      };
+
+      callApi({url, body}).then((res) => {
+        //isJdUser 该用户是否有京东账号
+        //isCustomerUser 该用户是否有钱包账号
+        const {isCustomerUser, isJdUser, jdPin} = res.json.data;
+        if (isJdUser === false) {
+          //需要先联合登录
+          perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
+          return;
+        }
+        if (isCustomerUser === false) {
+          //todo 待绑定 jdpin 功能实现后，再调整，目前先用联合登录
+          perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
+          return;
+        }
+        location.href = 'https://qianbao.jd.com/p/page/download.htm?module=BALANCE';
+      }, (error) => {
+
+      });
     }
   }
 
-  //兑奖
+  //兑奖或修改地址
   reward() {
     const {giftRecordId, skuId, identifier} = this.props;
     setSessionStorage('skuId', skuId);
@@ -200,6 +224,25 @@ class HongbaoSelfInfo extends Component {
             </div>
           </div>
         );
+      case 'UNORDER' :
+        return (
+          <div>
+            <div className="text-center">
+              <span className="hb-money text-primary">恭喜你</span>
+            </div>
+            <div>
+              <button onTouchTap={this.logistics}
+                      className="btn btn-primary btn-sm btn-arc">
+                物流详情
+              </button>
+            </div>
+            <div className="m-t-1">
+              <span className="btn btn-primary btn-sm btn-arc" onTouchTap={this.reward}>
+                修改地址
+              </span>
+            </div>
+          </div>
+        );
       case 'WAIT_STOCK':
         return (
           <div>
@@ -217,20 +260,27 @@ class HongbaoSelfInfo extends Component {
    * REFUNDED    已退款 我要发红包
    REDBAG_GOODS_TRANSFER_AND_REFOUND   申请退款、继续发送
    REDBAG_GOODS_TRANSFER    继续发送
+   REDBAG_WHOLE_REFUND_TRANSFER 全额退款，可继续发送
    REDBAG_PUT_OUT 我要发红包
    REDBAG_GOODS_REFOUND 申请退款、我要发送红包
    FORBIDDEN_REFUND 禁止退款 我要发红包
+
+   REDBAG_WHOLE_REFUND("红包可全额退款"), //只有现金被领取实物可全退
+   REDBAG_GOODS_REFOUND("红包实物可退款"),
+   RECEIVE_COMPLETE_GOODS_REFUND  已抢光，可退款
    * @returns {XML}
    */
+
   renderRefundStatus(refundStatus) {
-    if (refundStatus === 'REDBAG_GOODS_TRANSFER_AND_REFOUND' || refundStatus === 'REDBAG_GOODS_REFOUND') {
+    if (this.refundStatusArr.indexOf(refundStatus) !== -1) {
       const {giftGainedNum} = this.props;
       return (
         <div>
           <span onClick={this.refundPrompt}
                 className="btn btn-primary btn-sm btn-arc">申请退款
           </span>
-          <p className="f-xs text-muted m-t-0-3">（温馨提示：{giftGainedNum > 0 ? '退款须收部分平台服务费或继续发送此红包' : '您可继续发送此红包或申请全额退款'}）</p>
+          <p className="f-xs text-muted m-t-0-5">
+            （温馨提示：{refundStatus === 'REDBAG_WHOLE_REFUND' || 'REDBAG_WHOLE_REFUND_TRANSFER' ? '您可继续发送此红包或申请全额退款' : '退款须收部分平台服务费或继续发送此红包'}）</p>
         </div>
       );
     } else if (refundStatus === 'REFUNDED') {

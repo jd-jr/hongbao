@@ -91,17 +91,19 @@
 
   &product-nav {
     position: fixed;
+    top: 0;
     width: 100%;
     z-index: 100;
     background: #fff;
     padding: 0 1.5rem;
     border-top: 1px solid $gray-lighter;
+    user-select: none;
     @at-root {
       .#{$prefixCls}product-nav-btn {
-        padding: 1rem 0 0.9rem;
+        padding: 1rem 0.5rem 0.9rem;
         display: inline-block;
-        width: 30%;
         text-align: center;
+        border-bottom: 2px solid transparent;
         &.active {
           border-bottom: 2px solid $brand-primary;
         }
@@ -163,6 +165,21 @@
     .hb-figure {
       width: 3rem;
       height: 3rem;
+    }
+  }
+
+  &category-panel {
+    position: relative;
+    &:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2.5rem;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 1));
+    }
+    &:after {
+      right: 0;
     }
   }
 

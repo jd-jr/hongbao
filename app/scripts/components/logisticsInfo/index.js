@@ -109,7 +109,7 @@ class Logistics extends Component {
     return (
       <div>
         {!deviceEnv.inWx ? (
-          <a style={{display: 'block'}} className="user-info-panel hb-bg-white hb-bd-b text-center"
+          <a style={{display: 'block'}} className="user-info-panel hb-bg-white hb-bd-b"
              href="https://qianbao.jd.com/p/page/download.htm">点击下载京东钱包，及时查看礼物配送信息！</a>
         ) : null}
 

@@ -65,6 +65,9 @@
     bottom: 3.5rem;
     left: 0;
     right: 0;
+    .rc-scroll-wrapper {
+      overflow-y: hidden;
+    }
   }
 
   &main-panel-noheader {
@@ -73,5 +76,8 @@
     bottom: 3.4rem;
     left: 0;
     right: 0;
+    .rc-scroll-wrapper {
+      overflow-y: hidden;
+    }
   }
 }

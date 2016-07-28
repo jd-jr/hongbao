@@ -188,9 +188,11 @@ class ProductList extends Component {
       );
     } else if (ids.length === 0) {
       return (
-        <div className="m-t-3">
-          <img className="hb-no-items" src={noItems}/>
-          <p className="m-t-2 text-center text-muted">暂无商品</p>
+        <div className="hb-main-panel">
+          <div className="m-t-2">
+            <img className="hb-no-items" src={noItems}/>
+            <p className="m-t-2 text-center text-muted">暂无礼物</p>
+          </div>
         </div>
       );
     }

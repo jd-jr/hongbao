@@ -6,6 +6,9 @@ oes2kw1U2d1IpBwRbiIucIS6WWe0
 //设置这个，可以在浏览器中测试
 sessionStorage.setItem('thirdAccId', 'oes2kw1U2d1IpBwRbiIucIS6WWe0');
 
+//最新的
+sessionStorage.setItem('thirdAccId', 'otEnCjvzbHr98hVnBL87DinhvKZ8');
+
 
 联合登录，线上环境
 https://plogin.m.jd.com/user/login.action?appid=100&returnurl=https%3A%2F%2Fm.jdpay.com%2Fwallet%2Flogin%2Fsid%3FsystemId%3DRBS%26toUrl%3Dhttps%253A%252F%252Fstatic.jdpay.com%252Fm-hongbao%252F%253Ffrom%253Dlogin

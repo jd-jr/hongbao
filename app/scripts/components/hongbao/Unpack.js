@@ -62,7 +62,7 @@ class Unpack extends Component {
         } else {
           //如果领取过，直接打开
           if (status === 'HAS_RECEIVE') {
-            this.context.router.replace(`/hongbao/detail/view/${identifier}`);
+            showDetail(true);
           } else {
             this.setState({
               unpackModal: true,
@@ -136,12 +136,6 @@ class Unpack extends Component {
    * @param reLoad 如果为 true 则重新加载红包详情数据
    */
   hideUnpack({reLoad, buriedPoint, e}) {
-    const {hongbaoDetailAction, identifier, showDetail} = this.props;
-    this.context.router.replace(`/hongbao/detail/view/${identifier}`);
-    const tryPerfect = true;
-    if (tryPerfect) {
-      return;
-    }
     if (e) {
       e.stopPropagation();
       e.preventDefault();
@@ -149,6 +143,7 @@ class Unpack extends Component {
       e.nativeEvent.stopPropagation();
     }
 
+    const {hongbaoDetailAction, identifier, showDetail} = this.props;
     this.setState({
       unpackStatus: false
     });

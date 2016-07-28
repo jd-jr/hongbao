@@ -462,3 +462,10 @@ input:focus {
   box-shadow: 0 0 2px rgba(236, 235, 235, 0.7);
   transition: all 0.3s ease;
 }
+
+.hb-address-tip {
+  padding: .5rem .725rem;
+  background: #fffbde;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.875rem;
+}

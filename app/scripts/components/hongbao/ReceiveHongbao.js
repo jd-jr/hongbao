@@ -104,19 +104,30 @@ class ReceiveHongbao extends Component {
       e.nativeEvent.stopPropagation();
       jdWalletApi.openModule({name: 'BALANCE'});
     } else {
-      const url = 'user/Classification';
+      const url = 'https://hongbao-api.jdpay.com/user/Classification';
       const body = {
         accountType: perfect.getAccountType(),
-        accountId: perfect.getThirdAccId()
+        thirdAccId: perfect.getThirdAccId()
       };
 
-      callApi({url, body}).then((json) => {
-        console.info(1);
+      callApi({url, body}).then((res) => {
+        //isJdUser 该用户是否有京东账号
+        //isCustomerUser 该用户是否有钱包账号
+        const {isCustomerUser, isJdUser, jdPin} = res.json.data;
+        if (isJdUser === false) {
+          //需要先联合登录
+          perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
+          return;
+        }
+        if (isCustomerUser === false) {
+          //todo 待绑定 jdpin 功能实现后，再调整，目前先用联合登录
+          perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
+          return;
+        }
+        location.href = 'https://qianbao.jd.com/p/page/download.htm?module=BALANCE';
       }, (error) => {
 
       });
-      //需要先联合登录
-      //perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
     }
   }
 
