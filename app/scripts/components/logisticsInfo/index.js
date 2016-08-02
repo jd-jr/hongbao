@@ -48,16 +48,6 @@ class Logistics extends Component {
     });
   }
 
-  componentDidMount() {
-    document.body.style.overflowY = 'auto';
-    document.documentElement.style.overflowY = 'auto';
-  }
-
-  componentWillUnmount() {
-    document.body.style.overflowY = 'hidden';
-    document.documentElement.style.overflowY = 'hidden';
-  }
-
   renderList(detail) {
     if (detail && detail.length > 0) {
       return (

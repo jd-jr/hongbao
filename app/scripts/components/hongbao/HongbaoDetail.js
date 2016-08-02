@@ -142,7 +142,6 @@ class HongbaoDetail extends Component {
     if (deviceEnv.inWx && !thirdAccId) {
       return;
     }
-    hongbaoDetailAction.clearParticipant();
     const body = {
       identifier,
       accountType,

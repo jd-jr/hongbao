@@ -66,18 +66,11 @@ class UserAddressList extends Component {
     }
   }
 
-  componentDidMount() {
-    document.body.style.overflowY = 'auto';
-    document.documentElement.style.overflowY = 'auto';
-  }
-
   componentWillUnmount() {
     if (this.clearData) {
       const {clearUserAddressList} = this.props;
       clearUserAddressList();
     }
-    document.body.style.overflowY = 'hidden';
-    document.documentElement.style.overflowY = 'hidden';
   }
 
   checkGoodsStock(list) {

@@ -26,13 +26,18 @@ function fetchParticipantList(body, clear) {
 export function getParticipantList(body = {}, clear) {
   return (dispatch, getState) => {
     const state = getState();
-    const {
-      pageNum = 1, //请求传递的页面
-      isFetching,
-      lastPage //最后一页
-    } = state.hongbaoDetail.participantPagination || {};
+    let pageNum = 1; //请求传递的页面
+    let lastPage; //最后一页
+    const pagination = state.hongbaoDetail.participantPagination || {};
+    const {isFetching} = pagination;
+
+    if (!clear) {
+      pageNum = pagination.pageNum;
+      lastPage = pagination.lastPage;
+    }
+
     if (isFetching || lastPage) {
-      return null;
+      return Promise.reject();
     }
     return dispatch(fetchParticipantList({...body, pageNum, pageSize: 20}, clear));
   };

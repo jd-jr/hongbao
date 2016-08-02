@@ -215,7 +215,7 @@ class AddAddress extends Component {
           </div>
           <div className="wg-address-item">
             <span className="fl item-title">详细地址</span>
-            <div className="fl item-input">
+            <div className="fl item-input" style={{paddingLeft: '0.75rem', paddingRight: '0.75rem'}}>
               <textarea className="hb-textarea" placeholder="请输入详细地址" maxLength="40"
                         value={addressDetail}
                         onChange={(e) => this.setValue('addressDetail', e)}></textarea>

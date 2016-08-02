@@ -193,7 +193,7 @@ class SponsorHongbao extends Component {
                      loadMoreCallback={this.loadMoreCallback}
                      hasMore={!lastPage}>
         {deviceEnv.inWx ? <QrCode type={type}/> : null}
-        <section className="text-center m-t-2">
+        <section className="text-center m-t-1">
           <div>
             <img className="img-circle img-thumbnail hb-figure hb-user-info" src={headpic} alt=""/>
           </div>

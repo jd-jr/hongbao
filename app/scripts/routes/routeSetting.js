@@ -33,6 +33,8 @@ const routeSetting = {
     help: '帮助'
   },
 
+  overflowYHidden: ['home', 'productList', 'unpack', 'detail', 'my', 'productList'],
+
   //埋点
   buriedPoint: {
     home: 'hongbao_home_enter',
@@ -128,6 +130,13 @@ const routeSetting = {
     }
   },
 
+  //设置 body 样式
+  setBodyStyle (key) {
+    const overflowY = this.overflowYHidden.indexOf(key) === -1 ? 'auto' : 'hidden';
+    document.body.style.overflowY = overflowY;
+    document.documentElement.style.overflowY = overflowY;
+  },
+
   //进入一个新的路由触发的事件
   enterHandler(key) {
     if (firstEnter && location.pathname === '/m-hongbao/my' && location.search === '?type=sponsor') {
@@ -183,6 +192,9 @@ const routeSetting = {
     this.setTitle(key);
     //设置埋点
     this.setBuriedPoint(key);
+
+    //设置 body 样式
+    this.setBodyStyle(key);
   },
 
   // 离开一个路由触发的事件

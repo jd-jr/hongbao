@@ -53,7 +53,6 @@ class Home extends Component {
     this.payBefore = this.payBefore.bind(this);
     this.handleChecked = this.handleChecked.bind(this);
     this.replaceProduct = this.replaceProduct.bind(this);
-
   }
 
   componentWillMount() {
@@ -397,7 +396,7 @@ class Home extends Component {
                     selecting ? (
                       <div className="pull-right">
                         <span className="text-muted">选择礼物</span>
-                        <span className="arrow-hollow-right"></span>
+                        <span className="arrow-hollow-right" style={{marginRight: '-7px'}}></span>
                       </div>
                     ) : (
                       <span className="pull-right">{bizPrice}元</span>
@@ -444,7 +443,7 @@ class Home extends Component {
                 <div className="hb-single">
                 <textarea maxLength="25" value={title} onChange={(e) => this.handleChange(e, 'title')}
                           onBlur={() => this.handleBlur('title')}
-                          className="hb-textarea" placeholder={HONGBAO_TITLE}></textarea>
+                          className="hb-textarea f-lg" placeholder={HONGBAO_TITLE}></textarea>
                 </div>
               </div>
             </section>

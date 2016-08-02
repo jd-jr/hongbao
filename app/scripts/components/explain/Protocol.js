@@ -2,16 +2,6 @@ import React, {Component, PropTypes} from 'react';
 
 // 服务协议
 class Protocol extends Component {
-
-  componentDidMount() {
-    document.body.style.overflowY = 'auto';
-    document.documentElement.style.overflowY = 'auto';
-  }
-
-  componentWillUnmount() {
-    document.body.style.overflowY = 'hidden';
-    document.documentElement.style.overflowY = 'hidden';
-  }
   /*eslint-disable max-len*/
   render() {
     return (

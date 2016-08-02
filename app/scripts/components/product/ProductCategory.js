@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import perfect from '../../utils/perfect'
+import perfect from '../../utils/perfect';
+import offset from 'perfect-dom/lib/offset';
 
 //商品分类
 class ProductCategory extends Component {
@@ -29,7 +30,7 @@ class ProductCategory extends Component {
       const {categoryNav} = this.refs;
       const navCW = categoryNav.clientWidth;
       const navSW = categoryNav.scrollWidth;
-      this.touchMaxDistance = navSW - navCW;
+      this.touchMaxDistance = navSW - navCW + 20;
     }
   }
 
@@ -41,6 +42,11 @@ class ProductCategory extends Component {
 
   //切换标签
   handleSelectTab(e, id, categoryName) {
+    const target = e.target;
+    const xy = offset(target);
+    const navXy = offset(this.refs.categoryNav);
+    console.info(xy);
+    console.info(navXy);
     const {productActions, priceOrder} = this.props;
     const {switchCategory, clearProductList, getProductList, clearSelectProduct} = productActions;
     switchCategory(id);
