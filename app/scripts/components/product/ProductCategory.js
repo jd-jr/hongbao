@@ -42,11 +42,25 @@ class ProductCategory extends Component {
 
   //切换标签
   handleSelectTab(e, id, categoryName) {
-    const target = e.target;
-    const xy = offset(target);
-    const navXy = offset(this.refs.categoryNav);
-    console.info(xy);
-    console.info(navXy);
+    if (id) {
+      const target = e.target;
+      const w = target.clientWidth;
+      const {categoryNav} = this.refs;
+      const navCW = categoryNav.clientWidth;
+      const xy = offset(target);
+      const navXy = offset(categoryNav);
+      let shifting = xy.left + w / 2 - navXy.left - navCW / 2;
+      console.info(shifting);
+      if (shifting < 0) {
+        shifting = 0;
+      }
+      if (shifting > this.touchMaxDistance) {
+        shifting = this.touchMaxDistance;
+      }
+      categoryNav.style.webkitTransform = `translateX(-${shifting}px)`;
+      categoryNav.style.transform = `translateX(-${shifting}px)`;
+    }
+
     const {productActions, priceOrder} = this.props;
     const {switchCategory, clearProductList, getProductList, clearSelectProduct} = productActions;
     switchCategory(id);
