@@ -2,9 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import base64 from 'js-base64';
-import Draggabilly from 'draggabilly';
 import BottomNav from '../BottomNav';
-import Help from '../Help';
 import Loading from '../../ui/Loading';
 import callApi from '../../fetch';
 import {HONGBAO_TITLE} from '../../constants/common';
@@ -53,6 +51,7 @@ class Home extends Component {
     this.payBefore = this.payBefore.bind(this);
     this.handleChecked = this.handleChecked.bind(this);
     this.replaceProduct = this.replaceProduct.bind(this);
+    this.closeHongbao = this.closeHongbao.bind(this);
   }
 
   componentWillMount() {
@@ -75,17 +74,6 @@ class Home extends Component {
         this.pay();
       });
     }
-  }
-
-  componentDidMount() {
-    const hbHelpEl = document.querySelector('#hbHelp .hb-help');
-    const documentEl = document.documentElement;
-    hbHelpEl.style.top = `${documentEl.clientHeight * 0.75}px`;
-    hbHelpEl.style.left = `${documentEl.clientWidth - 40}px`;
-    /*eslint-disable no-new*/
-    new Draggabilly(hbHelpEl, {
-      containment: document.documentElement
-    });
   }
 
   componentWillUnmount() {
@@ -323,6 +311,11 @@ class Home extends Component {
     this.context.router.push('/product');
   }
 
+  // 关闭发送红包
+  closeHongbao() {
+    this.context.router.replace('/');
+  }
+
   //渲染支付表单
   renderH5PayForm() {
     const {payDataReady} = this.state;
@@ -375,7 +368,10 @@ class Home extends Component {
     let initiateCom = null;
     if (pathname && pathname.indexOf('/initiate') !== -1) {
       const {skuName, title, identifier, status, skuIcon} = this.props;
-      const initiateProps = {skuName, title, identifier, status, skuIcon};
+      const initiateProps = {
+        skuName, title, identifier, status, skuIcon,
+        closeHongbao: this.closeHongbao
+      };
       initiateCom = (
         <Initiate {...initiateProps}/>
       );
@@ -461,15 +457,15 @@ class Home extends Component {
                 <span>同意并接受</span>
                 <Link to="/protocol">《京东钱包京东红包服务协议》</Link>
               </p>
-              <p className="text-center f-sm m-t-2 text-muted">好友未领取实物，可于15天后申请退款</p>
+              <p className="text-center f-sm m-t-2 text-muted">
+                <span>好友未领取实物，可于15天后申请退款 </span>
+                <Link to="/help"><i className="hb-help-icon"></i></Link>
+              </p>
             </section>
             <p className="text-center hb-logo-gray-pos">
               <i className="hb-logo-gray"></i>
             </p>
           </article>
-        </div>
-        <div id="hbHelp">
-          <Help/>
         </div>
         {this.state.showFoot ? (<BottomNav type="sponsor"/>) : null}
       </div>

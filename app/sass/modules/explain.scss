@@ -5,11 +5,12 @@
   }
 
   &help-icon {
-    background: url("../images/help.png") no-repeat;
+    background: url("../images/help-icon.png") no-repeat;
     display: inline-block;
     background-size: 100%;
-    width: 30px;
-    height: 30px;
+    width: 15px;
+    height: 15px;
+    vertical-align: text-top;
   }
 
   &help-panel {

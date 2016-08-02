@@ -7,7 +7,7 @@ import perfect from '../../utils/perfect';
 class Guide extends Component {
   constructor(props) {
     super(props);
-    const rootUrl = perfect.getLocationOrigin() + '/images/guide/';
+    const rootUrl = perfect.getLocationRoot() + 'images/guide/';
     this.state = {
       items: [{
         id: '1',

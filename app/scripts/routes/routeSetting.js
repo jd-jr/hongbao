@@ -69,7 +69,7 @@ const routeSetting = {
         if (window.wx) {
           window.wx.closeWindow();
         }
-      }, 50);
+      });
       return;
     }
     //如果进入不是授权路由，则设置 goBack 为 true
@@ -132,7 +132,7 @@ const routeSetting = {
 
   //设置 body 样式
   setBodyStyle (key) {
-    const overflowY = this.overflowYHidden.indexOf(key) === -1 ? 'auto' : 'hidden';
+    const overflowY = this.overflowYHidden.indexOf(key) !== -1 ? 'hidden' : 'auto';
     document.body.style.overflowY = overflowY;
     document.documentElement.style.overflowY = overflowY;
   },

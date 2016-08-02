@@ -148,7 +148,7 @@ class Initiate extends Component {
 
   render() {
     const {success, visible, weixinGuide} = this.state;
-    let {skuName, skuIcon, closable} = this.props;
+    let {skuName, skuIcon} = this.props;
     if (success) {
       return (
         <div>
@@ -160,7 +160,7 @@ class Initiate extends Component {
             maskAnimation
           >
             <div className="hb-ellipse-arc-mask">
-              {closable ? <span className="hb-btn-close" onTouchTap={this.closeHongbao}>+</span> : null}
+              <span className="hb-btn-close" onTouchTap={this.closeHongbao}>+</span>
               <div className="hb-ellipse-arc-flat flex-items-middle flex-items-center flex">
                 <div style={{width: '100%', marginTop: '-15px'}}>
                   <h2 className="h1">红包已包好</h2>
@@ -226,7 +226,6 @@ Initiate.propTypes = {
   identifier: PropTypes.string,
   status: PropTypes.string,
   skuIcon: PropTypes.string,
-  closable: PropTypes.bool,
   closeHongbao: PropTypes.func,
   hongbaoExpired: PropTypes.bool,
   indexActions: PropTypes.object,

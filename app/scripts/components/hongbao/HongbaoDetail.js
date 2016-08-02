@@ -10,12 +10,14 @@ import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
+import {getSessionStorage} from '../../utils/sessionStorage';
 
 // 红包详情
 class HongbaoDetail extends Component {
   constructor(props, context) {
     super(props, context);
     const href = location.href;
+    const unpacked = getSessionStorage('unpacked');
     //是否从拆红包入口进入
     const isUnPack = href.indexOf('/unpack') !== -1;
     this.isUnPack = isUnPack; // 从拆红包入口进入
@@ -27,7 +29,7 @@ class HongbaoDetail extends Component {
     this.isAuthorize = isAuthorize; // 在微信中是否授权
     this.state = {
       showFoot: false,
-      unpack: isUnPack, //如果是从拆红包入口进入，则显示拆红包弹框
+      unpack: isUnPack && unpacked !== 'true', //如果是从拆红包入口进入，则显示拆红包弹框
       // 如果是从拆红包入口进入，初始隐藏，等弹出抢红包窗口，再显示。这里没有用 state unpack，
       // 主要 unpack 和 detail 两个状态处理的场景不一致
       detail: isUnPack ? 'none' : 'block',
@@ -62,6 +64,10 @@ class HongbaoDetail extends Component {
     }, 350);
 
     this.loadData();
+    const unpacked = getSessionStorage('unpacked');
+    if (unpacked === 'true') {//如果已经拆过，则直接打开
+      this.showDetail(true);
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -116,7 +122,7 @@ class HongbaoDetail extends Component {
          REDBAG_GOODS_REFOUND("红包实物可退款"),
          RECEIVE_COMPLETE_GOODS_REFUND  已抢光，可退款
          */
-        //this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
+          //this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
         const {hongbaoInfo} = res || {};
         const {refundStatus, status} = hongbaoInfo || {};
         //如果红包已过期，而且是发起者进入，则显示继续发送
@@ -358,7 +364,7 @@ class HongbaoDetail extends Component {
     if (sponsorGoal === 'again' && showInitiate) {
       const initiateProps = {
         skuName, title, identifier,
-        status: 'true', skuIcon, closable: true,
+        status: 'true', skuIcon,
         closeHongbao: this.closeHongbao,
         hongbaoExpired,
         indexActions

@@ -5,6 +5,7 @@ import {HONGBAO_INVALID_STATUS, HONGBAO_TITLE, NICKNAME} from '../../constants/c
 import perfect from '../../utils/perfect';
 import circleSm from '../../../images/circle-sm.png';
 import defaultHeadPic from '../../../images/headpic.png';
+import {setSessionStorage} from '../../utils/sessionStorage';
 
 class Unpack extends Component {
   constructor(props, context) {
@@ -177,6 +178,8 @@ class Unpack extends Component {
       eventId = `hangbao_${owner ? '_my' : ''}_${status}_luck`;
       perfect.setBuriedPoint(eventId);
     }
+
+    setSessionStorage('unpacked', 'true');
   }
 
   //关闭抢红包页面
@@ -186,7 +189,7 @@ class Unpack extends Component {
      window.wx.closeWindow();
      }
      }, 50);*/
-    this.hideUnpack({reLoad: true, e})
+    this.hideUnpack({reLoad: true, e});
   }
 
   // 红包弹框内容
