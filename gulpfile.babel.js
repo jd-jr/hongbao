@@ -10,6 +10,7 @@ import filePackage from 'file-package';
 import config from './webpack.config.babel';
 import exampleConfig from './webpack.example.config.babel';
 import productionConfig from './webpack.production.config.babel';
+import dllConfig from './webpack.dll.config.babel';
 
 
 const $ = gulpLoadPlugins();
@@ -210,6 +211,19 @@ gulp.task('webpack:build', () => {
   });
 });
 
+// webpack 插件 DllPlugin
+gulp.task('webpack:dll', () => {
+  const compiler = webpack(dllConfig);
+  // run webpack
+  compiler.run((err, stats) => {
+    if (err) {
+      throw new $.util.PluginError('webpack:dll', err);
+    }
+    $.util.log('[webpack:dll]', stats.toString({
+      colors: true
+    }));
+  });
+});
 
 //开发环境，启动服务
 gulp.task('server', ['styles', 'copy:server'], () => {
@@ -269,6 +283,11 @@ gulp.task('build', ['sass-compress', 'styles', 'copy:prod'], () => {
 // 编译打包，测试环境
 gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev'], () => {
   gulp.start(['webpack:build']);
+});
+
+// Dll
+gulp.task('dll', () => {
+  gulp.start(['webpack:dll']);
 });
 
 //默认任务

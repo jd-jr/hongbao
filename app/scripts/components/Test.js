@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import {MYSTIC_GIFT} from '../config';
+import {SHARE_ICON_URL} from '../constants/common';
 import {HONGBAO_TITLE, HONGBAO_DESC} from '../constants/common';
 
 class Test extends Component {
@@ -24,7 +24,7 @@ class Test extends Component {
       url: location.href,
       title: HONGBAO_TITLE,
       desc: HONGBAO_DESC,
-      imgUrl: MYSTIC_GIFT,
+      imgUrl: SHARE_ICON_URL,
       channel: 'WX',
       debug: Boolean(window.eruda),
       callback: (status) => {

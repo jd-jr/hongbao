@@ -78,7 +78,7 @@ class HongbaoGainedList extends Component {
           if (giftType === 'CASH') { //抢到现金
             return (
               <li key={giftRecordId}>
-                <Link to={'/my?type=sponsor'} className="row flex-items-middle hb-link-block">
+                <Link to={'/my?type=sponsor'} className="row hb-link-block">
                   <div className="col-4">
                     <img className="img-fluid img-circle" src={headpic} alt=""/>
                   </div>
@@ -101,26 +101,28 @@ class HongbaoGainedList extends Component {
           const championHeader = giftStatus === 'NOT_GAIN' ? 'hb-champion-header gray' : 'hb-champion-header';
 
           return (
-            <li key={giftRecordId} className={`row ${index === 0 ? ' flex-items-middle' : ''}`} style={{paddingTop: '1.2rem'}}>
-              <div className="col-4">
-                <div className={championHeader}>
-                  <img className="img-fluid img-circle" src={headpic} alt=""/>
+            <li key={giftRecordId} style={{paddingTop: '1.2rem'}}>
+              <div className={`row ${index === 0 ? ' flex-items-middle' : ''}`}>
+                <div className="col-4">
+                  <div className={championHeader}>
+                    <img className="img-fluid img-circle" src={headpic} alt=""/>
+                  </div>
                 </div>
-              </div>
-              <div className="col-14">
-                <div className="text-truncate">{title}</div>
-                <div className="text-muted f-sm">{gainedDate}</div>
-              </div>
+                <div className="col-14">
+                  <div className="text-truncate">{title}</div>
+                  <div className="text-muted f-sm">{gainedDate}</div>
+                </div>
 
-              <div className="col-4 p-a-0" onTouchTap={this.prize}>
-                <Link to={`/product/detail/view/${skuId}`}>
-                  <img className="img-fluid" src={skuIcon} alt={skuName}/>
-                </Link>
-              </div>
-              <div className="col-2 text-right" onTouchTap={this.prize}>
-                <Link to={`/product/detail/view/${skuId}`}>
-                  <span className="arrow-hollow-right" style={{marginLeft: '-0.8rem'}}></span>
-                </Link>
+                <div className="col-4 p-a-0" onTouchTap={this.prize}>
+                  <Link to={`/product/detail/view/${skuId}`}>
+                    <img className="img-fluid" src={skuIcon} alt={skuName}/>
+                  </Link>
+                </div>
+                <div className="col-2 text-right" onTouchTap={this.prize}>
+                  <Link to={`/product/detail/view/${skuId}`}>
+                    <span className="arrow-hollow-right" style={{marginLeft: '-0.8rem'}}></span>
+                  </Link>
+                </div>
               </div>
             </li>
           );

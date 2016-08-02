@@ -279,20 +279,20 @@ class HongbaoDetail extends Component {
     }
 
     return isUnPack ? (
-      <footer className="hb-footer" ref="footer">
+      <footer className="hb-footer">
         <div className="row text-center">
-          <div className="col-12 border-second border-right"
+          <div className="col-12 border-second border-right hb-active-btn"
                onClick={this.guide}>
             红包攻略
           </div>
-          <div className="col-12"
+          <div className="col-12 hb-active-btn"
                onClick={this.reSponsor}>
             我要发红包
           </div>
         </div>
       </footer>
     ) : (
-      <div className="hb-footer text-center"
+      <div className="hb-footer text-center hb-active-btn"
            onTouchTap={this.reSponsor}>
         <span>{type === 'receive' ? '我要发红包' : (sponsorGoal === 'new' ? '我要发红包' : '继续发送')}</span>
       </div>
@@ -384,8 +384,8 @@ class HongbaoDetail extends Component {
                   <img className="img-circle img-thumbnail hb-figure hb-user-info"
                        src={ownerHeadpic} alt=""/>
                 </div>
-                <h3 className="m-t-2">{ownerNickname}的红包</h3>
-                <p className="text-muted f-sm">{title}</p>
+                <div className="m-t-1">{ownerNickname}的红包</div>
+                <p className="text-muted m-t-0-5-0 f-sm">{title}</p>
                 <HongbaoSelfInfo {...selfInfoProps}/>
               </div>
             </section>

@@ -4,7 +4,7 @@
 oes2kw1U2d1IpBwRbiIucIS6WWe0
 
 //设置这个，可以在浏览器中测试
-sessionStorage.setItem('thirdAccId', 'oes2kw1U2d1IpBwRbiIucIS6WWe0');
+sessionStorage.setItem('thirdAccId', 'oes2kw5y2ldnplZA1ovDw6wAxV0g');
 
 //最新的
 sessionStorage.setItem('thirdAccId', 'otEnCjvzbHr98hVnBL87DinhvKZ8');

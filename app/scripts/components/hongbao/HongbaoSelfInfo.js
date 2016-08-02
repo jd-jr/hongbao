@@ -39,6 +39,12 @@ class HongbaoSelfInfo extends Component {
     this.refundStatusArr = ['REDBAG_WHOLE_REFUND', 'REDBAG_GOODS_REFOUND', 'RECEIVE_COMPLETE_GOODS_REFUND', 'REDBAG_WHOLE_REFUND_TRANSFER'];
   }
 
+  componentWillUnmout() {
+    if (this.drawForm) {
+      document.body.removeChild(this.drawForm);
+    }
+  }
+
   //物流详情
   logistics() {
     //埋点
@@ -73,34 +79,59 @@ class HongbaoSelfInfo extends Component {
       e.nativeEvent.stopPropagation();
       jdWalletApi.openModule({name: 'BALANCE'});
     } else {
-      //需要先联合登录
-      perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
-
-      /*const url = 'https://hongbao-api.jdpay.com/user/Classification';
+      const url = 'user/Classification';
       const body = {
         accountType: perfect.getAccountType(),
         thirdAccId: perfect.getThirdAccId()
       };
 
       callApi({url, body}).then((res) => {
-        //isJdUser 该用户是否有京东账号
-        //isCustomerUser 该用户是否有钱包账号
-        const {isCustomerUser, isJdUser, jdPin} = res.json.data;
+        /**
+         isJdUser 该用户是否有京东账号
+         isCustomerUser 该用户是否有钱包账号
+         encryptData  String  加密报文
+         signData  String  签名
+         signType  String  签名类型
+         postUrl  String  form表单提交路径
+         */
+        const {isCustomerUser, isJdUser, encryptData, signData, signType, postUrl} = res.json.data;
         if (isJdUser === false) {
           //需要先联合登录
           perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
           return;
         }
         if (isCustomerUser === false) {
-          //todo 待绑定 jdpin 功能实现后，再调整，目前先用联合登录
-          perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
+          this.createDrawForm({
+            encryptData,
+            signData,
+            signType,
+            postUrl
+          });
           return;
         }
         location.href = 'https://qianbao.jd.com/p/page/download.htm?module=BALANCE';
       }, (error) => {
 
-      });*/
+      });
     }
+  }
+
+  // 创建提现 form 表单
+  createDrawForm({
+    encryptData,
+    signData,
+    signType,
+    postUrl
+  }) {
+    const form = document.createElement('form');
+    form.action = postUrl;
+    form.method = 'post';
+    const html = `<input type="hidden" name="encrypt_data" value="${encryptData}"/>
+                  <input type="hidden" name="sign_data" value="${signData}"/>
+                  <input type="hidden" name="sign_type" value="${signType}"/>`;
+    form.innerHTML = html;
+    this.drawForm = form;
+    form.submit();
   }
 
   //兑奖或修改地址
@@ -239,8 +270,8 @@ class HongbaoSelfInfo extends Component {
                 物流详情
               </button>
             </div>
-            <div className="m-t-1">
-              <span className="btn btn-primary btn-sm btn-arc" onTouchTap={this.reward}>
+            <div className="m-t-0-5">
+              <span className="text-link f-sm" onTouchTap={this.reward}>
                 修改地址
               </span>
             </div>

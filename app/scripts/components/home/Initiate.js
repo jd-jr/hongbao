@@ -5,7 +5,7 @@ import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import {HONGBAO_TITLE, HONGBAO_DESC} from '../../constants/common';
 import weixinShareGuide from '../../../images/weixin-share-guide.png';
-import {MYSTIC_GIFT} from '../../config';
+import {SHARE_ICON_URL} from '../../constants/common';
 import callApi from '../../fetch';
 import perfect from '../../utils/perfect';
 
@@ -26,12 +26,14 @@ class Initiate extends Component {
 
     //设置分享图片
     if (deviceEnv.inJdWallet) {
-      walletApi.shareIconURL(MYSTIC_GIFT, 'hongbao');
+      walletApi.shareIconURL(SHARE_ICON_URL, 'hongbao');
     }
     //判断是否再次激活成功
     this.againActivate = false;
     //微信授权
     this.intervalId;
+
+    this.iphone4 = window.screen.height <= 480;
   }
 
   componentWillMount() {
@@ -97,7 +99,7 @@ class Initiate extends Component {
       url: `${urlRoot}authorize/${identifier}`,
       title: title || HONGBAO_TITLE,
       desc: HONGBAO_DESC,
-      imgUrl: MYSTIC_GIFT,
+      imgUrl: SHARE_ICON_URL,
       channel: 'WX',
       debug: Boolean(window.eruda),
       callback: (status) => {
@@ -164,10 +166,10 @@ class Initiate extends Component {
                   <h2 className="h1">红包已包好</h2>
                   <h4>京东红包</h4>
                   <div className="hb-product-wrap row">
-                    <div className="col-6 p-r-0 p-l-0-3 text-left">
+                    <div className={`${this.iphone4 ? 'col-5' : 'col-4'} p-r-0 p-l-0-3 text-left`}>
                       <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
                     </div>
-                    <div className="col-18 text-truncate-2 product-name">{skuName}</div>
+                    <div className="col-19 text-truncate-2 product-name">{skuName}</div>
                   </div>
                 </div>
               </div>

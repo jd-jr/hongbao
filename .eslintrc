@@ -121,7 +121,7 @@
 
     //Node.js and CommonJS
     //"callback-return": 0,//调用callback时需要加上return语句
-    "global-require": 0,//require加载依赖应该放在代码最上边显示，比如 var fs = require("fs");
+    //"global-require": 0,//require加载依赖应该放在代码最上边显示，比如 var fs = require("fs");
     //"handle-callback-err": 0,//如果回调函数中有错误变量（比如err），我们需要判断处理错误的情况
     "no-mixed-requires": 0,//require与其他变量声明应该不要放在一起
     "no-new-require": 0, // 不用对表达式 require 直接使用 new,例如 var appHeader = new require('app-header');

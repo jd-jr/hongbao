@@ -52,6 +52,12 @@ class ReceiveHongbao extends Component {
     this.adjustArrow();
   }
 
+  componentWillUnmout() {
+    if (this.drawForm) {
+      document.body.removeChild(this.drawForm);
+    }
+  }
+
   // 下拉刷新回调函数
   refreshCallback() {
     this.props.loadUserInfo();
@@ -104,34 +110,60 @@ class ReceiveHongbao extends Component {
       e.nativeEvent.stopPropagation();
       jdWalletApi.openModule({name: 'BALANCE'});
     } else {
-      //需要先联合登录
-      perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
-
-      /*const url = 'https://hongbao-api.jdpay.com/user/Classification';
+      const url = 'user/Classification';
       const body = {
         accountType: perfect.getAccountType(),
         thirdAccId: perfect.getThirdAccId()
       };
 
       callApi({url, body}).then((res) => {
-        //isJdUser 该用户是否有京东账号
-        //isCustomerUser 该用户是否有钱包账号
-        const {isCustomerUser, isJdUser, jdPin} = res.json.data;
+        /**
+         isJdUser 该用户是否有京东账号
+         isCustomerUser 该用户是否有钱包账号
+         encryptData  String  加密报文
+         signData  String  签名
+         signType  String  签名类型
+         postUrl  String  form表单提交路径
+         */
+        const {isCustomerUser, isJdUser, encryptData, signData, signType, postUrl} = res.json.data;
         if (isJdUser === false) {
           //需要先联合登录
           perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
           return;
         }
         if (isCustomerUser === false) {
-          //todo 待绑定 jdpin 功能实现后，再调整，目前先用联合登录
-          perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
+          this.createDrawForm({
+            encryptData,
+            signData,
+            signType,
+            postUrl
+          });
           return;
         }
         location.href = 'https://qianbao.jd.com/p/page/download.htm?module=BALANCE';
       }, (error) => {
 
-      });*/
+      });
     }
+  }
+
+  // 创建提现 form 表单
+  createDrawForm({
+    encryptData,
+    signData,
+    signType,
+    postUrl
+  }) {
+    const form = document.createElement('form');
+    form.action = postUrl;
+    form.method = 'post';
+    const html = `<input type="hidden" name="encrypt_data" value="${encryptData}"/>
+                  <input type="hidden" name="sign_data" value="${signData}"/>
+                  <input type="hidden" name="sign_type" value="${signType}"/>`;
+    form.innerHTML = html;
+    document.body.appendChild(form);
+    this.drawForm = form;
+    form.submit();
   }
 
   //兑奖

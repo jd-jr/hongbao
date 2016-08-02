@@ -15,8 +15,5 @@ export const WEIXIN_AUTHORIZE = 'https://open.weixin.qq.com/connect/oauth2/autho
 // 微信授权后台 url
 export const REDIRECT_URI = 'https://m.jdpay.com/webchat/ahthorize?';
 
-//礼物图片链接
-export const MYSTIC_GIFT = 'https://img11.360buyimg.com/wympay/jfs/t2722/281/3545161434/12132/3ca14378/57908f2aNd28e391d.png';
-
 //默认头像
 export const HEAD_PIC = 'https://static.jdpay.com/m-hongbao/images/headpic.png';

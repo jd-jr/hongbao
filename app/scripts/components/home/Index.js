@@ -390,8 +390,8 @@ class Home extends Component {
         <div className="hb-main">
           <article className="hb-wrap m-t-2">
             <section>
-              <div>
-                <div className="hb-single p-a-1" style={{marginBottom: '2.5rem'}} onTouchTap={this.selectProduct}>
+              <div className="f-lg">
+                <div className="hb-single p-a-1 m-b-1" onTouchTap={this.selectProduct}>
                   <span>发京东红包</span>
                   {
                     selecting ? (
@@ -427,7 +427,7 @@ class Home extends Component {
                 ) : null
               }
 
-              <div>
+              <div className="f-lg">
                 <div className="hb-single">
                   <span>红包个数</span>
                   <div className="pull-right">
@@ -440,7 +440,7 @@ class Home extends Component {
                 <p className="f-sm m-l-0-75 text-muted">{giftTitle}</p>
               </div>
 
-              <div>
+              <div className="f-lg">
                 <div className="hb-single">
                 <textarea maxLength="25" value={title} onChange={(e) => this.handleChange(e, 'title')}
                           onBlur={() => this.handleBlur('title')}

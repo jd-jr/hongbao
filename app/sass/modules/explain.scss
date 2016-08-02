@@ -51,4 +51,43 @@
     p {
     }
   }
+
+  &guide-swiper {
+    background: #fff;
+  }
+
+  &guide-img {
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #f1f8ff;
+    position: relative;
+  }
+
+  &guide-btn-send {
+    position: absolute;
+    left: 2rem;
+    right: 2rem;
+    height: 3rem;
+    bottom: 4rem;
+  }
+}
+
+.swiper-container-horizontal > .swiper-pagination-bullets {
+  bottom: 2rem
+}
+
+.swiper-pagination-bullet {
+  background: #d9ebfe;
+  opacity: 1;
+  width: 4px;
+  height: 4px;
+}
+
+.swiper-pagination-bullet-active {
+  background: #ec5256;
+}
+
+.swiper-container-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet {
+  margin: 0 2px;
 }

@@ -52,7 +52,8 @@ class Unpack extends Component {
 
     callApi({url, body}).then(
       ({json, response}) => {
-        const {status, user, sku, owner, title} = json.data;
+        let {status, user, sku, owner, title} = json.data;
+        //status = 'RECEIVE_COMPLETE';
         if (HONGBAO_INVALID_STATUS.indexOf(status) !== -1) {
           if (status === 'NEED_PAY') {
             indexActions.setErrorMessage('该红包还未支付！');
@@ -90,12 +91,6 @@ class Unpack extends Component {
     e.preventDefault();
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
-    setTimeout(() => {
-      this.setState({
-        unpackModal: false, //隐藏红包
-      });
-    }, 100);
-
     if (this.state.unpackStatus) {
       return;
     }
@@ -123,7 +118,12 @@ class Unpack extends Component {
         this.hideUnpack({reLoad: true});
       },
       (error) => {
-        this.hideUnpack({reLoad: true});
+        if (error.errorCode === 'RBF100204') {
+          this.setState({
+            hongbaoStatus: 'RECEIVE_COMPLETE'
+          });
+          this.forceReload = true;
+        }
       }
     );
 
@@ -149,7 +149,7 @@ class Unpack extends Component {
     });
     showDetail();
 
-    if (reLoad) {
+    if (this.forceReload || reLoad) {
       const accountType = perfect.getAccountType();
       const thirdAccId = perfect.getThirdAccId();
 
@@ -180,12 +180,13 @@ class Unpack extends Component {
   }
 
   //关闭抢红包页面
-  closeHongbao() {
-    setInterval(() => {
-      if (window.wx) {
-        window.wx.closeWindow();
-      }
-    }, 50);
+  closeHongbao(e) {
+    /*setInterval(() => {
+     if (window.wx) {
+     window.wx.closeWindow();
+     }
+     }, 50);*/
+    this.hideUnpack({reLoad: true, e})
   }
 
   // 红包弹框内容
@@ -238,16 +239,16 @@ class Unpack extends Component {
         <div className="hb-ellipse-arc-flat text-center">
           <section className="m-t-1">
             <div>
-              <img className="img-circle img-thumbnail hb-figure" src={face} alt=""/>
+              <img className="img-circle img-thumbnail hb-figure hb-img-unpack" src={face} alt=""/>
             </div>
             <div className={this.iphone4 ? '' : 'm-t-0-5'}>{nickname}</div>
             <div>发了一个京东红包</div>
           </section>
           <section className={`hb-product-wrap row ${this.iphone4 ? 'm-a-0' : ''}`}>
-            <div className="col-6 p-r-0 p-l-0-3 text-left">
+            <div className={`${this.iphone4 ? 'col-5' : 'col-4'} p-r-0 p-l-0-3 text-left`}>
               <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
             </div>
-            <div className="col-18 text-truncate-2 product-name">{skuName}</div>
+            <div className="col-19 text-truncate-2 product-name">{skuName}</div>
           </section>
           <div className="flex flex-items-middle flex-items-center m-t-0-3"
                style={{height: hongbaoStatus !== 'RECEIVE_COMPLETE' && hongbaoStatus !== 'EXPIRED' ? '4rem' : '6rem'}}>
@@ -260,7 +261,7 @@ class Unpack extends Component {
                  onTouchTap={this.unpack}>開</div>
           ) : (
             <div className="hb-luck-link" onTouchTap={(e) => this.hideUnpack({buriedPoint: true, e})}>
-              看看大家的手气<span className="hb-gt">&gt;</span>
+              看看大家的手气 <span className="hb-gt">&gt;</span>
             </div>
           )
         }
