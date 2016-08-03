@@ -76,6 +76,7 @@ let webpackConfig = {
   // 入口文件 让webpack用哪个文件作为项目的入口
   entry: {
     index: ['./app/scripts/index.js', webpackDevServer, hotDevServer],
+    vendors: ['react', 'react-dom']
   },
 
   // 出口 让webpack把处理完成的文件放在哪里
@@ -122,7 +123,8 @@ let webpackConfig = {
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(), // 热部署替换模块
-
+    //把入口文件里面的 vendors 包含的js文件 打包成verdors.js，除了指定的verdors外，多个入口的公共文件也会被打包到 vendors中
+    new webpack.optimize.CommonsChunkPlugin({name: 'vendors', filename: 'vendors.[hash].js'}),
     new ExtractTextPlugin('[name].[hash].css', {
       disable: false,
       allChunks: true

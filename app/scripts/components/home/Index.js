@@ -386,13 +386,13 @@ class Home extends Component {
           <article className="hb-wrap m-t-2">
             <section>
               <div className="f-lg">
-                <div className="hb-single p-a-1 m-b-1" onTouchTap={this.selectProduct}>
+                <div className="hb-single p-y-1 m-b-1" onTouchTap={this.selectProduct}>
                   <span>发京东红包</span>
                   {
                     selecting ? (
                       <div className="pull-right">
                         <span className="text-muted">选择礼物</span>
-                        <span className="arrow-hollow-right" style={{marginRight: '-7px'}}></span>
+                        <span className="arrow-hollow-right" style={{marginRight: '-4px'}}></span>
                       </div>
                     ) : (
                       <span className="pull-right">{bizPrice}元</span>
@@ -459,7 +459,7 @@ class Home extends Component {
               </p>
               <p className="text-center f-sm m-t-2 text-muted">
                 <span>好友未领取实物，可于15天后申请退款 </span>
-                <Link to="/help"><i className="hb-help-icon"></i></Link>
+                <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85"><i className="hb-help-icon"></i></a>
               </p>
             </section>
             <p className="text-center hb-logo-gray-pos">

@@ -1,7 +1,8 @@
 .#{$prefixCls} {
   &help {
-    position: fixed;
-    z-index: 1000;
+    position: absolute;
+    top: 0;
+    right: 1rem;
   }
 
   &help-icon {

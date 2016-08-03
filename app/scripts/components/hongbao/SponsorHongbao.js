@@ -3,7 +3,7 @@ import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../../utils/perfect';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
-import PullToRefresh from 'reactjs-pull-to-refresh';
+import PullRefresh from 'reactjs-pull-refresh';
 import QrCode from './QrCode';
 
 class SponsorHongbao extends Component {
@@ -188,12 +188,12 @@ class SponsorHongbao extends Component {
     }
 
     return (
-      <PullToRefresh className="hb-main-panel"
+      <PullRefresh className="hb-main-panel"
                      refreshCallback={this.refreshCallback}
                      loadMoreCallback={this.loadMoreCallback}
                      hasMore={!lastPage}>
         {deviceEnv.inWx ? <QrCode type={type}/> : null}
-        <section className="text-center m-t-1">
+        <section className="text-center m-t-1 pos-r">
           <div>
             <img className="img-circle img-thumbnail hb-figure hb-user-info" src={headpic} alt=""/>
           </div>
@@ -203,12 +203,17 @@ class SponsorHongbao extends Component {
           <div className="h4 text-muted m-t-2">
             已发出<span className="text-primary">{putOutNum}</span>个红包
           </div>
+          <div className="hb-help">
+            <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
+              <i className="hb-help-icon"></i>
+            </a>
+          </div>
         </section>
 
         <section className="m-t-1">
           {this.renderList()}
         </section>
-      </PullToRefresh>
+      </PullRefresh>
     );
   }
 }

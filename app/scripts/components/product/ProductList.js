@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {findDOMNode} from 'react-dom';
-import PullToRefresh from 'reactjs-pull-to-refresh';
+import PullRefresh from 'reactjs-pull-refresh';
 import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
 import ProductCategory from './ProductCategory';
@@ -134,7 +134,7 @@ class ProductList extends Component {
         <div className="col-3 text-right p-y-1" onTouchTap={() => this.handleChecked(skuId)}>
           <i className={`hb-radio-gray${selectedProduct === skuId ? ' checked' : ''}`}></i>
         </div>
-        <div className="col-4"
+        <div className="col-4 p-a-0"
              onClick={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
           <img className="img-fluid" src={indexImg} alt=""/>
         </div>
@@ -198,10 +198,10 @@ class ProductList extends Component {
     }
 
     return (
-      <PullToRefresh className="hb-main-panel"
-                     refreshCallback={this.refreshCallback}
-                     loadMoreCallback={this.loadMoreCallback}
-                     hasMore={!lastPage}>
+      <PullRefresh className="hb-main-panel"
+                   refreshCallback={this.refreshCallback}
+                   loadMoreCallback={this.loadMoreCallback}
+                   hasMore={!lastPage}>
         <ul className="hb-list">
           {
             ids ? ids.map((item, index) => {
@@ -209,7 +209,7 @@ class ProductList extends Component {
             }) : null
           }
         </ul>
-      </PullToRefresh>
+      </PullRefresh>
     );
   }
 

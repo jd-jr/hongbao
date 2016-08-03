@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import PullToRefresh from 'reactjs-pull-to-refresh';
+import PullRefresh from 'reactjs-pull-refresh';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
 import Unpack from './Unpack';
@@ -378,13 +378,13 @@ class HongbaoDetail extends Component {
       <div>
         {initiateCom}
         {unpack ? <Unpack {...unpackProps}/> : null}
-        <PullToRefresh className="hb-main-panel-noheader"
+        <PullRefresh className="hb-main-panel-noheader"
                        refreshCallback={this.refreshCallback}
                        loadMoreCallback={this.loadMoreCallback}
                        hasMore={!lastPage}>
           <article style={{display: detail}}>
-            <section>
-              <div className="text-center m-t-3">
+            <section className="pos-r m-t-3">
+              <div className="text-center">
                 <div>
                   <img className="img-circle img-thumbnail hb-figure hb-user-info"
                        src={ownerHeadpic} alt=""/>
@@ -392,6 +392,11 @@ class HongbaoDetail extends Component {
                 <div className="m-t-1">{ownerNickname}的红包</div>
                 <p className="text-muted m-t-0-5-0 f-sm">{title}</p>
                 <HongbaoSelfInfo {...selfInfoProps}/>
+              </div>
+              <div className="hb-help">
+                <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
+                  <i className="hb-help-icon"></i>
+                </a>
               </div>
             </section>
 
@@ -405,7 +410,7 @@ class HongbaoDetail extends Component {
           <p className="text-center hb-logo-gray-pos">
             <i className="hb-logo-gray"></i>
           </p>
-        </PullToRefresh>
+        </PullRefresh>
         {this.renderFooter()}
       </div>
     );

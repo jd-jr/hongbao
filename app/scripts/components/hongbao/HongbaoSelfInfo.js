@@ -215,7 +215,7 @@ class HongbaoSelfInfo extends Component {
         return (
           <div>
             <div className="text-center text-muted">
-              <span className="hb-money">中奖啦</span>
+              <span className="hb-money">恭喜你</span>
             </div>
           </div>
         );
@@ -223,14 +223,14 @@ class HongbaoSelfInfo extends Component {
         return (
           <div>
             <div className="text-center">
-              <span className="hb-money text-primary">中奖啦</span>
+              <span className="hb-money text-primary">恭喜你</span>
             </div>
             <div>
               {
                 this.isView ? (
                   <div>
                     <button className="btn btn-primary btn-sm btn-arc" onTouchTap={this.reward}>
-                      立即领奖
+                      立即领取
                     </button>
                     <p className="f-xs text-muted m-t-0-3">（温馨提示：请在15天内尽快维护收货地址）</p>
                   </div>

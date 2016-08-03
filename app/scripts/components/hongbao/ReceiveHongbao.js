@@ -7,7 +7,7 @@ import perfect from '../../utils/perfect';
 import {setSessionStorage} from '../../utils/sessionStorage';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
-import PullToRefresh from 'reactjs-pull-to-refresh';
+import PullRefresh from 'reactjs-pull-refresh';
 import QrCode from './QrCode';
 import callApi from '../../fetch';
 
@@ -86,13 +86,23 @@ class ReceiveHongbao extends Component {
 
   //切换已收红包和手气最佳
   switchTab(e, type) {
+    //防止切换的太快，导致数据渲染不正确
+    if (this.switching) {
+      return;
+    }
+    this.switching = true;
+
     this.setState({
       type
     }, () => {
       const {hongbaoActions} = this.props;
       hongbaoActions.clearReceive();
       this.adjustArrow();
-      this.loadMoreCallback();
+      this.loadMoreCallback().then(() => {
+        setTimeout(() => {
+          this.switching = false;
+        });
+      });
     });
     //埋点
     perfect.setBuriedPoint(`hongbao_btn_${type}`);
@@ -370,12 +380,12 @@ class ReceiveHongbao extends Component {
     }
 
     return (
-      <PullToRefresh className="hb-main-panel"
-                     refreshCallback={this.refreshCallback}
-                     loadMoreCallback={this.loadMoreCallback}
-                     hasMore={!lastPage}>
+      <PullRefresh className="hb-main-panel"
+                   refreshCallback={this.refreshCallback}
+                   loadMoreCallback={this.loadMoreCallback}
+                   hasMore={!lastPage}>
         {deviceEnv.inWx ? <QrCode type={type}/> : null}
-        <section className="text-center m-t-1">
+        <section className="text-center m-t-1 pos-r">
           <div>
             <img className="img-circle img-thumbnail hb-figure hb-user-info" src={headpic} alt=""/>
           </div>
@@ -392,6 +402,11 @@ class ReceiveHongbao extends Component {
               )
             }
           </div>
+          <div className="hb-help">
+            <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
+              <i className="hb-help-icon"></i>
+            </a>
+          </div>
         </section>
 
         <section className="row text-center m-t-1">
@@ -407,7 +422,7 @@ class ReceiveHongbao extends Component {
           </div>
         </section>
         {this.renderList()}
-      </PullToRefresh>
+      </PullRefresh>
     );
   }
 }

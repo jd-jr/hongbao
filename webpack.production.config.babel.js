@@ -26,6 +26,9 @@ let webpackConfig = {
 
   entry: {
     index: ['./app/scripts/index.js'],
+    //添加要打包在vendors里面的库，作为公共的js文件
+    vendors: ['react', 'react-dom', 'react-addons-css-transition-group', 'redux',
+      'redux-thunk', 'react-redux', 'humps', 'react-router', 'react-router-redux', 'history']
   },
   output: {
     path: path.join(__dirname, 'dist'), //打包输出目录
@@ -67,6 +70,8 @@ let webpackConfig = {
   },
 
   plugins: [
+    //把入口文件里面的 vendors 包含的js文件 打包成verdors.js，除了指定的verdors外，多个入口的公共文件也会被打包到 vendors中
+    new webpack.optimize.CommonsChunkPlugin({name: 'vendors', filename: 'vendors.[hash].js'}),
     new ExtractTextPlugin('[name].[hash].css', {
       disable: false,
       allChunks: true
