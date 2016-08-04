@@ -15,6 +15,7 @@ import Logistics from '../components/logisticsInfo/'
 import Help from '../components/explain/Help';
 import Protocol from '../components/explain/Protocol';
 import Guide from '../components/explain/Guide';
+import Strategy from '../components/explain/Strategy';
 import Test from '../components/Test';
 import routeSetting from './routeSetting';
 const {enterHandler} = routeSetting;
@@ -61,6 +62,8 @@ export default (
            onEnter={() => enterHandler('protocol')}/>
     <Route path="guide" component={Guide}
            onEnter={() => enterHandler('guide')}/>
+    <Route path="strategy" component={Strategy}
+           onEnter={() => enterHandler('strategy')}/>
     <Route path="test/linder" component={Test}
            onEnter={() => enterHandler('test')}/>
   </Route>

@@ -63,6 +63,7 @@
     "gulp-clean": "^0.3.2",
     "gulp-connect": "^5.0.0",
     "gulp-copy2": "^0.2.0",
+    "gulp-imagemin": "^3.0.2",
     "gulp-load-plugins": "^1.2.4",
     "gulp-replace": "^0.5.4",
     "gulp-sass": "^2.3.2",

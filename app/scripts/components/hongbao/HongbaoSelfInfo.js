@@ -337,7 +337,7 @@ class HongbaoSelfInfo extends Component {
           {
             this.isView ? (
               deviceEnv.inJdWallet ? (
-                <span onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">去提现</span>
+                <span onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">立即提现</span>
               ) : (
                 <button onTouchTap={this.withdraw}
                         className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</button>

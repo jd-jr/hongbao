@@ -39,7 +39,7 @@ export function getParticipantList(body = {}, clear) {
     if (isFetching || lastPage) {
       return Promise.reject();
     }
-    return dispatch(fetchParticipantList({...body, pageNum, pageSize: 20}, clear));
+    return dispatch(fetchParticipantList({...body, pageNum, pageSize: 10}, clear));
   };
 }
 

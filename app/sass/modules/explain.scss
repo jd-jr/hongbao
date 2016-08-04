@@ -14,6 +14,15 @@
     vertical-align: text-top;
   }
 
+  &help-icon-lg {
+    background: url("../images/help-icon-lg.png") no-repeat;
+    display: inline-block;
+    background-size: 100%;
+    width: 20px;
+    height: 20px;
+    vertical-align: text-top;
+  }
+
   &help-panel {
     padding: 1rem;
     h3 {
@@ -59,11 +68,15 @@
   }
 
   &guide-img {
-    background-size: auto 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: #f1f8ff;
-    position: relative;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 10000;
+    > img {
+      width: 100%;
+    }
   }
 
   &guide-btn-send {
@@ -75,8 +88,46 @@
   }
 }
 
-.swiper-container-horizontal > .swiper-pagination-bullets {
-  bottom: 2rem
+.hb-strategy-img {
+  padding-left: 0;
+  img {
+    display: block;
+    width: 100%;
+  }
+}
+
+.hb-strategy-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: inline-block;
+  vertical-align: middle;
+  background-color: #fff;
+  padding: 0.5rem 1.5rem;
+  text-align: center;
+  a {
+    display: inline-block;
+    width: 25%;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid #d84e44;
+    color: #d84e44;
+    &:first-child {
+      border-bottom-left-radius: 0.3rem;
+      border-top-left-radius: 0.3rem;
+    }
+    &:last-child {
+      border-bottom-right-radius: 0.3rem;
+      border-top-right-radius: 0.3rem;
+    }
+    &.active {
+      color: #fff;
+      background-color: #d84e44;
+    }
+  }
+  a + a {
+    margin-left: -1px;
+  }
 }
 
 .swiper-pagination-bullet {

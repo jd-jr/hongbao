@@ -139,10 +139,10 @@ const routeSetting = {
 
   //进入一个新的路由触发的事件
   enterHandler(key) {
-    if (firstEnter && location.pathname === '/m-hongbao/my' && location.search === '?type=sponsor') {
+    /*if (firstEnter && location.pathname === '/m-hongbao/my' && location.search === '?type=sponsor') {
       location.href = `${perfect.getLocationRoot()}my`;
     }
-    firstEnter = false;
+    firstEnter = false;*/
 
     if (deviceEnv.inWx) {
       //console.info(getSessionStorage('thirdAccId'));

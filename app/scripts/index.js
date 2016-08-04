@@ -11,6 +11,8 @@ import configureStore from './store';
 import 'reactjs-modal/dist/styles/modal.css';
 import '../styles/main.css';
 
+process.env.NODE_ENV = 'develop';
+
 // Promise 兼容性处理
 promise.polyfill();
 

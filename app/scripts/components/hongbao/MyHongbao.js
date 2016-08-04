@@ -16,27 +16,46 @@ class MyHongbao extends Component {
     };
     this.switchTab = this.switchTab.bind(this);
     this.loadUserInfo = this.loadUserInfo.bind(this);
+    this.first = true;
   }
 
-  componentWillMount() {
+  componentDidMount() {
     //延迟显示底部按钮，解决 IOS 下底部按钮设置 fixed 的问题
     setTimeout(() => {
       this.setState({
         showFoot: true
       });
     }, 300);
+
     if (deviceEnv.inJdWallet) {
       const {setClientInfo} = this.props;
-      setClientInfo((login) => {
-        if (login) {
-          this.loadUserInfo();
-          this.setState({
-            isLogin: true
+      //如果是首次进入,需延迟执行,因为调用 ios 的 getInfo 有问题
+      if (this.first && deviceEnv.inIos) {
+        setTimeout(() => {
+          setClientInfo((login) => {
+            if (login) {
+              this.loadUserInfo();
+              this.setState({
+                isLogin: true
+              });
+            } else {
+              this.context.router.goBack();
+            }
           });
-        } else {
-          this.context.router.goBack();
-        }
-      });
+          this.first = false;
+        }, 300);
+      } else {
+        setClientInfo((login) => {
+          if (login) {
+            this.loadUserInfo();
+            this.setState({
+              isLogin: true
+            });
+          } else {
+            this.context.router.goBack();
+          }
+        });
+      }
     } else {
       this.loadUserInfo();
     }

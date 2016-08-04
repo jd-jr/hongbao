@@ -12,7 +12,6 @@ import exampleConfig from './webpack.example.config.babel';
 import productionConfig from './webpack.production.config.babel';
 import dllConfig from './webpack.dll.config.babel';
 
-
 const $ = gulpLoadPlugins();
 
 // webpack gulp 配置可参考 https://github.com/webpack/webpack-with-common-libs/blob/master/gulpfile.js
@@ -81,7 +80,6 @@ gulp.task('copy:dev', ['clean'], () => {
     {src: 'app/scripts/containers/Root.prod.js', dest: 'app/scripts/containers/Root.js'},
     {src: 'app/favicon.ico', dest: 'dist/favicon.ico'},
     {src: 'node_modules/eruda/eruda.min.js', dest: 'dist/eruda.min.js'},
-    {src: 'app/images/mystic-gift-sm.png', dest: 'dist/images/mystic-gift-sm.png'},
   ];
   return $.copy2(paths);
 });
@@ -94,9 +92,21 @@ gulp.task('copy:prod', ['clean'], () => {
     {src: 'app/scripts/containers/Root.prod.js', dest: 'app/scripts/containers/Root.js'},
     {src: 'app/favicon.ico', dest: 'dist/favicon.ico'},
     {src: 'node_modules/eruda/eruda.min.js', dest: 'dist/eruda.min.js'},
-    {src: 'app/images/mystic-gift-sm.png', dest: 'dist/images/mystic-gift-sm.png'},
   ];
   return $.copy2(paths);
+});
+
+//优化图片
+gulp.task('images', () => {
+  return gulp.src('app/images/guide/*')
+    .pipe($.imagemin({
+      progressive: true,
+      interlaced: true,
+      // don't remove IDs from SVGs, they are often used
+      // as hooks for embedding and styling
+      svgoPlugins: [{cleanupIDs: false}]
+    }))
+    .pipe(gulp.dest('dist/images/guide'))
 });
 
 // 计算文件大小
@@ -276,12 +286,12 @@ gulp.task('sass-compress', () => {
 });
 
 // 编译打包，正式环境
-gulp.task('build', ['sass-compress', 'styles', 'copy:prod'], () => {
+gulp.task('build', ['sass-compress', 'styles', 'copy:prod', 'images'], () => {
   gulp.start(['webpack:build']);
 });
 
 // 编译打包，测试环境
-gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev'], () => {
+gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev', 'images'], () => {
   gulp.start(['webpack:build']);
 });
 

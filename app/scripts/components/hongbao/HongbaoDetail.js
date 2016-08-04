@@ -8,9 +8,11 @@ import {HONGBAO_TITLE} from '../../constants/common';
 import HongbaoSelfInfo from './HongbaoSelfInfo';
 import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
+import Guide from '../Guide';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
 import {getSessionStorage} from '../../utils/sessionStorage';
+import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
 
 // 红包详情
 class HongbaoDetail extends Component {
@@ -36,16 +38,19 @@ class HongbaoDetail extends Component {
       sponsorGoal: 'new', // 判断底部显示状态，是重新发起，还是继续发送
       showInitiate: false, // 继续发送状态
       hongbaoExpired: false, //红包是否过期
+      guide: false
     };
 
     this.showDetail = this.showDetail.bind(this);
     this.reSponsor = this.reSponsor.bind(this);
     this.closeHongbao = this.closeHongbao.bind(this);
-    this.guide = this.guide.bind(this);
+    this.strategy = this.strategy.bind(this);
     this.updateSponsorGoal = this.updateSponsorGoal.bind(this);
 
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
+    this.closeGuide = this.closeGuide.bind(this);
+    this.imgUrl = 'detail.png';
 
     //可继续发送状态
     this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
@@ -168,7 +173,8 @@ class HongbaoDetail extends Component {
       });
     } else {
       this.setState({
-        unpack: false
+        unpack: false,
+        guide: getLocalStorage('guide-detail') !== 'true'
       });
     }
   }
@@ -200,7 +206,7 @@ class HongbaoDetail extends Component {
   }
 
   // 红包攻略
-  guide(e) {
+  strategy(e) {
     e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.preventDefault();
@@ -209,8 +215,7 @@ class HongbaoDetail extends Component {
     const {type} = this.props;
     //埋点
     perfect.setBuriedPoint(`hongbao${type && type === 'sponsor' ? '_my' : ''}_guide`);
-    // TODO
-    this.context.router.push('/guide');
+    this.context.router.push('/strategy');
   }
 
   //在 HongbaoSelfInfo 中处理逻辑后，需要修改 sponsorGoal，来判断是继续发送，还是我要发红包
@@ -287,7 +292,7 @@ class HongbaoDetail extends Component {
       <footer className="hb-footer">
         <div className="row text-center">
           <div className="col-12 border-second border-right hb-active-btn"
-               onClick={this.guide}>
+               onClick={this.strategy}>
             红包攻略
           </div>
           <div className="col-12 hb-active-btn"
@@ -302,6 +307,14 @@ class HongbaoDetail extends Component {
         <span>{type === 'receive' ? '我要发红包' : (sponsorGoal === 'new' ? '我要发红包' : '继续发送')}</span>
       </div>
     );
+  }
+
+  //关闭引导
+  closeGuide() {
+    this.setState({
+      guide: false
+    });
+    setLocalStorage('guide-detail', 'true');
   }
 
   render() {
@@ -346,7 +359,7 @@ class HongbaoDetail extends Component {
     const unpackProps = {
       identifier, indexActions, showDetail, hongbaoDetailAction
     };
-    const {unpack, detail, sponsorGoal, showInitiate, hongbaoExpired} = this.state;
+    const {unpack, detail, sponsorGoal, showInitiate, hongbaoExpired, guide} = this.state;
 
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
@@ -376,6 +389,7 @@ class HongbaoDetail extends Component {
 
     return (
       <div>
+        {guide ? <Guide closeGuide={this.closeGuide} imgUrl={this.imgUrl}/> : null}
         {initiateCom}
         {unpack ? <Unpack {...unpackProps}/> : null}
         <PullRefresh className="hb-main-panel-noheader"
@@ -395,7 +409,7 @@ class HongbaoDetail extends Component {
               </div>
               <div className="hb-help">
                 <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
-                  <i className="hb-help-icon"></i>
+                  <i className="hb-help-icon-lg"></i>
                 </a>
               </div>
             </section>
@@ -406,10 +420,10 @@ class HongbaoDetail extends Component {
               </div>
               {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
             </section>
+            <p className="text-center hb-logo-gray-pos" style={{paddingBottom: '3.5rem'}}>
+              <i className="hb-logo-gray"></i>
+            </p>
           </article>
-          <p className="text-center hb-logo-gray-pos">
-            <i className="hb-logo-gray"></i>
-          </p>
         </PullRefresh>
         {this.renderFooter()}
       </div>

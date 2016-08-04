@@ -108,7 +108,7 @@ const entry = webpackConfig.entry;
 // 为 HtmlwebpackPlugin 设置配置项，与 entry 键对应，根据需要设置其参数值
 const htmlwebpackPluginConfig = {
   index: {
-    title: '实物红包'
+    title: '京东红包'
   }
 };
 

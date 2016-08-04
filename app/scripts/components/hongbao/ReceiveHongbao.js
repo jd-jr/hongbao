@@ -395,7 +395,7 @@ class ReceiveHongbao extends Component {
           <div>
             {
               deviceEnv.inJdWallet ? (
-                <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">去提现</button>
+                <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">立即提现</button>
               ) : (
                 <button onTouchTap={this.withdraw}
                         className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</button>
@@ -404,7 +404,7 @@ class ReceiveHongbao extends Component {
           </div>
           <div className="hb-help">
             <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
-              <i className="hb-help-icon"></i>
+              <i className="hb-help-icon-lg"></i>
             </a>
           </div>
         </section>

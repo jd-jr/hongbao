@@ -7,8 +7,10 @@ import Loading from '../../ui/Loading';
 import callApi from '../../fetch';
 import {HONGBAO_TITLE} from '../../constants/common';
 import perfect from '../../utils/perfect'
-import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
 import Initiate from './Initiate';
+import Guide from '../Guide';
+import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
+import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
 
 const {Base64} = base64;
 
@@ -43,7 +45,8 @@ class Home extends Component {
       loadingStatus: false,
       checked: true, //同意条款
       showFoot: false,
-      giftTitle: '可发1个红包，送给你想送的人'
+      giftTitle: '可发1个红包，送给你想送的人',
+      guide: getLocalStorage('guide-sponsor-hb') !== 'true'
     };
 
     this.selectProduct = this.selectProduct.bind(this);
@@ -52,6 +55,8 @@ class Home extends Component {
     this.handleChecked = this.handleChecked.bind(this);
     this.replaceProduct = this.replaceProduct.bind(this);
     this.closeHongbao = this.closeHongbao.bind(this);
+    this.closeGuide = this.closeGuide.bind(this);
+    this.imgUrl = 'sponsor-hb.png';
   }
 
   componentWillMount() {
@@ -357,10 +362,18 @@ class Home extends Component {
     );
   }
 
+  //关闭引导
+  closeGuide() {
+    this.setState({
+      guide: false
+    });
+    setLocalStorage('guide-sponsor-hb', 'true');
+  }
+
   render() {
     let {
       giftNum, title, bizPrice, skuName, indexImg,
-      selecting, checked, loadingStatus, giftTitle
+      selecting, checked, loadingStatus, giftTitle, guide
     } = this.state;
     const {pathname} = this.props;
     bizPrice = (bizPrice / 100).toFixed(2);
@@ -379,6 +392,7 @@ class Home extends Component {
 
     return (
       <div>
+        {guide ? <Guide closeGuide={this.closeGuide} imgUrl={this.imgUrl}/> : null}
         {initiateCom}
         {loadingStatus ? (<Loading loadingStatus={loadingStatus}/>) : null}
         {this.renderH5PayForm()}
@@ -413,8 +427,9 @@ class Home extends Component {
                           <div className="text-truncate">{skuName}</div>
                           <div className="text-muted f-sm">{bizPrice ? `￥${bizPrice}` : ''}</div>
                         </div>
-                        <div className="col-4 border-left border-second text-center">
-                          <a href="" onTouchTap={this.replaceProduct}>更换</a>
+                        <div className="col-4 border-left border-second text-center p-a-0"
+                             onTouchTap={this.replaceProduct}>
+                          <span className="text-link">更换</span>
                         </div>
                       </div>
                     </div>
@@ -459,7 +474,9 @@ class Home extends Component {
               </p>
               <p className="text-center f-sm m-t-2 text-muted">
                 <span>好友未领取实物，可于15天后申请退款 </span>
-                <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85"><i className="hb-help-icon"></i></a>
+                <a
+                  href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85"><i
+                  className="hb-help-icon"></i></a>
               </p>
             </section>
             <p className="text-center hb-logo-gray-pos">

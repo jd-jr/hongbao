@@ -151,14 +151,14 @@ class SponsorHongbao extends Component {
             <li key={identifier + giftRecordId}
                 className="hb-link-block row flex-items-middle"
                 onTouchTap={(e) => this.hongbaoDetail(e, link)}>
-              <div className="col-4">
+              <div className="col-4 p-a-0">
                 <img className="img-fluid" src={skuIcon} alt=""/>
               </div>
-              <div className="col-11">
+              <div className="col-10">
                 <div className="text-truncate">京东红包</div>
                 <div className="text-muted f-sm">{perfect.formatDate({time: createdDate})}</div>
               </div>
-              <div className="col-9 text-right">
+              <div className="col-10 text-right p-l-0">
                 <div>{(amount / 100).toFixed(2)}元</div>
                 <div className="text-muted f-sm">
                   {this.getStatus({status, giftGainedNum, giftNum})}
@@ -205,7 +205,7 @@ class SponsorHongbao extends Component {
           </div>
           <div className="hb-help">
             <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
-              <i className="hb-help-icon"></i>
+              <i className="hb-help-icon-lg"></i>
             </a>
           </div>
         </section>
