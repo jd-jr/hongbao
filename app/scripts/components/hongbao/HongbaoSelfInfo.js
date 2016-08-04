@@ -1,11 +1,14 @@
 import React, {Component, PropTypes} from 'react';
+import ReactDOM from 'react-dom';
 import {Link} from 'react-router';
 import jdWalletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../../utils/perfect';
 import callApi from '../../fetch';
 import Modal from 'reactjs-modal';
+import Guide from '../Guide';
 import {setSessionStorage} from '../../utils/sessionStorage';
+import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
 
 /**
  * 发起者和领取者
@@ -23,7 +26,7 @@ class HongbaoSelfInfo extends Component {
     super(props, context);
     this.state = {
       refundStatus: props.refundStatus,
-      refundVisible: false //显示申请退款弹框
+      refundVisible: false, //显示申请退款弹框
     };
     const href = location.href;
     this.isView = href.indexOf('/hongbao/detail/view') !== -1;
@@ -33,16 +36,85 @@ class HongbaoSelfInfo extends Component {
     this.reward = this.reward.bind(this);
     this.withdraw = this.withdraw.bind(this);
     this.viewMyhb = this.viewMyhb.bind(this);
+    this.closeGuide = this.closeGuide.bind(this);
 
     this.submitStatus = false;
     // 申请退款状态
     this.refundStatusArr = ['REDBAG_WHOLE_REFUND', 'REDBAG_GOODS_REFOUND', 'RECEIVE_COMPLETE_GOODS_REFUND', 'REDBAG_WHOLE_REFUND_TRANSFER'];
+
+    //中实物状态
+    this.winningStatusArr = ['FORBIDDEN_CONFIRME', 'UNCONFIRMED', 'CONFIRMED', 'UNORDER', 'WAIT_STOCK'];
+    this.guide = false;
+  }
+
+  componentWillMount() {
+    //判断是否中奖，实物奖还是现金奖，然后根据状态显示不同的浮层
+    if (this.isView) {
+      return;
+    }
+    const {selfInfo, type} = this.props;
+    if (type && type === 'sponsor') {
+      return;
+    }
+
+    if (selfInfo) {
+      const {giftType, confirmAddress} = selfInfo;
+      if (giftType === 'CASH' && getLocalStorage('guide-detail') !== 'true') { //现金
+        this.guide = true;
+        this.imgUrl = 'detail.png';
+      } else if (this.winningStatusArr.indexOf(confirmAddress) !== -1 &&
+        getLocalStorage('guide-detail-winning') !== 'true') { // 实物
+        this.guide = true;
+        this.imgUrl = 'detail-winning.png';
+      } else if (getLocalStorage('guide-detail-no-winning') !== 'true') { //未中奖
+        this.guide = true;
+        this.imgUrl = 'detail-no-winning.png';
+      }
+    } else if (getLocalStorage('guide-detail-no-winning') !== 'true') { //未中奖
+      this.guide = true;
+      this.imgUrl = 'detail-no-winning.png';
+    }
+  }
+
+  componentDidMount() {
+    if (this.guide) {
+      const guideCom = (<Guide closeGuide={this.closeGuide} imgUrl={this.imgUrl}/>);
+      this.guideContainer = document.createElement('div');
+      document.body.appendChild(this.guideContainer);
+
+      ReactDOM.unstable_renderSubtreeIntoContainer(this,
+        guideCom, this.guideContainer);
+    }
   }
 
   componentWillUnmout() {
     if (this.drawForm) {
       document.body.removeChild(this.drawForm);
     }
+    this.destoryGuide();
+  }
+
+  // 销毁 Guide
+  destoryGuide() {
+    if (this.guideContainer) {
+      ReactDOM.unmountComponentAtNode(this.guideContainer);
+      document.body.removeChild(this.guideContainer);
+      this.guideContainer = null;
+    }
+  }
+
+  //关闭引导
+  closeGuide(e) {
+    //防点透处理
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+
+    this.destoryGuide();
+    const storage = this.imgUrl === 'detail.png' ? 'guide-detail' :
+      (this.imgUrl === 'detail-winning.png' ? 'guide-detail-winning' : 'guide-detail-no-winning');
+    setLocalStorage(storage, 'true');
   }
 
   //物流详情

@@ -18,7 +18,7 @@ class Strategy extends Component {
   }
 
   render() {
-    const rootUrl = perfect.getLocationOrigin() + '/images/strategy/';
+    const rootUrl = perfect.getLocationRoot() + 'images/strategy/';
     const {active} = this.state;
     return (
       <div>
@@ -42,7 +42,9 @@ class Strategy extends Component {
           <li><img src={`${rootUrl}strategy_10.jpg`} alt="红包攻略"/></li>
           <li><img src={`${rootUrl}strategy_11.jpg`} alt="红包攻略"/></li>
           <li><img src={`${rootUrl}strategy_12.jpg`} alt="红包攻略"/></li>
-          <li id="strategy4"><img src={`${rootUrl}strategy_13.jpg`} alt="红包攻略"/></li>
+          <li><img src={`${rootUrl}strategy_13.jpg`} alt="红包攻略"/></li>
+          <li><img src={`${rootUrl}strategy_14.jpg`} alt="红包攻略"/></li>
+          <li id="strategy4"><img src={`${rootUrl}strategy_15.jpg`} alt="红包攻略"/></li>
         </ul>
       </div>
     );

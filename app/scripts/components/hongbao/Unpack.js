@@ -41,7 +41,7 @@ class Unpack extends Component {
    */
   validateHongbao() {
     const url = 'prepare/receive';
-    const {identifier, indexActions, showDetail} = this.props;
+    const {identifier, indexActions} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
     // id 表示红包 id
@@ -64,7 +64,8 @@ class Unpack extends Component {
         } else {
           //如果领取过，直接打开
           if (status === 'HAS_RECEIVE') {
-            showDetail(true);
+            this.context.router.replace(`/hongbao/detail/${identifier}`);
+            return;
           } else {
             this.setState({
               unpackModal: true,
@@ -73,8 +74,6 @@ class Unpack extends Component {
               owner,
               sku: (sku && sku.length > 0) ? sku[0] : null,
               title
-            }, () => {
-              showDetail(true);
             });
           }
         }
@@ -104,7 +103,7 @@ class Unpack extends Component {
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
     if (hongbaoStatus === 'HAS_RECEIVE') {
-      this.hideUnpack();
+      this.hideUnpack({});
       return;
     }
     const url = 'receive';
@@ -116,14 +115,13 @@ class Unpack extends Component {
 
     callApi({url, body}).then(
       ({json, response}) => {
-        this.hideUnpack({reLoad: true});
+        this.hideUnpack({});
       },
       (error) => {
         if (error.errorCode === 'RBF100204') {
           this.setState({
             hongbaoStatus: 'RECEIVE_COMPLETE'
           });
-          this.forceReload = true;
         }
       }
     );
@@ -133,38 +131,17 @@ class Unpack extends Component {
   }
 
   /**
-   * 隐藏拆红包弹框
-   * @param reLoad 如果为 true 则重新加载红包详情数据
+   * 隐藏拆红包弹框，并跳转到红包详情页
+   * 新方案，直接改成不加载背景
    */
-  hideUnpack({reLoad, buriedPoint, e}) {
+  hideUnpack({buriedPoint, e}) {
     if (e) {
+      //防点透处理
       e.stopPropagation();
       e.preventDefault();
       e.nativeEvent.preventDefault();
       e.nativeEvent.stopPropagation();
     }
-
-    const {hongbaoDetailAction, identifier, showDetail} = this.props;
-    this.setState({
-      unpackStatus: false
-    });
-    showDetail();
-
-    if (this.forceReload || reLoad) {
-      const accountType = perfect.getAccountType();
-      const thirdAccId = perfect.getThirdAccId();
-
-      let body = {
-        identifier,
-        accountType,
-        thirdAccId
-      };
-      hongbaoDetailAction.clearHongbaoDetail();
-      hongbaoDetailAction.clearParticipant();
-      hongbaoDetailAction.getParticipantList(body);
-      hongbaoDetailAction.getHongbaoDetail(body);
-    }
-
     if (buriedPoint) {
       //埋点
       let eventId;
@@ -179,17 +156,17 @@ class Unpack extends Component {
       perfect.setBuriedPoint(eventId);
     }
 
-    setSessionStorage('unpacked', 'true');
+    const {identifier} = this.props;
+    this.context.router.replace(`/hongbao/detail/${identifier}`);
   }
 
   //关闭抢红包页面
   closeHongbao(e) {
-    /*setInterval(() => {
-     if (window.wx) {
-     window.wx.closeWindow();
-     }
-     }, 50);*/
-    this.hideUnpack({reLoad: true, e});
+    setInterval(() => {
+      if (window.wx) {
+        window.wx.closeWindow();
+      }
+    }, 50);
   }
 
   // 红包弹框内容
@@ -282,7 +259,7 @@ class Unpack extends Component {
   }
 
   renderModal() {
-    const {unpackModal, hongbaoStatus} = this.state;
+    const {unpackModal} = this.state;
     let modal;
     let height = this.iphone4 ? '27rem' : '29rem';
     modal = (
@@ -315,7 +292,6 @@ Unpack.contextTypes = {
 Unpack.propTypes = {
   identifier: PropTypes.string,
   indexActions: PropTypes.object,
-  showDetail: PropTypes.func,
   hongbaoDetailAction: PropTypes.object,
 };
 

@@ -3,26 +3,17 @@ import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import PullRefresh from 'reactjs-pull-refresh';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
-import Unpack from './Unpack';
 import {HONGBAO_TITLE} from '../../constants/common';
 import HongbaoSelfInfo from './HongbaoSelfInfo';
 import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
-import Guide from '../Guide';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
-import {getSessionStorage} from '../../utils/sessionStorage';
-import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
 
 // 红包详情
 class HongbaoDetail extends Component {
   constructor(props, context) {
     super(props, context);
-    const href = location.href;
-    const unpacked = getSessionStorage('unpacked');
-    //是否从拆红包入口进入
-    const isUnPack = href.indexOf('/unpack') !== -1;
-    this.isUnPack = isUnPack; // 从拆红包入口进入
     const thirdAccId = perfect.getThirdAccId();
     let isAuthorize = true;
     if (deviceEnv.inWx) {
@@ -31,17 +22,15 @@ class HongbaoDetail extends Component {
     this.isAuthorize = isAuthorize; // 在微信中是否授权
     this.state = {
       showFoot: false,
-      unpack: isUnPack && unpacked !== 'true', //如果是从拆红包入口进入，则显示拆红包弹框
-      // 如果是从拆红包入口进入，初始隐藏，等弹出抢红包窗口，再显示。这里没有用 state unpack，
-      // 主要 unpack 和 detail 两个状态处理的场景不一致
-      detail: isUnPack ? 'none' : 'block',
       sponsorGoal: 'new', // 判断底部显示状态，是重新发起，还是继续发送
       showInitiate: false, // 继续发送状态
-      hongbaoExpired: false, //红包是否过期
-      guide: false
+      hongbaoExpired: false //红包是否过期
     };
 
-    this.showDetail = this.showDetail.bind(this);
+    const href = location.href;
+    //是否从拆红包入口进入，true 表示是
+    this.isUnPack = href.indexOf('/view') === -1;
+
     this.reSponsor = this.reSponsor.bind(this);
     this.closeHongbao = this.closeHongbao.bind(this);
     this.strategy = this.strategy.bind(this);
@@ -49,9 +38,6 @@ class HongbaoDetail extends Component {
 
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
-    this.closeGuide = this.closeGuide.bind(this);
-    this.imgUrl = 'detail.png';
-
     //可继续发送状态
     this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
   }
@@ -69,10 +55,6 @@ class HongbaoDetail extends Component {
     }, 350);
 
     this.loadData();
-    const unpacked = getSessionStorage('unpacked');
-    if (unpacked === 'true') {//如果已经拆过，则直接打开
-      this.showDetail(true);
-    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -159,24 +141,6 @@ class HongbaoDetail extends Component {
       thirdAccId
     };
     return hongbaoDetailAction.getParticipantList(body, clear);
-  }
-
-  /**
-   * 显示红包详情
-   * @param first 设为 true，表示红包弹框加载完，显示
-   * 不传入值或设为 false 表示直接关闭抢红包弹框
-   */
-  showDetail(first) {
-    if (first) {
-      this.setState({
-        detail: true
-      });
-    } else {
-      this.setState({
-        unpack: false,
-        guide: getLocalStorage('guide-detail') !== 'true'
-      });
-    }
   }
 
   //重新发起或继续发送
@@ -309,14 +273,6 @@ class HongbaoDetail extends Component {
     );
   }
 
-  //关闭引导
-  closeGuide() {
-    this.setState({
-      guide: false
-    });
-    setLocalStorage('guide-detail', 'true');
-  }
-
   render() {
     const {
       hongbaoInfo, identifier, indexActions,
@@ -355,11 +311,7 @@ class HongbaoDetail extends Component {
     }
 
     const {giftRecordId} = selfInfo || {};
-    const showDetail = this.showDetail;
-    const unpackProps = {
-      identifier, indexActions, showDetail, hongbaoDetailAction
-    };
-    const {unpack, detail, sponsorGoal, showInitiate, hongbaoExpired, guide} = this.state;
+    const {detail, sponsorGoal, showInitiate, hongbaoExpired} = this.state;
 
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
@@ -389,9 +341,7 @@ class HongbaoDetail extends Component {
 
     return (
       <div>
-        {guide ? <Guide closeGuide={this.closeGuide} imgUrl={this.imgUrl}/> : null}
         {initiateCom}
-        {unpack ? <Unpack {...unpackProps}/> : null}
         <PullRefresh className="hb-main-panel-noheader"
                        refreshCallback={this.refreshCallback}
                        loadMoreCallback={this.loadMoreCallback}

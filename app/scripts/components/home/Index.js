@@ -363,7 +363,13 @@ class Home extends Component {
   }
 
   //关闭引导
-  closeGuide() {
+  closeGuide(e) {
+    //防点透处理
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+
     this.setState({
       guide: false
     });
@@ -438,12 +444,13 @@ class Home extends Component {
               }
 
               <div className="f-lg">
-                <div className="hb-single">
+                <div className="hb-single p-y-1">
                   <span>红包个数</span>
-                  <div className="pull-right">
+                  <div className="pull-right text-right">
                     <input value={giftNum} onChange={(e) => this.handleChange(e, 'giftNum')}
                            onBlur={() => this.handleBlur('giftNum')}
-                           className="hb-input text-right" type="tel" placeholder="填写个数"/>
+                           className="hb-input text-right" type="tel" placeholder="填写个数"
+                           style={{width: '100px'}}/>
                     <span className="pull-right">个</span>
                   </div>
                 </div>

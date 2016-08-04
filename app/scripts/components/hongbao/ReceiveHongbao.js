@@ -10,12 +10,15 @@ import {NICKNAME} from '../../constants/common';
 import PullRefresh from 'reactjs-pull-refresh';
 import QrCode from './QrCode';
 import callApi from '../../fetch';
+import Guide from '../Guide';
+import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
 
 class ReceiveHongbao extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
       type: 'received', // received 已收红包， luck 手气最佳
+      guide: getLocalStorage('guide-my-receive') !== 'true'
     };
     this.switchTab = this.switchTab.bind(this);
     this.withdraw = this.withdraw.bind(this);
@@ -25,6 +28,7 @@ class ReceiveHongbao extends Component {
 
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
+    this.closeGuide = this.closeGuide.bind(this);
   }
 
   componentDidMount() {
@@ -92,9 +96,13 @@ class ReceiveHongbao extends Component {
     }
     this.switching = true;
 
-    this.setState({
-      type
-    }, () => {
+    let state = {type};
+    const guide = getLocalStorage(type === 'luck' ? 'guide-my-receive-luck' : 'guide-my-receive');
+    if (guide !== 'true') {
+      state.guide = true;
+    }
+
+    this.setState(state, () => {
       const {hongbaoActions} = this.props;
       hongbaoActions.clearReceive();
       this.adjustArrow();
@@ -205,6 +213,20 @@ class ReceiveHongbao extends Component {
     if (this.refs.arrow) {
       this.refs.arrow.style.left = `${xy.left + width / 2 - 8}px`;
     }
+  }
+
+  //关闭引导
+  closeGuide(e) {
+    //防点透处理
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+
+    this.setState({
+      guide: false
+    });
+    setLocalStorage(this.state.type === 'luck' ? 'guide-my-receive-luck' : 'guide-my-receive', 'true');
   }
 
   /*eslint-disable indent*/
@@ -362,7 +384,7 @@ class ReceiveHongbao extends Component {
   }
 
   render() {
-    const {type} = this.state;
+    const {type, guide} = this.state;
     const {userInfo, receivePagination} = this.props;
     const {giftAndThirdAccUserInfoDto, redbagAssemblyRetDto} = userInfo;
     const {lastPage} = receivePagination;
@@ -379,50 +401,60 @@ class ReceiveHongbao extends Component {
       gainCashBalance = 0;
     }
 
+    let imgUrl;
+    if (guide) {
+      imgUrl = type === 'luck' ?
+        (deviceEnv.inWx ? 'my-receive-luck-wx.png' : 'my-receive-luck.png') :
+        (deviceEnv.inWx ? 'my-receive-wx.png' : 'my-receive.png');
+    }
+
     return (
-      <PullRefresh className="hb-main-panel"
-                   refreshCallback={this.refreshCallback}
-                   loadMoreCallback={this.loadMoreCallback}
-                   hasMore={!lastPage}>
-        {deviceEnv.inWx ? <QrCode type={type}/> : null}
-        <section className="text-center m-t-1 pos-r">
-          <div>
-            <img className="img-circle img-thumbnail hb-figure hb-user-info" src={headpic} alt=""/>
-          </div>
-          <h3 className="m-t-1">{nickName}共收到</h3>
-          <div className="hb-money">{(gainCashBalance / 100).toFixed(2)}</div>
+      <div>
+        <PullRefresh className="hb-main-panel"
+                     refreshCallback={this.refreshCallback}
+                     loadMoreCallback={this.loadMoreCallback}
+                     hasMore={!lastPage}>
+          {deviceEnv.inWx ? <QrCode type={type}/> : null}
+          <section className="text-center m-t-1 pos-r">
+            <div>
+              <img className="img-circle img-thumbnail hb-figure hb-user-info" src={headpic} alt=""/>
+            </div>
+            <h3 className="m-t-1">{nickName}共收到</h3>
+            <div className="hb-money">{(gainCashBalance / 100).toFixed(2)}</div>
 
-          <div>
-            {
-              deviceEnv.inJdWallet ? (
-                <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">立即提现</button>
-              ) : (
-                <button onTouchTap={this.withdraw}
-                        className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</button>
-              )
-            }
-          </div>
-          <div className="hb-help">
-            <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
-              <i className="hb-help-icon-lg"></i>
-            </a>
-          </div>
-        </section>
+            <div>
+              {
+                deviceEnv.inJdWallet ? (
+                  <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">立即提现</button>
+                ) : (
+                  <button onTouchTap={this.withdraw}
+                          className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</button>
+                )
+              }
+            </div>
+            <div className="hb-help">
+              <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
+                <i className="hb-help-icon-lg"></i>
+              </a>
+            </div>
+          </section>
 
-        <section className="row text-center m-t-1">
-          <div className={`col-10 ${type === 'received' ? 'text-primary' : 'text-muted'}`}
-               onTouchTap={(e) => this.switchTab(e, 'received')}>
-            <div>已收红包</div>
-            <div className="h1-lg" ref="receivedHb">{gainNum}</div>
-          </div>
-          <div className={`col-10 offset-4 ${type === 'luck' ? 'text-primary' : 'text-muted'}`}
-               onTouchTap={(e) => this.switchTab(e, 'luck')}>
-            <div>手气最佳</div>
-            <div className="h1-lg" ref="luckHb">{gainGoodNum}</div>
-          </div>
-        </section>
-        {this.renderList()}
-      </PullRefresh>
+          <section className="row text-center m-t-1">
+            <div className={`col-10 ${type === 'received' ? 'text-primary' : 'text-muted'}`}
+                 onTouchTap={(e) => this.switchTab(e, 'received')}>
+              <div>已收红包</div>
+              <div className="h1-lg" ref="receivedHb">{gainNum}</div>
+            </div>
+            <div className={`col-10 offset-4 ${type === 'luck' ? 'text-primary' : 'text-muted'}`}
+                 onTouchTap={(e) => this.switchTab(e, 'luck')}>
+              <div>手气最佳</div>
+              <div className="h1-lg" ref="luckHb">{gainGoodNum}</div>
+            </div>
+          </section>
+          {this.renderList()}
+        </PullRefresh>
+        {guide ? <Guide closeGuide={this.closeGuide} imgUrl={imgUrl}/> : null}
+      </div>
     );
   }
 }

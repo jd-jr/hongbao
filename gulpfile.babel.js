@@ -97,7 +97,7 @@ gulp.task('copy:prod', ['clean'], () => {
 });
 
 //优化图片
-gulp.task('images', () => {
+gulp.task('images-guide', () => {
   return gulp.src('app/images/guide/*')
     .pipe($.imagemin({
       progressive: true,
@@ -107,6 +107,18 @@ gulp.task('images', () => {
       svgoPlugins: [{cleanupIDs: false}]
     }))
     .pipe(gulp.dest('dist/images/guide'))
+});
+
+gulp.task('images-strategy', () => {
+  return gulp.src('app/images/strategy/*')
+    .pipe($.imagemin({
+      progressive: true,
+      interlaced: true,
+      // don't remove IDs from SVGs, they are often used
+      // as hooks for embedding and styling
+      svgoPlugins: [{cleanupIDs: false}]
+    }))
+    .pipe(gulp.dest('dist/images/strategy'))
 });
 
 // 计算文件大小
@@ -259,9 +271,9 @@ gulp.task('connect', () => {
 });
 
 //打包后,启动服务
-gulp.task('static-html', () => {
+gulp.task('dist', () => {
   $.connect.server({
-    root: 'app',
+    root: 'dist',
     port: 8002,
     livereload: true
   });
@@ -286,12 +298,12 @@ gulp.task('sass-compress', () => {
 });
 
 // 编译打包，正式环境
-gulp.task('build', ['sass-compress', 'styles', 'copy:prod', 'images'], () => {
+gulp.task('build', ['sass-compress', 'styles', 'copy:prod', 'images-guide', 'images-strategy'], () => {
   gulp.start(['webpack:build']);
 });
 
 // 编译打包，测试环境
-gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev', 'images'], () => {
+gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev', 'images-guide', 'images-strategy'], () => {
   gulp.start(['webpack:build']);
 });
 

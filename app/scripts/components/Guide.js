@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import perfect from '../utils/perfect';
 
 class Leading extends Component {
@@ -19,5 +19,10 @@ class Leading extends Component {
     );
   }
 }
+
+Leading.propTypes = {
+  closeGuide: PropTypes.func,
+  imgUrl: PropTypes.string
+};
 
 export default Leading;
