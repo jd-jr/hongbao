@@ -30,7 +30,8 @@ const routeSetting = {
     selectcity: '选择省市区',
     logistics: '物流详情',
     protocol: '服务协议',
-    help: '帮助'
+    help: '帮助',
+    strategy: '红包攻略'
   },
 
   overflowYHidden: ['home', 'productList', 'unpack', 'detail', 'my', 'productList'],

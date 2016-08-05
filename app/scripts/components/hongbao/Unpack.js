@@ -169,6 +169,33 @@ class Unpack extends Component {
     }, 50);
   }
 
+  renderUnpack(hongbaoStatus, owner) {
+    if (owner) {
+      return (
+        <div>
+          {
+            hongbaoStatus !== 'RECEIVE_COMPLETE' && hongbaoStatus !== 'EXPIRED' ? (
+              <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold h1"
+                   onTouchTap={this.unpack}>開</div>
+            ) : null
+          }
+          <div className="hb-luck-link" onTouchTap={(e) => this.hideUnpack({buriedPoint: true, e})}>
+            看看大家的手气 <span className="hb-gt">&gt;</span>
+          </div>
+        </div>
+      );
+    }
+
+    return hongbaoStatus !== 'RECEIVE_COMPLETE' && hongbaoStatus !== 'EXPIRED' ? (
+      <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold h1"
+           onTouchTap={this.unpack}>開</div>
+    ) : (
+      <div className="hb-luck-link" onTouchTap={(e) => this.hideUnpack({buriedPoint: true, e})}>
+        看看大家的手气 <span className="hb-gt">&gt;</span>
+      </div>
+    );
+  }
+
   // 红包弹框内容
   modalBody() {
     const {user, hongbaoStatus, sku, owner, title} = this.state;
@@ -226,7 +253,7 @@ class Unpack extends Component {
           </section>
           <section className={`hb-product-wrap row ${this.iphone4 ? 'm-a-0' : ''}`}>
             <div className={`${this.iphone4 ? 'col-5' : 'col-4'} p-r-0 p-l-0-3 text-left`}>
-              <img className="img-circle img-thumbnail hb-figure" src={skuIcon} alt=""/>
+              <img className="img-circle img-thumbnail hb-figure p-a-0" src={skuIcon} alt=""/>
             </div>
             <div className="col-19 text-truncate-2 product-name">{skuName}</div>
           </section>
@@ -235,17 +262,7 @@ class Unpack extends Component {
             {hongbaoTitle}
           </div>
         </div>
-        {
-          hongbaoStatus !== 'RECEIVE_COMPLETE' && hongbaoStatus !== 'EXPIRED' ? (
-            <div className="hb-btn-circle flex-items-middle flex-items-center font-weight-bold h1"
-                 onTouchTap={this.unpack}>開</div>
-          ) : (
-            <div className="hb-luck-link" onTouchTap={(e) => this.hideUnpack({buriedPoint: true, e})}>
-              看看大家的手气 <span className="hb-gt">&gt;</span>
-            </div>
-          )
-        }
-
+        {this.renderUnpack(hongbaoStatus, owner)}
         {
           !owner ? (
             <div className="hb-unpack-circle p-x-1 clearfix">

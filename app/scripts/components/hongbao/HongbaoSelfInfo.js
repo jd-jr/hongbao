@@ -49,7 +49,7 @@ class HongbaoSelfInfo extends Component {
 
   componentWillMount() {
     //判断是否中奖，实物奖还是现金奖，然后根据状态显示不同的浮层
-    if (this.isView) {
+    if (!this.isView) {
       return;
     }
     const {selfInfo, type} = this.props;
@@ -57,21 +57,21 @@ class HongbaoSelfInfo extends Component {
       return;
     }
 
+    if (getLocalStorage('guide-detail') === 'true') {
+      return;
+    }
+
+    this.guide = true;
     if (selfInfo) {
       const {giftType, confirmAddress} = selfInfo;
-      if (giftType === 'CASH' && getLocalStorage('guide-detail') !== 'true') { //现金
-        this.guide = true;
+      if (giftType === 'CASH') { //现金
         this.imgUrl = 'detail.png';
-      } else if (this.winningStatusArr.indexOf(confirmAddress) !== -1 &&
-        getLocalStorage('guide-detail-winning') !== 'true') { // 实物
-        this.guide = true;
+      } else if (this.winningStatusArr.indexOf(confirmAddress) !== -1) { // 实物
         this.imgUrl = 'detail-winning.png';
-      } else if (getLocalStorage('guide-detail-no-winning') !== 'true') { //未中奖
-        this.guide = true;
+      } else { //未中奖
         this.imgUrl = 'detail-no-winning.png';
       }
-    } else if (getLocalStorage('guide-detail-no-winning') !== 'true') { //未中奖
-      this.guide = true;
+    } else { //未中奖
       this.imgUrl = 'detail-no-winning.png';
     }
   }
@@ -112,9 +112,7 @@ class HongbaoSelfInfo extends Component {
     e.nativeEvent.stopPropagation();
 
     this.destoryGuide();
-    const storage = this.imgUrl === 'detail.png' ? 'guide-detail' :
-      (this.imgUrl === 'detail-winning.png' ? 'guide-detail-winning' : 'guide-detail-no-winning');
-    setLocalStorage(storage, 'true');
+    setLocalStorage('guide-detail', 'true');
   }
 
   //物流详情

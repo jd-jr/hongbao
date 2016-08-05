@@ -11,14 +11,47 @@ class Strategy extends Component {
 
     this.switch = function (active) {
       return function () {
-        this.setState({
-          active
-        });
         const el = this.refs[`strategy${active}`];
         const top = offset(el).top;
         document.body.scrollTop = top;
+        this.onscroll();
       }.bind(this);
     }.bind(this);
+
+    this.onscroll = this.onscroll.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('scroll', this.onscroll);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onscroll);
+  }
+
+  onscroll() {
+    this.calculateTop();
+    const scrollTop = document.body.scrollTop;
+    const scrollHeight = document.body.scrollHeight;
+    let active = 0;
+    if ((scrollTop + 5 >= this.top3) || scrollTop > scrollHeight - 700) {
+      active = 3;
+    } else if (scrollTop + 5 >= this.top2) {
+      active = 2;
+    } else if (scrollTop + 5 >= this.top1) {
+      active = 1;
+    }
+    this.setState({
+      active
+    });
+  }
+
+  calculateTop() {
+    //计算坐标
+    const {strategy1, strategy2, strategy3} = this.refs;
+    this.top1 = offset(strategy1).top;
+    this.top2 = offset(strategy2).top;
+    this.top3 = offset(strategy3).top;
   }
 
   render() {

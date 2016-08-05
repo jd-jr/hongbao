@@ -78,7 +78,7 @@ class HongbaoGainedList extends Component {
           if (giftType === 'CASH') { //抢到现金
             return (
               <li key={giftRecordId}>
-                <Link to={'/my?type=sponsor'} className="row hb-link-block">
+                <div className="row">
                   <div className="col-4">
                     <img className="img-fluid img-circle" src={headpic} alt=""/>
                   </div>
@@ -89,7 +89,7 @@ class HongbaoGainedList extends Component {
                   <div className="col-7 text-right font-weight-bold">
                     {giftAmount}元
                   </div>
-                </Link>
+                </div>
               </li>
             );
           }
@@ -101,10 +101,10 @@ class HongbaoGainedList extends Component {
           const championHeader = giftStatus === 'NOT_GAIN' ? 'hb-champion-header gray' : 'hb-champion-header';
 
           return (
-            <li key={giftRecordId} style={{paddingTop: '1.2rem'}}>
+            <li key={giftRecordId}>
               <div className={`row ${index === 0 ? ' flex-items-middle' : ''}`}>
                 <div className="col-4">
-                  <div className={championHeader}>
+                  <div className={championHeader} style={{marginTop: '5px'}}>
                     <img className="img-fluid img-circle" src={headpic} alt=""/>
                   </div>
                 </div>
@@ -113,7 +113,7 @@ class HongbaoGainedList extends Component {
                   <div className="text-muted f-sm">{gainedDate}</div>
                 </div>
 
-                <div className="col-4 p-a-0" onTouchTap={this.prize}>
+                <div className="col-4 p-l-0" onTouchTap={this.prize}>
                   <Link to={`/product/detail/view/${skuId}`}>
                     <img className="img-fluid" src={skuIcon} alt={skuName}/>
                   </Link>
