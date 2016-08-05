@@ -18,7 +18,7 @@ export const HONGBAO_INVALID_STATUS = ['NEED_PAY', 'FAIL', 'REDBAG_NOT_FOUND'];
 
 export const HONGBAO_TITLE = '恭喜发财，好运连连！';
 
-export const HONGBAO_DESC = '一个用快递邮寄的礼物！\n『点击领取』';
+export const HONGBAO_DESC = '特殊的礼物献给特别的你！\n『点击领取』';
 
 export const NICKNAME = '匿名';
 

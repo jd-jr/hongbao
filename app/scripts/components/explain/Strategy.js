@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import offset from 'perfect-dom/lib/offset';
 import perfect from '../../utils/perfect';
 // 红包攻略
 class Strategy extends Component {
@@ -13,6 +14,9 @@ class Strategy extends Component {
         this.setState({
           active
         });
+        const el = this.refs[`strategy${active}`];
+        const top = offset(el).top;
+        document.body.scrollTop = top;
       }.bind(this);
     }.bind(this);
   }
@@ -23,17 +27,17 @@ class Strategy extends Component {
     return (
       <div>
         <div className="hb-strategy-nav">
-          <a className={active === 0 ? 'active' : ''} href="#strategy1" onTouchTap={this.switch(0)}>产品简介</a>
-          <a className={active === 1 ? 'active' : ''} href="#strategy2" onTouchTap={this.switch(1)}>场景示例</a>
-          <a className={active === 2 ? 'active' : ''} href="#strategy3" onTouchTap={this.switch(2)}>红包玩法</a>
-          <a className={active === 3 ? 'active' : ''} href="#strategy4" onTouchTap={this.switch(3)}>帮助反馈</a>
+          <span className={active === 0 ? 'active' : ''} onTouchTap={this.switch(0)}>产品简介</span>
+          <span className={active === 1 ? 'active' : ''} onTouchTap={this.switch(1)}>场景示例</span>
+          <span className={active === 2 ? 'active' : ''} onTouchTap={this.switch(2)}>红包玩法</span>
+          <span className={active === 3 ? 'active' : ''} onTouchTap={this.switch(3)}>帮助反馈</span>
         </div>
 
         <ul className="hb-strategy-img">
-          <li id="strategy1"><img src={`${rootUrl}strategy_01.jpg`} alt="红包攻略"/></li>
-          <li id="strategy2"><img src={`${rootUrl}strategy_02.jpg`} alt="红包攻略"/></li>
+          <li ref="strategy0"><img src={`${rootUrl}strategy_01.jpg`} alt="红包攻略"/></li>
+          <li ref="strategy1"><img src={`${rootUrl}strategy_02.jpg`} alt="红包攻略"/></li>
           <li><img src={`${rootUrl}strategy_03.jpg`} alt="红包攻略"/></li>
-          <li id="strategy3"><img src={`${rootUrl}strategy_04.jpg`} alt="红包攻略"/></li>
+          <li ref="strategy2"><img src={`${rootUrl}strategy_04.jpg`} alt="红包攻略"/></li>
           <li><img src={`${rootUrl}strategy_05.jpg`} alt="红包攻略"/></li>
           <li><img src={`${rootUrl}strategy_06.jpg`} alt="红包攻略"/></li>
           <li><img src={`${rootUrl}strategy_07.jpg`} alt="红包攻略"/></li>
@@ -44,7 +48,7 @@ class Strategy extends Component {
           <li><img src={`${rootUrl}strategy_12.jpg`} alt="红包攻略"/></li>
           <li><img src={`${rootUrl}strategy_13.jpg`} alt="红包攻略"/></li>
           <li><img src={`${rootUrl}strategy_14.jpg`} alt="红包攻略"/></li>
-          <li id="strategy4"><img src={`${rootUrl}strategy_15.jpg`} alt="红包攻略"/></li>
+          <li ref="strategy3"><img src={`${rootUrl}strategy_15.jpg`} alt="红包攻略"/></li>
         </ul>
       </div>
     );
