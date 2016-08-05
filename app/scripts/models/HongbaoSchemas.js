@@ -12,8 +12,13 @@ const receiveSchema = new Schema('receivePagination', {
   idAttribute: getEntityId
 });
 
+const receiveLuckSchema = new Schema('receiveLuckPagination', {
+  idAttribute: getEntityId
+});
+
 export default {
   SPONSOR_LIST: arrayOf(sponsorSchema),
-  RECEIVE_LIST: arrayOf(receiveSchema)
+  RECEIVE_LIST: arrayOf(receiveSchema),
+  RECEIVE_LUCK_LIST: arrayOf(receiveLuckSchema)
 };
 

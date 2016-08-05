@@ -420,9 +420,9 @@ class ReceiveHongbao extends Component {
               <img className="img-circle img-thumbnail hb-figure hb-user-info" src={headpic} alt=""/>
             </div>
             <h3 className="m-t-1">{nickName}共收到</h3>
-            <div className="hb-money">{(gainCashBalance / 100).toFixed(2)}</div>
+            <div className="hb-money line-height-1">{(gainCashBalance / 100).toFixed(2)}</div>
 
-            <div>
+            <div className="m-t-1">
               {
                 deviceEnv.inJdWallet ? (
                   <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">立即提现</button>

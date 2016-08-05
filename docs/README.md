@@ -16,7 +16,7 @@ https://plogin.m.jd.com/user/login.action?appid=100&returnurl=https%3A%2F%2Fm.jd
 联合登录，测试环境
 http://plogin.m.jd.com/user/login.action?appid=100&returnurl=http%3A%2F%2Fm.jdpay.com%2Fwallet%2Flogin%2Fsid%3FsystemId%3DRBS%26toUrl%3Dhttp%253A%252F%252Fhongbao.jdpay.com%253A8083%252Fm-hongbao%252Ffrom%253Dlogin
 
-微信授权
+微信授权,测试环境
 
 https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx70b5cd13e1f6b778&redirect_uri=http%3A%2F%2Frmk.jdpay.com%3A8011%2Fwebchat%2Fahthorize%3FrequestNo%3D155dce595619c28%26skip_url%3Dhttp%253A%252F%252Fhongbao.jdpay.com%253A8083%252Fm-hongbao%252Funpack%252Fd0b6805449b9dac9&response_type=code&scope=snsapi_base&state=weixin#wechat_redirect
 

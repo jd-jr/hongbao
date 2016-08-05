@@ -83,10 +83,10 @@ class HongbaoGainedList extends Component {
                     <img className="img-fluid img-circle" src={headpic} alt=""/>
                   </div>
                   <div className="col-13">
-                    <div className="text-truncate font-weight-bold">{nickName}</div>
+                    <div className="text-truncate">{nickName}</div>
                     <div className="text-muted f-sm">{perfect.formatDate({time: giftGainedDate})}</div>
                   </div>
-                  <div className="col-7 text-right font-weight-bold">
+                  <div className="col-7 text-right">
                     {giftAmount}元
                   </div>
                 </div>
@@ -109,11 +109,11 @@ class HongbaoGainedList extends Component {
                   </div>
                 </div>
                 <div className="col-14">
-                  <div className="text-truncate font-weight-bold">{title}</div>
+                  <div className="text-truncate">{title}</div>
                   <div className="text-muted f-sm">{gainedDate}</div>
                 </div>
 
-                <div className="col-4 p-l-0" onTouchTap={this.prize}>
+                <div className="col-4 p-r-0" onTouchTap={this.prize}>
                   <Link to={`/product/detail/view/${skuId}`}>
                     <img className="img-fluid" src={skuIcon} alt={skuName}/>
                   </Link>
