@@ -28,6 +28,9 @@
         border-bottom: 0;
       }
     }
+    > li.goods {
+      padding: 0.5rem 1rem 0.5rem 0;
+    }
   }
 
   &list-border {
@@ -386,7 +389,7 @@
 
   &img-text-thumb {
     border: 1px solid $gray-lighter;
-    width: 4rem;
+    width: 3.5rem;
     float: right;
     img {
       display: block;

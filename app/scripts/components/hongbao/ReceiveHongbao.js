@@ -336,10 +336,10 @@ class ReceiveHongbao extends Component {
     }
     let link = `/hongbao/detail/view/${identifier}?type=${type}`;
     return (
-      <li className="row" key={identifier + giftRecordId}>
+      <li className={`row ${giftType === 'CASH' ? '' : 'flex-items-middle goods'}`} key={identifier + giftRecordId}>
         <div className="col-18">
           <Link to={link} className="hb-link-block">
-            <div className="text-truncate f-lg">{nickName}</div>
+            <div className="text-truncate">{nickName}</div>
             <div className="text-muted f-sm">{perfect.formatDate({time: createdDate})}</div>
           </Link>
         </div>

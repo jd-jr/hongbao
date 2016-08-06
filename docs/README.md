@@ -22,3 +22,7 @@ https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx70b5cd13e1f6b778&red
 
 微信授权，生产环境
 https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7941145208535b53&redirect_uri=https%3A%2F%2Fm.jdpay.com%2Fwebchat%2Fahthorize%3FrequestNo%3D155dce595619c28%26skip_url%3Dhttps%253A%252F%252Fstatic.jdpay.com%252Fm-hongbao%252Funpack%252Fd0b6805449b9dac9&response_type=code&scope=snsapi_base&state=weixin#wechat_redirect
+
+抢红包授权,生产环境
+
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7941145208535b53&redirect_uri=https%3A%2F%2Fm.jdpay.com%2Fwebchat%2Fahthorize%3FrequestNo%3D155dce595619c28%26skip_url%3Dhttps%253A%252F%252Fstatic.jdpay.com%252Fm-hongbao%252Funpack%252Fd0b6805449b9dac9&response_type=code&scope=snsapi_base&state=weixin#wechat_redirect
