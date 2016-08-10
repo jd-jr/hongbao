@@ -6,6 +6,7 @@ import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
 import ProductCategory from './ProductCategory';
 import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
+import {SHOW_FOOT_DELAY} from '../../constants/common';
 
 //图片
 import noItems from '../../../images/no_items.png';
@@ -30,7 +31,7 @@ class ProductList extends Component {
       this.setState({
         showFoot: true
       });
-    }, 300);
+    }, SHOW_FOOT_DELAY);
   }
 
   componentDidMount() {

@@ -5,6 +5,7 @@ import BottomNav from '../BottomNav';
 import ReceiveHongbao from './ReceiveHongbao';
 import SponsorHongbao from './SponsorHongbao';
 import perfect from '../../utils/perfect';
+import {SHOW_FOOT_DELAY} from '../../constants/common';
 
 class MyHongbao extends Component {
   constructor(props, context) {
@@ -25,7 +26,7 @@ class MyHongbao extends Component {
       this.setState({
         showFoot: true
       });
-    }, 300);
+    }, SHOW_FOOT_DELAY);
 
     if (deviceEnv.inJdWallet) {
       const {setClientInfo} = this.props;
@@ -43,7 +44,7 @@ class MyHongbao extends Component {
             }
           });
           this.first = false;
-        }, 300);
+        }, 400);
       } else {
         setClientInfo((login) => {
           if (login) {

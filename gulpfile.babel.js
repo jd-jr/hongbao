@@ -264,6 +264,7 @@ gulp.task('server:prod', ['styles', 'copy:server:prod'], () => {
 //打包后,启动服务
 gulp.task('connect', () => {
   $.connect.server({
+    host: '',
     root: 'dist',
     port: 8001,
     livereload: true
@@ -272,9 +273,11 @@ gulp.task('connect', () => {
 
 //打包后,启动服务
 gulp.task('dist', () => {
+  const {ip, port} = config;
   $.connect.server({
     root: 'dist',
-    port: 8002,
+    host: ip,
+    port,
     livereload: true
   });
 

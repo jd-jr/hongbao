@@ -24,3 +24,6 @@ export const NICKNAME = '匿名';
 
 //礼物图片分享链接
 export const SHARE_ICON_URL = 'http://img12.360buyimg.com/cms/jfs/t2689/100/3871432839/23018/447a0505/579f15c8N62f135be.png';
+
+//设置显示底部按钮延迟
+export const SHOW_FOOT_DELAY = 50;

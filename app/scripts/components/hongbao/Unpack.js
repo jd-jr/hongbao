@@ -94,6 +94,10 @@ class Unpack extends Component {
     if (this.state.unpackStatus) {
       return;
     }
+
+    const target = e.target;
+    target.classList.add('hb-unpack-animation');
+
     //防重处理
     this.setState({
       unpackStatus: true,

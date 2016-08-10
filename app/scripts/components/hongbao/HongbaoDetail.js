@@ -3,7 +3,7 @@ import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import PullRefresh from 'reactjs-pull-refresh';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
-import {HONGBAO_TITLE} from '../../constants/common';
+import {HONGBAO_TITLE, SHOW_FOOT_DELAY} from '../../constants/common';
 import HongbaoSelfInfo from './HongbaoSelfInfo';
 import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
@@ -52,7 +52,7 @@ class HongbaoDetail extends Component {
       this.setState({
         showFoot: true
       });
-    }, 350);
+    }, SHOW_FOOT_DELAY);
 
     this.loadData();
   }

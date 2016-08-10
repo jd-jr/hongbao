@@ -1,73 +1,201 @@
 import React from 'react';
-import {Route, IndexRoute} from 'react-router';
-import App from '../containers/App';
-import HomePage from '../containers/HomePage';
-import ProductPage from '../containers/ProductPage';
-import ProductList from '../components/product/ProductList';
-import Product from '../components/product/Product';
-import Authorize from '../components/hongbao/Authorize';
-import HongbaoDetailPage from '../containers/HongbaoDetailPage';
-import MyHongbaoPage from '../containers/MyHongbaoPage';
-import UnpackPage from '../containers/UnpackPage';
-import UserAddressList from '../components/userAddressList/'
-import AddAddress from '../components/addAddress/'
-import SelectCity from '../components/selectCity/'
-import Logistics from '../components/logisticsInfo/'
-import Help from '../components/explain/Help';
-import Protocol from '../components/explain/Protocol';
-import Guide from '../components/explain/Guide';
-import Strategy from '../components/explain/Strategy';
-import Test from '../components/Test';
 import routeSetting from './routeSetting';
 const {enterHandler} = routeSetting;
 
 // 注意嵌套路由应该是相对路径，不能写成据对路径
-export default (
-  <Route path="/" component={App}>
-    <IndexRoute component={HomePage}
-                onEnter={() => enterHandler('home')}/>
-    <Route path="initiate" component={HomePage}
-           onEnter={() => enterHandler('initiate')}/>
-    <Route path="product" component={ProductPage}>
-      <IndexRoute component={ProductList}
-                  onEnter={() => enterHandler('productList')}/>
-      <Route path="detail/:skuId" component={Product}
-             onEnter={() => enterHandler('product')}/>
-      <Route path="detail/:view/:skuId" component={Product}
-             onEnter={() => enterHandler('productView')}/>
-    </Route>
-    <Route path="authorize/:identifier" component={Authorize}
-           onEnter={() => enterHandler('authorize')}/>
-    /* unpack/:identifier 是从抢红包入口进入
-    * hongbao/detail/view/:identifier 是从红包列表进入查看红包详情
-    * */
-    <Route path="unpack/:identifier" component={UnpackPage}
-           onEnter={() => enterHandler('unpack')}/>
-    <Route path="hongbao/detail/:identifier" component={HongbaoDetailPage}
-           onEnter={() => enterHandler('detail')}/>
-    <Route path="hongbao/detail/view/:identifier" component={HongbaoDetailPage}
-           onEnter={() => enterHandler('detail')}/>
-    <Route path="my" component={MyHongbaoPage}
-           onEnter={() => enterHandler('my')}/>
-    <Route path="myaddress" component={UserAddressList}
-           onEnter={() => enterHandler('myaddress')}/>
-    <Route path="addaddress" component={AddAddress}
-           onEnter={() => enterHandler('addaddress')}/>
-    <Route path="editaddress/:index" component={AddAddress}
-           onEnter={() => enterHandler('editaddress')}/>
-    <Route path="selectcity" component={SelectCity}
-           onEnter={() => enterHandler('selectcity')}/>
-    <Route path="logistics/:giftRecordId" component={Logistics}
-           onEnter={() => enterHandler('logistics')}/>
-    <Route path="help" component={Help}
-           onEnter={() => enterHandler('help')}/>
-    <Route path="protocol" component={Protocol}
-           onEnter={() => enterHandler('protocol')}/>
-    <Route path="guide" component={Guide}
-           onEnter={() => enterHandler('guide')}/>
-    <Route path="strategy" component={Strategy}
-           onEnter={() => enterHandler('strategy')}/>
-    <Route path="test/linder" component={Test}
-           onEnter={() => enterHandler('test')}/>
-  </Route>
-);
+export default {
+  component: require('../containers/App').default,
+  childRoutes: [
+    {
+      path: '/',
+      indexRoute: {
+        onEnter: () => enterHandler('home'),
+        getComponent: (nextState, cb) => {
+          return require.ensure([], (require) => {
+            cb(null, require('../containers/HomePage').default)
+          })
+        }
+      }
+    },
+    {
+      path: '/initiate',
+      onEnter: () => enterHandler('home'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../containers/HomePage').default)
+        })
+      }
+    },
+    {
+      path: '/product',
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../containers/ProductPage').default)
+        })
+      },
+      indexRoute: {
+        onEnter: () => enterHandler('productList'),
+        getComponent: (nextState, cb) => {
+          return require.ensure([], (require) => {
+            cb(null, require('../components/product/ProductList').default)
+          })
+        }
+      },
+      childRoutes: [
+        {
+          onEnter: () => enterHandler('product'),
+          path: 'detail/:skuId',
+          getComponent: (nextState, cb) => {
+            require.ensure([], (require) => {
+              cb(null, require('../components/product/Product').default)
+            })
+          }
+        },
+        {
+          onEnter: () => enterHandler('productView'),
+          path: 'detail/:view/:skuId',
+          getComponent: (nextState, cb) => {
+            require.ensure([], (require) => {
+              cb(null, require('../components/product/Product').default)
+            })
+          }
+        }
+      ]
+    },
+    {
+      path: '/authorize/:identifier',
+      onEnter: () => enterHandler('unpack'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../containers/UnpackPage').default)
+        })
+      }
+    },
+    {
+      path: '/unpack/:identifier',
+      onEnter: () => enterHandler('unpack'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../containers/UnpackPage').default)
+        })
+      }
+    },
+    {
+      path: '/hongbao/detail/:identifier',
+      onEnter: () => enterHandler('detail'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../containers/HongbaoDetailPage').default)
+        })
+      }
+    },
+    {
+      path: '/hongbao/detail/view/:identifier',
+      onEnter: () => enterHandler('detail'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../containers/HongbaoDetailPage').default)
+        })
+      }
+    },
+    {
+      path: '/my',
+      onEnter: () => enterHandler('my'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../containers/MyHongbaoPage').default)
+        })
+      }
+    },
+    {
+      path: '/myaddress',
+      onEnter: () => enterHandler('myaddress'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/userAddressList').default)
+        })
+      }
+    },
+    {
+      path: '/addaddress',
+      onEnter: () => enterHandler('addaddress'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/addAddress').default)
+        })
+      }
+    },
+    {
+      path: '/editaddress/:index',
+      onEnter: () => enterHandler('editaddress'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/addAddress').default)
+        })
+      }
+    },
+    {
+      path: '/selectcity',
+      onEnter: () => enterHandler('selectcity'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/selectcity').default)
+        })
+      }
+    },
+    {
+      path: '/logistics/:giftRecordId',
+      onEnter: () => enterHandler('logistics'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/logisticsInfo').default)
+        })
+      }
+    },
+    {
+      path: '/help',
+      onEnter: () => enterHandler('help'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/explain/Help').default)
+        })
+      }
+    },
+    {
+      path: '/protocol',
+      onEnter: () => enterHandler('protocol'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/explain/Protocol').default)
+        })
+      }
+    },
+    {
+      path: '/guide',
+      onEnter: () => enterHandler('guide'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/explain/Guide').default)
+        })
+      }
+    },
+    {
+      path: '/strategy',
+      onEnter: () => enterHandler('strategy'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/explain/Strategy').default)
+        })
+      }
+    },
+    {
+      path: '/test/linder',
+      onEnter: () => enterHandler('test'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/Test').default)
+        })
+      }
+    },
+  ]
+}

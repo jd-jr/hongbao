@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
+import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import base64 from 'js-base64';
 import BottomNav from '../BottomNav';
 import Loading from '../../ui/Loading';
 import callApi from '../../fetch';
-import {HONGBAO_TITLE} from '../../constants/common';
+import {HONGBAO_TITLE, SHOW_FOOT_DELAY} from '../../constants/common';
 import perfect from '../../utils/perfect'
 import Initiate from './Initiate';
 import Guide from '../Guide';
@@ -57,6 +58,20 @@ class Home extends Component {
     this.closeHongbao = this.closeHongbao.bind(this);
     this.closeGuide = this.closeGuide.bind(this);
     this.imgUrl = 'sponsor-hb.png';
+
+    //是否是发红包页面
+    this.isInitiate = location.href.indexOf('/initiate') !== -1;
+
+    // 如果是发红包页面，设置后退直接返回到首页
+    if (this.isInitiate) {
+      walletApi.setGoBackListener(() => {
+        setTimeout(() => {
+          walletApi.deleteGoBackListener();
+          this.context.router.push('/');
+        }, 100);
+        return 1;
+      });
+    }
   }
 
   componentWillMount() {
@@ -66,7 +81,7 @@ class Home extends Component {
       this.setState({
         showFoot: true
       });
-    }, 300);
+    }, SHOW_FOOT_DELAY);
 
     const fromLogin = location.href.indexOf('from=login');
     if (fromLogin !== -1) {
@@ -86,6 +101,9 @@ class Home extends Component {
     if (!this.fromReplace) {
       const {homeAction} = this.props;
       homeAction.clearHongbaoInfo();
+    }
+    if (this.isInitiate) {
+      walletApi.deleteGoBackListener();
     }
   }
 
