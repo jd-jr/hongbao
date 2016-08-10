@@ -34,7 +34,7 @@ const routeSetting = {
     strategy: '红包攻略'
   },
 
-  overflowYHidden: ['home', 'productList', 'unpack', 'detail', 'my', 'productList'],
+  overflowYHidden: ['detail', 'my', 'productList'],
 
   //埋点
   buriedPoint: {

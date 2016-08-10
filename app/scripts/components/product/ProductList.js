@@ -1,9 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import {findDOMNode} from 'react-dom';
-import PullRefresh from 'reactjs-pull-refresh';
+import classnames from 'classnames';
+import ScrollLoad from '../../ui/ScrollLoad';
 import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
 import ProductCategory from './ProductCategory';
+import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
 
 //图片
 import noItems from '../../../images/no_items.png';
@@ -19,9 +21,7 @@ class ProductList extends Component {
 
     this.handleChecked = this.handleChecked.bind(this);
     this.selectProduct = this.selectProduct.bind(this);
-
-    this.refreshCallback = this.refreshCallback.bind(this);
-    this.loadMoreCallback = this.loadMoreCallback.bind(this);
+    this.loadMore = this.loadMore.bind(this);
   }
 
   componentWillMount() {
@@ -42,33 +42,19 @@ class ProductList extends Component {
     //添加下拉刷新相关事件
     window.addEventListener('touchstart', this.onTouchStart, false);
     window.addEventListener('scroll', this.onScroll, false);
+
+    const {productList} = this.refs;
+    const productScroll = getSessionStorage('productScroll');
+    if (productList && productScroll) {
+      setTimeout(() => {
+        findDOMNode(productList).scrollTop = productScroll;
+      }, 50);
+    }
   }
 
-  // 下拉刷新回调函数
-  refreshCallback() {
-    const {productActions, priceOrder, activeCategory} = this.props;
-    const {getProductList, clearSelectProduct} = productActions;
-    clearSelectProduct();
 
-    return getProductList({
-      category: activeCategory,
-      priceOrder
-    }, true);
-
-  }
-
-  //加载更多
-  loadMoreCallback() {
-    const {
-      productActions, activeCategory, priceOrder
-    } = this.props;
-
-    const {getProductList} = productActions;
-
-    return getProductList({
-      category: activeCategory,
-      priceOrder
-    });
+  componentWillUnmount() {
+    setSessionStorage('productScroll', findDOMNode(this.refs.productList).scrollTop);
   }
 
   // 选择商品
@@ -120,6 +106,20 @@ class ProductList extends Component {
     //埋点
     perfect.setBuriedPoint(`hongbao_product_goods_${index + 1}`);
     this.context.router.push(url);
+  }
+
+  //加载更多
+  loadMore() {
+    const {
+      productActions, activeCategory, priceOrder
+    } = this.props;
+
+    const {getProductList} = productActions;
+
+    getProductList({
+      category: activeCategory,
+      priceOrder
+    });
   }
 
   renderProductItem(item, index) {
@@ -180,7 +180,7 @@ class ProductList extends Component {
       productPagination
     } = this.props;
 
-    const {ids, entity, lastPage} = productPagination;
+    const {ids, entity, lastPage, isFetching} = productPagination;
 
     if (!ids) {
       return (
@@ -188,20 +188,21 @@ class ProductList extends Component {
       );
     } else if (ids.length === 0) {
       return (
-        <div className="hb-main-panel">
-          <div className="m-t-2">
-            <img className="hb-no-items" src={noItems}/>
-            <p className="m-t-2 text-center text-muted">暂无礼物</p>
-          </div>
+        <div style={{marginTop: '7rem'}}>
+          <img className="hb-no-items" src={noItems}/>
+          <p className="m-t-2 text-center text-muted">暂无礼物</p>
         </div>
       );
     }
 
     return (
-      <PullRefresh className="hb-main-panel"
-                   refreshCallback={this.refreshCallback}
-                   loadMoreCallback={this.loadMoreCallback}
-                   hasMore={!lastPage}>
+      <ScrollLoad loadMore={this.loadMore}
+                  hasMore={!lastPage}
+                  isLoading={isFetching}
+                  className={classnames({'hb-main-header': true, loading: isFetching})}
+                  useDocument={false}
+                  loader={<div className=""></div>}
+                  ref="productList">
         <ul className="hb-list">
           {
             ids ? ids.map((item, index) => {
@@ -209,7 +210,7 @@ class ProductList extends Component {
             }) : null
           }
         </ul>
-      </PullRefresh>
+      </ScrollLoad>
     );
   }
 

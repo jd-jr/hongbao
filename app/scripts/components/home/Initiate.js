@@ -62,6 +62,18 @@ class Initiate extends Component {
     }
   }
 
+  componentDidMount() {
+    if (deviceEnv.inWx) {
+      this.intervalId = setInterval(() => {
+        if (window.wx && walletApi.signatureStatus()) {
+          window.wx.showOptionMenu();
+          this.share();
+          clearInterval(this.intervalId);
+        }
+      }, 50);
+    }
+  }
+
   //发红包
   sponsor() {
     const {hongbaoExpired} = this.props;
@@ -74,14 +86,6 @@ class Initiate extends Component {
       this.setState({
         weixinGuide: true
       });
-      this.intervalId = setInterval(() => {
-        if (window.wx && walletApi.signatureStatus()) {
-          window.wx.showOptionMenu();
-          this.share();
-          clearInterval(this.intervalId);
-        }
-      }, 50);
-
     } else if (deviceEnv.inJdWallet) {
       this.share();
     }

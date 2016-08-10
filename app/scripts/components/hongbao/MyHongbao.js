@@ -61,25 +61,19 @@ class MyHongbao extends Component {
     }
   }
 
-  componentWillUnmount() {
-    const {hongbaoActions, cacheActions} = this.props;
-    hongbaoActions.clearReceive();
-    hongbaoActions.clearSponsor();
-    hongbaoActions.clearUserInfo();
-    cacheActions.resetCacheById('receivePagination');
-    cacheActions.resetCacheById('sponsorPagination');
-  }
+  loadUserInfo(refresh) {
+    const {hongbaoActions, caches, cacheActions} = this.props;
+    if (refresh || !caches.userInfo) {
+      const accountType = perfect.getAccountType();
+      const thirdAccId = perfect.getThirdAccId();
+      const body = {
+        accountType,
+        accountId: thirdAccId
+      };
 
-  loadUserInfo() {
-    const {hongbaoActions} = this.props;
-    const accountType = perfect.getAccountType();
-    const thirdAccId = perfect.getThirdAccId();
-    const body = {
-      accountType,
-      accountId: thirdAccId
-    };
-
-    hongbaoActions.getUserInfo(body);
+      hongbaoActions.getUserInfo(body);
+      cacheActions.addCache('userInfo');
+    }
   }
 
   switchTab(e, type) {

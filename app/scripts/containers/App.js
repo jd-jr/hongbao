@@ -192,21 +192,23 @@ class App extends Component {
       <div>
         {this.alert()}
         {this.renderToast()}
-        <ReactCSSTransitionGroup
-          component="div"
-          transitionName="hb-animate-right"
-          transitionEnterTimeout={200}
-          transitionLeaveTimeout={200}>
-          {children && React.cloneElement(children, {
-            key: location.pathname,
-            caches,
-            cacheActions,
-            errorMessage,
-            indexActions,
-            setClientInfo: this.setClientInfo,
-            setModalCloseCallback: this.setModalCloseCallback
-          })}
-        </ReactCSSTransitionGroup>
+        {/*<ReactCSSTransitionGroup
+         component="div"
+         transitionName="hb-animate-right"
+         transitionAppear
+         transitionEnterTimeout={200}
+         transitionLeaveTimeout={200}
+         transitionAppearTimeout={200}>*/}
+        {children && React.cloneElement(children, {
+          key: location.pathname,
+          caches,
+          cacheActions,
+          errorMessage,
+          indexActions,
+          setClientInfo: this.setClientInfo,
+          setModalCloseCallback: this.setModalCloseCallback
+        })}
+        {/*</ReactCSSTransitionGroup>*/}
       </div>
     );
   }

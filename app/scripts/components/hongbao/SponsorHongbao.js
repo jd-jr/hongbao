@@ -5,6 +5,7 @@ import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
 import PullRefresh from 'reactjs-pull-refresh';
 import QrCode from './QrCode';
+import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
 
 class SponsorHongbao extends Component {
   constructor(props, context) {
@@ -20,11 +21,26 @@ class SponsorHongbao extends Component {
       cacheActions.addCache('sponsorPagination');
       this.loadData();
     }
+
+    const {hongbaoSponsorList} = this.refs;
+    const hongbaoSponsorListScroll = getSessionStorage('hongbaoSponsorListScroll');
+    if (hongbaoSponsorList && hongbaoSponsorListScroll) {
+      const scrollCom = hongbaoSponsorList.pullRefresh.scroll;
+      scrollCom.scrollTo(parseInt(hongbaoSponsorListScroll, 10), 2, 'linear');
+    }
+  }
+
+  componentWillUnmount() {
+    const {hongbaoSponsorList} = this.refs;
+    const scrollCom = hongbaoSponsorList.pullRefresh.scroll;
+    const top = scrollCom.y;
+
+    setSessionStorage('hongbaoSponsorListScroll', top);
   }
 
   // 下拉刷新回调函数
   refreshCallback() {
-    this.props.loadUserInfo();
+    this.props.loadUserInfo(true);
     return this.loadData(true);
   }
 
@@ -188,10 +204,11 @@ class SponsorHongbao extends Component {
     }
 
     return (
-      <PullRefresh className="hb-main-panel"
-                     refreshCallback={this.refreshCallback}
-                     loadMoreCallback={this.loadMoreCallback}
-                     hasMore={!lastPage}>
+      <PullRefresh ref="hongbaoSponsorList"
+                   className="hb-main-panel"
+                   refreshCallback={this.refreshCallback}
+                   loadMoreCallback={this.loadMoreCallback}
+                   hasMore={!lastPage}>
         {deviceEnv.inWx ? <QrCode type={type}/> : null}
         <section className="text-center m-t-1 pos-r">
           <div>

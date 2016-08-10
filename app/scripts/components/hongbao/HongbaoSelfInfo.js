@@ -87,7 +87,7 @@ class HongbaoSelfInfo extends Component {
     }
   }
 
-  componentWillUnmout() {
+  componentWillUnmount() {
     if (this.drawForm) {
       document.body.removeChild(this.drawForm);
     }

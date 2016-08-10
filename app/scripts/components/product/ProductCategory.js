@@ -98,6 +98,7 @@ class ProductCategory extends Component {
     }
     const touchObj = e.changedTouches[0];
     this.startX = touchObj.clientX;
+    this.startY = touchObj.clientY;
     const transform = this.refs.categoryNav.style.webkitTransform;
     const translateX = transform.match(/\d+/);
     this.translateX = translateX ? parseInt(translateX[0], 10) : 0;
@@ -105,6 +106,10 @@ class ProductCategory extends Component {
 
   handleTouchMove(e) {
     const touchObj = e.changedTouches[0];
+    if (Math.abs(touchObj.clientY - this.startY) > 20) {
+      return;
+    }
+
     let offset = this.startX - touchObj.clientX;
     if (Math.abs(offset) < this.debounceInt) {
       return;

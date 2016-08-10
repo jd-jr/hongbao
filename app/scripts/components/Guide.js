@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import perfect from '../utils/perfect';
 
-class Leading extends Component {
+class Guide extends Component {
   constructor(props) {
     super(props);
     this.rootUrl = perfect.getLocationRoot() + 'images/guide/';
@@ -20,9 +20,9 @@ class Leading extends Component {
   }
 }
 
-Leading.propTypes = {
+Guide.propTypes = {
   closeGuide: PropTypes.func,
   imgUrl: PropTypes.string
 };
 
-export default Leading;
+export default Guide;

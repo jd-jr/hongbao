@@ -99,8 +99,8 @@ class Logistics extends Component {
     return (
       <div>
         {deviceEnv.inWx ? (
-          <a style={{display: 'block'}} className="user-info-panel hb-bg-white hb-bd-b"
-             href="https://qianbao.jd.com/p/page/download.htm">点击下载京东钱包，及时查看礼物配送信息！</a>
+          <a style={{display: 'block'}} className="user-info-panel hb-bg-white hb-bd-b hb-link-block text-muted"
+             href="https://qianbao.jd.com/p/page/download.htm">点击下载<span className="text-link">京东钱包</span>，及时查看礼物配送信息！</a>
         ) : null}
 
         <div className="user-info-panel hb-bg-white hb-bd-b order-state-panel hb-bd-t">

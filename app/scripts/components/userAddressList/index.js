@@ -197,6 +197,11 @@ class UserAddressList extends Component {
 
   //展示操作提示
   showTipWhenAction(type, index, item) {
+    //获取中不可以点击
+    if (item.stock === undefined) {
+      return;
+    }
+
     let tipMsg = '';
     let callback = null;
 
@@ -298,11 +303,11 @@ class UserAddressList extends Component {
       needAuth: true
     }).then((json) => {
       if (waitFor) {
-        this.toggleTipState();
         this.setState({
           waitforModal: true
         });
       } else {
+        indexActions.setToast('下单成功');
         this.context.router.replace(`hongbao/detail/view/${identifier}`);
       }
     }, (error) => {
@@ -454,7 +459,7 @@ class UserAddressList extends Component {
                 <h2 className="hb-f-16 tip-item title">您所选择的收货地址无货</h2>
                 <div className="hb-f-12 sub-title">您可以有如下选择</div>
               </div>
-              <div className="text-red tip-item hb-bd-b" onTouchTap={() => this.waitForGoods()}>等待京东补货</div>
+              <div className="text-red tip-item hb-bd-b" onTouchTap={this.waitForGoods}>等待京东补货</div>
               <div className="text-red tip-item" onTouchTap={this.toggleTipState}>取消</div>
             </div>
           </div>

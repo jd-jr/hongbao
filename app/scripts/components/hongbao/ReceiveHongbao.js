@@ -4,7 +4,6 @@ import offset from 'perfect-dom/lib/offset';
 import jdWalletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../../utils/perfect';
-import {setSessionStorage} from '../../utils/sessionStorage';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
 import PullRefresh from 'reactjs-pull-refresh';
@@ -12,6 +11,7 @@ import QrCode from './QrCode';
 import callApi from '../../fetch';
 import Guide from '../Guide';
 import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
+import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
 
 class ReceiveHongbao extends Component {
   constructor(props, context) {
@@ -38,33 +38,33 @@ class ReceiveHongbao extends Component {
       cacheActions.addCache('receivePagination');
       this.loadMoreCallback();
     }
-  }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const {
-      userInfo,
-      receivePagination
-    } = nextProps;
-
-    if (userInfo.giftAndThirdAccUserInfoDto && receivePagination.list) {
-      return true;
+    const {hongbaoReceiveList} = this.refs;
+    const hongbaoReceiveListScroll = getSessionStorage('hongbaoReceiveListScroll');
+    if (hongbaoReceiveList && hongbaoReceiveListScroll) {
+      const scrollCom = hongbaoReceiveList.pullRefresh.scroll;
+      scrollCom.scrollTo(parseInt(hongbaoReceiveListScroll, 10), 2, 'linear');
     }
-    return false;
   }
 
   componentDidUpdate(nextProps, nextState) {
     this.adjustArrow();
   }
 
-  componentWillUnmout() {
+  componentWillUnmount() {
     if (this.drawForm) {
       document.body.removeChild(this.drawForm);
     }
+    const {hongbaoReceiveList} = this.refs;
+    const scrollCom = hongbaoReceiveList.pullRefresh.scroll;
+    const top = scrollCom.y;
+
+    setSessionStorage('hongbaoReceiveListScroll', top);
   }
 
   // 下拉刷新回调函数
   refreshCallback() {
-    this.props.loadUserInfo();
+    this.props.loadUserInfo(true);
     return this.loadData(true);
   }
 
@@ -410,7 +410,8 @@ class ReceiveHongbao extends Component {
 
     return (
       <div>
-        <PullRefresh className="hb-main-panel"
+        <PullRefresh ref="hongbaoReceiveList"
+                     className="hb-main-panel"
                      refreshCallback={this.refreshCallback}
                      loadMoreCallback={this.loadMoreCallback}
                      hasMore={!lastPage}>

@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import trim from 'lodash/trim';
 import ProductSwiper from './ProductSwiper';
 import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
@@ -47,7 +48,7 @@ class Product extends Component {
       const childNodes = detailEl.childNodes;
       for (let i = 0, len = childNodes.length; i < len; i++) {
         const node = childNodes[i];
-        if (node.nodeType === 3) {
+        if (node.nodeType === 3 && trim(node.data) !== '') {
           const _node = document.createElement('p');
           _node.innerHTML = node.data;
           detailEl.replaceChild(_node, node);

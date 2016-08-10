@@ -19,7 +19,6 @@
   transition: opacity 500ms ease-in;
 }
 
-
 //fade in 效果
 .hb-fade-in-enter {
   transform: translate(-100%, -100%);
@@ -40,13 +39,14 @@
 }
 
 //右侧进入
-/*.hb-animate-right-appear {
+.hb-animate-right-appear {
   transform: translate(100%, 0);
 }
+
 .hb-animate-right-appear.hb-animate-right-appear-active {
   transform: translate(90%, 0);
-  transition: transform 500ms ease-in;
-}*/
+  transition: transform 200ms ease-in;
+}
 
 .hb-animate-right-enter {
   transform: translate(100%, 0);
@@ -69,22 +69,11 @@
 //从下往上动画效果
 .hb-burst-in-enter {
   opacity: 0.01;
-
-  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-
-  -webkit-animation-duration: .3s;
   animation-duration: .3s;
-
-  -webkit-animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
-
-  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
-
-  -webkit-animation-duration: .3s;
   animation-duration: .3s;
-  -webkit-animation-name: burstIn;
   animation-name: burstIn
 }
 
@@ -92,33 +81,13 @@
   opacity: 1;
 }
 
-@-webkit-keyframes burstIn {
-  0% {
-    -webkit-transform: scale(0.9);
-    transform: scale(0.9);
-    opacity: 0
-  }
-
-  100% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    opacity: 1
-  }
-}
-
 @keyframes burstIn {
   0% {
-    -moz-transform: scale(0.9);
-    -ms-transform: scale(0.9);
-    -webkit-transform: scale(0.9);
     transform: scale(0.9);
     opacity: 0
   }
 
   100% {
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    -webkit-transform: scale(1);
     transform: scale(1);
     opacity: 1
   }
