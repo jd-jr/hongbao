@@ -1,0 +1,29 @@
+@import "core/variables";
+//基于 normalize 重置样式
+@import "core/normalize";
+
+.hb-share-bg {
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #c31507;
+  position: relative;
+}
+
+.hb-share-link {
+  position: absolute;
+  left:0;
+  right: 0;
+  justify-content: center;
+  display: flex;
+}
+
+.hb-share-link-text {
+  text-indent: -9999px;
+  display: inline-block;
+}
+
+.hb-share-link-text-lg {
+  width: 20rem;
+  height: 3rem;
+}

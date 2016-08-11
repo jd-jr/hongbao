@@ -90,7 +90,7 @@ class MyHongbao extends Component {
     const {type, isLogin} = this.state;
     const {
       hongbaoActions, receivePagination, sponsorPagination, userInfo,
-      caches, cacheActions
+      caches, cacheActions, receiveType
     } = this.props;
 
     const receiveProps = {
@@ -100,6 +100,7 @@ class MyHongbao extends Component {
       caches,
       cacheActions,
       type,
+      receiveType,
       loadUserInfo: this.loadUserInfo
     };
 
@@ -155,6 +156,7 @@ MyHongbao.propTypes = {
   receivePagination: PropTypes.object,
   userInfo: PropTypes.object,
   type: PropTypes.string,
+  receiveType: PropTypes.string,
   setClientInfo: PropTypes.func,
   caches: PropTypes.object,
   cacheActions: PropTypes.object,

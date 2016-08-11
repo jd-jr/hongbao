@@ -36,7 +36,7 @@ class Guide extends Component {
     };
 
     return (
-      <ReactSwiper swiperOptions={swiperOptions} showPagination swiperClass="hb-guide-swiper">
+      <ReactSwiper swiperOptions={swiperOptions} showPagination swiperClass="hb-guidance-swiper">
         {
           items && items.map((item) => {
             const {src, id, link} = item;
@@ -45,10 +45,10 @@ class Guide extends Component {
                 <div className="slide-content">
                   {
                     link ? (
-                      <div className="hb-guide-img" style={{backgroundImage: `url("${src}")`, height: this.bodyH}}>
+                      <div className="hb-guidance-img" style={{backgroundImage: `url("${src}")`, height: this.bodyH}}>
                         <Link className="hb-guide-btn-send" to={link}> </Link>
                       </div>) : (
-                      <div className="hb-guide-img"
+                      <div className="hb-guidance-img"
                            style={{backgroundImage: `url("${src}")`, height: this.bodyH}}></div>
                     )
                   }

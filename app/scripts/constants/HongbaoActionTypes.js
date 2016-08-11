@@ -22,3 +22,6 @@ export const USER_INFO_SUCCESS = 'USER_INFO_SUCCESS';
 export const USER_INFO_FAILURE = 'USER_INFO_FAILURE';
 export const USER_INFO_CLEAR = 'USER_INFO_CLEAR';
 
+//记录是手气最佳还是已收到所有红包
+export const RECEIVE_HONGBAO_TYPE = 'RECEIVE_HONGBAO_TYPE';
+

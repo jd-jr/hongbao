@@ -1,7 +1,8 @@
 import {
   SPONSOR_REQUEST, SPONSOR_SUCCESS, SPONSOR_FAILURE, SPONSOR_CLEAR,
   RECEIVE_REQUEST, RECEIVE_SUCCESS, RECEIVE_FAILURE, RECEIVE_CLEAR,
-  USER_INFO_REQUEST, USER_INFO_SUCCESS, USER_INFO_FAILURE, USER_INFO_CLEAR
+  USER_INFO_REQUEST, USER_INFO_SUCCESS, USER_INFO_FAILURE, USER_INFO_CLEAR,
+  RECEIVE_HONGBAO_TYPE
 } from '../constants/HongbaoActionTypes';
 
 import HongbaoSchemas from '../models/HongbaoSchemas';
@@ -109,4 +110,13 @@ export function clearUserInfo() {
     unSchema: true,
     clear: true
   }
+}
+
+//记录是手气最佳还是已收到所有红包
+// received 已收红包， luck 手气最佳
+export function receiveType(from) {
+  return {
+    type: RECEIVE_HONGBAO_TYPE,
+    from
+  };
 }

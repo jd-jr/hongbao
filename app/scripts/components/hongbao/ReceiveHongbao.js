@@ -17,7 +17,7 @@ class ReceiveHongbao extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      type: 'received', // received 已收红包， luck 手气最佳
+      type: props.receiveType, //'received', // received 已收红包， luck 手气最佳
       guide: getLocalStorage('guide-my-receive') !== 'true'
     };
     this.switchTab = this.switchTab.bind(this);
@@ -105,6 +105,7 @@ class ReceiveHongbao extends Component {
     this.setState(state, () => {
       const {hongbaoActions} = this.props;
       hongbaoActions.clearReceive();
+      hongbaoActions.receiveType(type);
       this.adjustArrow();
       this.loadMoreCallback().then(() => {
         setTimeout(() => {
@@ -471,6 +472,7 @@ ReceiveHongbao.propTypes = {
   caches: PropTypes.object,
   cacheActions: PropTypes.object,
   type: PropTypes.string,
+  receiveType: PropTypes.string,
   loadUserInfo: PropTypes.func
 };
 

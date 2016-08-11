@@ -31,6 +31,7 @@ function mapStateToProps(state, ownProps) {
 
   let objects = {
     type,
+    receiveType: hongbao.receiveType,
     userInfo: userInfo || {}
   };
 

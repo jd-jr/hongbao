@@ -26,9 +26,9 @@ let webpackConfig = {
 
   entry: {
     index: ['./app/scripts/index.js'],
+    share: ['./app/scripts/share.js'],
     //添加要打包在vendors里面的库，作为公共的js文件
-    vendors: ['react', 'react-dom', 'react-addons-css-transition-group', 'redux',
-      'redux-thunk', 'react-redux', 'humps', 'react-router', 'react-router-redux', 'history']
+    vendors: ['react', 'react-dom']
   },
   output: {
     path: path.join(__dirname, 'dist'), //打包输出目录
@@ -109,6 +109,9 @@ const entry = webpackConfig.entry;
 const htmlwebpackPluginConfig = {
   index: {
     title: '京东红包'
+  },
+  share: {
+    title: '京东红包分享'
   }
 };
 

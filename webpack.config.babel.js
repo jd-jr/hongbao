@@ -6,12 +6,12 @@ import precss from 'precss';
 import autoprefixer from 'autoprefixer';
 
 //线上环境
-/*const ip = 'static.jdpay.com';
-const port = 443; // https 默认端口号为443*/
+const ip = 'static.jdpay.com';
+const port = 443; // https 默认端口号为443
 
 //测试环境
-const ip = 'hongbao.jdpay.com';
-const port = 8083;
+/*const ip = 'hongbao.jdpay.com';
+ const port = 8083;*/
 
 const hotDevServer = 'webpack/hot/dev-server';
 // https://github.com/webpack/webpack-dev-server
@@ -76,6 +76,7 @@ let webpackConfig = {
   // 入口文件 让webpack用哪个文件作为项目的入口
   entry: {
     index: ['./app/scripts/index.js', webpackDevServer, hotDevServer],
+    share: ['./app/scripts/share.js', webpackDevServer, hotDevServer],
     vendors: ['react', 'react-dom']
   },
 
@@ -149,6 +150,9 @@ const entry = webpackConfig.entry;
 const htmlwebpackPluginConfig = {
   index: {
     title: '京东红包'
+  },
+  share: {
+    title: '京东红包分享'
   }
 };
 

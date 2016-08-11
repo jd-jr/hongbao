@@ -19,7 +19,7 @@ export default {
     },
     {
       path: '/initiate',
-      onEnter: () => enterHandler('home'),
+      onEnter: () => enterHandler('initiate'),
       getComponent: (nextState, cb) => {
         require.ensure([], (require) => {
           cb(null, require('../containers/HomePage').default)
@@ -64,7 +64,7 @@ export default {
     },
     {
       path: '/authorize/:identifier',
-      onEnter: () => enterHandler('unpack'),
+      onEnter: () => enterHandler('authorize'),
       getComponent: (nextState, cb) => {
         require.ensure([], (require) => {
           cb(null, require('../containers/UnpackPage').default)

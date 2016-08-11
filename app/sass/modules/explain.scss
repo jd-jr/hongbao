@@ -63,10 +63,6 @@
     }
   }
 
-  &guide-swiper {
-    background: #fff;
-  }
-
   &guide-img {
     position: fixed;
     left: 0;
@@ -77,14 +73,6 @@
     > img {
       width: 100%;
     }
-  }
-
-  &guide-btn-send {
-    position: absolute;
-    left: 2rem;
-    right: 2rem;
-    height: 3rem;
-    bottom: 4rem;
   }
 }
 
@@ -143,4 +131,25 @@
 
 .swiper-container-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet {
   margin: 0 2px;
+}
+
+
+//红包引导页面
+.hb-guidance-swiper {
+  background: #fff;
+}
+
+.hb-guidance-img {
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #f1f8ff;
+  position: relative;
+}
+.guide-btn-send {
+  position: absolute;
+  left: 2rem;
+  right: 2rem;
+  height: 3rem;
+  bottom: 4rem;
 }
