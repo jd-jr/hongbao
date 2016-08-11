@@ -12,7 +12,7 @@
 
 .hb-share-link {
   position: absolute;
-  left:0;
+  left: 0;
   right: 0;
   justify-content: center;
   display: flex;
@@ -25,5 +25,12 @@
 
 .hb-share-link-text-lg {
   width: 20rem;
-  height: 3rem;
+}
+
+.hb-share-link-text-sm {
+  width: 30%;
+  height: 2rem;
+  &:last-child {
+    margin-left: 1.5rem;
+  }
 }

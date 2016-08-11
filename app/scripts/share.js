@@ -9,7 +9,9 @@ class Share extends Component {
     super(props);
     this.bodyH = document.documentElement.clientHeight;
     //以 iPhone6 为基准来处理 375X667
-    this.linkBottom = this.bodyH / 667 * 5.6;
+    this.linkLgBottom = this.bodyH / 667 * 5.7;
+    this.linkLgHeight = this.bodyH / 667 * 2.9;
+    this.linkSmBottom = this.bodyH / 667 * 3;
   }
 
   render() {
@@ -17,12 +19,19 @@ class Share extends Component {
     return (
       <div className="hb-share-bg"
            style={{backgroundImage: `url("${shareImg}")`, height: this.bodyH}}>
-        <div className="hb-share-link" style={{bottom: `${this.linkBottom}rem`}}>
-          <a className="hb-share-link-text hb-share-link-text-lg" href="">发个京东红包</a>
+        <div className="hb-share-link" style={{bottom: `${this.linkLgBottom}rem`}}>
+          <a className="hb-share-link-text hb-share-link-text-lg"
+             style={{height: `${this.linkLgHeight}rem`}}
+             href="./">发个京东红包</a>
         </div>
-
-        <a className="hb-share-link hb-share-link-default" href=""></a>
-        <a className="hb-share-link hb-share-link-default" href=""></a>
+        <div className="hb-share-link" style={{bottom: `${this.linkSmBottom}rem`}}>
+          <a className="hb-share-link-text hb-share-link-text-sm" href="./strategy">
+            京东红包什么鬼
+          </a>
+          <a className="hb-share-link-text hb-share-link-text-sm" href="./my">
+            查看我的红包
+          </a>
+        </div>
       </div>
     );
   }
