@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import PullRefresh from 'reactjs-pull-refresh';
 import Loading from '../../ui/Loading';
@@ -9,7 +8,7 @@ import HongbaoSelfInfo from './HongbaoSelfInfo';
 import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
-import {NICKNAME} from '../../constants/common';
+import {NICKNAME, SHARE_TITLE_COMMON, SHARE_DESC, SHARE_TITLE_GIFT, SHARE_TITLE_CASH} from '../../constants/common';
 import routeSetting from '../../routes/routeSetting';
 
 // 红包详情
@@ -205,21 +204,25 @@ class HongbaoDetail extends Component {
   share(hongbaoInfo) {
     const {ownerHeadpic, ownerNickname, skuIcon, skuName, selfInfo} = hongbaoInfo;
     let url = `${perfect.getLocationRoot()}share.html`;
+    let title = SHARE_TITLE_COMMON;
+    let desc = SHARE_DESC;
     if (selfInfo) {
       const {giftAmount, giftType} = selfInfo;
       const type = giftType === 'GOODS' ? 'gift' : 'cash';
       url += `?type=${type}&headpic=${encodeURIComponent(ownerHeadpic)}&nickname=${ownerNickname}`;
       if (giftType === 'GOODS') {
         url += `&skuname=${skuName}&skuicon=${encodeURIComponent(skuIcon)}`;
+        title = SHARE_TITLE_GIFT;
       } else {
         url += `&amount=${(giftAmount / 100).toFixed(2)}`;
+        title = SHARE_TITLE_CASH;
       }
     }
 
     if (deviceEnv.inWx) {
-      routeSetting.weixinShare(url);
+      routeSetting.weixinShare({url, title, desc});
     } else if (deviceEnv.inWallet) {
-      routeSetting.setShareUrl(url);
+      routeSetting.setShareData({url, title, desc});
     }
   }
 

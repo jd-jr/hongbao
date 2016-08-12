@@ -2,7 +2,13 @@ import React, {Component, PropTypes} from 'react';
 import {render} from 'react-dom';
 import weixin from 'jd-wallet-sdk/lib/weixin';
 import '../styles/share.css';
-import {SHARE_ICON_URL} from './constants/common';
+import {
+  SHARE_ICON_URL,
+  SHARE_TITLE_COMMON,
+  SHARE_DESC,
+  SHARE_TITLE_GIFT,
+  SHARE_TITLE_CASH
+} from './constants/common';
 
 /**
  * 获得地址栏传递参数
@@ -35,7 +41,8 @@ class Share extends Component {
     this.linkLgHeight = bodyW / 375 * 41;
     this.linkSmHeight = bodyW / 375 * 25;
 
-    //FIXME，上线前需要修改
+    this.params = getLocationParams() || {};
+
     this.rootUrl = '/m-hongbao/images/share/';
     this.imgOnload = this.imgOnload.bind(this);
   }
@@ -44,10 +51,18 @@ class Share extends Component {
     const {shareImg} = this.refs;
     shareImg.addEventListener('load', this.imgOnload);
 
+    const {type} = this.params;
+    let title = SHARE_TITLE_COMMON;
+    let desc = SHARE_DESC;
+    if (type === 'gift') {
+      title = SHARE_TITLE_GIFT;
+    } else if (type === 'cash') {
+      title = SHARE_TITLE_CASH;
+    }
     weixin.share({
       url: location.href,
-      title: '分享标题，待定',
-      desc: '分享描述，待定',
+      title,
+      desc,
       imgUrl: SHARE_ICON_URL,
       channel: 'WX'
     });
@@ -66,8 +81,7 @@ class Share extends Component {
 
   renderBody() {
     const rootUrl = this.rootUrl;
-    const params = getLocationParams() || {};
-    let {type, headpic, nickname, skuname, skuicon, amount} = params;
+    let {type, headpic, nickname, skuname, skuicon, amount} = this.params;
     headpic = decodeURIComponent(headpic);
     skuicon = decodeURIComponent(skuicon);
     //中实物或现金

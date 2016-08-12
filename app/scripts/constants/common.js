@@ -27,3 +27,9 @@ export const SHARE_ICON_URL = 'http://img12.360buyimg.com/cms/jfs/t2689/100/3871
 
 //设置显示底部按钮延迟
 export const SHOW_FOOT_DELAY = 50;
+
+// 分享文案
+export const SHARE_TITLE_COMMON = '谁说红包里只能塞现金？用京东红包，把你的礼物发给TA～';
+export const SHARE_TITLE_GIFT = '我拆到了有礼物的红包！';
+export const SHARE_TITLE_CASH = '今天现金到手，明天礼物拿来，一起来发京东红包！';
+export const SHARE_DESC = '抢礼物，拿现金，就在京东红包';

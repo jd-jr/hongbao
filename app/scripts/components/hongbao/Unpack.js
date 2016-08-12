@@ -5,7 +5,7 @@ import {HONGBAO_INVALID_STATUS, HONGBAO_TITLE, NICKNAME} from '../../constants/c
 import perfect from '../../utils/perfect';
 import circleSm from '../../../images/circle-sm.png';
 import defaultHeadPic from '../../../images/headpic.png';
-import {setSessionStorage} from '../../utils/sessionStorage';
+import {getSessionStorage} from '../../utils/sessionStorage';
 
 class Unpack extends Component {
   constructor(props, context) {

@@ -4,7 +4,7 @@ import walletApi from 'jd-wallet-sdk';
 import {WEIXIN_AUTHORIZE, REDIRECT_URI} from '../config';
 import perfect from '../utils/perfect';
 import {setSessionStorage, getSessionStorage} from '../utils/sessionStorage';
-import {SHARE_ICON_URL} from '../constants/common';
+import {SHARE_ICON_URL, SHARE_TITLE_COMMON, SHARE_DESC} from '../constants/common';
 
 const win = window;
 
@@ -12,8 +12,8 @@ const win = window;
 let firstEnter = true;
 
 const routeSetting = {
-  //分享 url
-  shareUrl: `${perfect.getLocationRoot()}share.html`,
+  //分享数据
+  shareData: {},
   titles: {
     home: '京东红包',
     initiate: '京东红包',
@@ -51,7 +51,7 @@ const routeSetting = {
   shareFilter: ['initiate', 'detail', 'detailView'],
 
   //需要授权的页面
-  authorizePage: ['home', 'authorize', 'my'],
+  authorizePage: ['home', 'authorize', 'unpack', 'my'],
 
   //设置 Title
   setTitle(key) {
@@ -68,15 +68,15 @@ const routeSetting = {
       walletApi.setMenu([{
         menuTitle: '分享',
         menuAction: () => {
-          this.weixinShare(this.shareUrl);
+          this.weixinShare(this.shareData);
         }
       }], false);
     }
   },
 
-  //设置分享链接
-  setShareUrl(shareUrl) {
-    this.shareUrl = shareUrl;
+  //设置分享数据，主要在钱包中使用
+  setShareData({url, title, desc}) {
+    this.shareData = {url, title, desc};
   },
 
   //设置埋点
@@ -92,18 +92,21 @@ const routeSetting = {
       this.wxShowOptionMenu();
       this.wxShowMenuItems();
       if (this.shareFilter.indexOf(key) === -1) {
-        this.weixinShare();
+        this.weixinShare({});
       }
     }
   },
 
-  //设置微信分享
-  weixinShare(url = `${perfect.getLocationRoot()}share.html`) {
-    alert(url);
+  //设置微信分享，默认取通用分享文案
+  weixinShare({
+    url = `${perfect.getLocationRoot()}share.html`,
+    title = SHARE_TITLE_COMMON,
+    desc = SHARE_DESC
+  }) {
     walletApi.share({
       url,
-      title: '分享标题，待定',
-      desc: '分享描述，待定',
+      title,
+      desc,
       imgUrl: SHARE_ICON_URL,
       channel: 'WX',
       debug: Boolean(window.eruda)
@@ -244,11 +247,11 @@ const routeSetting = {
 let enterHandler = routeSetting.enterHandler.bind(routeSetting);
 let leaveHandler = routeSetting.leaveHandler.bind(routeSetting);
 let weixinShare = routeSetting.weixinShare.bind(routeSetting);
-let setShareUrl = routeSetting.setShareUrl.bind(routeSetting);
+let setShareData = routeSetting.setShareData.bind(routeSetting);
 
 export default {
   enterHandler,
   leaveHandler,
   weixinShare,
-  setShareUrl
+  setShareData
 };
