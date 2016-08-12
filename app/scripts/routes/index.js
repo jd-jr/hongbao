@@ -91,7 +91,7 @@ export default {
     },
     {
       path: '/hongbao/detail/view/:identifier',
-      onEnter: () => enterHandler('detail'),
+      onEnter: () => enterHandler('detailView'),
       getComponent: (nextState, cb) => {
         require.ensure([], (require) => {
           cb(null, require('../containers/HongbaoDetailPage').default)

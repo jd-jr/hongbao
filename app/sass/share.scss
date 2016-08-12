@@ -2,12 +2,16 @@
 //基于 normalize 重置样式
 @import "core/normalize";
 
-.hb-share-bg {
-  background-size: auto 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: #c31507;
+.hb-share-panel {
+
+}
+
+.hb-share-item {
   position: relative;
+  > img {
+    display: block;
+    width: 100%;
+  }
 }
 
 .hb-share-link {
@@ -24,13 +28,75 @@
 }
 
 .hb-share-link-text-lg {
-  width: 20rem;
+  width: 69%;
 }
 
 .hb-share-link-text-sm {
   width: 30%;
-  height: 2rem;
   &:last-child {
     margin-left: 1.5rem;
   }
+}
+
+.hb-img-circle {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  margin-left: -28px;
+  z-index: 1;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+.hb-share-text {
+  position: absolute;
+  padding: 0 13%;
+  top: 2.4rem;
+  color: #ebcd9b;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.hb-share-text-underline {
+  text-decoration: underline;
+}
+
+.hb-skuname {
+  margin-top: 0.55rem;
+  font-size: 0.725rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hb-skuicon-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 17%;
+  bottom: 0;
+}
+
+.hb-skuicon {
+  position: absolute;
+  width: 30%;
+  left: 50%;
+  margin-left: -15%;
+}
+
+.hb-cash {
+  position: absolute;
+  text-align: center;
+  font-size: 6.5rem;
+  color: #ebcd9b;
+  left: 0;
+  right: 0;
+  top: 15%;
+}
+
+.hb-cash-unit {
+  font-size: 1.5rem;
 }

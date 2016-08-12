@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import PullRefresh from 'reactjs-pull-refresh';
 import Loading from '../../ui/Loading';
@@ -9,6 +10,7 @@ import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
+import routeSetting from '../../routes/routeSetting';
 
 // 红包详情
 class HongbaoDetail extends Component {
@@ -124,6 +126,10 @@ class HongbaoDetail extends Component {
             hongbaoExpired: true
           });
         }
+        if (!this.setShared) {
+          this.share(hongbaoInfo);
+          this.setShared = true;
+        }
       });
   }
 
@@ -194,6 +200,27 @@ class HongbaoDetail extends Component {
     this.setState({
       showInitiate: false
     });
+  }
+
+  share(hongbaoInfo) {
+    const {ownerHeadpic, ownerNickname, skuIcon, skuName, selfInfo} = hongbaoInfo;
+    let url = `${perfect.getLocationRoot()}share.html`;
+    if (selfInfo) {
+      const {giftAmount, giftType} = selfInfo;
+      const type = giftType === 'GOODS' ? 'gift' : 'cash';
+      url += `?type=${type}&headpic=${encodeURIComponent(ownerHeadpic)}&nickname=${ownerNickname}`;
+      if (giftType === 'GOODS') {
+        url += `&skuname=${skuName}&skuicon=${encodeURIComponent(skuIcon)}`;
+      } else {
+        url += `&amount=${(giftAmount / 100).toFixed(2)}`;
+      }
+    }
+
+    if (deviceEnv.inWx) {
+      routeSetting.weixinShare(url);
+    } else if (deviceEnv.inWallet) {
+      routeSetting.setShareUrl(url);
+    }
   }
 
   /**
@@ -343,9 +370,9 @@ class HongbaoDetail extends Component {
       <div>
         {initiateCom}
         <PullRefresh className="hb-main-panel-noheader"
-                       refreshCallback={this.refreshCallback}
-                       loadMoreCallback={this.loadMoreCallback}
-                       hasMore={!lastPage}>
+                     refreshCallback={this.refreshCallback}
+                     loadMoreCallback={this.loadMoreCallback}
+                     hasMore={!lastPage}>
           <article style={{display: detail}}>
             <section className="pos-r m-t-3">
               <div className="text-center">
@@ -358,7 +385,8 @@ class HongbaoDetail extends Component {
                 <HongbaoSelfInfo {...selfInfoProps}/>
               </div>
               <div className="hb-help">
-                <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
+                <a
+                  href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
                   <i className="hb-help-icon-lg"></i>
                 </a>
               </div>

@@ -4,16 +4,16 @@ import walletApi from 'jd-wallet-sdk';
 import {WEIXIN_AUTHORIZE, REDIRECT_URI} from '../config';
 import perfect from '../utils/perfect';
 import {setSessionStorage, getSessionStorage} from '../utils/sessionStorage';
+import {SHARE_ICON_URL} from '../constants/common';
 
 const win = window;
 
 //第一次进入
 let firstEnter = true;
 
-//微信 js sdk 是否验签
-let verifySignature = false;
-
 const routeSetting = {
+  //分享 url
+  shareUrl: `${perfect.getLocationRoot()}share.html`,
   titles: {
     home: '京东红包',
     initiate: '京东红包',
@@ -23,6 +23,7 @@ const routeSetting = {
     authorize: '京东红包',
     unpack: '红包详情',
     detail: '红包详情',
+    detailView: '红包详情',
     my: '京东红包',
     myaddress: '我的收货地址',
     addaddress: '新增地址',
@@ -34,7 +35,7 @@ const routeSetting = {
     strategy: '红包攻略'
   },
 
-  overflowYHidden: ['detail', 'my', 'productList'],
+  overflowYHidden: ['detail', 'detailView', 'my', 'productList'],
 
   //埋点
   buriedPoint: {
@@ -44,7 +45,13 @@ const routeSetting = {
     authorize: 'hangbao_prepare_unpack',
   },
 
-  shareFilter: ['home'],
+  //需要隐藏右侧菜单的路由
+  hideMenus: ['authorize', 'unpack'],
+  //在这里不需要设置通用分享的链接
+  shareFilter: ['initiate', 'detail', 'detailView'],
+
+  //需要授权的页面
+  authorizePage: ['home', 'authorize', 'my'],
 
   //设置 Title
   setTitle(key) {
@@ -52,13 +59,55 @@ const routeSetting = {
     walletApi.setTitle(this.titles[key] || '');
   },
 
+  // 在钱包中设置右侧菜单
+  setMenu (key) {
+    //设置分享图片
+    if (deviceEnv.inJdWallet) {
+      walletApi.shareIconURL(SHARE_ICON_URL, 'hongbao');
+      //设置右侧标题
+      walletApi.setMenu([{
+        menuTitle: '分享',
+        menuAction: () => {
+          this.weixinShare(this.shareUrl);
+        }
+      }], false);
+    }
+  },
+
+  //设置分享链接
+  setShareUrl(shareUrl) {
+    this.shareUrl = shareUrl;
+  },
+
   //设置埋点
   setBuriedPoint(key) {
     perfect.setBuriedPoint(this.buriedPoint[key]);
   },
 
-  //微信分享
-  weixinShare (key) {
+  //微信分享和右侧菜单隐藏或显示控制
+  weixinShareAndMenu (key) {
+    if (this.hideMenus.indexOf(key) !== -1) {
+      this.wxHideOptionMenu();
+    } else {
+      this.wxShowOptionMenu();
+      this.wxShowMenuItems();
+      if (this.shareFilter.indexOf(key) === -1) {
+        this.weixinShare();
+      }
+    }
+  },
+
+  //设置微信分享
+  weixinShare(url = `${perfect.getLocationRoot()}share.html`) {
+    alert(url);
+    walletApi.share({
+      url,
+      title: '分享标题，待定',
+      desc: '分享描述，待定',
+      imgUrl: SHARE_ICON_URL,
+      channel: 'WX',
+      debug: Boolean(window.eruda)
+    });
   },
 
   //监听退出
@@ -82,7 +131,7 @@ const routeSetting = {
   //微信授权
   wxAuthorize (key) {
     //如果在微信端，并且没有返回 accountId，需要微信授权
-    if (key === 'home' || key === 'authorize' || key === 'unpack') {
+    if (this.authorizePage.indexOf(key) !== -1) {
       const params = perfect.getLocationParams() || {};
       const {thirdAccId, accountType} = params;
       const _thirdAccId = getSessionStorage('thirdAccId');
@@ -141,23 +190,17 @@ const routeSetting = {
   //进入一个新的路由触发的事件
   enterHandler(key) {
     /*if (firstEnter && location.pathname === '/m-hongbao/my' && location.search === '?type=sponsor') {
-      location.href = `${perfect.getLocationRoot()}my`;
-    }
-    firstEnter = false;*/
+     location.href = `${perfect.getLocationRoot()}my`;
+     }
+     firstEnter = false;*/
 
     if (deviceEnv.inWx) {
       //console.info(getSessionStorage('thirdAccId'));
       this.wxAuthorize(key);
       this.monitorExit();
-      if (verifySignature) {
+      if (window.wx && walletApi.signatureStatus()) {
         //微信分享
-        this.weixinShare(key);
-        if (key === 'initiate' || key === 'test') {
-          this.wxShowOptionMenu();
-          this.wxShowMenuItems();
-        } else {
-          this.wxHideOptionMenu();
-        }
+        this.weixinShareAndMenu(key);
       } else {
         //设置允许的权限
         const jsApiList = [
@@ -175,15 +218,8 @@ const routeSetting = {
           debug: Boolean(window.eruda),
           jsApiList,
           callback: () => {
-            verifySignature = true;
             //微信分享
-            this.weixinShare(key);
-            if (key === 'initiate') {
-              this.wxShowOptionMenu();
-              this.wxShowMenuItems();
-            } else {
-              this.wxHideOptionMenu();
-            }
+            this.weixinShareAndMenu(key);
           }
         });
       }
@@ -191,6 +227,8 @@ const routeSetting = {
 
     //设置 title
     this.setTitle(key);
+    //设置右侧菜单
+    this.setMenu(key);
     //设置埋点
     this.setBuriedPoint(key);
 
@@ -205,9 +243,12 @@ const routeSetting = {
 
 let enterHandler = routeSetting.enterHandler.bind(routeSetting);
 let leaveHandler = routeSetting.leaveHandler.bind(routeSetting);
+let weixinShare = routeSetting.weixinShare.bind(routeSetting);
+let setShareUrl = routeSetting.setShareUrl.bind(routeSetting);
 
 export default {
   enterHandler,
-  leaveHandler
+  leaveHandler,
+  weixinShare,
+  setShareUrl
 };
-

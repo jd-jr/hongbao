@@ -121,6 +121,18 @@ gulp.task('images-strategy', () => {
     .pipe(gulp.dest('dist/images/strategy'))
 });
 
+gulp.task('images-share', () => {
+  return gulp.src('app/images/share/*')
+    .pipe($.imagemin({
+      progressive: true,
+      interlaced: true,
+      // don't remove IDs from SVGs, they are often used
+      // as hooks for embedding and styling
+      svgoPlugins: [{cleanupIDs: false}]
+    }))
+    .pipe(gulp.dest('dist/images/share'))
+});
+
 // 计算文件大小
 gulp.task('size', () => {
   return gulp.src('dist/**/*').pipe($.size({title: '文件大小：', gzip: true}));
@@ -301,12 +313,12 @@ gulp.task('sass-compress', () => {
 });
 
 // 编译打包，正式环境
-gulp.task('build', ['sass-compress', 'styles', 'copy:prod', 'images-guide', 'images-strategy'], () => {
+gulp.task('build', ['sass-compress', 'styles', 'copy:prod', 'images-guide', 'images-strategy', 'images-share'], () => {
   gulp.start(['webpack:build']);
 });
 
 // 编译打包，测试环境
-gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev', 'images-guide', 'images-strategy'], () => {
+gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev', 'images-guide', 'images-strategy', 'images-share'], () => {
   gulp.start(['webpack:build']);
 });
 
