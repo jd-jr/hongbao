@@ -34,7 +34,7 @@
     "react-router-redux": "^4.0.5",
     "react-tap-event-plugin": "^1.0.0",
     "reactjs-modal": "^0.2.2",
-    "reactjs-pull-refresh": "file:///Users/wangyanjun/gitworkspace/reactjs-ui/reactjs-pull-refresh",
+    "reactjs-pull-refresh": "^0.3.2",
     "redux": "^3.5.2",
     "redux-thunk": "^2.1.0"
   },
