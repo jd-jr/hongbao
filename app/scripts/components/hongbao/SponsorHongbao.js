@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../../utils/perfect';
 import defaultHeadPic from '../../../images/headpic.png';
@@ -13,6 +14,7 @@ class SponsorHongbao extends Component {
 
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
+    this.clearMenu = this.clearMenu.bind(this);
   }
 
   componentDidMount() {
@@ -59,6 +61,13 @@ class SponsorHongbao extends Component {
     };
 
     return hongbaoActions.getHongbaoList(body, 'sponsor', clear);
+  }
+
+  //在钱包中去掉帮助页面分享
+  clearMenu() {
+    if (deviceEnv.inJdWallet) {
+      walletApi.setMenu();
+    }
   }
 
   /*eslint-disable indent*/
@@ -221,7 +230,7 @@ class SponsorHongbao extends Component {
             已发出<span className="text-primary">{putOutNum}</span>个红包
           </div>
           <div className="hb-help">
-            <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
+            <a onClick={this.clearMenu} href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
               <i className="hb-help-icon-lg"></i>
             </a>
           </div>

@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {render} from 'react-dom';
 import weixin from 'jd-wallet-sdk/lib/weixin';
+import base64 from 'js-base64';
 import '../styles/share.css';
 import {
   SHARE_ICON_URL,
@@ -9,6 +10,8 @@ import {
   SHARE_TITLE_GIFT,
   SHARE_TITLE_CASH
 } from './constants/common';
+
+const {Base64} = base64;
 
 /**
  * 获得地址栏传递参数
@@ -41,7 +44,18 @@ class Share extends Component {
     this.linkLgHeight = bodyW / 375 * 41;
     this.linkSmHeight = bodyW / 375 * 25;
 
-    this.params = getLocationParams() || {};
+    const urlParams = getLocationParams() || {};
+    let {params} = urlParams;
+    if (params) {
+      params = decodeURIComponent(params);
+      params = Base64.decode(params);
+      const paramMap = {};
+      params.split('&').forEach((item) => {
+        const _item = item.split('=');
+        paramMap[_item[0]] = _item[1];
+      });
+      this.paramMap = paramMap;
+    }
 
     this.rootUrl = '/m-hongbao/images/share/';
     this.imgOnload = this.imgOnload.bind(this);
@@ -49,16 +63,21 @@ class Share extends Component {
 
   componentDidMount() {
     const {shareImg} = this.refs;
-    shareImg.addEventListener('load', this.imgOnload);
+    if (shareImg) {
+      shareImg.addEventListener('load', this.imgOnload);
+    }
 
-    const {type} = this.params;
     let title = SHARE_TITLE_COMMON;
     let desc = SHARE_DESC;
-    if (type === 'gift') {
-      title = SHARE_TITLE_GIFT;
-    } else if (type === 'cash') {
-      title = SHARE_TITLE_CASH;
+    if (this.paramMap) {
+      const {type} = this.paramMap;
+      if (type === 'gift') {
+        title = SHARE_TITLE_GIFT;
+      } else if (type === 'cash') {
+        title = SHARE_TITLE_CASH;
+      }
     }
+
     weixin.share({
       url: location.href,
       title,
@@ -70,7 +89,9 @@ class Share extends Component {
 
   componentWillUnmount() {
     const {shareImg} = this.refs;
-    shareImg.removeEventListener('load', this.imgOnload);
+    if (shareImg) {
+      shareImg.removeEventListener('load', this.imgOnload);
+    }
   }
 
   imgOnload() {
@@ -81,48 +102,48 @@ class Share extends Component {
 
   renderBody() {
     const rootUrl = this.rootUrl;
-    let {type, headpic, nickname, skuname, skuicon, amount} = this.params;
-    headpic = decodeURIComponent(headpic);
-    skuicon = decodeURIComponent(skuicon);
-    //中实物或现金
-    if (type === 'gift' || type === 'cash') {
-      return (
-        <div>
-          <div className="hb-share-item">
-            <div>
-              <img className="hb-img-circle"
-                   src={headpic} alt=""/>
-            </div>
-            <img ref="shareImg" src={`${rootUrl}share-gift_01.png`} alt="红包分享"/>
-          </div>
-          <div className="hb-share-item" style={{display: this.state.show}}>
-            <div className="hb-share-text" style={type === 'gift' ? {} : {marginTop: '0.7rem'}}>
-              <div>我在 <span className="hb-share-text-underline">{nickname}</span> 发的京东红包里抢到了</div>
-              {type === 'gift' ? (<div className="hb-skuname">{skuname}</div>) : null}
-            </div>
-            <img src={`${rootUrl}share-gift_02.png`} alt="红包分享"/>
-          </div>
-          {
-            type === 'gift' ? (
-              <div className="hb-share-item" style={{display: this.state.show}}>
-                <div className="hb-skuicon-wrap">
-                  <img className="hb-skuicon"
-                       src={skuicon} alt=""/>
-                </div>
-                <img src={`${rootUrl}share-gift_03.png`} alt="红包分享"/>
+    if (this.paramMap) {
+      const {type, headpic, nickname, skuname, skuicon, amount} = this.paramMap;
+      //中实物或现金
+      if (type === 'gift' || type === 'cash') {
+        return (
+          <div>
+            <div className="hb-share-item">
+              <div>
+                <img className="hb-img-circle"
+                     src={headpic} alt=""/>
               </div>
-            ) : (
-              <div className="hb-share-item" style={{display: this.state.show}}>
-                <div className="hb-cash">
-                  <span>{amount}</span>
-                  <span className="hb-cash-unit"> 元</span>
-                </div>
-                <img src={`${rootUrl}share-cash_03.png`} alt="红包分享"/>
+              <img ref="shareImg" src={`${rootUrl}share-gift_01.png`} alt="红包分享"/>
+            </div>
+            <div className="hb-share-item" style={{display: this.state.show}}>
+              <div className="hb-share-text" style={type === 'gift' ? {} : {marginTop: '0.7rem'}}>
+                <div>我在 <span className="hb-share-text-underline">{nickname}</span> 发的京东红包里抢到了</div>
+                {type === 'gift' ? (<div className="hb-skuname">{skuname}</div>) : null}
               </div>
-            )
-          }
-        </div>
-      );
+              <img src={`${rootUrl}share-gift_02.png`} alt="红包分享"/>
+            </div>
+            {
+              type === 'gift' ? (
+                <div className="hb-share-item" style={{display: this.state.show}}>
+                  <div className="hb-skuicon-wrap">
+                    <img className="hb-skuicon"
+                         src={skuicon} alt=""/>
+                  </div>
+                  <img src={`${rootUrl}share-gift_03.png`} alt="红包分享"/>
+                </div>
+              ) : (
+                <div className="hb-share-item" style={{display: this.state.show}}>
+                  <div className="hb-cash">
+                    <span>{amount}</span>
+                    <span className="hb-cash-unit"> 元</span>
+                  </div>
+                  <img src={`${rootUrl}share-cash_03.png`} alt="红包分享"/>
+                </div>
+              )
+            }
+          </div>
+        );
+      }
     }
 
     //通用分享

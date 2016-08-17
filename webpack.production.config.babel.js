@@ -111,7 +111,7 @@ const htmlwebpackPluginConfig = {
     title: '京东红包'
   },
   share: {
-    title: '京东红包分享'
+    title: '京东红包'
   }
 };
 

@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import offset from 'perfect-dom/lib/offset';
-import jdWalletApi from 'jd-wallet-sdk';
+import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../../utils/perfect';
 import defaultHeadPic from '../../../images/headpic.png';
@@ -29,6 +29,7 @@ class ReceiveHongbao extends Component {
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
     this.closeGuide = this.closeGuide.bind(this);
+    this.clearMenu = this.clearMenu.bind(this);
   }
 
   componentDidMount() {
@@ -127,7 +128,7 @@ class ReceiveHongbao extends Component {
       e.preventDefault();
       e.nativeEvent.preventDefault();
       e.nativeEvent.stopPropagation();
-      jdWalletApi.openModule({name: 'BALANCE'});
+      walletApi.openModule({name: 'BALANCE'});
     } else {
       const url = 'user/Classification';
       const body = {
@@ -230,6 +231,13 @@ class ReceiveHongbao extends Component {
     setLocalStorage(this.state.type === 'luck' ? 'guide-my-receive-luck' : 'guide-my-receive', 'true');
   }
 
+  //在钱包中去掉帮助页面分享
+  clearMenu() {
+    if (deviceEnv.inJdWallet) {
+      walletApi.setMenu();
+    }
+  }
+
   /*eslint-disable indent*/
   /**
    * @param status
@@ -277,6 +285,10 @@ class ReceiveHongbao extends Component {
         case 'REFUNED':
           return (
             <div className="label-text bg-muted">已退款</div>
+          );
+        case 'WAIT_STOCK':
+          return (
+            <div className="label-text bg-muted">等待补货</div>
           );
         default:
           return (
@@ -435,7 +447,8 @@ class ReceiveHongbao extends Component {
               }
             </div>
             <div className="hb-help">
-              <a href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
+              <a onClick={this.clearMenu}
+                 href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
                 <i className="hb-help-icon-lg"></i>
               </a>
             </div>

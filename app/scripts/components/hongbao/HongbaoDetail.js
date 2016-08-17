@@ -1,6 +1,8 @@
 import React, {Component, PropTypes} from 'react';
+import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import PullRefresh from 'reactjs-pull-refresh';
+import base64 from 'js-base64';
 import Loading from '../../ui/Loading';
 import perfect from '../../utils/perfect';
 import {HONGBAO_TITLE, SHOW_FOOT_DELAY} from '../../constants/common';
@@ -10,6 +12,7 @@ import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME, SHARE_TITLE_COMMON, SHARE_DESC, SHARE_TITLE_GIFT, SHARE_TITLE_CASH} from '../../constants/common';
 import routeSetting from '../../routes/routeSetting';
+const {Base64} = base64;
 
 // 红包详情
 class HongbaoDetail extends Component {
@@ -39,6 +42,7 @@ class HongbaoDetail extends Component {
 
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
+    this.clearMenu = this.clearMenu.bind(this);
     //可继续发送状态
     this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
   }
@@ -204,25 +208,38 @@ class HongbaoDetail extends Component {
   share(hongbaoInfo) {
     const {ownerHeadpic, ownerNickname, skuIcon, skuName, selfInfo} = hongbaoInfo;
     let url = `${perfect.getLocationRoot()}share.html`;
+    let params = '';
     let title = SHARE_TITLE_COMMON;
     let desc = SHARE_DESC;
     if (selfInfo) {
       const {giftAmount, giftType} = selfInfo;
       const type = giftType === 'GOODS' ? 'gift' : 'cash';
-      url += `?type=${type}&headpic=${encodeURIComponent(ownerHeadpic)}&nickname=${ownerNickname}`;
+      params += `type=${type}&headpic=${ownerHeadpic}&nickname=${ownerNickname}`;
       if (giftType === 'GOODS') {
-        url += `&skuname=${skuName}&skuicon=${encodeURIComponent(skuIcon)}`;
+        params += `&skuname=${skuName}&skuicon=${skuIcon}`;
         title = SHARE_TITLE_GIFT;
       } else {
-        url += `&amount=${(giftAmount / 100).toFixed(2)}`;
+        params += `&amount=${(giftAmount / 100).toFixed(2)}`;
         title = SHARE_TITLE_CASH;
       }
     }
-
+    //由于京东钱包在 ios 中分享 url 会截取 & 后面的内容，这里需要处理一下
+    if (params) {
+      params = Base64.encode(params);
+      params = encodeURIComponent(params);
+      url += `?params=${params}`;
+    }
     if (deviceEnv.inWx) {
       routeSetting.weixinShare({url, title, desc});
-    } else if (deviceEnv.inWallet) {
+    } else if (deviceEnv.inJdWallet) {
       routeSetting.setShareData({url, title, desc});
+    }
+  }
+
+  //在钱包中去掉帮助页面分享
+  clearMenu() {
+    if (deviceEnv.inJdWallet) {
+      walletApi.setMenu();
     }
   }
 
@@ -388,8 +405,8 @@ class HongbaoDetail extends Component {
                 <HongbaoSelfInfo {...selfInfoProps}/>
               </div>
               <div className="hb-help">
-                <a
-                  href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
+                <a onClick={this.clearMenu}
+                   href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
                   <i className="hb-help-icon-lg"></i>
                 </a>
               </div>

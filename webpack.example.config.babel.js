@@ -70,7 +70,7 @@ let webpackConfig = {
 
   // 入口文件 让webpack用哪个文件作为项目的入口
   entry: {
-    index: ['./example/scripts/index.js', webpackDevServer, hotDevServer],
+    index: ['./example/scripts/index.js'],
   },
 
   // 出口 让webpack把处理完成的文件放在哪里

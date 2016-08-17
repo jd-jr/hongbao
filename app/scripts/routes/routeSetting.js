@@ -64,6 +64,8 @@ const routeSetting = {
     //设置分享图片
     if (deviceEnv.inJdWallet) {
       walletApi.shareIconURL(SHARE_ICON_URL, 'hongbao');
+      //开始的时候先置空
+      this.shareData = {};
       //设置右侧标题
       walletApi.setMenu([{
         menuTitle: '分享',

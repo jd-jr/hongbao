@@ -57,6 +57,7 @@ class Home extends Component {
     this.replaceProduct = this.replaceProduct.bind(this);
     this.closeHongbao = this.closeHongbao.bind(this);
     this.closeGuide = this.closeGuide.bind(this);
+    this.clearMenu = this.clearMenu.bind(this);
     this.imgUrl = 'sponsor-hb.png';
 
     //是否是发红包页面
@@ -94,6 +95,54 @@ class Home extends Component {
         this.pay();
       });
     }
+
+    /**
+     * deviceInfo  Android
+     {
+      IPAddress1: '',
+      UUID:'',
+      appId:'',
+      channelInfo: '',
+      clientVersion: '',
+      deviceId: '',
+      deviceType: '',
+      imei: '',
+      latitude: '',
+      longitude: '',
+      macAddress: '',
+      networkType: '',
+      osPlateform: '',
+      osVersion: '',
+      resolution: '',
+      startNo: '',
+      terminalType: ''
+     }
+
+     IOS
+
+     {
+      IDFA: '',
+      IPAddress1: '', //没有值
+      OpenUDID: '',
+      UUID:'',  //没有值
+      appId:'',
+      channelInfo: '',
+      clientVersion: '',
+      deviceType: '',
+      latitude: '',
+      longitude: '',
+      networkType: '',
+      osPlateform: '',
+      osVersion: '',
+      resolution: '',
+      startNo: '',
+      terminalType: ''
+     }
+     */
+    walletApi.getFinanceInfo((info) => {
+      info = perfect.parseJSON(info);
+      this.deviceInfo = info.deviceInfo;
+    });
   }
 
   componentWillUnmount() {
@@ -275,9 +324,35 @@ class Home extends Component {
       ({json, response}) => {
         identifier = json.data;
         const url = 'pay';
-        const body = {
+        let body = {
           identifier
         };
+        if (deviceEnv.inJdWallet) {
+          /**
+           终端类型  type 传入 DTO1：pc 端 DTO2：移动 App DTO3： 移动浏览器端
+           终端 ip ip
+           终端 mac 地址 mac
+           终端 imei imei
+           终端 idfv idfv
+           终端 adid adid
+           操作系统 os   DTO1：Android DTO2：IOS DTO3： Window， DTO4: Mac，OSO5: Linux
+           osVersion
+           */
+          const {IPAddress1, macAddress, imei, osPlateform, osVersion, IDFA} = this.deviceInfo;
+          // 安卓的IMEI  ios的IDFV
+          // adid：advertisingIdentifier，也是ios的一个标识
+          body = {
+            identifier,
+            type: 'DTO2',
+            ip: IPAddress1,
+            mac: macAddress,
+            imei,
+            idfv: IDFA || imei,
+            adid: undefined,
+            os: osPlateform === 'android' ? 'DTO1' : 'DTO2',
+            osVersion
+          }
+        }
         return callApi({url, body, needAuth: true});
       },
       (error) => {
@@ -295,6 +370,7 @@ class Home extends Component {
           payDataReady: true,
           loadingStatus: false
         }, () => {
+          this.clearMenu();
           this.refs.h5PayForm.submit();
         });
       },
@@ -339,6 +415,13 @@ class Home extends Component {
     this.context.router.replace('/');
   }
 
+  //在钱包中去掉帮助页面分享
+  clearMenu() {
+    if (deviceEnv.inJdWallet) {
+      walletApi.setMenu();
+    }
+  }
+
   //渲染支付表单
   renderH5PayForm() {
     const {payDataReady} = this.state;
@@ -349,7 +432,7 @@ class Home extends Component {
     const {
       version, sign, merchant, device, tradeNum, tradeName, tradeDesc, tradeTime, amount, currency,
       note, notifyUrl, callbackUrl, ip, specCardNo, specId, specName, userType, userId, expireTime,
-      orderType, industryCategoryCode, oriUrl
+      orderType, industryCategoryCode, oriUrl, termInfo
     } = this.basePayOrderInfo;
 
     return (
@@ -376,6 +459,7 @@ class Home extends Component {
         <input type="hidden" name="specCardNo" value={specCardNo}/>
         <input type="hidden" name="specId" value={specId}/>
         <input type="hidden" name="specName" value={specName}/>
+        <input type="hidden" name="termInfo" value={termInfo}/>
       </form>
     );
   }
@@ -499,8 +583,8 @@ class Home extends Component {
               </p>
               <p className="text-center f-sm m-t-2 text-muted">
                 <span>好友未领取实物，可于15天后申请退款 </span>
-                <a
-                  href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85"><i
+                <a onClick={this.clearMenu}
+                   href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85"><i
                   className="hb-help-icon"></i></a>
               </p>
             </section>

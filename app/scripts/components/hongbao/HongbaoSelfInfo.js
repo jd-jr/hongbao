@@ -27,6 +27,8 @@ class HongbaoSelfInfo extends Component {
     this.state = {
       refundStatus: props.refundStatus,
       refundVisible: false, //显示申请退款弹框
+      refundAmount: 0, //退款金额
+      refundMethod: '' //退款方式，全款还是部分
     };
     const href = location.href;
     this.isView = href.indexOf('/hongbao/detail/view') !== -1;
@@ -215,14 +217,38 @@ class HongbaoSelfInfo extends Component {
     this.context.router.push('/myaddress');
   }
 
+  //退款确认
   refundPrompt() {
     if (this.submitStatus) {
       return;
     }
     this.submitStatus = true;
-    this.setState({
-      refundVisible: true
+
+    //获取退款金额
+    const url = 'refundAmount';
+    const {identifier, indexActions} = this.props;
+    const accountType = perfect.getAccountType();
+    const thirdAccId = perfect.getThirdAccId();
+    const body = {
+      identifier,
+      accountId: thirdAccId,
+      accountType
+    };
+
+    callApi({url, body, needAuth: true}).then(({json, response}) => {
+      //method： FULL全部退款   /  REBATE部分退款
+      //amount：退款金额
+      const {method, amount} = json.data;
+      this.setState({
+        refundVisible: true,
+        refundAmount: amount, //退款金额
+        refundMethod: method //退款方式，全款还是部分
+      });
+    }, (error) => {
+      this.submitStatus = false;
+      indexActions.setErrorMessage(error.message);
     });
+
     //埋点
     perfect.setBuriedPoint('hongbao_sponsored_refund');
   }
@@ -443,7 +469,7 @@ class HongbaoSelfInfo extends Component {
   }
 
   render() {
-    const {refundVisible, refundStatus} = this.state;
+    const {refundVisible, refundStatus, refundAmount, refundMethod} = this.state;
     const footer = (
       <div className="row text-center">
         <div className="col-12 border-second border-right hb-active-btn p-y-0-5" onClick={() => this.onClose('cancel')}>
@@ -469,24 +495,24 @@ class HongbaoSelfInfo extends Component {
           closable={false}
         >
           <div>
-            <h3 className="text-center">服务费说明</h3>
-            {refundStatus === 'REDBAG_WHOLE_REFUND' || refundStatus === 'REDBAG_WHOLE_REFUND_TRANSFER' ? (
+            <h3 className="text-center">退款及服务费说明</h3>
+            {refundMethod === 'FULL' ? (
               <div>
-                <div>您可申请全额退款，退款金额将原路返回</div>
-                <div>预计1-3个工作日到账</div>
+                <div>您可申请全额退款，金额为{(refundAmount / 100).toFixed(2)}元。退款金额将原路返回。预计1-3个工作日到账</div>
               </div>
             ) : (
               <div className="row">
-                <div className="col-12" style={{paddingRight: '0'}}>
+                <div className="col-24">
+                  退款金额为{(refundAmount / 100).toFixed(2)}元，退款金额将原路返回，预计1-3个工作日到账。
+                </div>
+                <div className="col-24 m-t-1">服务费如下：</div>
+                <div className="col-13 p-r-0">
                   <div>商品价格0-2180元(不含)</div>
                   <div>商品价格2180元以上</div>
                 </div>
-                <div className="col-12">
+                <div className="col-11">
                   <div>费率=商品价格*8%</div>
                   <div>费率=160元</div>
-                </div>
-                <div className="col-24 m-t-1">
-                  退款金额将原路返回，预计1-3个工作日到账。
                 </div>
               </div>
             )}
