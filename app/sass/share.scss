@@ -51,12 +51,13 @@
 
 .hb-share-text {
   position: absolute;
-  padding: 0 13%;
-  top: 2.4rem;
+  padding: 0 0.5rem;
+  bottom: 0.5rem;
   color: #ebcd9b;
   left: 0;
   right: 0;
   text-align: center;
+  z-index: 1;
 }
 
 .hb-share-text-underline {
