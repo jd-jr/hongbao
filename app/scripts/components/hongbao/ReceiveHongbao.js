@@ -7,7 +7,7 @@ import perfect from '../../utils/perfect';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
 import PullRefresh from 'reactjs-pull-refresh';
-import QrCode from './QrCode';
+// import QrCode from './QrCode';
 import callApi from '../../fetch';
 import Guide from '../Guide';
 import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
@@ -428,7 +428,7 @@ class ReceiveHongbao extends Component {
                      refreshCallback={this.refreshCallback}
                      loadMoreCallback={this.loadMoreCallback}
                      hasMore={!lastPage}>
-          {deviceEnv.inWx ? <QrCode type={type}/> : null}
+          {/*{deviceEnv.inWx ? <QrCode type={type}/> : null}*/}
           <section className="text-center m-t-1 pos-r">
             <div>
               <img className="img-circle img-thumbnail hb-figure hb-user-info" src={headpic} alt=""/>
@@ -446,12 +446,12 @@ class ReceiveHongbao extends Component {
                 )
               }
             </div>
-            <div className="hb-help">
-              <a onClick={this.clearMenu}
-                 href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
-                <i className="hb-help-icon-lg"></i>
-              </a>
-            </div>
+            {/*<div className="hb-help">*/}
+              {/*<a onClick={this.clearMenu}*/}
+                 {/*href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">*/}
+                {/*<i className="hb-help-icon-lg"></i>*/}
+              {/*</a>*/}
+            {/*</div>*/}
           </section>
 
           <section className="row text-center m-t-1">

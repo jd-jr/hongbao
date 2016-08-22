@@ -74,6 +74,55 @@
       width: 100%;
     }
   }
+
+  &help-link {
+    padding: 1.2rem 3.8rem 1.8rem 3.8rem;
+  }
+
+  &help-mask {
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  &help-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 10000;
+    width: 14rem;
+    margin-top: -12rem;
+    margin-left: -7rem;
+    > img.hb-help-code {
+      width: 14rem;
+      height: 22.5rem;
+    }
+    > img.hb-help-close {
+      width: 2rem;
+      height: 2rem;
+      margin-top: 4rem;
+      cursor: pointer;
+    }
+  }
+
+  &help-feedback {
+    position: fixed;
+    top: 4rem;
+    right: 1rem;
+    z-index: 10;
+    text-decoration: underline;
+  }
+
+  &follow-me {
+    position: fixed;
+    bottom: 4.5rem;
+    right: .5rem;
+    z-index: 10;
+    > img {
+      width: 4rem;
+      height: 4rem;
+      cursor: pointer;
+    }
+  }
 }
 
 .hb-strategy-img {
@@ -152,4 +201,93 @@
   right: 2rem;
   height: 3rem;
   bottom: 4rem;
+}
+
+//立即领取红包动画
+@keyframes beating {
+  0% {
+    transform: translate(0%, 0%) scale(1, 1)
+  }
+  50% {
+    transform: translate(0%, 0%) scale(0.8, 0.8)
+  }
+  100% {
+    transform: translate(0%, 0%) scale(1, 1)
+  }
+}
+.hb-receive-animate {
+  animation: beating 2s ease-in-out infinite normal;
+}
+//红包彩带动画
+.hb-snow-zone {
+  position: fixed;
+  top: 0;
+  .snow-zone {
+    position: fixed;
+    .hb-ribbons {
+      position: absolute;
+      opacity: 0;
+      z-index: 10001;
+      animation: ribbonsSnow 5s;
+    }
+    .ribbons-1 {
+      width: 1rem;
+    }
+    .ribbons-2 {
+      width: .6rem;
+    }
+    .ribbons-3 {
+      width: .6rem;
+    }
+    .ribbons-4 {
+      width: 1.5rem;
+    }
+    .ribbons-5 {
+      width: 1rem;
+    }
+    .ribbons-6 {
+      width: 2.5rem;
+    }
+    .ribbons-7 {
+      width: .6rem;
+    }
+    .ribbons-8 {
+      width: .6rem;
+    }
+    .ribbons-9 {
+      width: 2rem;
+    }
+    .ribbons-10 {
+      width: 1rem;
+    }
+    .ribbons-11 {
+      width: 1rem;
+    }
+  }
+}
+@keyframes ribbonsSnow {
+  0% {
+    bottom: 100%;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(0deg);
+    opacity: 0;
+    bottom: 0;
+  }
+}
+
+//红包领取状态
+.#{$prefixCls} {
+  &gift-status {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 }

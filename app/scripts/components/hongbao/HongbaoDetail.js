@@ -12,6 +12,9 @@ import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME, SHARE_TITLE_COMMON, SHARE_DESC, SHARE_TITLE_GIFT, SHARE_TITLE_CASH} from '../../constants/common';
 import routeSetting from '../../routes/routeSetting';
+import HelpFeedback from '../HelpFeedback';
+import Ribbons from '../Ribbons';
+
 const {Base64} = base64;
 
 // 红包详情
@@ -45,6 +48,9 @@ class HongbaoDetail extends Component {
     this.clearMenu = this.clearMenu.bind(this);
     //可继续发送状态
     this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
+
+    //红包详情页
+    this.isView = href.indexOf('/hongbao/detail/view') !== -1;
   }
 
   componentWillMount() {
@@ -357,7 +363,7 @@ class HongbaoDetail extends Component {
       );
     }
 
-    const {giftRecordId} = selfInfo || {};
+    const {giftRecordId, confirmAddress} = selfInfo || {};
     const {detail, sponsorGoal, showInitiate, hongbaoExpired} = this.state;
 
     const selfInfoProps = {
@@ -404,12 +410,12 @@ class HongbaoDetail extends Component {
                 <p className="text-muted m-t-0-5-0 f-sm">{title}</p>
                 <HongbaoSelfInfo {...selfInfoProps}/>
               </div>
-              <div className="hb-help">
-                <a onClick={this.clearMenu}
-                   href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
-                  <i className="hb-help-icon-lg"></i>
-                </a>
-              </div>
+              {/*<div className="hb-help">*/}
+                {/*<a onClick={this.clearMenu}*/}
+                   {/*href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">*/}
+                  {/*<i className="hb-help-icon-lg"></i>*/}
+                {/*</a>*/}
+              {/*</div>*/}
             </section>
 
             <section className="m-t-3">
@@ -424,6 +430,8 @@ class HongbaoDetail extends Component {
           </article>
         </PullRefresh>
         {this.renderFooter()}
+        <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
+        {confirmAddress === 'UNCONFIRMED' && this.isView ? (<Ribbons/>) : null}
       </div>
     );
   }

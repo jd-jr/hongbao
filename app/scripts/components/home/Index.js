@@ -10,6 +10,7 @@ import {HONGBAO_TITLE, SHOW_FOOT_DELAY} from '../../constants/common';
 import perfect from '../../utils/perfect'
 import Initiate from './Initiate';
 import Guide from '../Guide';
+import HelpFeedback from '../HelpFeedback';
 import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
 import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
 
@@ -576,6 +577,12 @@ class Home extends Component {
               <button className="btn btn-block btn-primary btn-lg" disabled={selecting || giftNum === ''}
                       onTouchTap={this.payBefore} style={{paddingTop: '0.725rem', paddingBottom: '0.725rem'}}>发起京东红包
               </button>
+              <div className="hb-help-link f-sm">
+                <Link to="/strategy" className="fl">如何发京东红包</Link>
+                <a onClick={this.clearMenu}
+                   className="fr"
+                   href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">帮助反馈</a>
+              </div>
               <p className="text-center f-sm m-t-2 text-muted">
                 <i className={`hb-radio-gray${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>
                 <span>同意并接受</span>
@@ -583,9 +590,9 @@ class Home extends Component {
               </p>
               <p className="text-center f-sm m-t-2 text-muted">
                 <span>好友未领取实物，可于15天后申请退款 </span>
-                <a onClick={this.clearMenu}
-                   href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85"><i
-                  className="hb-help-icon"></i></a>
+                {/*<a onClick={this.clearMenu}*/}
+                   {/*href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85"><i*/}
+                  {/*className="hb-help-icon"></i></a>*/}
               </p>
             </section>
             <p className="text-center hb-logo-gray-pos">
@@ -593,6 +600,7 @@ class Home extends Component {
             </p>
           </article>
         </div>
+        <HelpFeedback showFollowMe={true}/>
         {this.state.showFoot ? (<BottomNav type="sponsor"/>) : null}
       </div>
     );

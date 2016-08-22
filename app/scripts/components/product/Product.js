@@ -4,6 +4,7 @@ import ProductSwiper from './ProductSwiper';
 import base64 from 'js-base64';
 import perfect from '../../utils/perfect'
 import {SHOW_FOOT_DELAY} from '../../constants/common';
+import HelpFeedback from '../HelpFeedback';
 
 const {Base64} = base64;
 
@@ -139,8 +140,9 @@ class Product extends Component {
             </button>
           </footer>
         ) : null}
+        <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
       </div>
-    );
+  );
   }
 }
 

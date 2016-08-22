@@ -5,7 +5,7 @@ import perfect from '../../utils/perfect';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME} from '../../constants/common';
 import PullRefresh from 'reactjs-pull-refresh';
-import QrCode from './QrCode';
+// import QrCode from './QrCode';
 import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
 
 class SponsorHongbao extends Component {
@@ -15,6 +15,9 @@ class SponsorHongbao extends Component {
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
     this.clearMenu = this.clearMenu.bind(this);
+
+    //设置图片目录
+    this.rootUrl = perfect.getLocationRoot() +'images/';
   }
 
   componentDidMount() {
@@ -146,6 +149,22 @@ class SponsorHongbao extends Component {
     this.context.router.push(link);
   }
 
+  //获取实物奖品领取状态
+  getGiftStatusFlag(status) {
+    switch (status) {
+      case 'GIVE_OUT'://已领取
+        return 2;
+      case 'EXPIRED'://已过期
+        return 3;
+      case 'REFUNED'://已退款
+      case 'WAIT_STOCK'://等待补货
+      case 'GIVEING'://领取中
+        return 1;
+      default://去领取
+        return;
+    }
+  }
+
   //渲染列表
   renderList() {
     const {
@@ -171,6 +190,7 @@ class SponsorHongbao extends Component {
         {list.map((item) => {
           const {identifier, giftRecordId, skuIcon, createdDate, amount, status, giftStatus, giftGainedNum, giftNum, goodNum} = item;
           let link = `/hongbao/detail/view/${identifier}?type=${type}`;
+          const giftStatusFlag = this.getGiftStatusFlag(giftStatus);
 
           return (
             <li key={identifier + giftRecordId}
@@ -178,6 +198,7 @@ class SponsorHongbao extends Component {
                 onTouchTap={(e) => this.hongbaoDetail(e, link)}>
               <div className="col-4 p-a-0">
                 <img className="img-fluid" src={skuIcon} alt=""/>
+                {giftStatusFlag ? (<img className="hb-gift-status" src={this.rootUrl + "gift-status-" + giftStatusFlag + ".png"}/>) : null}
               </div>
               <div className="col-10">
                 <div className="text-truncate">京东红包</div>
@@ -218,7 +239,7 @@ class SponsorHongbao extends Component {
                    refreshCallback={this.refreshCallback}
                    loadMoreCallback={this.loadMoreCallback}
                    hasMore={!lastPage}>
-        {deviceEnv.inWx ? <QrCode type={type}/> : null}
+        {/*{deviceEnv.inWx ? <QrCode type={type}/> : null}*/}
         <section className="text-center m-t-1 pos-r">
           <div>
             <img className="img-circle img-thumbnail hb-figure hb-user-info" src={headpic} alt=""/>
@@ -229,11 +250,11 @@ class SponsorHongbao extends Component {
           <div className="h4 text-muted m-t-2">
             已发出<span className="text-primary">{putOutNum}</span>个红包
           </div>
-          <div className="hb-help">
-            <a onClick={this.clearMenu} href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
-              <i className="hb-help-icon-lg"></i>
-            </a>
-          </div>
+          {/*<div className="hb-help">*/}
+            {/*<a onClick={this.clearMenu} href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">*/}
+              {/*<i className="hb-help-icon-lg"></i>*/}
+            {/*</a>*/}
+          {/*</div>*/}
         </section>
 
         <section className="m-t-1">

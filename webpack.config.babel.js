@@ -6,12 +6,12 @@ import precss from 'precss';
 import autoprefixer from 'autoprefixer';
 
 //线上环境
-/*const ip = 'static.jdpay.com';
- const port = 443; // https 默认端口号为443*/
+const ip = 'static.jdpay.com';
+const port = 443; // https 默认端口号为443
 
 //测试环境
-const ip = 'hongbao.jdpay.com';
-const port = 8083;
+/*const ip = 'hongbao.jdpay.com';
+const port = 8083;*/
 
 const hotDevServer = 'webpack/hot/dev-server';
 // https://github.com/webpack/webpack-dev-server
@@ -71,7 +71,7 @@ let webpackConfig = {
     root: [appPath], // 设置要加载模块根路径，该路径必须是绝对路径
     //自动扩展文件后缀名
     extensions: ['', '.js', '.jsx', '.css', '.json'],
-    
+
   },
 
   // 入口文件 让webpack用哪个文件作为项目的入口

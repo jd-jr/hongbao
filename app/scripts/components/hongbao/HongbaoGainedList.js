@@ -14,6 +14,9 @@ class HongbaoGainedList extends Component {
     super(props, context);
     this.loadMore = this.loadMore.bind(this);
     this.prize = this.prize.bind(this);
+
+    //设置图片目录
+    this.rootUrl = perfect.getLocationRoot() +'images/';
   }
 
   componentWillMount() {
@@ -50,6 +53,22 @@ class HongbaoGainedList extends Component {
     //埋点
     perfect.setBuriedPoint(isUnpack ? `hongbao${type && type === 'sponsor' ? '_my' : ''}prize`
       : 'hongbao_received_prize');
+  }
+
+  //获取实物奖品领取状态
+  getGiftStatusFlag(status) {
+    switch (status) {
+      case 'GIVE_OUT'://已领取
+        return 2;
+      case 'EXPIRED'://已过期
+        return 3;
+      case 'REFUNED'://已退款
+      case 'WAIT_STOCK'://等待补货
+      case 'GIVEING'://领取中
+        return 1;
+      default://去领取
+        return;
+    }
   }
 
   render() {
@@ -99,6 +118,7 @@ class HongbaoGainedList extends Component {
           const gainedDate = giftStatus === 'NOT_GAIN' ? '等待揭晓' : perfect.formatDate({time: giftGainedDate});
           headpic = giftStatus === 'NOT_GAIN' ? championNotGain : headpic;
           const championHeader = giftStatus === 'NOT_GAIN' ? 'hb-champion-header gray' : 'hb-champion-header';
+          const giftStatusFlag = this.getGiftStatusFlag(giftStatus);
 
           return (
             <li key={giftRecordId}>
@@ -116,6 +136,7 @@ class HongbaoGainedList extends Component {
                 <div className="col-4 p-r-0" onTouchTap={this.prize}>
                   <Link to={`/product/detail/view/${skuId}`}>
                     <img className="img-fluid" src={skuIcon} alt={skuName}/>
+                    {giftStatusFlag ? (<img className="hb-gift-status" src={this.rootUrl + "gift-status-" + giftStatusFlag + ".png"}/>) : null}
                   </Link>
                 </div>
                 <div className="col-2 text-right" onTouchTap={this.prize}>
