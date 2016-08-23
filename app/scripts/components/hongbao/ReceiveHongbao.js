@@ -12,6 +12,7 @@ import callApi from '../../fetch';
 import Guide from '../Guide';
 import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
 import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
+import HelpFeedback from '../HelpFeedback';
 
 class ReceiveHongbao extends Component {
   constructor(props, context) {
@@ -467,6 +468,7 @@ class ReceiveHongbao extends Component {
             </div>
           </section>
           {this.renderList()}
+          <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
         </PullRefresh>
         {guide ? <Guide closeGuide={this.closeGuide} imgUrl={imgUrl}/> : null}
       </div>

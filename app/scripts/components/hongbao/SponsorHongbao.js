@@ -7,6 +7,7 @@ import {NICKNAME} from '../../constants/common';
 import PullRefresh from 'reactjs-pull-refresh';
 // import QrCode from './QrCode';
 import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
+import HelpFeedback from '../HelpFeedback';
 
 class SponsorHongbao extends Component {
   constructor(props, context) {
@@ -256,7 +257,7 @@ class SponsorHongbao extends Component {
             {/*</a>*/}
           {/*</div>*/}
         </section>
-
+        <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
         <section className="m-t-1">
           {this.renderList()}
         </section>

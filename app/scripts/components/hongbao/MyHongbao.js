@@ -6,7 +6,6 @@ import ReceiveHongbao from './ReceiveHongbao';
 import SponsorHongbao from './SponsorHongbao';
 import perfect from '../../utils/perfect';
 import {SHOW_FOOT_DELAY} from '../../constants/common';
-import HelpFeedback from '../HelpFeedback';
 
 class MyHongbao extends Component {
   constructor(props, context) {
@@ -142,7 +141,6 @@ class MyHongbao extends Component {
           </ReactCSSTransitionGroup>
         </article>
         {this.state.showFoot ? (<BottomNav type="receive"/>) : null}
-        <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
       </div>
     );
   }

@@ -578,10 +578,11 @@ class Home extends Component {
                       onTouchTap={this.payBefore} style={{paddingTop: '0.725rem', paddingBottom: '0.725rem'}}>发起京东红包
               </button>
               <div className="hb-help-link f-sm">
-                <Link to="/strategy" className="fl">如何发京东红包</Link>
+                <Link to="/strategy" className="fl">如何发京东红包<span className="arrow-hollow-right arrow-r-sm"></span></Link>
                 <a onClick={this.clearMenu}
                    className="fr"
-                   href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">帮助反馈</a>
+                   href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">帮助反馈
+                  <span className="arrow-hollow-right arrow-r-sm"></span></a>
               </div>
               <p className="text-center f-sm m-t-2 text-muted">
                 <i className={`hb-radio-gray${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>

@@ -428,9 +428,9 @@ class HongbaoDetail extends Component {
               <i className="hb-logo-gray"></i>
             </p>
           </article>
+          <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
         </PullRefresh>
         {this.renderFooter()}
-        <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
         {confirmAddress === 'UNCONFIRMED' ? (<Ribbons/>) : null}
       </div>
     );

@@ -105,11 +105,14 @@
   }
 
   &help-feedback {
-    position: fixed;
+    position: absolute;
     top: 4rem;
     right: 1rem;
     z-index: 10;
-    text-decoration: underline;
+  }
+
+  .rc-scroll &help-feedback {
+    top: 1rem;
   }
 
   &follow-me {
@@ -122,6 +125,11 @@
       height: 4rem;
       cursor: pointer;
     }
+  }
+
+  &btn-mid {
+    font-size: 1.2rem!important;
+    padding: 0.2rem 1.5rem!important;
   }
 }
 
@@ -216,6 +224,7 @@
   }
 }
 .hb-receive-animate {
+  padding: 0.4rem 0.7rem!important;
   animation: beating 2s ease-in-out infinite normal;
 }
 //红包彩带动画
@@ -290,4 +299,12 @@
     width: 2.5rem;
     height: 2.5rem;
   }
+}
+//小号右箭头
+.arrow-r-sm:before{
+  width: .5rem!important;
+  height: .5rem!important;
+  margin: 0 0 .1rem 0!important;
+  border-top: 1px solid #0051b3!important;
+  border-right: 1px solid #0051b3!important;
 }
