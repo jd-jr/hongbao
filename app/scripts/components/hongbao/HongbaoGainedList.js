@@ -136,7 +136,7 @@ class HongbaoGainedList extends Component {
                 <div className="col-4 p-r-0" onTouchTap={this.prize}>
                   <Link to={`/product/detail/view/${skuId}`}>
                     <img className="img-fluid" src={skuIcon} alt={skuName}/>
-                    {giftStatusFlag ? (<img className="hb-gift-status" src={this.rootUrl + "gift-status-" + giftStatusFlag + ".png"}/>) : null}
+                    {/*{giftStatusFlag ? (<img className="hb-gift-status" src={this.rootUrl + "gift-status-" + giftStatusFlag + ".png"}/>) : null}*/}
                   </Link>
                 </div>
                 <div className="col-2 text-right" onTouchTap={this.prize}>

@@ -198,7 +198,7 @@ class SponsorHongbao extends Component {
                 onTouchTap={(e) => this.hongbaoDetail(e, link)}>
               <div className="col-4 p-a-0">
                 <img className="img-fluid" src={skuIcon} alt=""/>
-                {giftStatusFlag ? (<img className="hb-gift-status" src={this.rootUrl + "gift-status-" + giftStatusFlag + ".png"}/>) : null}
+                {/*{giftStatusFlag ? (<img className="hb-gift-status" src={this.rootUrl + "gift-status-" + giftStatusFlag + ".png"}/>) : null}*/}
               </div>
               <div className="col-10">
                 <div className="text-truncate">京东红包</div>
