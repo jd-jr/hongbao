@@ -66,7 +66,7 @@ class HelpFeedback extends Component {
               onClick={this.clearMenu}
               href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">帮助反馈</a>):null}
 
-        {showFollowMe?
+        {showFollowMe && deviceEnv.inWx ?
           (<a className="hb-follow-me"
               href="#"
               onClick={this.followMe}>

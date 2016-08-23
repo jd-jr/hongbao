@@ -431,7 +431,7 @@ class HongbaoDetail extends Component {
         </PullRefresh>
         {this.renderFooter()}
         <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
-        {confirmAddress === 'UNCONFIRMED' && this.isView ? (<Ribbons/>) : null}
+        {confirmAddress === 'UNCONFIRMED' ? (<Ribbons/>) : null}
       </div>
     );
   }

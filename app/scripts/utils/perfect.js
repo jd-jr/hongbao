@@ -61,6 +61,9 @@ const perfect = {
   getLocationRoot () {
     const pathname = location.pathname;
     const origin = location.origin;
+    if (process.env.NODE_ENV !== 'production') {
+      return origin + '/';
+    }
     const root = pathname.match(/\/[\w\d-_]+\//)[0];
     return origin + root;
   },
