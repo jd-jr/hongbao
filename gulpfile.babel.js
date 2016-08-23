@@ -97,8 +97,8 @@ gulp.task('copy:prod', ['clean'], () => {
 });
 
 //优化图片
-gulp.task('images-guide', () => {
-  return gulp.src('app/images/guide/*')
+gulp.task('images', () => {
+  return gulp.src(['app/images/**'])
     .pipe($.imagemin({
       progressive: true,
       interlaced: true,
@@ -106,31 +106,7 @@ gulp.task('images-guide', () => {
       // as hooks for embedding and styling
       svgoPlugins: [{cleanupIDs: false}]
     }))
-    .pipe(gulp.dest('dist/images/guide'))
-});
-
-gulp.task('images-strategy', () => {
-  return gulp.src('app/images/strategy/*')
-    .pipe($.imagemin({
-      progressive: true,
-      interlaced: true,
-      // don't remove IDs from SVGs, they are often used
-      // as hooks for embedding and styling
-      svgoPlugins: [{cleanupIDs: false}]
-    }))
-    .pipe(gulp.dest('dist/images/strategy'))
-});
-
-gulp.task('images-share', () => {
-  return gulp.src('app/images/share/*')
-    .pipe($.imagemin({
-      progressive: true,
-      interlaced: true,
-      // don't remove IDs from SVGs, they are often used
-      // as hooks for embedding and styling
-      svgoPlugins: [{cleanupIDs: false}]
-    }))
-    .pipe(gulp.dest('dist/images/share'))
+    .pipe(gulp.dest('dist/images'))
 });
 
 // 计算文件大小
@@ -313,12 +289,12 @@ gulp.task('sass-compress', () => {
 });
 
 // 编译打包，正式环境
-gulp.task('build', ['sass-compress', 'styles', 'copy:prod', 'images-guide', 'images-strategy', 'images-share'], () => {
+gulp.task('build', ['sass-compress', 'styles', 'copy:prod', 'images'], () => {
   gulp.start(['webpack:build']);
 });
 
 // 编译打包，测试环境
-gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev', 'images-guide', 'images-strategy', 'images-share'], () => {
+gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev', 'images'], () => {
   gulp.start(['webpack:build']);
 });
 
