@@ -12,7 +12,6 @@ import callApi from '../../fetch';
 import Guide from '../Guide';
 import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
 import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
-import HelpFeedback from '../HelpFeedback';
 
 class ReceiveHongbao extends Component {
   constructor(props, context) {
@@ -447,12 +446,13 @@ class ReceiveHongbao extends Component {
                 )
               }
             </div>
-            {/*<div className="hb-help">*/}
-              {/*<a onClick={this.clearMenu}*/}
-                 {/*href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">*/}
+            <div className="hb-help">
+              <a onClick={this.clearMenu}
+                 href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
                 {/*<i className="hb-help-icon-lg"></i>*/}
-              {/*</a>*/}
-            {/*</div>*/}
+                帮助反馈
+              </a>
+            </div>
           </section>
 
           <section className="row text-center m-t-1">
@@ -468,7 +468,6 @@ class ReceiveHongbao extends Component {
             </div>
           </section>
           {this.renderList()}
-          <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
         </PullRefresh>
         {guide ? <Guide closeGuide={this.closeGuide} imgUrl={imgUrl}/> : null}
       </div>

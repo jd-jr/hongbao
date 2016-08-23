@@ -7,7 +7,6 @@ import {NICKNAME} from '../../constants/common';
 import PullRefresh from 'reactjs-pull-refresh';
 // import QrCode from './QrCode';
 import {setSessionStorage, getSessionStorage} from '../../utils/sessionStorage';
-import HelpFeedback from '../HelpFeedback';
 
 class SponsorHongbao extends Component {
   constructor(props, context) {
@@ -251,13 +250,13 @@ class SponsorHongbao extends Component {
           <div className="h4 text-muted m-t-2">
             已发出<span className="text-primary">{putOutNum}</span>个红包
           </div>
-          {/*<div className="hb-help">*/}
-            {/*<a onClick={this.clearMenu} href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">*/}
+          <div className="hb-help">
+            <a onClick={this.clearMenu} href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
               {/*<i className="hb-help-icon-lg"></i>*/}
-            {/*</a>*/}
-          {/*</div>*/}
+              帮助反馈
+            </a>
+          </div>
         </section>
-        <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
         <section className="m-t-1">
           {this.renderList()}
         </section>
