@@ -67,7 +67,7 @@ export default {
       onEnter: () => enterHandler('authorize'),
       getComponent: (nextState, cb) => {
         require.ensure([], (require) => {
-          cb(null, require('../containers/UnpackPage').default)
+          cb(null, require('../containers/AuthorizePage').default)
         })
       }
     },

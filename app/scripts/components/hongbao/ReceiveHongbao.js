@@ -288,7 +288,7 @@ class ReceiveHongbao extends Component {
           );
         case 'WAIT_STOCK':
           return (
-            <div className="label-text bg-muted">等待补货</div>
+            <div className="label-text bg-info">待补货</div>
           );
         default:
           return (
