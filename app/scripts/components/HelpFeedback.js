@@ -22,6 +22,8 @@ class HelpFeedback extends Component {
   componentDidMount(){
     //"关注我"添加拖动效果
     const followMe = this.refs.followMe;
+    if (!followMe) return;
+
     const documentEl = document.documentElement;
     followMe.style.top = `${documentEl.clientHeight * 0.85}px`;
     followMe.style.left = `${documentEl.clientWidth - 60}px`;
@@ -55,7 +57,7 @@ class HelpFeedback extends Component {
                onTouchTap={this.closeCode}
                src={this.rootUrl + "close.png"} alt="" />
         </div>
-        {showFollowMe && !deviceEnv.inWx ?
+        {showFollowMe && deviceEnv.inWx ?
           (<a className="hb-follow-me"
               href="#"
               ref="followMe"
