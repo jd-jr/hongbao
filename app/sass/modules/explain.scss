@@ -115,8 +115,7 @@
   }
 
   &btn-mid {
-    font-size: 1.2rem!important;
-    padding: 0.2rem 1.5rem!important;
+    font-size: 1rem;
   }
 }
 
@@ -211,7 +210,7 @@
   }
 }
 .hb-receive-animate {
-  padding: 0.5rem 2.1rem !important;
+  padding: 0.3rem 1rem;
   animation: beating 2s ease-in-out infinite normal;
 }
 //红包彩带动画
@@ -299,4 +298,14 @@
   border-top: 1px solid #fff!important;
   border-right: 1px solid #fff!important;
   margin: 0 0 .1rem .3rem!important;
+}
+.arrow-r-white2:before{
+  border-top: 1px solid #fff!important;
+  border-right: 1px solid #fff!important;
+  margin: 0 0 .2rem .3rem!important;
+}
+.arrow-r-white3:before{
+  border-top: 1px solid #fff!important;
+  border-right: 1px solid #fff!important;
+  margin: 0 0 0 .3rem!important;
 }
