@@ -33,3 +33,74 @@ hyc2017
 123qwe
 
 
+jd 商城 app 分享接口
+
+http://192.168.144.123/wiki/index.php?title=M%E9%A1%B5%E5%86%85%E5%88%86%E4%BA%AB%E8%B0%83%E7%94%A8
+
+分享代码
+
+jdShare: function (opts) {
+    try {
+        if (!isIos) {  //安卓
+            // 仅当 shareHelper对象存在时才能下发分享配置，更老版本不支持；未来如果该对象删除了也不出错
+            if (window.shareHelper) {
+                // jdApp 5.0版本新增方法
+                if (typeof shareHelper.initShare === 'function') {
+                    /**
+                     * channel 参数可设置，配置后，分享面板仅出现配置过的项目; 如果为空，则显示默认全部
+                     */
+                    shareHelper.initShare(JSON.stringify({
+                        "title": opts.title,
+                        "content": opts.desc,
+                        "shareUrl": opts.link,
+                        "iconUrl": opts.imgUrl,
+                        "shareActionType": "S",
+                        "channel": "",
+                        "callback": "N",
+                        "eventId": ""
+                    }));
+   }
+                else if (typeof shareHelper.setShareInfo === 'function') {
+                    shareHelper.setShareInfo(opts.title, opts.desc, opts.link, opts.imgUrl)
+                }
+            }
+        } else if (isIos) {
+            var link;
+            // jdApp 5.0及以上版本
+            if (isJdAppGt500) {
+                jsonObj = {
+                    category: "jump",
+                    des: "share",
+                    type: "111",
+                    title: opts.title,
+                    content: opts.desc,
+                    shareUrl: opts.link,
+                    //分享的图片url，自定义， V 5.0 之前，使用该字段下发分享icon url
+                    imageUrl: opts.imgUrl,
+                    //分享的图片url，自定义，V 5.0 之后，使用该字段下发分享 icon url
+                    iconUrl: opts.imgUrl,
+                    channel: "",
+                    isCallBack: "N",
+                    shareActionType: "S"
+     }
+                link = 'openApp.jdmobile://virtual?params=' + JSON.stringify(jsonObj);
+            } else {
+                // 包括 jdApp5.0以下，以及非 jdApp
+                link = 'openapp.jdmobile://communication?params={' +
+                    '"action":"syncShareData",' +
+                    '"title":"' + opts.title + '",' +
+                    '"content":"' + opts.desc + '",' +
+                    '"shareUrl":"' + opts.link + '",' +
+                    '"iconUrl":"' + opts.imgUrl + '",' +
+                    '"isCallBack":"N"' +
+                    '}';
+            }
+            location.href = link;
+        }
+
+    } catch (e) {
+    }
+},
+
+
+

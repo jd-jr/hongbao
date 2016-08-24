@@ -139,7 +139,24 @@ class Initiate extends Component {
           console.info(e);
         }
       } else if (deviceEnv.inIos) {
-        location.href = `openApp.jdmobile://communication?params=${JSON.stringify(shareParms)}`;
+        //在 jd app 5.0 以上版本
+        const shareParms = {
+          category: 'jump',
+          des: 'share', //系统固定值 share
+          type: '111', //系统固定值 111
+          title: title || HONGBAO_TITLE,
+          content: HONGBAO_DESC,
+          //分享的图片url，自定义， V 5.0 之前，使用该字段下发分享icon url
+          shareUrl: `${urlRoot}authorize/${identifier}`,
+          //分享的图片url，自定义，V 5.0 之后，使用该字段下发分享 icon url
+          imageUrl: SHARE_ICON_URL,
+          iconUrl: SHARE_ICON_URL,
+          channel: 'Wxfriends,Wxmoments',
+          isCallBack: 'N',
+          shareActionType: 'P'
+        };
+
+        location.href = `openApp.jdmobile://virtual?params=${JSON.stringify(shareParms)}`;
       }
     }
   }
