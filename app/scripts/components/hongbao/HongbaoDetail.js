@@ -432,7 +432,7 @@ class HongbaoDetail extends Component {
         </PullRefresh>
         {this.renderFooter()}
         <HelpFeedback showFollowMe={true}/>
-        {confirmAddress === 'UNCONFIRMED' ? (<Ribbons/>) : null}
+        {type !== 'sponsor' && confirmAddress === 'UNCONFIRMED' ? (<Ribbons/>) : null}
       </div>
     );
   }

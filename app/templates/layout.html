@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html manifest="IGNORE.manifest">
 <head>
   <title><%= htmlWebpackPlugin.options.title %></title>
   <meta charset="UTF-8">
@@ -18,6 +18,12 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="favicon.ico">
 
+  <script>
+    var protocol = location.protocol;
+    if (protocol === 'http:') {
+      location.href = location.href.replace('http:', 'https:');
+    }
+  </script>
   <!-- eruda 调试模式-->
   <script>
     (function () {

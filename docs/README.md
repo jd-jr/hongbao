@@ -103,4 +103,6 @@ jdShare: function (opts) {
 },
 
 
+微信缓存的处理
 
+https://segmentfault.com/q/1010000002599890

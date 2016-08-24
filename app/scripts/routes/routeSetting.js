@@ -67,12 +67,15 @@ const routeSetting = {
       //开始的时候先置空
       this.shareData = {};
       //设置右侧标题
-      walletApi.setMenu([{
-        menuTitle: '分享',
-        menuAction: () => {
-          this.weixinShare(this.shareData);
-        }
-      }], false);
+      //FIXME 延迟500毫秒设置分享按钮，因为最新版本钱包中有 bug
+      setTimeout(() => {
+        walletApi.setMenu([{
+          menuTitle: '分享',
+          menuAction: () => {
+            this.weixinShare(this.shareData);
+          }
+        }], false);
+      }, 500);
     }
   },
 

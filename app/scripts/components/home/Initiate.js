@@ -122,16 +122,32 @@ class Initiate extends Component {
         }
       });
     } else if (deviceEnv.inJdApp) { //设置在 jd app 分享
-      //先初始化分享参数
-      const shareParms = {
-        shareUrl: `${urlRoot}authorize/${identifier}`, //分享的url
-        iconUrl: SHARE_ICON_URL,
-        title: title || HONGBAO_TITLE,
-        content: HONGBAO_DESC,
-        shareActionType: 'P',
-        channel: 'Wxfriends,Wxmoments'
+      // 设置分享回调函数
+      window.jdappShareRes = (result) => {
+        /**
+         * 返回结果：
+         * obj.shareResult：0，成功；1：失败；2，取消；
+         * obj.shareChannel：weixin：微信好友和微信朋友圈；qq：QQ好友；qzone：QQ空间；weibo：新浪微博；
+         */
+        if (result && result.shareResult === 0) {
+          this.setState({
+            visible: false
+          });
+          //回到领取页面
+          this.context.router.replace('/my?type=sponsor');
+        }
       };
+
       if (deviceEnv.inAndroid) {
+        //先初始化分享参数
+        const shareParms = {
+          shareUrl: `${urlRoot}authorize/${identifier}`, //分享的url
+          iconUrl: SHARE_ICON_URL,
+          title: title || HONGBAO_TITLE,
+          content: HONGBAO_DESC,
+          shareActionType: 'P',
+          channel: 'Wxfriends,Wxmoments'
+        };
         try {
           /* global shareHelper */
           shareHelper.initShare(JSON.stringify(shareParms));
