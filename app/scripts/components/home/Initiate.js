@@ -86,7 +86,7 @@ class Initiate extends Component {
       this.setState({
         weixinGuide: true
       });
-    } else if (deviceEnv.inJdWallet) {
+    } else {
       this.share();
     }
 
@@ -99,27 +99,49 @@ class Initiate extends Component {
     const urlRoot = prefect.getLocationRoot();
     let {identifier, title} = this.props;
 
-    walletApi.share({
-      url: `${urlRoot}authorize/${identifier}`,
-      title: title || HONGBAO_TITLE,
-      desc: HONGBAO_DESC,
-      imgUrl: SHARE_ICON_URL,
-      channel: 'WX',
-      debug: Boolean(window.eruda),
-      callback: (status) => {
-        if (deviceEnv.inWx) {
-          //回到领取页面
-          this.context.router.replace('/my?type=sponsor');
+    if (deviceEnv.inJdWallet || deviceEnv.inWx) {
+      walletApi.share({
+        url: `${urlRoot}authorize/${identifier}`,
+        title: title || HONGBAO_TITLE,
+        desc: HONGBAO_DESC,
+        imgUrl: SHARE_ICON_URL,
+        channel: 'WX',
+        debug: Boolean(window.eruda),
+        callback: (status) => {
+          if (deviceEnv.inWx) {
+            //回到领取页面
+            this.context.router.replace('/my?type=sponsor');
+          }
+          if (status === 'SUCCESS') {
+            this.setState({
+              visible: false
+            });
+            //回到领取页面
+            this.context.router.replace('/my?type=sponsor');
+          }
         }
-        if (status === 'SUCCESS') {
-          this.setState({
-            visible: false
-          });
-          //回到领取页面
-          this.context.router.replace('/my?type=sponsor');
+      });
+    } else if (deviceEnv.inJdApp) { //设置在 jd app 分享
+      //先初始化分享参数
+      const shareParms = {
+        shareUrl: `${urlRoot}authorize/${identifier}`, //分享的url
+        iconUrl: SHARE_ICON_URL,
+        title: title || HONGBAO_TITLE,
+        content: HONGBAO_DESC,
+        shareActionType: 'P',
+        channel: 'Wxfriends,Wxmoments'
+      };
+      if (deviceEnv.inAndroid) {
+        try {
+          /* global shareHelper */
+          shareHelper.initShare(JSON.stringify(shareParms));
+        } catch (e) {
+          console.info(e);
         }
+      } else if (deviceEnv.inIos) {
+        location.href = `openApp.jdmobile://communication?params=${JSON.stringify(shareParms)}`;
       }
-    });
+    }
   }
 
   //关闭错误提示信息
