@@ -190,13 +190,10 @@ const perfect = {
    * @param time 毫秒
    */
   formatMillisecond(millisecond) {
+    let hours;
     let minute;
     let second;
     second = Math.ceil(millisecond / 1000);
-    if (second < 0) {
-      return '1小时';
-    }
-
     if (second < 60) {
       return `${second}秒钟`;
     }
@@ -204,8 +201,8 @@ const perfect = {
     if (minute < 60) {
       return `${minute}分钟`;
     }
-
-    return '1小时';
+    hours = Math.round(minute / 60);
+    return `${hours}小时`;
   },
 
   /**
