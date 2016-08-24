@@ -140,7 +140,7 @@ class Product extends Component {
             </button>
           </footer>
         ) : null}
-        <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
+        <HelpFeedback showFollowMe={true} />
       </div>
   );
   }

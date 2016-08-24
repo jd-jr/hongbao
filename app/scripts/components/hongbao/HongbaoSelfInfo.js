@@ -325,14 +325,15 @@ class HongbaoSelfInfo extends Component {
               {
                 this.isView ? (
                   <div>
-                    <button className="btn btn-primary btn-sm btn-arc hb-receive-animate" onTouchTap={this.reward}>
-                      立即领取
+                    <button className="btn btn-primary btn-sm btn-arc hb-btn-mid hb-receive-animate" onTouchTap={this.reward}>
+                      立即领取<span className="arrow-hollow-right arrow-r-white"></span>
                     </button>
                     <p className="f-xs text-muted m-t-0-3">（温馨提示：请在15天内尽快维护收货地址）</p>
                   </div>
                 ) : (
                   <div>
-                    <Link to="/my" onTouchTap={this.viewMyhb} className="btn btn-primary btn-sm btn-arc">查看我的红包</Link>
+                    <Link to="/my" onTouchTap={this.viewMyhb} className="btn btn-primary btn-sm btn-arc hb-btn-mid hb-receive-animate">
+                      立即领取<span className="arrow-hollow-right arrow-r-white"></span></Link>
                     <p className="f-xs text-muted m-t-0-3">（温馨提示：请在15天内尽快维护收货地址）</p>
                   </div>
                 )
@@ -433,14 +434,14 @@ class HongbaoSelfInfo extends Component {
           {
             this.isView ? (
               deviceEnv.inJdWallet ? (
-                <span onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1">立即提现</span>
+                <span onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1 hb-btn-mid hb-receive-animate">立即提现</span>
               ) : (
                 <button onTouchTap={this.withdraw}
                         className="btn btn-primary btn-sm hb-fillet-1">去京东钱包提现</button>
               )
             ) : (
               <Link to="/my"
-                    className="btn btn-primary btn-sm hb-fillet-1">查看我的红包</Link>
+                    className="btn btn-primary btn-sm hb-fillet-1 hb-btn-mid hb-receive-animate">查看我的红包</Link>
             )
           }
         </div>

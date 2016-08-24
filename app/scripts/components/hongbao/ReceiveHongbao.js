@@ -446,12 +446,13 @@ class ReceiveHongbao extends Component {
                 )
               }
             </div>
-            {/*<div className="hb-help">*/}
-              {/*<a onClick={this.clearMenu}*/}
-                 {/*href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">*/}
+            <div className="hb-help">
+              <a onClick={this.clearMenu}
+                 href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
                 {/*<i className="hb-help-icon-lg"></i>*/}
-              {/*</a>*/}
-            {/*</div>*/}
+                帮助反馈
+              </a>
+            </div>
           </section>
 
           <section className="row text-center m-t-1">

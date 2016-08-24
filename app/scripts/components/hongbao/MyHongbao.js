@@ -142,7 +142,7 @@ class MyHongbao extends Component {
           </ReactCSSTransitionGroup>
         </article>
         {this.state.showFoot ? (<BottomNav type="receive"/>) : null}
-        <HelpFeedback showFollowMe={true} showHelpFeed={true}/>
+        <HelpFeedback showFollowMe={true}/>
       </div>
     );
   }

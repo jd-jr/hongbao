@@ -104,24 +104,19 @@
     }
   }
 
-  &help-feedback {
-    position: fixed;
-    top: 4rem;
-    right: 1rem;
-    z-index: 10;
-    text-decoration: underline;
-  }
-
   &follow-me {
     position: fixed;
-    bottom: 4.5rem;
-    right: .5rem;
-    z-index: 10;
+    z-index: 1000;
     > img {
       width: 4rem;
       height: 4rem;
       cursor: pointer;
     }
+  }
+
+  &btn-mid {
+    font-size: 1.2rem!important;
+    padding: 0.2rem 1.5rem!important;
   }
 }
 
@@ -216,6 +211,7 @@
   }
 }
 .hb-receive-animate {
+  padding: 0.5rem 2.1rem !important;
   animation: beating 2s ease-in-out infinite normal;
 }
 //红包彩带动画
@@ -228,7 +224,7 @@
       position: absolute;
       opacity: 0;
       z-index: 10001;
-      animation: ribbonsSnow 5s;
+      animation: ribbonsSnow 3s;
     }
     .ribbons-1 {
       width: 1rem;
@@ -290,4 +286,17 @@
     width: 2.5rem;
     height: 2.5rem;
   }
+}
+//小号右箭头
+.arrow-r-sm:before{
+  width: .5rem!important;
+  height: .5rem!important;
+  margin: 0 0 .1rem 0!important;
+  border-top: 1px solid #0074ff!important;
+  border-right: 1px solid #0074ff!important;
+}
+.arrow-r-white:before{
+  border-top: 1px solid #fff!important;
+  border-right: 1px solid #fff!important;
+  margin: 0 0 .1rem .3rem!important;
 }
