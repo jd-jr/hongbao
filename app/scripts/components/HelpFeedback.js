@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
-import {setSessionStorage, getSessionStorage} from '../utils/sessionStorage';
+import {setSessionStorage, getSessionStorage, removeSessionStorage} from '../utils/sessionStorage';
 import perfect from '../utils/perfect';
 import Draggabilly from 'draggabilly'
 
@@ -25,13 +25,18 @@ class HelpFeedback extends Component {
     const {btnFollowMe} = this.refs;
     if (!btnFollowMe) return;
 
+    //获取记录位置信息
     const {rememberPos} = this.props;
     let {top, left} = {top: window.innerHeight - 120, left: window.innerWidth - 60};
     let hongbaoFollowMeButton = getSessionStorage('hongbaoFollowMeButton');
-    hongbaoFollowMeButton = perfect.parseJSON(hongbaoFollowMeButton) || {};
-    if (rememberPos && hongbaoFollowMeButton.rememberPos) {
-      top = hongbaoFollowMeButton.top;
-      left = hongbaoFollowMeButton.left;
+    if (hongbaoFollowMeButton) {
+      if (rememberPos) {
+        hongbaoFollowMeButton = perfect.parseJSON(hongbaoFollowMeButton) || {};
+        top = hongbaoFollowMeButton.top;
+        left = hongbaoFollowMeButton.left;
+      } else {
+        removeSessionStorage('hongbaoFollowMeButton');
+      }
     }
     btnFollowMe.style.top = `${top}px`;
     btnFollowMe.style.left = `${left}px`;
@@ -46,7 +51,7 @@ class HelpFeedback extends Component {
       if (rememberPos) {
         top = parseFloat(btnFollowMe.style.top);
         left = parseFloat(btnFollowMe.style.left);
-        setSessionStorage('hongbaoFollowMeButton', `{"rememberPos":${rememberPos},"left":${left},"top":${top}}`);
+        setSessionStorage('hongbaoFollowMeButton', `{"left":${left},"top":${top}}`);
       }
     });
   }
@@ -97,8 +102,8 @@ HelpFeedback.contextTypes = {
 
 HelpFeedback.defaultProps = {
   showFollowMe: false,
-  rememberPos: false
-}
+  rememberPos: true
+};
 
 HelpFeedback.propTypes = {
   showFollowMe: PropTypes.bool, //是否显示"关注我"按钮浮层
