@@ -291,6 +291,17 @@ const perfect = {
   unionLogin(url) {
     url = encodeURIComponent(url);
     location.href = JD_LOGIN_URL + encodeURIComponent(QB_LOGIN_URL + url);
+  },
+
+  /**
+   * 判断是否为数字
+   * @param value
+   * @param allowStr 是否允许验证字符串
+   * @returns {Boolean}
+   */
+  isNumber(value, allowStr = true) {
+    return (typeof value === 'number' && isFinite(value))
+      || (allowStr === false ? false : parseFloat(value) == value);
   }
 };
 

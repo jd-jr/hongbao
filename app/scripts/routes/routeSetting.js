@@ -66,16 +66,26 @@ const routeSetting = {
       walletApi.shareIconURL(SHARE_ICON_URL, 'hongbao');
       //开始的时候先置空
       this.shareData = {};
-      //设置右侧标题
-      //FIXME 延迟500毫秒设置分享按钮，因为最新版本钱包中有 bug
-      setTimeout(() => {
+      if (this.notFirstSetMenu) {
         walletApi.setMenu([{
           menuTitle: '分享',
           menuAction: () => {
             this.weixinShare(this.shareData);
           }
         }], false);
-      }, 500);
+      } else {
+        //设置右侧标题
+        //FIXME 延迟500毫秒设置分享按钮，因为最新版本钱包中有 bug
+        setTimeout(() => {
+          walletApi.setMenu([{
+            menuTitle: '分享',
+            menuAction: () => {
+              this.weixinShare(this.shareData);
+            }
+          }], false);
+        }, 500);
+        this.notFirstSetMenu = true;
+      }
     }
   },
 

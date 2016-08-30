@@ -30,9 +30,11 @@ class Home extends Component {
     const {hongbaoInfo} = props;
     let giftNum = '';
     let title = '';
+    let cashAmount = '';
     if (hongbaoInfo) {
       giftNum = hongbaoInfo.giftNum;
       title = hongbaoInfo.title;
+      cashAmount = hongbaoInfo.cashAmount;
     }
     this.state = {
       title,
@@ -41,16 +43,18 @@ class Home extends Component {
       skuName,
       indexImg,
       giftNum,
+      cashAmount, //自定义现金金额
       selecting: Boolean(!skuId),
       visible: false,
       payDataReady: false,
       loadingStatus: false,
       checked: true, //同意条款
       showFoot: false,
-      giftTitle: '可发1个红包，送给你想送的人',
+      giftFreight: skuId ? bizPrice < 9900 : false, //是否显示礼品运费，小于99元，添加运费
       guide: getLocalStorage('guide-sponsor-hb') !== 'true'
     };
 
+    this.giftFreight = (skuId && bizPrice < 9900) ? 600 : 0; //小于99元，添加礼品运费6元
     this.selectProduct = this.selectProduct.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.payBefore = this.payBefore.bind(this);
@@ -89,9 +93,11 @@ class Home extends Component {
     if (fromLogin !== -1) {
       const title = getSessionStorage('hb_title');
       const giftNum = getSessionStorage('hb_giftNum');
+      const cashAmount = getSessionStorage('hb_cashAmount');
       this.setState({
         title,
-        giftNum
+        giftNum,
+        cashAmount
       }, () => {
         this.pay();
       });
@@ -159,7 +165,7 @@ class Home extends Component {
 
   handleChange(e, type) {
     const {indexActions} = this.props;
-    const {bizPrice, giftNum, selecting} = this.state;
+    const {giftNum, selecting} = this.state;
     let value = e.target.value;
     if (type === 'giftNum') {
       if (selecting) {
@@ -169,28 +175,27 @@ class Home extends Component {
       if (value === '') {
         this.setState({
           giftNum: '',
-          giftTitle: '可发1个红包，送给你想送的人'
+          cashAmount: ''
         });
         return;
       }
-      if (!/^\+?[1-9][0-9]*$/.test(value)) {
+      if (!/^[1-9][0-9]*$/.test(value)) {
         return;
       }
       value = parseInt(value, 10);
 
-      this.setState({
-        giftTitle: value > 1 ? '未获得礼物的用户可得京东钱包补贴的现金' : '可发1个红包，送给你想送的人'
-      });
-
-      if (bizPrice <= 5000 && value > 10) {
-        indexActions.setToast('礼物价格小于50元，红包个数不可超过10个');
+      //红包个数大于1时，金额默认为1
+      const {cashAmount} = this.state;
+      if (value > 1 && cashAmount === '') {
         this.setState({
-          giftNum: 10
+          cashAmount: '1.00'
         });
-        return;
+      } else if (value <= 1) {
+        this.setState({
+          cashAmount: ''
+        });
       }
-
-      const limit = bizPrice <= 100 ? bizPrice - 1 : 100;
+      const limit = 100;
       if (value > limit) {
         indexActions.setToast(`红包个数不能超过${limit}个`);
         this.setState({
@@ -206,6 +211,17 @@ class Home extends Component {
       if (value.length > 25) {
         return;
       }
+    } else if (type === 'cashAmount') {
+      if (value === '' || value === '.') {
+        this.setState({
+          cashAmount: value
+        });
+        return;
+      }
+
+      if (!/^([1-9][0-9]*|[0-9]*.[0-9]{0,2})$/.test(value) || !isFinite(value)) {
+        return;
+      }
     }
 
     this.setState({
@@ -216,6 +232,19 @@ class Home extends Component {
   //焦点离开时
   handleBlur(type) {
     perfect.setBuriedPoint(type === 'title' ? 'hongbao_home_title' : 'hongbao_home_quantity');
+  }
+
+  //校验输入的金额
+  handleVerifyCash(e) {
+    let value = e.target.value;
+    value = parseFloat(value);
+    if (!isFinite(value) || value < 1) {
+      const {indexActions} = this.props;
+      indexActions.setToast('现金金额不能少于1.00元');
+      this.setState({
+        cashAmount: '1.00'
+      });
+    }
   }
 
   handleChecked() {
@@ -244,27 +273,28 @@ class Home extends Component {
   //提交前校验表单
   verify() {
     const {indexActions} = this.props;
-    const {checked, giftNum, title, bizPrice, skuId} = this.state;
+    const {checked, giftNum, title, cashAmount, skuId} = this.state;
     if (!skuId) {
       indexActions.setToast('请选择礼物');
       return;
     }
 
-    let limit = bizPrice <= 100 ? bizPrice - 1 : 100;
     if (giftNum === '') {
       indexActions.setToast('请输入红包个数');
       return;
     }
 
-    if (bizPrice <= 5000 && giftNum > 10) {
-      indexActions.setToast('礼物价格小于50元，红包个数不可超过10个');
-      return;
-    }
-
+    let limit = 100;
     if (giftNum > limit) {
       indexActions.setToast(`红包个数不能超过${limit}个`);
       return;
     }
+
+    if (giftNum > 1 && cashAmount < 1) {
+      indexActions.setToast('现金金额不能少于1.00元');
+      return;
+    }
+
     if (title.length > 25) {
       indexActions.setToast('红包标题最多输入25个字');
       return;
@@ -280,6 +310,12 @@ class Home extends Component {
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
 
+    //设备信息还没有获取到，直接返回，只给一次机会，再一次还获取不到，则设为{}
+    if (!this.deviceInfo) {
+      this.deviceInfo = {};
+      return;
+    }
+
     if (!this.verify()) {
       return;
     }
@@ -294,7 +330,7 @@ class Home extends Component {
 
   //支付
   pay() {
-    const {skuId, giftNum, title, loadingStatus} = this.state;
+    const {skuId, giftNum, title, loadingStatus, cashAmount} = this.state;
     if (loadingStatus) {
       return;
     }
@@ -310,6 +346,7 @@ class Home extends Component {
     const body = {
       skuId,
       giftNum,
+      cashAmount: cashAmount * 100,
       title: title || HONGBAO_TITLE,
       accountType
     };
@@ -360,6 +397,7 @@ class Home extends Component {
         if (error.errorCode === 'RBF100300') {//未登录
           setSessionStorage('hb_title', title);
           setSessionStorage('hb_giftNum', giftNum);
+          setSessionStorage('hb_cashAmount', cashAmount);
         }
         return Promise.reject(error);
       }
@@ -402,9 +440,9 @@ class Home extends Component {
     this.fromReplace = true;
 
     const {homeAction} = this.props;
-    const {giftNum, title} = this.state;
+    const {giftNum, title, cashAmount} = this.state;
     homeAction.setHongbaoInfo({
-      giftNum, title
+      giftNum, title, cashAmount
     });
     //埋点
     perfect.setBuriedPoint('hongbao_home_replace_product');
@@ -482,9 +520,11 @@ class Home extends Component {
   render() {
     let {
       giftNum, title, bizPrice, skuName, indexImg,
-      selecting, checked, loadingStatus, giftTitle, guide
+      selecting, checked, loadingStatus, guide, cashAmount, giftFreight
     } = this.state;
     const {pathname} = this.props;
+    let giftActualPrice = (selecting ? 0 : (Number(bizPrice) + (Number(cashAmount) * 100 || 0) + this.giftFreight) / 100).toFixed(2);
+
     bizPrice = (bizPrice / 100).toFixed(2);
 
     let initiateCom = null;
@@ -499,6 +539,13 @@ class Home extends Component {
       );
     }
 
+    let cashDisabled;
+    if (selecting) {
+      cashDisabled = true;
+    } else {
+      cashDisabled = giftNum < 2;
+    }
+
     return (
       <div>
         {guide ? <Guide closeGuide={this.closeGuide} imgUrl={this.imgUrl}/> : null}
@@ -509,7 +556,7 @@ class Home extends Component {
           <article className="hb-wrap m-t-2">
             <section>
               <div className="f-lg">
-                <div className="hb-single p-y-1 m-b-1" onTouchTap={this.selectProduct}>
+                <div className="hb-single p-y-1" onTouchTap={this.selectProduct}>
                   <span>发京东红包</span>
                   {
                     selecting ? (
@@ -522,6 +569,7 @@ class Home extends Component {
                     )
                   }
                 </div>
+                {giftFreight ? (<p className="f-sm m-l-0-75 text-muted">礼物价格不满99元还需运费  6.00元</p>) : null}
               </div>
 
               {
@@ -547,7 +595,7 @@ class Home extends Component {
               }
 
               <div className="f-lg">
-                <div className="hb-single p-y-1">
+                <div className="hb-single p-y-1 m-t-1 m-b-1">
                   <span>红包个数</span>
                   <div className="pull-right text-right">
                     <input value={giftNum} onChange={(e) => this.handleChange(e, 'giftNum')}
@@ -557,7 +605,20 @@ class Home extends Component {
                     <span className="pull-right">个</span>
                   </div>
                 </div>
-                <p className="f-sm m-l-0-75 text-muted">{giftTitle}</p>
+              </div>
+
+              <div className="f-lg">
+                <div className="hb-single p-y-1">
+                  <span>现金金额</span>
+                  <div className="pull-right text-right">
+                    <input value={cashAmount} onChange={(e) => this.handleChange(e, 'cashAmount')}
+                           className="hb-input text-right" type="tel" placeholder="0.00"
+                           style={{width: '100px'}} disabled={cashDisabled}
+                           onBlur={(e) => this.handleVerifyCash(e)}/>
+                    <span className="pull-right">元</span>
+                  </div>
+                </div>
+                <p className="f-sm m-l-0-75 text-muted">再塞点现金，让红包鼓起来</p>
               </div>
 
               <div className="f-lg">
@@ -570,7 +631,7 @@ class Home extends Component {
             </section>
 
             <section className="text-center hb-money">
-              ¥{bizPrice}
+              ¥{giftActualPrice}
             </section>
 
             <section className="m-t-2">
@@ -578,7 +639,8 @@ class Home extends Component {
                       onTouchTap={this.payBefore} style={{paddingTop: '0.725rem', paddingBottom: '0.725rem'}}>发起京东红包
               </button>
               <div className="hb-help-link f-sm">
-                <Link to="/strategy" className="fl">如何发京东红包<span className="arrow-hollow-right arrow-r-sm"></span></Link>
+                <Link to="/strategy" className="fl">如何发京东红包<span
+                  className="arrow-hollow-right arrow-r-sm"></span></Link>
                 <a onClick={this.clearMenu}
                    className="fr"
                    href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">帮助反馈
