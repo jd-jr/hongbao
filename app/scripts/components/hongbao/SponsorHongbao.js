@@ -152,15 +152,18 @@ class SponsorHongbao extends Component {
   //获取实物奖品领取状态
   getGiftStatusFlag(status) {
     switch (status) {
-      case 'GIVE_OUT'://已领取
-        return 2;
-      case 'EXPIRED'://已过期
-        return 3;
-      case 'REFUNED'://已退款
-      case 'WAIT_STOCK'://等待补货
-      case 'GIVEING'://领取中
+      case 'NOT_GAIN': //未领取
         return 1;
-      default://去领取
+      case 'GAINED': //已领取
+        return 2;
+      case 'EXPIRED': //已过期
+        return 3;
+      case 'WAIT_CONFIRM': //待领取
+        return 4;
+      case 'REFUNED': //已退款
+        return 5;
+      case 'GIVEING': //领取中
+      default:
         return;
     }
   }
@@ -188,9 +191,9 @@ class SponsorHongbao extends Component {
     return (
       <ul className="hb-list">
         {list.map((item) => {
-          const {identifier, giftRecordId, skuIcon, createdDate, amount, status, giftStatus, giftGainedNum, giftNum, goodNum} = item;
+          const {identifier, giftRecordId, skuIcon, createdDate, amount, status, goodsStatus, giftGainedNum, giftNum, goodNum} = item;
           let link = `/hongbao/detail/view/${identifier}?type=${type}`;
-          const giftStatusFlag = this.getGiftStatusFlag(giftStatus);
+          const giftStatusFlag = this.getGiftStatusFlag(goodsStatus);
 
           return (
             <li key={identifier + giftRecordId}
@@ -198,7 +201,7 @@ class SponsorHongbao extends Component {
                 onTouchTap={(e) => this.hongbaoDetail(e, link)}>
               <div className="col-4 p-a-0">
                 <img className="img-fluid" src={skuIcon} alt=""/>
-                {/*{giftStatusFlag ? (<img className="hb-gift-status" src={this.rootUrl + "gift-status-" + giftStatusFlag + ".png"}/>) : null}*/}
+                {giftStatusFlag ? (<img className="hb-gift-status" src={this.rootUrl + "gift-status-" + giftStatusFlag + ".png"}/>) : null}
               </div>
               <div className="col-10">
                 <div className="text-truncate">京东红包</div>
