@@ -150,23 +150,19 @@ class SponsorHongbao extends Component {
   }
 
   //获取实物奖品领取状态
-  /*
-   发起人看到的实物状态
-   (NOT_GAIN：未领取，
-   WAIT_CONFIRM：待领取，
-   GAINED：已领取，
-   REFUNED：已退款)
-  */
   getGiftStatusFlag(status) {
     switch (status) {
       case 'NOT_GAIN': //未领取
         return 1;
       case 'GAINED': //已领取
         return 2;
+      case 'EXPIRED': //已过期
+        return 3;
       case 'WAIT_CONFIRM': //待领取
         return 4;
       case 'REFUNED': //已退款
         return 5;
+      case 'GIVEING': //领取中
       default:
         return;
     }

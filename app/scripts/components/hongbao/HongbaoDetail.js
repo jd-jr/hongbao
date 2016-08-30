@@ -29,9 +29,7 @@ class HongbaoDetail extends Component {
     this.isAuthorize = isAuthorize; // 在微信中是否授权
     this.state = {
       showFoot: false,
-      sponsorGoal: 'new', // 判断底部显示状态，是重新发起，还是继续发送
-      showInitiate: false, // 继续发送状态
-      hongbaoExpired: false //红包是否过期
+      sponsorGoal: 'new' // 判断底部显示状态，是重新发起，还是继续发送
     };
 
     const href = location.href;
@@ -39,15 +37,12 @@ class HongbaoDetail extends Component {
     this.isUnPack = href.indexOf('/view') === -1;
 
     this.reSponsor = this.reSponsor.bind(this);
-    this.closeHongbao = this.closeHongbao.bind(this);
     this.strategy = this.strategy.bind(this);
     this.updateSponsorGoal = this.updateSponsorGoal.bind(this);
 
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
     this.clearMenu = this.clearMenu.bind(this);
-    //可继续发送状态
-    this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
 
     //红包详情页
     this.isView = href.indexOf('/hongbao/detail/view') !== -1;
@@ -120,21 +115,8 @@ class HongbaoDetail extends Component {
          REDBAG_GOODS_REFOUND("红包实物可退款"),
          RECEIVE_COMPLETE_GOODS_REFUND  已抢光，可退款
          */
-          //this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
         const {hongbaoInfo} = res || {};
-        const {refundStatus, status} = hongbaoInfo || {};
-        //如果红包已过期，而且是发起者进入，则显示继续发送
-        if (type && type === 'sponsor' && this.againSend.indexOf(refundStatus) !== -1) {
-          this.setState({
-            sponsorGoal: 'again'
-          });
-        }
-
-        if (status === 'EXPIRED') {
-          this.setState({
-            hongbaoExpired: true
-          });
-        }
+        console.log(hongbaoInfo, 111111)
         if (!this.setShared) {
           this.share(hongbaoInfo);
           this.setShared = true;
@@ -174,13 +156,6 @@ class HongbaoDetail extends Component {
         : `hongbao${type && type === 'sponsor' ? '_sponsored' : '_received'}_wantto`);
 
       this.context.router.push('/');
-    } else {
-      //埋点
-      perfect.setBuriedPoint(this.isUnPack ? 'hongbao_my_continue' : 'hongbao_sponsored_continue');
-
-      this.setState({
-        showInitiate: true
-      });
     }
   }
 
@@ -201,13 +176,6 @@ class HongbaoDetail extends Component {
   updateSponsorGoal(sponsorGoal) {
     this.setState({
       sponsorGoal
-    });
-  }
-
-  // 关闭发送红包
-  closeHongbao() {
-    this.setState({
-      showInitiate: false
     });
   }
 
@@ -364,7 +332,7 @@ class HongbaoDetail extends Component {
     }
 
     const {giftRecordId, confirmAddress} = selfInfo || {};
-    const {detail, sponsorGoal, showInitiate, hongbaoExpired} = this.state;
+    const {detail, sponsorGoal} = this.state;
 
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
@@ -378,23 +346,8 @@ class HongbaoDetail extends Component {
       isUnpack: this.isUnPack
     };
 
-    let initiateCom = null;
-    if (sponsorGoal === 'again' && showInitiate) {
-      const initiateProps = {
-        skuName, title, identifier,
-        status: 'true', skuIcon,
-        closeHongbao: this.closeHongbao,
-        hongbaoExpired,
-        indexActions
-      };
-      initiateCom = (
-        <Initiate {...initiateProps}/>
-      );
-    }
-
     return (
       <div>
-        {initiateCom}
         <PullRefresh className="hb-main-panel-noheader"
                      refreshCallback={this.refreshCallback}
                      loadMoreCallback={this.loadMoreCallback}

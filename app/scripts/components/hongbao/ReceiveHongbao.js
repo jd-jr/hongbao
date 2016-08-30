@@ -265,24 +265,31 @@ class ReceiveHongbao extends Component {
    * @returns {*}
    */
   getStatus({goodsStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId}) {
-
     const goodsStatusFn = function () {
       switch (goodsStatus) {
         case 'GIVEING':
           return (
-            <div className="label-text bg-info">领取中</div>
+            <div className="label-text bg-status-6">领取中</div>
           );
         case 'GAINED':
           return (
-            <div className="label-text bg-info">已领取</div>
+            <div className="label-text bg-status-2">已领取</div>
+          );
+        case 'NOT_GAIN':
+          return (
+            <div className="label-text bg-status-1">未领取</div>
           );
         case 'EXPIRED':
           return (
-            <div className="label-text bg-muted">已过期</div>
+            <div className="label-text bg-status-3-5">已过期</div>
           );
         case 'WAIT_CONFIRM':
           return (
-            <div className="label-text bg-info">待领取</div>
+            <div className="label-text bg-status-4">待领取</div>
+          );
+        case 'REFUNED':
+          return (
+            <div className="label-text bg-status-3-5">已退款</div>
           );
         default:
           return;
