@@ -26,7 +26,7 @@ class Home extends Component {
       detail = perfect.parseJSON(detail);
     }
 
-    const {skuName, skuId, bizPrice, indexImg} = (detail || {});
+    const {skuName, skuId, price, indexImg, freight} = (detail || {});
     const {hongbaoInfo} = props;
     let giftNum = '';
     let title = '';
@@ -38,7 +38,8 @@ class Home extends Component {
     }
     this.state = {
       title,
-      bizPrice: bizPrice || 0,
+      price: Number(price || 0),
+      freight: Number(freight || 0),
       skuId,
       skuName,
       indexImg,
@@ -50,11 +51,9 @@ class Home extends Component {
       loadingStatus: false,
       checked: true, //同意条款
       showFoot: false,
-      giftFreight: skuId ? bizPrice < 9900 : false, //是否显示礼品运费，小于99元，添加运费
       guide: getLocalStorage('guide-sponsor-hb') !== 'true'
     };
 
-    this.giftFreight = (skuId && bizPrice < 9900) ? 600 : 0; //小于99元，添加礼品运费6元
     this.selectProduct = this.selectProduct.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.payBefore = this.payBefore.bind(this);
@@ -222,6 +221,15 @@ class Home extends Component {
       if (!/^([1-9][0-9]*|[0-9]*.[0-9]{0,2})$/.test(value) || !isFinite(value)) {
         return;
       }
+
+      const amountLimit = (giftNum -1) * 200;
+      if (value > amountLimit) {
+        indexActions.setToast(`现金金额不能超过${amountLimit.toFixed(2)}`);
+        this.setState({
+          cashAmount: amountLimit.toFixed(2)
+        });
+        return;
+      }
     }
 
     this.setState({
@@ -295,6 +303,12 @@ class Home extends Component {
       return;
     }
 
+    const amountLimit = (giftNum -1) * 200;
+    if (cashAmount > amountLimit) {
+      indexActions.setToast(`现金金额不能超过${amountLimit.toFixed(2)}`);
+      return;
+    }
+
     if (title.length > 25) {
       indexActions.setToast('红包标题最多输入25个字');
       return;
@@ -330,7 +344,7 @@ class Home extends Component {
 
   //支付
   pay() {
-    const {skuId, giftNum, title, loadingStatus, cashAmount} = this.state;
+    let {skuId, giftNum, title, price, loadingStatus, cashAmount, freight} = this.state;
     if (loadingStatus) {
       return;
     }
@@ -339,6 +353,8 @@ class Home extends Component {
       loadingStatus: true
     });
 
+    cashAmount = price + freight + (Number(cashAmount) * 100 || 0);
+
     const {indexActions} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
@@ -346,7 +362,7 @@ class Home extends Component {
     const body = {
       skuId,
       giftNum,
-      cashAmount: cashAmount * 100,
+      cashAmount,
       title: title || HONGBAO_TITLE,
       accountType
     };
@@ -519,13 +535,13 @@ class Home extends Component {
 
   render() {
     let {
-      giftNum, title, bizPrice, skuName, indexImg,
-      selecting, checked, loadingStatus, guide, cashAmount, giftFreight
+      giftNum, title, price, skuName, indexImg,
+      selecting, checked, loadingStatus, guide, cashAmount, freight
     } = this.state;
     const {pathname} = this.props;
-    let giftActualPrice = (selecting ? 0 : (Number(bizPrice) + (Number(cashAmount) * 100 || 0) + this.giftFreight) / 100).toFixed(2);
+    let giftActualPrice = (selecting ? 0 : (price + (Number(cashAmount) * 100 || 0) + freight) / 100).toFixed(2);
 
-    bizPrice = (bizPrice / 100).toFixed(2);
+    price = (price / 100).toFixed(2);
 
     let initiateCom = null;
     if (pathname && pathname.indexOf('/initiate') !== -1) {
@@ -565,11 +581,11 @@ class Home extends Component {
                         <span className="arrow-hollow-right" style={{marginRight: '-4px'}}></span>
                       </div>
                     ) : (
-                      <span className="pull-right">{bizPrice}元</span>
+                      <span className="pull-right">{price}元</span>
                     )
                   }
                 </div>
-                {giftFreight ? (<p className="f-sm m-l-0-75 text-muted">礼物价格不满99元还需运费  6.00元</p>) : null}
+                {freight > 0 ? (<p className="f-sm m-l-0-75 text-muted">{`礼物还需运费${(freight / 100).toFixed(2)}元`}</p>) : null}
               </div>
 
               {
@@ -582,7 +598,7 @@ class Home extends Component {
                         </div>
                         <div className="col-16">
                           <div className="text-truncate">{skuName}</div>
-                          <div className="text-muted f-sm">{bizPrice ? `￥${bizPrice}` : ''}</div>
+                          <div className="text-muted f-sm">{price ? `￥${price}` : ''}</div>
                         </div>
                         <div className="col-4 border-left border-second text-center p-a-0"
                              onTouchTap={this.replaceProduct}>

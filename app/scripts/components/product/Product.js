@@ -81,8 +81,8 @@ class Product extends Component {
     //埋点
     perfect.setBuriedPoint('hongbao_product_detail_confirm');
 
-    const {skuName, skuId, bizPrice, indexImg} = productDetail;
-    let detail = perfect.stringifyJSON({skuName, skuId, bizPrice, indexImg});
+    const {skuName, skuId, price, indexImg, freight} = productDetail;
+    let detail = perfect.stringifyJSON({skuName, skuId, price, indexImg, freight});
     detail = Base64.encode(detail);
     detail = encodeURIComponent(detail);
     //浏览器发送 http 请求数据时,会自动把 + 转换为空格,所以先对 + Unicode编码 为 %2B
@@ -98,7 +98,7 @@ class Product extends Component {
   render() {
     const {showFoot} = this.state;
     const {productDetail, view} = this.props;
-    let {skuId, skuName, bizPrice, images, bigDetail} = productDetail;
+    let {skuId, skuName, price, images, bigDetail} = productDetail;
     if (!skuId) {
       return null;
     }
@@ -124,7 +124,7 @@ class Product extends Component {
               {skuName}
             </p>
             {view === 'view' ? null : (
-              <div className="text-center h2 text-primary">￥{(bizPrice / 100).toFixed(2)}</div>
+              <div className="text-center h2 text-primary">￥{(price / 100).toFixed(2)}</div>
             )}
           </section>
           <section className="m-t-1">

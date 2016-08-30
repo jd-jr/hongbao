@@ -83,9 +83,9 @@ class ProductList extends Component {
       productPagination: {entity}
     } = this.props;
 
-    const {skuName, skuId, bizPrice, indexImg} = entity[selectedProduct];
+    const {skuName, skuId, price, freight, indexImg} = entity[selectedProduct];
 
-    let detail = perfect.stringifyJSON({skuName, skuId, bizPrice, indexImg});
+    let detail = perfect.stringifyJSON({skuName, skuId, price, indexImg, freight});
     detail = Base64.encode(detail);
     detail = encodeURIComponent(detail);
     //浏览器发送 http 请求数据时,会自动把 + 转换为空格,所以先对 + Unicode编码 为 %2B
@@ -124,7 +124,7 @@ class ProductList extends Component {
   }
 
   renderProductItem(item, index) {
-    let {skuId, skuName, indexImg, bizPrice, itemTag} = item;
+    let {skuId, skuName, indexImg, price, itemTag} = item;
     if (itemTag) {
       itemTag = itemTag.split(',');
     }
@@ -143,7 +143,7 @@ class ProductList extends Component {
              onClick={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
           <div className="text-truncate">{skuName}</div>
           <div className="f-sm hb-product-info">
-            <span>¥ {(bizPrice / 100).toFixed(2)}</span>
+            <span>¥ {(price / 100).toFixed(2)}</span>
             {
               itemTag && itemTag.map((item, index) => {
                 let tagClass;

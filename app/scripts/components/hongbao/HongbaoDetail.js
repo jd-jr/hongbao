@@ -8,7 +8,6 @@ import perfect from '../../utils/perfect';
 import {HONGBAO_TITLE, SHOW_FOOT_DELAY} from '../../constants/common';
 import HongbaoSelfInfo from './HongbaoSelfInfo';
 import HongbaoGainedList from './HongbaoGainedList';
-import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME, SHARE_TITLE_COMMON, SHARE_DESC, SHARE_TITLE_GIFT, SHARE_TITLE_CASH} from '../../constants/common';
 import routeSetting from '../../routes/routeSetting';
@@ -29,9 +28,6 @@ class HongbaoDetail extends Component {
     this.isAuthorize = isAuthorize; // 在微信中是否授权
     this.state = {
       showFoot: false,
-      sponsorGoal: 'new', // 判断底部显示状态，是重新发起，还是继续发送
-      showInitiate: false, // 继续发送状态
-      hongbaoExpired: false //红包是否过期
     };
 
     const href = location.href;
@@ -39,10 +35,7 @@ class HongbaoDetail extends Component {
     this.isUnPack = href.indexOf('/view') === -1;
 
     this.reSponsor = this.reSponsor.bind(this);
-    this.closeHongbao = this.closeHongbao.bind(this);
     this.strategy = this.strategy.bind(this);
-    this.updateSponsorGoal = this.updateSponsorGoal.bind(this);
-
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
     this.clearMenu = this.clearMenu.bind(this);
@@ -95,7 +88,7 @@ class HongbaoDetail extends Component {
 
   loadData() {
     //加载红包详情
-    const {hongbaoDetailAction, identifier, type} = this.props;
+    const {hongbaoDetailAction, identifier} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
     let body = {
@@ -122,19 +115,6 @@ class HongbaoDetail extends Component {
          */
           //this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
         const {hongbaoInfo} = res || {};
-        const {refundStatus, status} = hongbaoInfo || {};
-        //如果红包已过期，而且是发起者进入，则显示继续发送
-        if (type && type === 'sponsor' && this.againSend.indexOf(refundStatus) !== -1) {
-          this.setState({
-            sponsorGoal: 'again'
-          });
-        }
-
-        if (status === 'EXPIRED') {
-          this.setState({
-            hongbaoExpired: true
-          });
-        }
         if (!this.setShared) {
           this.share(hongbaoInfo);
           this.setShared = true;
@@ -158,30 +138,21 @@ class HongbaoDetail extends Component {
     return hongbaoDetailAction.getParticipantList(body, clear);
   }
 
-  //重新发起或继续发送
+  //重新发起
   reSponsor(e) {
     e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
 
-    const {sponsorGoal, type} = this.state;
+    const {type} = this.state;
 
-    if (sponsorGoal === 'new') {
-      //埋点
-      perfect.setBuriedPoint(this.isUnPack ?
-        `hongbao${type && type === 'sponsor' ? '_my' : ''}_wantto_sponsor`
-        : `hongbao${type && type === 'sponsor' ? '_sponsored' : '_received'}_wantto`);
+    //埋点
+    perfect.setBuriedPoint(this.isUnPack ?
+      `hongbao${type && type === 'sponsor' ? '_my' : ''}_wantto_sponsor`
+      : `hongbao${type && type === 'sponsor' ? '_sponsored' : '_received'}_wantto`);
 
-      this.context.router.push('/');
-    } else {
-      //埋点
-      perfect.setBuriedPoint(this.isUnPack ? 'hongbao_my_continue' : 'hongbao_sponsored_continue');
-
-      this.setState({
-        showInitiate: true
-      });
-    }
+    this.context.router.push('/');
   }
 
   // 红包攻略
@@ -195,20 +166,6 @@ class HongbaoDetail extends Component {
     //埋点
     perfect.setBuriedPoint(`hongbao${type && type === 'sponsor' ? '_my' : ''}_guide`);
     this.context.router.push('/strategy');
-  }
-
-  //在 HongbaoSelfInfo 中处理逻辑后，需要修改 sponsorGoal，来判断是继续发送，还是我要发红包
-  updateSponsorGoal(sponsorGoal) {
-    this.setState({
-      sponsorGoal
-    });
-  }
-
-  // 关闭发送红包
-  closeHongbao() {
-    this.setState({
-      showInitiate: false
-    });
   }
 
   share(hongbaoInfo) {
@@ -298,8 +255,7 @@ class HongbaoDetail extends Component {
    * @returns {*}
    */
   renderFooter() {
-    const {showFoot, sponsorGoal} = this.state;
-    const {type} = this.props;
+    const {showFoot} = this.state;
     const isUnPack = this.isUnPack;
     if (!showFoot) {
       return;
@@ -321,7 +277,7 @@ class HongbaoDetail extends Component {
     ) : (
       <div className="hb-footer text-center hb-active-btn"
            onTouchTap={this.reSponsor}>
-        <span>{type === 'receive' ? '我要发红包' : (sponsorGoal === 'new' ? '我要发红包' : '继续发送')}</span>
+        <span>我要发红包</span>
       </div>
     );
   }
@@ -348,7 +304,7 @@ class HongbaoDetail extends Component {
      status  String  红包状态
      */
     let {
-      skuId, skuName, skuIcon, createdDate, finishedDate, ownerHeadpic, ownerNickname,
+      skuId, createdDate, finishedDate, ownerHeadpic, ownerNickname,
       title, goodsNum, giftNum, giftGainedNum, status, selfInfo, redbagSelf, refundStatus
     } = hongbaoInfo;
 
@@ -364,12 +320,11 @@ class HongbaoDetail extends Component {
     }
 
     const {giftRecordId, confirmAddress} = selfInfo || {};
-    const {detail, sponsorGoal, showInitiate, hongbaoExpired} = this.state;
+    const {detail} = this.state;
 
     const selfInfoProps = {
       selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
       identifier, indexActions, setModalCloseCallback, type,
-      updateSponsorGoal: this.updateSponsorGoal,
       giftGainedNum
     };
 
@@ -378,23 +333,8 @@ class HongbaoDetail extends Component {
       isUnpack: this.isUnPack
     };
 
-    let initiateCom = null;
-    if (sponsorGoal === 'again' && showInitiate) {
-      const initiateProps = {
-        skuName, title, identifier,
-        status: 'true', skuIcon,
-        closeHongbao: this.closeHongbao,
-        hongbaoExpired,
-        indexActions
-      };
-      initiateCom = (
-        <Initiate {...initiateProps}/>
-      );
-    }
-
     return (
       <div>
-        {initiateCom}
         <PullRefresh className="hb-main-panel-noheader"
                      refreshCallback={this.refreshCallback}
                      loadMoreCallback={this.loadMoreCallback}

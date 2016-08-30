@@ -255,7 +255,7 @@ class HongbaoSelfInfo extends Component {
 
   //退款
   refund() {
-    const {identifier, indexActions, setModalCloseCallback, updateSponsorGoal} = this.props;
+    const {identifier, indexActions, setModalCloseCallback} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
     const url = 'refund';
@@ -274,7 +274,6 @@ class HongbaoSelfInfo extends Component {
           });
         });
         this.submitStatus = false;
-        updateSponsorGoal('new');
       },
       (error) => {
         this.submitStatus = false;
@@ -463,8 +462,6 @@ class HongbaoSelfInfo extends Component {
   renderStatus() {
     const {selfInfo, redbagSelf, type} = this.props;
     const {refundStatus} = this.state;
-    //FIXME 发起者，不用后台返回的值判断，用前端的来源来判断
-    //if (redbagSelf) {
     if (type && type === 'sponsor') {
       // 从自己发起入口进入，只允许退款
       return this.renderRefundStatus(refundStatus);
@@ -549,7 +546,6 @@ HongbaoSelfInfo.propTypes = {
   indexActions: PropTypes.object,
   setModalCloseCallback: PropTypes.func,
   type: PropTypes.string,
-  updateSponsorGoal: PropTypes.func,
   giftGainedNum: PropTypes.number
 };
 
