@@ -23,8 +23,6 @@ class ReceiveHongbao extends Component {
     this.switchTab = this.switchTab.bind(this);
     this.withdraw = this.withdraw.bind(this);
     this.reward = this.reward.bind(this);
-    //实物领取状态
-    this.giftStatusArr = ['GIVEING', 'GIVE_OUT', 'EXPIRED', 'REFUNED'];
 
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
@@ -266,15 +264,15 @@ class ReceiveHongbao extends Component {
    * @param skuIcon
    * @returns {*}
    */
-  getStatus({giftStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId}) {
+  getStatus({goodsStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId}) {
 
-    const goodsStatus = function () {
-      switch (giftStatus) {
+    const goodsStatusFn = function () {
+      switch (goodsStatus) {
         case 'GIVEING':
           return (
             <div className="label-text bg-info">领取中</div>
           );
-        case 'GIVE_OUT':
+        case 'GAINED':
           return (
             <div className="label-text bg-info">已领取</div>
           );
@@ -282,18 +280,12 @@ class ReceiveHongbao extends Component {
           return (
             <div className="label-text bg-muted">已过期</div>
           );
-        case 'REFUNED':
+        case 'WAIT_CONFIRM':
           return (
-            <div className="label-text bg-muted">已退款</div>
-          );
-        case 'WAIT_STOCK':
-          return (
-            <div className="label-text bg-info">待补货</div>
+            <div className="label-text bg-info">待领取</div>
           );
         default:
-          return (
-            <div className="label-text bg-primary">去领取</div>
-          );
+          return;
       }
     };
 
@@ -311,14 +303,14 @@ class ReceiveHongbao extends Component {
         <div className="hb-img-text-thumb">
           <img src={skuIcon} alt=""/>
           {
-            goodsStatus()
+            goodsStatusFn()
           }
         </div>
       );
     }
 
-    //去领取，只有去领取状态可以兑奖，并且是实物
-    const isReward = giftType === 'GOODS' && (!giftStatus || this.giftStatusArr.indexOf(giftStatus) === -1);
+    //去领取，只有待领取状态可以兑奖，并且是实物
+    const isReward = giftType === 'GOODS' && goodsStatus === 'WAIT_CONFIRM';
 
     if (isReward) {
       return (
@@ -340,7 +332,7 @@ class ReceiveHongbao extends Component {
   renderItem(item) {
     const {type} = this.props;
     let {
-      identifier, skuIcon, createdDate, giftAmount, giftStatus, giftType,
+      identifier, skuIcon, createdDate, giftAmount, goodsStatus, giftType,
       thirdAccountUserInfoDtoList, giftRecordId, skuId
     } = item;
     let nickName;
@@ -356,7 +348,7 @@ class ReceiveHongbao extends Component {
             <div className="text-muted f-sm">{perfect.formatDate({time: createdDate})}</div>
           </Link>
         </div>
-        {this.getStatus({giftStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId})}
+        {this.getStatus({goodsStatus, giftAmount, giftType, skuIcon, identifier, giftRecordId, skuId})}
       </li>
     );
   }
