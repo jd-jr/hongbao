@@ -5,47 +5,22 @@ import jdWalletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../../utils/perfect';
 import callApi from '../../fetch';
-import Modal from 'reactjs-modal';
 import Guide from '../Guide';
 import {setSessionStorage} from '../../utils/sessionStorage';
 import {setLocalStorage, getLocalStorage} from '../../utils/localStorage';
 
-/**
- * 发起者和领取者
- * @param selfInfo
- * @param giftRecordId
- * @param skuId
- * @param redbagSelf 红包是否为该用户发起(是：true；否：false)
- * @param refundStatus 红包退款状态 (红包非该用户发起时，该字段为null；红包为该用户发起时，
- * 该字段定义如下； ALLOW_REFUND：允许退款 FORBIDDEN_REFUND：禁止退款， REFUNDED 已退款)
- * @returns {XML}
- */
-/*eslint-disable no-else-return*/
 class HongbaoSelfInfo extends Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      refundStatus: props.refundStatus,
-      refundVisible: false, //显示申请退款弹框
-      refundAmount: 0, //退款金额
-      refundMethod: '' //退款方式，全款还是部分
-    };
     const href = location.href;
     this.isView = href.indexOf('/hongbao/detail/view') !== -1;
     this.logistics = this.logistics.bind(this);
-    this.refundPrompt = this.refundPrompt.bind(this);
-    this.onClose = this.onClose.bind(this);
     this.reward = this.reward.bind(this);
     this.withdraw = this.withdraw.bind(this);
     this.viewMyhb = this.viewMyhb.bind(this);
     this.closeGuide = this.closeGuide.bind(this);
 
     this.submitStatus = false;
-    // 申请退款状态
-    this.refundStatusArr = ['REDBAG_WHOLE_REFUND', 'REDBAG_GOODS_REFOUND', 'RECEIVE_COMPLETE_GOODS_REFUND', 'REDBAG_WHOLE_REFUND_TRANSFER'];
-
-    //中实物状态
-    this.winningStatusArr = ['FORBIDDEN_CONFIRME', 'UNCONFIRMED', 'CONFIRMED', 'UNORDER', 'WAIT_STOCK'];
     this.guide = false;
   }
 
@@ -54,7 +29,7 @@ class HongbaoSelfInfo extends Component {
     if (!this.isView) {
       return;
     }
-    const {selfInfo, type} = this.props;
+    const {participantInfo, type} = this.props;
     if (type && type === 'sponsor') {
       return;
     }
@@ -64,11 +39,11 @@ class HongbaoSelfInfo extends Component {
     }
 
     this.guide = true;
-    if (selfInfo) {
-      const {giftType, confirmAddress} = selfInfo;
+    if (participantInfo) {
+      const {giftType} = participantInfo;
       if (giftType === 'CASH') { //现金
         this.imgUrl = 'detail.png';
-      } else if (this.winningStatusArr.indexOf(confirmAddress) !== -1) { // 实物
+      } else if (giftType === 'GOODS') { // 实物
         this.imgUrl = 'detail-winning.png';
       } else { //未中奖
         this.imgUrl = 'detail-no-winning.png';
@@ -121,22 +96,9 @@ class HongbaoSelfInfo extends Component {
   logistics() {
     //埋点
     perfect.setBuriedPoint('hongbao_received_logistics');
-    const {giftRecordId} = this.props;
+    const {participantInfo} = this.props;
+    const {giftRecordId} = participantInfo;
     this.context.router.push(`/logistics/${giftRecordId}`);
-  }
-
-  onClose(type) {
-    this.setState({
-      refundVisible: false
-    }, () => {
-      setTimeout(() => {
-        if (type === 'ok') {
-          this.refund();
-        } else {
-          this.submitStatus = false;
-        }
-      }, 300);
-    });
   }
 
   // 提现
@@ -208,78 +170,14 @@ class HongbaoSelfInfo extends Component {
 
   //兑奖或修改地址
   reward() {
-    const {giftRecordId, skuId, identifier} = this.props;
+    const {participantInfo, skuId, identifier} = this.props;
+    const {giftRecordId} = participantInfo;
     setSessionStorage('skuId', skuId);
     setSessionStorage('giftRecordId', giftRecordId);
     setSessionStorage('identifier', identifier);
     //埋点
     perfect.setBuriedPoint('hongbao_received_reward');
     this.context.router.push('/myaddress');
-  }
-
-  //退款确认
-  refundPrompt() {
-    if (this.submitStatus) {
-      return;
-    }
-    this.submitStatus = true;
-
-    //获取退款金额
-    const url = 'refundAmount';
-    const {identifier, indexActions} = this.props;
-    const accountType = perfect.getAccountType();
-    const thirdAccId = perfect.getThirdAccId();
-    const body = {
-      identifier,
-      accountId: thirdAccId,
-      accountType
-    };
-
-    callApi({url, body, needAuth: true}).then(({json, response}) => {
-      //method： FULL全部退款   /  REBATE部分退款
-      //amount：退款金额
-      const {method, amount} = json.data;
-      this.setState({
-        refundVisible: true,
-        refundAmount: amount, //退款金额
-        refundMethod: method //退款方式，全款还是部分
-      });
-    }, (error) => {
-      this.submitStatus = false;
-      indexActions.setErrorMessage(error.message);
-    });
-
-    //埋点
-    perfect.setBuriedPoint('hongbao_sponsored_refund');
-  }
-
-  //退款
-  refund() {
-    const {identifier, indexActions, setModalCloseCallback} = this.props;
-    const accountType = perfect.getAccountType();
-    const thirdAccId = perfect.getThirdAccId();
-    const url = 'refund';
-    const body = {
-      identifier,
-      accountId: thirdAccId,
-      accountType
-    };
-
-    callApi({url, body, needAuth: true}).then(
-      ({json, response}) => {
-        indexActions.setErrorMessage('退款成功');
-        setModalCloseCallback(() => {
-          this.setState({
-            refundStatus: 'REFUNDED'
-          });
-        });
-        this.submitStatus = false;
-      },
-      (error) => {
-        this.submitStatus = false;
-        indexActions.setErrorMessage(error.message);
-      }
-    );
   }
 
   //查看我的红包，主要埋点用
@@ -291,22 +189,18 @@ class HongbaoSelfInfo extends Component {
 
   /**
    * 判断中奖以及领奖状态
-   * @param confirmAddress
-   * 是否确认过收货地址(
-   礼品类型为现金时为null
-   礼品类型为实物时)
-   确认过：CONFIRMED；
-   已确认，等待补货：WAIT_STOCK；
-   未确认过：UNCONFIRMED；
-   已过期，不能再确认：FORBIDDEN_CONFIRME)
-   * @param giftRecordId
-   * @param skuId
+   * @param goodsStatus
+   领取人看到的实物状态(红包类型为CASH时为null)
+   (WAIT_CONFIRM：待领取，
+   GIVEING：领取中，
+   GAINED：已领取，
+   EXPIRED：已过期)
    * @returns {XML}
    */
-  winningStatus(confirmAddress) {
+  winningStatus(goodsStatus) {
     /*eslint-disable indent*/
-    switch (confirmAddress) {
-      case 'FORBIDDEN_CONFIRME':
+    switch (goodsStatus) {
+      case 'EXPIRED': //已过期
         return (
           <div>
             <div className="text-center text-muted">
@@ -314,7 +208,7 @@ class HongbaoSelfInfo extends Component {
             </div>
           </div>
         );
-      case 'UNCONFIRMED':
+      case 'WAIT_CONFIRM': //待领取
         return (
           <div>
             <div className="text-center">
@@ -345,7 +239,7 @@ class HongbaoSelfInfo extends Component {
             </div>
           </div>
         );
-      case 'CONFIRMED':
+      case 'GAINED': //已领取
         return (
           <div>
             <div className="text-center">
@@ -359,7 +253,7 @@ class HongbaoSelfInfo extends Component {
             </div>
           </div>
         );
-      case 'UNORDER' :
+      case 'GIVEING': //领取中
         return (
           <div>
             <div className="text-center">
@@ -378,67 +272,24 @@ class HongbaoSelfInfo extends Component {
             </div>
           </div>
         );
-      case 'WAIT_STOCK':
-        return (
-          <div>
-            <span>- 等待补货 -</span>
-          </div>
-        );
       default :
         return null;
     }
   }
 
-  /**
-   * 退款状态
-   * @param refundStatus
-   * REFUNDED    已退款 我要发红包
-   REDBAG_GOODS_TRANSFER_AND_REFOUND   申请退款、继续发送
-   REDBAG_GOODS_TRANSFER    继续发送
-   REDBAG_WHOLE_REFUND_TRANSFER 全额退款，可继续发送
-   REDBAG_PUT_OUT 我要发红包
-   REDBAG_GOODS_REFOUND 申请退款、我要发送红包
-   FORBIDDEN_REFUND 禁止退款 我要发红包
-
-   REDBAG_WHOLE_REFUND("红包可全额退款"), //只有现金被领取实物可全退
-   REDBAG_GOODS_REFOUND("红包实物可退款"),
-   RECEIVE_COMPLETE_GOODS_REFUND  已抢光，可退款
-   * @returns {XML}
-   */
-
-  renderRefundStatus(refundStatus) {
-    if (this.refundStatusArr.indexOf(refundStatus) !== -1) {
-      const {giftGainedNum} = this.props;
-      return (
-        <div>
-          <span onClick={this.refundPrompt}
-                className="btn btn-primary btn-sm btn-arc">申请退款
-          </span>
-          <p className="f-xs text-muted m-t-0-5">
-            （温馨提示：{refundStatus === 'REDBAG_WHOLE_REFUND' || refundStatus === 'REDBAG_WHOLE_REFUND_TRANSFER' ? '您可继续发送此红包或申请全额退款' : '退款须收部分平台服务费或继续发送此红包'}）</p>
-        </div>
-      );
-    } else if (refundStatus === 'REFUNDED') {
-      return (
-        <div>
-          - 已退款 -
-        </div>
-      );
-    }
-  }
-
   // 现金状态
-  cashStatus(giftAmount) {
+  cashStatus(cashAmount) {
     return (
       <div>
         <div className="text-center text-primary">
-          <span className="hb-money">{(giftAmount / 100).toFixed(2)}</span> <span>元</span>
+          <span className="hb-money">{(cashAmount / 100).toFixed(2)}</span> <span>元</span>
         </div>
         <div>
           {
             this.isView ? (
               deviceEnv.inJdWallet ? (
-                <span onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1 hb-btn-mid hb-receive-animate">立即提现
+                <span onTouchTap={this.withdraw}
+                      className="btn btn-primary btn-sm hb-fillet-1 hb-btn-mid hb-receive-animate">立即提现
                   <span className="arrow-hollow-right arrow-r-white3"></span></span>
               ) : (
                 <button onTouchTap={this.withdraw}
@@ -459,76 +310,64 @@ class HongbaoSelfInfo extends Component {
     );
   }
 
-  renderStatus() {
-    const {selfInfo, redbagSelf, type} = this.props;
-    const {refundStatus} = this.state;
-    if (type && type === 'sponsor') {
-      // 从自己发起入口进入，只允许退款
-      return this.renderRefundStatus(refundStatus);
-    } else { // 接收者
-      if (selfInfo) {
-        const {giftType, giftAmount, confirmAddress} = selfInfo;
-        if (giftType === 'CASH') { //现金
-          return this.cashStatus(giftAmount);
-        } else { // 实物
-          return this.winningStatus(confirmAddress);
-        }
-      }
+  /**
+   * 发起人查看红包状态
+   * @param goodsStatus
+   发起人看到的实物状态
+   (NOT_GAIN：未领取，
+   WAIT_CONFIRM：待领取，
+   GAINED：已领取，
+   REFUNED：已退款)
+   * @returns {XML}
+   */
+
+  renderSponsorStatus(goodsStatus) {
+    /*eslint-disable indent*/
+    switch (goodsStatus) {
+      case 'NOT_GAIN':
+        return (
+          <div>
+            - 未领取 -
+          </div>
+        );
+      case 'WAIT_CONFIRM':
+        return (
+          <div>
+            - 待领取 -
+          </div>
+        );
+      case 'GAINED':
+        return (
+          <div>
+            - 已领取 -
+          </div>
+        );
+      case 'REFUNED':
+        return (
+          <div>
+            - 已退款 -
+          </div>
+        );
+      default :
+        return null;
     }
   }
 
   render() {
-    const {refundVisible, refundStatus, refundAmount, refundMethod} = this.state;
-    const footer = (
-      <div className="row text-center">
-        <div className="col-12 border-second border-right hb-active-btn p-y-0-5" onClick={() => this.onClose('cancel')}>
-          取消
-        </div>
-        <div className="col-12 hb-active-btn p-y-0-5" onClick={() => this.onClose('ok')}>确定</div>
-      </div>
-    );
+    const {participantInfo, sponsorInfo, type} = this.props;
+    if (type && type === 'sponsor') {
+      // 从自己发起入口进入
+      const {goodsStatus} = sponsorInfo || {};
+      return this.renderSponsorStatus(goodsStatus);
+    } else { // 接收者
+      const {giftType, cashAmount, goodsStatus} = participantInfo;
+      if (giftType === 'CASH') {
+        return this.cashStatus(cashAmount);
+      } else if (giftType === 'GOODS') {
+        return this.winningStatus(goodsStatus);
+      }
+    }
 
-    return (
-      <div>
-        {this.renderStatus()}
-        <Modal
-          className="hb-alert"
-          visible={refundVisible}
-          style={{width: '90%'}}
-          footerStyle={{padding: '0 10px'}}
-          onClose={this.onClose}
-          footer={footer}
-          animation
-          maskAnimation
-          preventTouchmove
-          closable={false}
-        >
-          <div>
-            <h3 className="text-center">退款及服务费说明</h3>
-            {refundMethod === 'FULL' ? (
-              <div>
-                <div>您可申请全额退款，金额为{(refundAmount / 100).toFixed(2)}元。退款金额将原路返回。预计1-3个工作日到账</div>
-              </div>
-            ) : (
-              <div className="row">
-                <div className="col-24">
-                  退款金额为{(refundAmount / 100).toFixed(2)}元，退款金额将原路返回，预计1-3个工作日到账。
-                </div>
-                <div className="col-24 m-t-1">服务费如下：</div>
-                <div className="col-13 p-r-0">
-                  <div>商品价格0-2180元(不含)</div>
-                  <div>商品价格2180元以上</div>
-                </div>
-                <div className="col-11">
-                  <div>费率=商品价格*8%</div>
-                  <div>费率=160元</div>
-                </div>
-              </div>
-            )}
-          </div>
-        </Modal>
-      </div>
-    );
   }
 }
 
@@ -537,16 +376,14 @@ HongbaoSelfInfo.contextTypes = {
 };
 
 HongbaoSelfInfo.propTypes = {
-  selfInfo: PropTypes.object,
-  giftRecordId: PropTypes.string,
   skuId: PropTypes.string,
-  redbagSelf: PropTypes.bool,
-  refundStatus: PropTypes.string,
   identifier: PropTypes.string,
   indexActions: PropTypes.object,
   setModalCloseCallback: PropTypes.func,
   type: PropTypes.string,
-  giftGainedNum: PropTypes.number
+  participantInfo: PropTypes.object,
+  sponsorInfo: PropTypes.object,
+  redbagStatus: PropTypes.string,
 };
 
 export default HongbaoSelfInfo;

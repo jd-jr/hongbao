@@ -353,8 +353,6 @@ class Home extends Component {
       loadingStatus: true
     });
 
-    cashAmount = price + freight + (Number(cashAmount) * 100 || 0);
-
     const {indexActions} = this.props;
     const accountType = perfect.getAccountType();
     const thirdAccId = perfect.getThirdAccId();
@@ -362,7 +360,7 @@ class Home extends Component {
     const body = {
       skuId,
       giftNum,
-      cashAmount,
+      cashAmount: Number(cashAmount || 0) * 100,
       title: title || HONGBAO_TITLE,
       accountType
     };
@@ -539,7 +537,7 @@ class Home extends Component {
       selecting, checked, loadingStatus, guide, cashAmount, freight
     } = this.state;
     const {pathname} = this.props;
-    let giftActualPrice = (selecting ? 0 : (price + (Number(cashAmount) * 100 || 0) + freight) / 100).toFixed(2);
+    let giftActualPrice = (selecting ? 0 : (price + freight) / 100 + Number(cashAmount || 0)).toFixed(2);
 
     price = (price / 100).toFixed(2);
 

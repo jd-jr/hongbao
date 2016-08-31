@@ -8,6 +8,7 @@ import perfect from '../../utils/perfect';
 import {HONGBAO_TITLE, SHOW_FOOT_DELAY} from '../../constants/common';
 import HongbaoSelfInfo from './HongbaoSelfInfo';
 import HongbaoGainedList from './HongbaoGainedList';
+import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
 import {NICKNAME, SHARE_TITLE_COMMON, SHARE_DESC, SHARE_TITLE_GIFT, SHARE_TITLE_CASH} from '../../constants/common';
 import routeSetting from '../../routes/routeSetting';
@@ -28,6 +29,8 @@ class HongbaoDetail extends Component {
     this.isAuthorize = isAuthorize; // 在微信中是否授权
     this.state = {
       showFoot: false,
+      showInitiate: false, // 继续发送窗口状态
+      continueSend: false // 继续发送
     };
 
     const href = location.href;
@@ -35,15 +38,11 @@ class HongbaoDetail extends Component {
     this.isUnPack = href.indexOf('/view') === -1;
 
     this.reSponsor = this.reSponsor.bind(this);
+    this.closeHongbao = this.closeHongbao.bind(this);
     this.strategy = this.strategy.bind(this);
     this.refreshCallback = this.refreshCallback.bind(this);
     this.loadMoreCallback = this.loadMoreCallback.bind(this);
     this.clearMenu = this.clearMenu.bind(this);
-    //可继续发送状态
-    this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
-
-    //红包详情页
-    this.isView = href.indexOf('/hongbao/detail/view') !== -1;
   }
 
   componentWillMount() {
@@ -100,21 +99,21 @@ class HongbaoDetail extends Component {
     return hongbaoDetailAction.getHongbaoDetail(body)
       .then((json) => {
         const {res} = json || {};
-        /**
-         REFUNDED    已退款 我要发红包
-         REDBAG_GOODS_TRANSFER_AND_REFOUND   申请退款、继续发送
-         REDBAG_GOODS_TRANSFER    继续发送
-         REDBAG_WHOLE_REFUND_TRANSFER 全额退款，可继续发送
-         REDBAG_PUT_OUT 我要发红包
-         REDBAG_GOODS_REFOUND 申请退款、我要发送红包
-         FORBIDDEN_REFUND 禁止退款 我要发红包
-
-         REDBAG_WHOLE_REFUND("红包可全额退款"), //只有现金被领取实物可全退
-         REDBAG_GOODS_REFOUND("红包实物可退款"),
-         RECEIVE_COMPLETE_GOODS_REFUND  已抢光，可退款
-         */
-          //this.againSend = ['REDBAG_GOODS_TRANSFER_AND_REFOUND', 'REDBAG_GOODS_TRANSFER', 'REDBAG_WHOLE_REFUND_TRANSFER'];
         const {hongbaoInfo} = res || {};
+        const {type} = this.props;
+        const isUnPack = this.isUnPack;
+        let {
+          goodsGainedNum, cashGainedNum, redbagStatus,
+        } = hongbaoInfo || {};
+
+        //是否可以继续发送
+        const continueSend = !isUnPack && type === 'sponsor' && redbagStatus === 'PAY_SUCC'
+          && goodsGainedNum === 0 && cashGainedNum === 0;
+        if (continueSend) {
+          this.setState({
+            continueSend: true
+          });
+        }
         if (!this.setShared) {
           this.share(hongbaoInfo);
           this.setShared = true;
@@ -138,21 +137,31 @@ class HongbaoDetail extends Component {
     return hongbaoDetailAction.getParticipantList(body, clear);
   }
 
-  //重新发起
+  //继续发送或我要发红包
   reSponsor(e) {
     e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
 
-    const {type} = this.state;
+    const {continueSend} = this.state;
+    const {type} = this.props;
 
-    //埋点
-    perfect.setBuriedPoint(this.isUnPack ?
-      `hongbao${type && type === 'sponsor' ? '_my' : ''}_wantto_sponsor`
-      : `hongbao${type && type === 'sponsor' ? '_sponsored' : '_received'}_wantto`);
+    if (continueSend) {
+      //埋点
+      perfect.setBuriedPoint(this.isUnPack ? 'hongbao_my_continue' : 'hongbao_sponsored_continue');
 
-    this.context.router.push('/');
+      this.setState({
+        showInitiate: true
+      });
+    } else {
+      //埋点
+      perfect.setBuriedPoint(this.isUnPack ?
+        `hongbao${type && type === 'sponsor' ? '_my' : ''}_wantto_sponsor`
+        : `hongbao${type && type === 'sponsor' ? '_sponsored' : '_received'}_wantto`);
+
+      this.context.router.push('/');
+    }
   }
 
   // 红包攻略
@@ -168,6 +177,14 @@ class HongbaoDetail extends Component {
     this.context.router.push('/strategy');
   }
 
+  // 关闭发送红包
+  closeHongbao() {
+    this.setState({
+      showInitiate: false
+    });
+  }
+
+  // 分享
   share(hongbaoInfo) {
     const {ownerHeadpic, ownerNickname, skuIcon, skuName, selfInfo} = hongbaoInfo;
     let url = `${perfect.getLocationRoot()}share.html`;
@@ -208,39 +225,68 @@ class HongbaoDetail extends Component {
 
   /**
    * 根据红包状态码显示不同的进度条
-   NEED_PAY 需要支付
-   OK 可以
-   RECEIVE_COMPLETE 红包被领取完成
-   EXPIRED 红包过期
-   FAIL 其他未知状态
-   HAS_RECEIVE 已经领取过
-   REDBAG_NOT_FOUND  红包不存在
+   redbagStatus 红包状态
+   (INIT:初始化，
+   PAY_SUCC：支付成功，
+   RECEIVE_COMPLETE：领取完成，
+   EXPIRED：已过期，
+   REFUNDING：退款中，
+   REFUNDED：已退款)
+
+   goodsNum  Integer  红包中实物总数
+   goodsGainedNum  Integer  红包中实物已领取数量
+   cashNum  Integer  红包中现金红包总数
+   cashGainedNum  Integer  红包中现金红包已领取数量
    * @type {Array}
    */
   /*eslint-disable indent*/
-  renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate}) {
-    const momeyText = giftNum - goodsNum > 0 ? `，${giftNum - goodsNum}个现金红包` : '';
-    switch (status) {
+  renderProgress({
+    redbagStatus, participantInfo, sponsorInfo, goodsNum, goodsGainedNum, cashNum,
+    cashGainedNum, createdDate, finishedDate
+  }) {
+
+    const {type} = this.state;
+    const info = type === 'sponsor' ? sponsorInfo : participantInfo;
+    if (!info) {
+      return null;
+    }
+    const {cashAmount, cashGainedAmount} = info;
+    let momeyText = '';
+    if (type === 'sponsor' && cashAmount && cashGainedAmount) { //发起人
+      momeyText = `(${(cashGainedAmount / 100).toFixed(2)}/${(cashAmount / 100).toFixed(2)})`;
+    }
+    switch (redbagStatus) {
       case 'OK': //领取中
       case 'PAY_SUCC':
         return (
           <div className="text-muted">
-            已领取{giftGainedNum}/{giftNum}，共{goodsNum}个礼物{momeyText}。
+            已领取{goodsGainedNum}个礼物(共{goodsNum}个)，{cashGainedNum}/{cashNum}个现金红包{momeyText}
           </div>
         );
       case 'RECEIVE_COMPLETE':
         return (
-          <div className="text-muted">共{goodsNum}个礼物{momeyText}。
+          <div className="text-muted">
+            已领取{goodsGainedNum}个礼物(共{goodsNum}个)，{cashGainedNum}/{cashNum}个现金红包{momeyText}。
             {perfect.formatMillisecond(finishedDate - createdDate)}抢光
           </div>
         );
       case 'EXPIRED':
         return (
-          <div className="text-muted">共{goodsNum}个礼物{momeyText}。该红包已过期</div>
+          <div className="text-muted">
+            已过期，已领取{goodsGainedNum}个礼物(共{goodsNum}个)，{cashGainedNum}/{cashNum}个现金红包{momeyText}
+          </div>
         );
       case 'REFUNDED': //已退款
         return (
-          <div className="text-muted">共{goodsNum}个礼物{momeyText}。该红包已退款</div>
+          <div className="text-muted">
+            已退款，已领取{goodsGainedNum}个礼物(共{goodsNum}个)，{cashGainedNum}/{cashNum}个现金红包{momeyText}
+          </div>
+        );
+      case 'REFUNDING': //退款中
+        return (
+          <div className="text-muted">
+            退款中，已领取{goodsGainedNum}个礼物(共{goodsNum}个)，{cashGainedNum}/{cashNum}个现金红包{momeyText}
+          </div>
         );
       default:
         return null;
@@ -255,11 +301,13 @@ class HongbaoDetail extends Component {
    * @returns {*}
    */
   renderFooter() {
-    const {showFoot} = this.state;
-    const isUnPack = this.isUnPack;
+    const {showFoot, continueSend} = this.state;
     if (!showFoot) {
       return;
     }
+
+    const {type} = this.props;
+    const isUnPack = this.isUnPack;
 
     return isUnPack ? (
       <footer className="hb-footer">
@@ -277,7 +325,7 @@ class HongbaoDetail extends Component {
     ) : (
       <div className="hb-footer text-center hb-active-btn"
            onTouchTap={this.reSponsor}>
-        <span>我要发红包</span>
+        <span>{type === 'receive' ? '我要发红包' : (continueSend ? '继续发送' : '我要发红包')}</span>
       </div>
     );
   }
@@ -291,21 +339,23 @@ class HongbaoDetail extends Component {
 
     /**
      skuId  String  商品SKU
-     skuName  String  商品名称
-     skuIcon  String  商品主图
      createdDate  Long  红包创建时间
      ownerHeadpic  String  红包发起者头像
      ownerNickname  String  红包发起者昵称
      title  String  红包标题
-     giftAmount  Long  本人领取的红包金额
-     goodsNum  Long  红包实物个数
-     giftNum  Long  红包礼品总个数
-     giftGainedNum  Long  红包礼品已领取个数
-     status  String  红包状态
+     goodsNum  Integer  红包中实物总数
+     goodsGainedNum  Integer  红包中实物已领取数量
+     cashNum  Integer  红包中现金红包总数
+     cashGainedNum  Integer  红包中现金红包已领取数量
+     participantInfo 红包领取人信息(不是领取人时为null)
+     sponsorInfo    红包发起人信息(不是发起人是为null)
+     redbagStatus 红包状态
      */
     let {
-      skuId, createdDate, finishedDate, ownerHeadpic, ownerNickname,
-      title, goodsNum, giftNum, giftGainedNum, status, selfInfo, redbagSelf, refundStatus
+      skuId, skuName, skuIcon, goodsNum, goodsGainedNum, cashNum,
+      cashGainedNum, createdDate, finishedDate,
+      ownerHeadpic, ownerNickname, title,
+      participantInfo, sponsorInfo, redbagStatus
     } = hongbaoInfo;
 
     ownerHeadpic = ownerHeadpic || defaultHeadPic;
@@ -319,13 +369,12 @@ class HongbaoDetail extends Component {
       );
     }
 
-    const {giftRecordId, confirmAddress} = selfInfo || {};
-    const {detail} = this.state;
+    const {goodsStatus} =  participantInfo || {};
 
     const selfInfoProps = {
-      selfInfo, giftRecordId, skuId, redbagSelf, refundStatus,
+      skuId, redbagStatus,
       identifier, indexActions, setModalCloseCallback, type,
-      giftGainedNum
+      participantInfo, sponsorInfo
     };
 
     const gainedListProps = {
@@ -333,13 +382,29 @@ class HongbaoDetail extends Component {
       isUnpack: this.isUnPack
     };
 
+    const {continueSend, showInitiate} = this.state;
+    let initiateCom = null;
+    if (continueSend && showInitiate) {
+      const initiateProps = {
+        skuName, title, identifier,
+        status: 'true', skuIcon,
+        closeHongbao: this.closeHongbao,
+        indexActions,
+        setModalCloseCallback
+      };
+      initiateCom = (
+        <Initiate {...initiateProps}/>
+      );
+    }
+
     return (
       <div>
+        {initiateCom}
         <PullRefresh className="hb-main-panel-noheader"
                      refreshCallback={this.refreshCallback}
                      loadMoreCallback={this.loadMoreCallback}
                      hasMore={!lastPage}>
-          <article style={{display: detail}}>
+          <article>
             <section className="pos-r m-t-3">
               <div className="text-center">
                 <div>
@@ -353,7 +418,6 @@ class HongbaoDetail extends Component {
               <div className="hb-help">
                 <a onClick={this.clearMenu}
                    href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">
-                  {/*<i className="hb-help-icon-lg"></i>*/}
                   帮助反馈
                 </a>
               </div>
@@ -361,7 +425,10 @@ class HongbaoDetail extends Component {
 
             <section className="m-t-3">
               <div className="m-x-1 m-b-0-3 f-sm">
-                {this.renderProgress({goodsNum, giftNum, giftGainedNum, status, createdDate, finishedDate})}
+                {this.renderProgress({
+                  redbagStatus, participantInfo, sponsorInfo, goodsNum, goodsGainedNum, cashNum,
+                  cashGainedNum, createdDate, finishedDate
+                })}
               </div>
               {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
             </section>
@@ -372,7 +439,7 @@ class HongbaoDetail extends Component {
         </PullRefresh>
         {this.renderFooter()}
         <HelpFeedback showFollowMe={true}/>
-        {type !== 'sponsor' && confirmAddress === 'UNCONFIRMED' ? (<Ribbons/>) : null}
+        {type !== 'sponsor' && goodsStatus === 'WAIT_CONFIRM' ? (<Ribbons/>) : null}
       </div>
     );
   }
@@ -389,7 +456,7 @@ HongbaoDetail.propTypes = {
   hongbaoDetailAction: PropTypes.object,
   indexActions: PropTypes.object,
   setModalCloseCallback: PropTypes.func,
-  type: PropTypes.string
+  type: PropTypes.string,
 };
 
 export default HongbaoDetail;

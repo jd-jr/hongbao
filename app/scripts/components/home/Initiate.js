@@ -6,16 +6,15 @@ import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import {HONGBAO_TITLE, HONGBAO_DESC} from '../../constants/common';
 import weixinShareGuide from '../../../images/weixin-share-guide.png';
 import {SHARE_ICON_URL} from '../../constants/common';
-import callApi from '../../fetch';
 import perfect from '../../utils/perfect';
 
+// 发起红包组件
 class Initiate extends Component {
   constructor(props) {
     super(props);
     let {status} = this.props;
     this.state = {
       success: status === 'true',
-      visible: true,
       weixinGuide: false
     };
 
@@ -28,8 +27,6 @@ class Initiate extends Component {
     if (deviceEnv.inJdWallet) {
       walletApi.shareIconURL(SHARE_ICON_URL, 'hongbao');
     }
-    //判断是否再次激活成功
-    this.againActivate = false;
     //微信授权
     this.intervalId;
 
@@ -37,28 +34,15 @@ class Initiate extends Component {
   }
 
   componentWillMount() {
-    const {hongbaoExpired, identifier, indexActions} = this.props;
-    if (hongbaoExpired) { // 再次激活
-      const accountType = perfect.getAccountType();
-      const thirdAccId = perfect.getThirdAccId();
-      const url = 'activation';
-      const body = {
-        identifier,
-        thirdAccId,
-        accountType
-      };
-
-      callApi({url, body, needAuth: true}).then(
-        ({json, response}) => {
-          this.againActivate = true;
-        },
-        (error) => {
-          this.againActivate = false;
-          if (error.errorCode !== 'RBF100202') {
-            indexActions.setErrorMessage(error.message);
-          }
-        }
-      );
+    const {success} = this.state;
+    let {indexActions, setModalCloseCallback} = this.props;
+    if (success) {
+      //支付失败的情况
+      indexActions.setErrorMessage('支付失败');
+      setModalCloseCallback(()=> {
+        //回到首页
+        this.context.router.replace('/');
+      });
     }
   }
 
@@ -76,12 +60,6 @@ class Initiate extends Component {
 
   //发红包
   sponsor() {
-    const {hongbaoExpired} = this.props;
-    // 如果再次激活失败，则返回
-    if (hongbaoExpired && this.againActivate === false) {
-      return;
-    }
-
     if (deviceEnv.inWx) {
       this.setState({
         weixinGuide: true
@@ -113,9 +91,6 @@ class Initiate extends Component {
             this.context.router.replace('/my?type=sponsor');
           }
           if (status === 'SUCCESS') {
-            this.setState({
-              visible: false
-            });
             //回到领取页面
             this.context.router.replace('/my?type=sponsor');
           }
@@ -130,9 +105,6 @@ class Initiate extends Component {
          * obj.shareChannel：weixin：微信好友和微信朋友圈；qq：QQ好友；qzone：QQ空间；weibo：新浪微博；
          */
         if (result && result.shareResult === 0) {
-          this.setState({
-            visible: false
-          });
           //回到领取页面
           this.context.router.replace('/my?type=sponsor');
         }
@@ -177,15 +149,6 @@ class Initiate extends Component {
     }
   }
 
-  //关闭错误提示信息
-  onClose(e) {
-    this.setState({
-      visible: false
-    });
-    //回到首页
-    this.context.router.replace('/');
-  }
-
   //微信中关闭提示
   closeShareGuide() {
     this.setState({
@@ -206,13 +169,13 @@ class Initiate extends Component {
   }
 
   render() {
-    const {success, visible, weixinGuide} = this.state;
+    const {success, weixinGuide} = this.state;
     let {skuName, skuIcon} = this.props;
     if (success) {
       return (
         <div>
           <Modal
-            visible={visible}
+            visible
             className="hb-modal"
             bodyStyle={{height: '28rem'}}
             animation
@@ -248,33 +211,6 @@ class Initiate extends Component {
         </div>
       );
     }
-
-    //支付失败的情况
-    if (visible) {
-      const footer = (
-        <div className="text-center">
-          <button className="btn btn-secondary" onTouchTap={this.onClose}>
-            确认
-          </button>
-        </div>
-      );
-
-      return (
-        <Modal
-          visible={visible}
-          style={{width: '70%'}}
-          bodyStyle={{height: '5rem'}}
-          onClose={this.onClose}
-          title="支付结果"
-          footer={footer}
-          animation
-          maskAnimation
-        >
-          <div className="text-center">支付失败</div>
-        </Modal>
-      );
-    }
-
     return null;
   }
 }
@@ -286,8 +222,8 @@ Initiate.propTypes = {
   status: PropTypes.string,
   skuIcon: PropTypes.string,
   closeHongbao: PropTypes.func,
-  hongbaoExpired: PropTypes.bool,
   indexActions: PropTypes.object,
+  setModalCloseCallback: PropTypes.func,
 };
 
 Initiate.contextTypes = {
