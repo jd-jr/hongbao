@@ -3,6 +3,7 @@ import {routerReducer as routing} from 'react-router-redux';
 import entity from './entity';
 import caches from './caches';
 import product from './product';
+import category from './category';
 import hongbao from './hongbao';
 import hongbaoDetail from './hongbaoDetail';
 import address from './address';
@@ -44,6 +45,7 @@ export default combineReducers({
   entity,
   caches,
   product,
+  category,
   hongbao,
   hongbaoDetail,
   address,

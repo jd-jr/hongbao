@@ -63,6 +63,33 @@ export default {
       ]
     },
     {
+      path: '/category',
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../containers/CategoryPage').default)
+        })
+      },
+      indexRoute: {
+        onEnter: () => enterHandler('categoryList'),
+        getComponent: (nextState, cb) => {
+          return require.ensure([], (require) => {
+            cb(null, require('../components/category/CategoryList').default)
+          })
+        }
+      },
+      childRoutes: [
+        {
+          onEnter: () => enterHandler('category'),
+          path: ':fromType/:categoryId', // categoryId = 类目id
+          getComponent: (nextState, cb) => {
+            require.ensure([], (require) => {
+              cb(null, require('../components/category/ProductList').default)
+            })
+          }
+        }
+      ]
+    },
+    {
       path: '/authorize/:identifier',
       onEnter: () => enterHandler('authorize'),
       getComponent: (nextState, cb) => {
@@ -194,6 +221,15 @@ export default {
       getComponent: (nextState, cb) => {
         require.ensure([], (require) => {
           cb(null, require('../components/Test').default)
+        })
+      }
+    },
+    {
+      onEnter: () => enterHandler('wishlist'),
+      path: 'wishlist', // 心愿单
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/explain/WishList').default)
         })
       }
     },

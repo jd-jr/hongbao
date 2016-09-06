@@ -54,9 +54,9 @@ let webpackConfig = {
     publicPath: '/m-hongbao/',
     // 代理设置
     proxy: {
-      '/redbag/*': {
+      'https://hongbao-api.jdpay.com/redbag/item/subject': {
         target: 'http://localhost:3000',
-        secure: false
+        secure: true
       }
     }
   },

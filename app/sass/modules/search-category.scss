@@ -16,7 +16,7 @@
     padding: 0.428571rem 1.071429rem;
     border-radius: 0.357143rem;
     background-color: #fff;
-    transition: all .3s ease;
+    //transition: all .3s ease;
   }
   .icon-search {
     position: absolute;
@@ -315,9 +315,9 @@
     border-radius: 0.3rem;
   }
   .btn-filter-reset, .btn-filter-confirm {
-    width: 50%;
+    width: 48%;
     text-align: center;
-    padding: 0.5rem;
+    padding: 0.5rem 0;
   }
   .active {
     background-color: #d64f48;

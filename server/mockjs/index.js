@@ -4,6 +4,7 @@ const category = require('./category');
 const product = require('./product');
 const info = require('./info');
 const order = require('./order');
+const subject = require('./subject');
 const validateHongbao = require('./validateHongbao');
 
 module.exports = {
@@ -13,5 +14,6 @@ module.exports = {
   category,
   info,
   order,
-  validateHongbao
+  validateHongbao,
+  subject
 };

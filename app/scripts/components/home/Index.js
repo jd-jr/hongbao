@@ -238,7 +238,7 @@ class Home extends Component {
     }
     //埋点
     perfect.setBuriedPoint('hongbao_home_select_product');
-    this.context.router.push('/product');
+    this.context.router.push('/category');
   }
 
   //提交前校验表单

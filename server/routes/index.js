@@ -10,7 +10,7 @@ router.post('/redbag/item/list', (req, res, next) => {
 });
 
 //分类信息
-router.post('/redbag/item/category', (req, res, next) => {
+router.all('/redbag/item/category', (req, res, next) => {
   res.send(data.category);
 });
 
@@ -30,8 +30,13 @@ router.post('/redbag/create', (req, res, next) => {
 });
 
 //检测红包
-router.post('/redbag/prepare/qiang', (req, res, next) => {
+router.all('/redbag/prepare/qiang', (req, res, next) => {
   res.send(data.validateHongbao);
+});
+
+//主题楼层数据
+router.all('/redbag/item/subject', (req, res, next) => {
+  res.send(data.subject);
 });
 
 module.exports = router;
