@@ -17,7 +17,7 @@ function fetchSubjectList(body) {
     unSchema: true,
     [CALL_API]: {
       types: [SUBJECT_LIST_REQUEST, SUBJECT_LIST_SUCCESS, SUBJECT_LIST_FAILURE],
-      url: 'https://static.jdpay.com/redbag/item/subject',
+      url: 'item/subject',
       body,
       schema: 'subjectList',
       paging: false
