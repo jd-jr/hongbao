@@ -6,6 +6,7 @@
   "plugins": [
     "transform-flow-comments",
     "transform-object-rest-spread",
-    "transform-flow-strip-types"
+    "transform-flow-strip-types",
+    "transform-class-properties" //解析类属性，静态和实例的属性
   ]
 }

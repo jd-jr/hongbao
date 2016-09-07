@@ -7,8 +7,7 @@ import autoprefixer from 'autoprefixer';
 
 //线上环境
 /*const ip = 'static.jdpay.com';
- const port = 443; // https 默认端口号为443
-*/
+ const port = 443; // https 默认端口号为443*/
 //测试环境
 const ip = 'hongbao.jdpay.com';
 const port = 8083;
@@ -54,7 +53,7 @@ let webpackConfig = {
     publicPath: '/m-hongbao/',
     // 代理设置
     proxy: {
-      'https://hongbao-api.jdpay.com/redbag/item/subject': {
+      '/redbag/*': {
         target: 'http://localhost:3000',
         secure: true
       }

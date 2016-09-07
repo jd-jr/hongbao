@@ -1,0 +1,14 @@
+.fileinput-panel {
+  position: relative;
+}
+
+.fileinput-file {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 98%;
+  height: 100%;
+  z-index: 1;
+}
+

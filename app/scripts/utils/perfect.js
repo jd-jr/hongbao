@@ -291,6 +291,21 @@ const perfect = {
   unionLogin(url) {
     url = encodeURIComponent(url);
     location.href = JD_LOGIN_URL + encodeURIComponent(QB_LOGIN_URL + url);
+  },
+
+  compress(img) {
+    const canvas = document.createElement('canvas'),
+      ctx = canvas.getContext('2d');
+
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    //利用canvas进行绘图
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    //将原来图片的质量压缩到原先的0.2倍。
+    const data = canvas.toDataURL('image/jpeg', 0.2); //data url的形式
+
+    return data;
   }
 };
 
