@@ -144,6 +144,10 @@ class Home extends Component {
       info = perfect.parseJSON(info);
       this.deviceInfo = info.deviceInfo;
     });
+
+    //漏斗埋点
+    perfect.setBuriedPoint('quanbufasonghon',{'hbhome1':'true'});
+
   }
 
   componentWillUnmount() {

@@ -278,9 +278,14 @@ const perfect = {
   /**
    * 设置腾讯埋点
    */
-  setBuriedPoint(enventId) {
+  setBuriedPoint(enventId, params) {
     if (window.MtaH5) {
-      MtaH5.clickStat(enventId)
+      if (params) {
+        MtaH5.clickStat(enventId);
+      } else {
+        MtaH5.clickStat(enventId, params)
+      }
+
     }
   },
 
