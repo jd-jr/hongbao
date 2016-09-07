@@ -168,10 +168,7 @@
 .cate-wishlist {
   padding: 1.428571rem 1.071429rem;
   font-size: 1.285714rem;
-
-  input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
-    color: #ccc;
-  }
+  padding-top: 0;
 
   p {
     padding-top: 0.535714rem;
@@ -193,7 +190,7 @@
   textarea {
     padding: 0.714286rem;
     width: 100%;
-    height: 11.428571rem;
+    height: 8.428571rem;
     border: none;
     border-radius: 0.178571rem;
   }
@@ -206,14 +203,17 @@
   color: #ccc;
 }
 .cate-gift-pic {
+  margin-right: -0.5rem;
   .cate-pic {
     display: inline-block;
-    width: 23%;
-    margin: 0.2rem 0;
+    width: 25%;
+    padding: 0.2rem 0.5rem 0.2rem 0;
   }
   .cate-select-pic {
-    background-color: #fff;
     border-radius: 0.357143rem;
+    img {
+      background-color: #fff;
+    }
   }
   img {
     width: 100%;
