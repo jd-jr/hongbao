@@ -189,12 +189,33 @@ class ProductList extends Component {
   //确认筛选金额
   confirmPriceSection(e) {
     const {tabFlag, body, lowPrice, highPrice, sectionIndex} = this.state;
+    const {indexActions} = this.props;
+    const lplen = String(lowPrice).length;
+    const hplen = String(highPrice).length;
+
     if (sectionIndex < 0) {
-      assign(body, {
-        lowPrice: lowPrice?lowPrice:null,
-        highPrice: highPrice?highPrice:null,
-      });
+      if (lplen > 0 && hplen > 0) {
+        if (+lowPrice > +highPrice) {
+          indexActions.setToast('最低价大于最高价');
+          return;
+        }
+        assign(body, {
+          lowPrice: lowPrice ? +lowPrice : null,
+          highPrice: highPrice ? +highPrice : null,
+        });
+      }
+      if ((lplen === 0 && hplen > 0) || (lplen > 0 && hplen === 0)) {
+        indexActions.setToast('请输入最低价或最高价');
+        return;
+      }
+      if (lplen === 0 && hplen === 0) {
+        assign(body, {
+          lowPrice: null,
+          highPrice: null,
+        });
+      }
     }
+
     this.switchTab(e, tabFlag);
     this.setState({filter: false});
   }
@@ -202,8 +223,21 @@ class ProductList extends Component {
   handleChange(e, type) {
     const {lowPrice, highPrice} = this.state;
     const {indexActions} = this.props;
-    let value = parseInt(e.target.value);
-    // indexActions.setToast('请先选择礼物');
+    let value = e.target.value;
+    if (value === '') {
+      this.setState({
+        lowPrice: type==='lowPrice'?value:lowPrice,
+        highPrice: type==='highPrice'?value:highPrice,
+        priceSection: [],
+        sectionIndex: -1,
+      });
+      return;
+    }
+    if (!/^\d+(\.)?(\d+)?$/.test(value)) {
+      indexActions.setToast('请输入数值');
+      return;
+    }
+
     this.setState({
       lowPrice: type==='lowPrice'?value:lowPrice,
       highPrice: type==='highPrice'?value:highPrice,
@@ -275,21 +309,9 @@ class ProductList extends Component {
 
   //加载更多
   loadMore() {
-    const {categoryActions, fromType, categoryId} = this.props;
+    const {body} = this.state;
+    const {categoryActions} = this.props;
     const {getProductList} = categoryActions;
-
-    let body = {
-      category: null,
-      subjectId: null,
-      lowPrice: null,
-      highPrice: null
-    };
-    if (fromType === 'category') {
-      body.category = +categoryId;
-    } else {
-      body.subjectId = +categoryId;
-    }
-
     getProductList(body);
   }
 
