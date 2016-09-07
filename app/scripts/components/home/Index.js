@@ -146,7 +146,8 @@ class Home extends Component {
     });
 
     //漏斗埋点
-    perfect.setBuriedPoint('quanbufasonghon',{'hbhome1':'true'});
+    perfect.setBuriedPoint('quanbufasonghon-1', {'hbhome1': 'true'});
+    perfect.setBuriedPoint('ercifasonghongb', {'hbhome2':'true'});
 
   }
 
@@ -393,6 +394,9 @@ class Home extends Component {
 
     //埋点
     perfect.setBuriedPoint('hongbao_home_btn_sponsor');
+    //漏斗埋点
+    perfect.setBuriedPoint('quanbufasonghon-1', {'hbhomebtn1':'true'});
+    perfect.setBuriedPoint('ercifasonghongb', {'hbhomebtn2':'true'});
   }
 
   replaceProduct(e) {
@@ -582,7 +586,8 @@ class Home extends Component {
                       onTouchTap={this.payBefore} style={{paddingTop: '0.725rem', paddingBottom: '0.725rem'}}>发起京东红包
               </button>
               <div className="hb-help-link f-sm">
-                <Link to="/strategy" className="fl">如何发京东红包<span className="arrow-hollow-right arrow-r-sm"></span></Link>
+                <Link to="/strategy" className="fl">如何发京东红包<span
+                  className="arrow-hollow-right arrow-r-sm"></span></Link>
                 <a onClick={this.clearMenu}
                    className="fr"
                    href="http://m.wangyin.com/basic/findInfoByKeywordsH5?searchKey=%E4%BA%AC%E4%B8%9C%E7%BA%A2%E5%8C%85">帮助反馈

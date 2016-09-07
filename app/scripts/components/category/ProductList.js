@@ -239,6 +239,9 @@ class ProductList extends Component {
 
     //埋点
     perfect.setBuriedPoint('hongbao_product_confirm');
+    //漏斗埋点
+    perfect.setBuriedPoint('quanbufasonghon-1', {'hbproduct1':'true'});
+    perfect.setBuriedPoint('ercifasonghongb', {'hbproduct2':'true'});
 
     const {
       productPagination: {entity}
