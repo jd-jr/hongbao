@@ -27,25 +27,28 @@ class CategoryList extends Component {
   componentWillUnmount() {
   }
 
-  //渲染每个楼层主题
-  renderProductItem(item, index) {
-
+  // 进入某一分类下的推荐商品页
+  oneCateProduct(e, url) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+    this.context.router.push(url);
   }
 
   render() {
-    const {subjectList, categoryList} = this.props;
+    const {subjectList, categoryList, categoryActions} = this.props;
     if (!subjectList || categoryList.isFetching) {
       return (
         <div className="page-loading">载入中，请稍后 ...</div>
       );
     }
 
-    //处理Banner数据
-    const banners = subjectList.itemSubjectBanners.map((item, index) => {
+    const {itemSubjectBanners = [], itemSubjectFloors = []} = subjectList;
+    //处理Banner数据、楼层和主题数据
+    const banners = itemSubjectBanners.map((item, index) => {
       return {id: index, src: item.subjectPic, title: item.subjectName}
     });
-    //处理楼层和主题数据
-    const floors = subjectList.itemSubjectFloors;
 
     return (
       <div>
@@ -53,12 +56,11 @@ class CategoryList extends Component {
         <article className="cate-article">
           <div className="cate-banner">
             <div className="banner-wrap">
-              {/*<a href="#"><img src="../../images/category/banner-01.jpg" alt="" /></a>*/}
-              {<CategorySwiper items={banners}/>}
+              {banners? (<CategorySwiper items={banners}/>) : null}
             </div>
           </div>
           <div className="cate-floor-theme">
-            {floors.map((item, index) => {
+            {itemSubjectFloors.map((item, index) => {
               const {floorName, subjectFloors} = item;
               return (
                 <div key={index}>
@@ -68,9 +70,11 @@ class CategoryList extends Component {
                   <ul className="row cate-theme">
                     {subjectFloors.map((sub, sindex)=>{
                       const {subjectPic="../../images/category/hot.jpg"} = sub;
-                      return (
+                      return sub.subjectLink?(
                         <li key={sindex} className="col-12"><a href={sub.subjectLink}><img src={subjectPic} alt={sub.subjectName} /></a></li>
-                      )
+                      ):(
+                        <li key={sindex} className="col-12" onClick={(e) => this.oneCateProduct(e, `/category/subject/${sub.id}`)}><img src={subjectPic} alt={sub.subjectName} /></li>
+                      );
                     })}
                   </ul>
                 </div>
@@ -88,15 +92,11 @@ CategoryList.contextTypes = {
 };
 
 CategoryList.propTypes = {
-  children: PropTypes.node,
-  location: PropTypes.object,
   categoryActions: PropTypes.object,
   subjectList: PropTypes.object,
   categoryList: PropTypes.object,
   activeTab: PropTypes.string,
   priceOrder: PropTypes.string,
-  type: PropTypes.string,
-  categoryId: PropTypes.number,
 };
 
 export default CategoryList;
