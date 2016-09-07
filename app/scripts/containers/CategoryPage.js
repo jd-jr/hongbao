@@ -7,7 +7,7 @@ import * as indexActions from '../actions/index';
 class CategoryPage extends Component {
   render() {
     const {
-      children, location, categoryActions, subjectList, categoryList, productPagination,
+      children, location, indexActions, categoryActions, subjectList, categoryList, productPagination,
       activeTab, priceOrder, fromType, categoryId, selectedProduct, skuId, view, productDetail
     } = this.props;
 
