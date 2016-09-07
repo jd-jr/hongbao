@@ -7,26 +7,6 @@ class WishList extends Component {
     };
   }
 
-  componentWillMount() {
-
-  }
-
-  componentDidMount() {
-
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-
-  }
-
-  componentDidUpdate() {
-
-  }
-
-  componentWillUnmount() {
-
-  }
-
   render() {
 
     /*eslint-disable react/no-danger*/

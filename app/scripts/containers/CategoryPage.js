@@ -2,25 +2,32 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as categoryActions from '../actions/category';
+import * as indexActions from '../actions/index';
 
 class CategoryPage extends Component {
   render() {
     const {
-      children, location, categoryActions, subjectList, categoryList,
-      activeTab, priceOrder, type, categoryId
+      children, location, categoryActions, subjectList, categoryList, productPagination,
+      activeTab, priceOrder, fromType, categoryId, selectedProduct, skuId, view, productDetail
     } = this.props;
 
     return (
       <div>
         {children && React.cloneElement(children, {
           key: location.pathname,
+          indexActions,
           categoryActions,
           subjectList,
           categoryList,
+          productPagination,
           activeTab,
           priceOrder,
-          type,
-          categoryId
+          fromType,
+          categoryId,
+          selectedProduct,
+          productDetail: productDetail || {},
+          skuId,
+          view,
         })}
       </div>
     );
@@ -31,6 +38,7 @@ CategoryPage.propTypes = {
   children: PropTypes.node,
   location: PropTypes.object,
   entity: PropTypes.object,
+  indexActions: PropTypes.object,
   categoryActions: PropTypes.object,
   subjectList: PropTypes.object,
   categoryList: PropTypes.object,
@@ -39,7 +47,10 @@ CategoryPage.propTypes = {
   priceOrder: PropTypes.string,
   selectedProduct: PropTypes.string,
   fromType: PropTypes.string,
-  categoryId: PropTypes.number,
+  categoryId: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ]),
   productDetail: PropTypes.object,
   skuId: PropTypes.string,
   view: PropTypes.string,
@@ -75,7 +86,8 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    categoryActions: bindActionCreators(categoryActions, dispatch)
+    categoryActions: bindActionCreators(categoryActions, dispatch),
+    indexActions: bindActionCreators(indexActions, dispatch),
   }
 }
 

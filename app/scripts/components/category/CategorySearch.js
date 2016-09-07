@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import classnames from 'classnames';
+import perfect from '../../utils/perfect'
 
 //渲染商品分类搜索头
 class CategorySearch extends Component {
@@ -7,14 +8,20 @@ class CategorySearch extends Component {
     super(props, context);
     this.state = {
       showNavRight: false, //是否显示右侧分类
-      isFocused: false //搜索输入框是否聚焦
+      isFocused: false, //搜索输入框是否聚焦
     };
+
+    this.rootUrl = perfect.getLocationRoot() +'images/';
+
     this.showWishList = this.showWishList.bind(this);
     this.renderNavRight = this.renderNavRight.bind(this);
     this.showNavRight = this.showNavRight.bind(this);
     this.hideNavRight = this.hideNavRight.bind(this);
     this.searchInputFocus = this.searchInputFocus.bind(this);
     this.searchInputBlur = this.searchInputBlur.bind(this);
+  }
+
+  componentDidMount() {
   }
 
   //显示心愿单
@@ -43,7 +50,7 @@ class CategorySearch extends Component {
   }
 
   // 进入某一分类下的推荐商品页
-  oneCateProduct(e, url, index) {
+  oneCateProduct(e, url) {
     e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.preventDefault();
@@ -74,10 +81,10 @@ class CategorySearch extends Component {
 
                 return (
                   <li className="row" key={index}
-                    onClick={(e) => this.oneCateProduct(e, `/category/${cate.id}`, index)}
+                    onClick={(e) => this.oneCateProduct(e, `/category/category/${cate.id}`)}
                   >
                     <div className="col-5 cate-icon">
-                      <img src={categoryIcon} alt={categoryName} />
+                      <img src={categoryIcon} />
                     </div>
                     <div className="col-19 text-left cate-name">{categoryName}</div>
                   </li>
@@ -90,7 +97,6 @@ class CategorySearch extends Component {
     );
   }
 
-
   render() {
     const {isFocused} = this.state;
     const focusClass = classnames({
@@ -101,36 +107,33 @@ class CategorySearch extends Component {
     const inputClass = classnames({
       'input-search': true,
       'p-a-0': isFocused
-    })
+    });
 
     return (
       <div>
         <header className="cate-top-fixed">
           <div className="row header-wrap">
             <div className={focusClass}>
-              {!isFocused?(<img className="icon-search" src="../../images/category/icon-search.png" />):null}
+              {!isFocused?(<img className="icon-search" src={this.rootUrl + "category/icon-search.png"} />):null}
               <input type="text" className={inputClass} placeholder="搜索商品名称"
                      onClick={this.searchInputFocus}
                      ref="searchInput"
               />
-              {isFocused?(<img className="icon-search-focus" src="../../images/category/icon-search-focus.png" />):null}
+              {isFocused?(<img className="icon-search-focus" src={this.rootUrl + "category/icon-search-focus.png"} />):null}
             </div>
             {
-              !isFocused ? (<div className="icon-wishlist col-5 text-center"
-                         onClick={this.showWishList}>
-                <div><img src="../../images/category/icon-wish.png" alt="心愿单" /></div>
+              !isFocused ? (<div className="icon-wishlist col-5 text-center" onClick={this.showWishList}>
+                <div><img src={this.rootUrl + "category/icon-wish.png"} alt="心愿单" /></div>
                 <div>心愿单</div>
               </div>
               ) : null
             }
             {
-              !isFocused ? (<div className="icon-category col-2 text-center"
-                                 onClick={this.showNavRight}>
-                <div><img src="../../images/category/icon-cate.png" alt="分类" /></div>
+              !isFocused ? (<div className="icon-category col-2 text-center" onClick={this.showNavRight}>
+                <div><img src={this.rootUrl + "category/icon-cate.png"} alt="分类" /></div>
                 <div>分类</div>
               </div>) : null
             }
-
             {isFocused?(<div
               className="icon-cancel col-4 text-center"
               style={{display: "block"}}
@@ -149,6 +152,7 @@ CategorySearch.contextTypes = {
 };
 
 CategorySearch.propTypes = {
+  categoryActions: PropTypes.object,
   categoryList: PropTypes.object,
 };
 
