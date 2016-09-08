@@ -182,6 +182,12 @@ class HongbaoDetail extends Component {
         showInitiate: true
       });
     }
+
+    //必须是从抢红包入口进入
+    if(this.isUnPack){
+      //漏斗埋点
+      perfect.setBuriedPoint('ercifasonghongb', {'hbreceivedwto2':'true'});
+    }
   }
 
   // 红包攻略

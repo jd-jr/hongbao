@@ -40,10 +40,7 @@ let webpackConfig = {
       {
         test: /\.jsx?$/,
         loader: 'babel', // 'babel-loader' is also a legal name to reference
-        exclude: /(node_modules|bower_components)/,
-        query: {
-          presets: ['react', 'es2015']
-        }
+        exclude: /(node_modules)/,
       },
       // https://github.com/webpack/extract-text-webpack-plugin 单独引入css文件
       {
