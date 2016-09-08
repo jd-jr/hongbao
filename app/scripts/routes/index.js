@@ -70,7 +70,7 @@ export default {
         })
       },
       indexRoute: {
-        onEnter: () => enterHandler('categoryList'),
+        onEnter: () => enterHandler('selectCategory'),
         getComponent: (nextState, cb) => {
           return require.ensure([], (require) => {
             cb(null, require('../components/category/CategoryList').default)
@@ -79,8 +79,8 @@ export default {
       },
       childRoutes: [
         {
-          onEnter: () => enterHandler('category'),
-          path: ':fromType/:categoryId', // categoryId = 类目id
+          onEnter: () => enterHandler('productList'),
+          path: ':fromType/:categoryId',
           getComponent: (nextState, cb) => {
             require.ensure([], (require) => {
               cb(null, require('../components/category/ProductList').default)
