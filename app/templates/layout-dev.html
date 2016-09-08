@@ -21,9 +21,8 @@
   <!-- eruda 调试模式-->
   <script>
     (function () {
-      sessionStorage.setItem('active-eruda', 'true');
-      if (/eruda=true/.test(window.location.href) || sessionStorage.getItem('active-eruda') === 'true') {
-        var src = '/eruda.min.js';
+      if (/eruda=true/.test(window.location.href) || localStorage.getItem('active-eruda') === 'true') {
+        var src = '/m-hongbao/eruda.min.js';
         var script = document.getElementsByTagName('script')[0];
         var js = document.createElement('script');
         js.src = src;
@@ -41,7 +40,6 @@
 <div id="layout"></div>
 
 <!-- 腾讯云 H5 埋点统计-->
-<script type="text/javascript" src="//pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500153107" cid="500153108" ></script>
-<script src="/dist/vendor.dll.js"></script>
+<script type="text/javascript" src="//pingjs.qq.com/h5/stats.js" name="MTAH5" sid="500153107" cid="500153108"></script>
 </body>
 </html>
