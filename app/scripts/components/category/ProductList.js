@@ -494,7 +494,7 @@ class ProductList extends Component {
               筛选
               {
                 filter ? (<span className="arrow-top pos-a m-l-0-3 arrow-gray" style={{top: '1.1rem'}}></span>) :
-                  (<span className="arrow-bottom pos-a m-l-0-3 arrow-gray" style={{bottom: '1.3rem'}}></span>)
+                  (<span className="arrow-bottom pos-a m-l-0-3 arrow-gray" style={{bottom: '1.1rem'}}></span>)
               }
             </a>
             <a href="#" className="btn-cate-filter" onClick={this.switchIcon}><img src={this.rootUrl + iconUrl} alt="" /></a>

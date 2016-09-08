@@ -144,11 +144,11 @@
     right: 0;
     bottom: 0;
     padding: 0;
-    width: 0;
+    width: 45%;
     height: 100%;
     overflow: auto;
     background-color: #fff;
-    transition: width .3s ease;
+    transform: translateX(100%);
     li {
       height: 3.571429rem;
       line-height: 3.571429rem;
@@ -161,7 +161,8 @@
     }
   }
   .cate-right {
-    width: 45%;
+    transform: translateX(0%);
+    transition: all .3s ease;
   }
   .cate-icon {
     padding: 0 0.5rem;

@@ -31,10 +31,18 @@ class CategorySearch extends Component {
 
   //显示隐藏右侧分类导航栏
   showNavRight() {
-    this.setState({'showNavRight': true});
+    const {$cateNavRight} = this.refs;
+    this.setState({'showNavRight': true}, () => {
+      setTimeout(function () {
+        $cateNavRight.className = 'cate-nav-right cate-right';
+      }, 10);
+    });
   }
   hideNavRight() {
-    this.setState({'showNavRight': false});
+    const {$cateNavRight} = this.refs;
+    this.setState({'showNavRight': false}, () => {
+      $cateNavRight.className = 'cate-nav-right';
+    });
   }
 
   //搜索框聚焦事件
@@ -58,47 +66,10 @@ class CategorySearch extends Component {
     this.context.router.push(url);
   }
 
-  //渲染右侧分类导航栏
-  renderNavRight() {
-    const {showNavRight} = this.state;
-
-    if (!showNavRight) {
-      return null;
-    }
-
+  render() {
+    const {isFocused, showNavRight} = this.state;
     const {categoryList} = this.props;
     const {ids, entity} = categoryList;
-
-    return (
-      <div className="cate-mask">
-        <div className="cate-mask-wrap"
-            onClick={this.hideNavRight}>
-          <ul className="cate-nav-right cate-right">
-            {
-              ids ? ids.map((item, index) => {
-                const cate = entity[item];
-                const {categoryName, categoryIcon} = cate;
-
-                return (
-                  <li className="row" key={index}
-                    onClick={(e) => this.oneCateProduct(e, `/category/category/${cate.id}`)}
-                  >
-                    <div className="col-5 cate-icon">
-                      <img src={categoryIcon} />
-                    </div>
-                    <div className="col-19 text-left cate-name">{categoryName}</div>
-                  </li>
-                )
-              }) : null
-            }
-          </ul>
-        </div>
-      </div>
-    );
-  }
-
-  render() {
-    const {isFocused} = this.state;
     const focusClass = classnames({
       'search-input': true,
       'col-18': !isFocused,
@@ -139,7 +110,30 @@ class CategorySearch extends Component {
             >取消</div>):null}
           </div>
         </header>
-        {this.renderNavRight()}
+        <div className="cate-mask" style={{display: showNavRight?'block':'none'}}>
+          <div className="cate-mask-wrap"
+               onClick={this.hideNavRight}>
+            <ul className="cate-nav-right" ref="$cateNavRight">
+              {
+                ids ? ids.map((item, index) => {
+                  const cate = entity[item];
+                  const {categoryName, categoryIcon} = cate;
+
+                  return (
+                    <li className="row" key={index}
+                        onClick={(e) => this.oneCateProduct(e, `/category/category/${cate.id}`)}
+                    >
+                      <div className="col-5 cate-icon">
+                        <img src={categoryIcon} />
+                      </div>
+                      <div className="col-19 text-left cate-name">{categoryName}</div>
+                    </li>
+                  )
+                }) : null
+              }
+            </ul>
+          </div>
+        </div>
       </div>
     );
   }
