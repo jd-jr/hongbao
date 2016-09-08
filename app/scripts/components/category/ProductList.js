@@ -200,8 +200,8 @@ class ProductList extends Component {
           return;
         }
         assign(body, {
-          lowPrice: lowPrice ? +lowPrice : null,
-          highPrice: highPrice ? +highPrice : null,
+          lowPrice: lowPrice ? +lowPrice*100 : null,
+          highPrice: highPrice ? +highPrice*100 : null,
         });
       }
       if ((lplen === 0 && hplen > 0) || (lplen > 0 && hplen === 0)) {

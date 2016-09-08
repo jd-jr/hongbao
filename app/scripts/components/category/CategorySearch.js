@@ -77,7 +77,7 @@ class CategorySearch extends Component {
             {
               ids ? ids.map((item, index) => {
                 const cate = entity[item];
-                const {categoryName, categoryIcon="../../images/category/icon-catelist-01.png"} = cate;
+                const {categoryName, categoryIcon} = cate;
 
                 return (
                   <li className="row" key={index}
@@ -101,7 +101,7 @@ class CategorySearch extends Component {
     const {isFocused} = this.state;
     const focusClass = classnames({
       'search-input': true,
-      'col-17': !isFocused,
+      'col-18': !isFocused,
       'col-20': isFocused
     });
     const inputClass = classnames({
@@ -121,17 +121,15 @@ class CategorySearch extends Component {
               />
               {isFocused?(<img className="icon-search-focus" src={this.rootUrl + "category/icon-search-focus.png"} />):null}
             </div>
-            {
-              !isFocused ? (<div className="icon-wishlist col-5 text-center" onClick={this.showWishList}>
-                <div><img src={this.rootUrl + "category/icon-wish.png"} alt="心愿单" /></div>
-                <div>心愿单</div>
-              </div>
-              ) : null
-            }
-            {
-              !isFocused ? (<div className="icon-category col-2 text-center" onClick={this.showNavRight}>
-                <div><img src={this.rootUrl + "category/icon-cate.png"} alt="分类" /></div>
-                <div>分类</div>
+            {!isFocused ? (<div className="search-icons col-6 text-center">
+                <div className="icon-wishlist fl" onClick={this.showWishList}>
+                  <img src={this.rootUrl + "category/icon-wish.png"} alt="心愿单" />
+                    <div>心愿单</div>
+                </div>
+                <div className="icon-category fr" onClick={this.showNavRight}>
+                  <img src={this.rootUrl + "category/icon-cate.png"} alt="分类" />
+                    <div>分类</div>
+                </div>
               </div>) : null
             }
             {isFocused?(<div
