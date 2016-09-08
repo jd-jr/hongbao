@@ -52,9 +52,10 @@ class CategoryList extends Component {
         {<CategorySearch categoryList={categoryList} />}
         <article className="cate-article">
           <div className="cate-banner">
+          {banners.length ? (
             <div className="banner-wrap">
-              {banners? (<CategorySwiper items={banners}/>) : null}
-            </div>
+              <CategorySwiper items={banners}/>
+            </div>) : null}
           </div>
           <div className="cate-floor-theme">
             {itemSubjectFloors.map((item, index) => {

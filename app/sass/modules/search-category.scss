@@ -73,11 +73,13 @@
   left: 0;
   bottom: 0;
   background-color: #fff;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .cate-banner {
   margin-top: 4.071429rem;
-  padding: 0.785714rem;
   .banner-wrap {
+    padding: 0.785714rem;
     img {
       width: 100%;
       max-height: 7.0rem;
@@ -144,6 +146,7 @@
     padding: 0;
     width: 0;
     height: 100%;
+    overflow: auto;
     background-color: #fff;
     transition: width .3s ease;
     li {
@@ -245,7 +248,8 @@
 }
 .hb-main-header {
   padding-bottom: 3.5rem;
-  margin-top: 7.5rem;
+  margin-top: 7.2rem;
+  //overflow: hidden;
 }
 .cate-nav {
   position: fixed;

@@ -16,7 +16,7 @@ class ProductList extends Component {
     super(props, context);
     this.state = {
       showFoot: false, //是否显示底部fixed
-      listType: 'list', //block产品大图;list产品小图;默认小图
+      listType: props.listType, //block产品大图;list产品小图;默认小图
       filter: false, //默认不展示筛选下拉
       tabFlag: 'hot', //tab选中标记,默认为'hot'
       priceOrder: true, //默认按价格升序排列,false=desc、true=asc
@@ -83,10 +83,16 @@ class ProductList extends Component {
     e.preventDefault();
 
     const {listType} = this.state;
+    const {categoryActions} = this.props;
+    const {setListType} = categoryActions;
     if (listType === 'block') {
-      this.setState({listType: 'list'});
+      this.setState({listType: 'list'}, () => {
+        setListType('list');
+      });
     } else {
-      this.setState({listType: 'block'});
+      this.setState({listType: 'block'}, () => {
+        setListType('block');
+      });
     }
   }
   /*
@@ -151,7 +157,7 @@ class ProductList extends Component {
         priceSection = [100, 5000];
         break;
       case 1:
-        priceSection = [500, 20000];
+        priceSection = [5000, 20000];
         break;
       case 2:
         priceSection = [20000, 50000];
@@ -377,7 +383,7 @@ class ProductList extends Component {
     const {selectedProduct} = this.props;
     return (
       <li key={skuId} className="pos-r">
-        <i className={`pos-a hb-radio-gray${selectedProduct === skuId ? ' checked' : ''}`} onTouchTap={() => this.handleChecked(skuId)}></i>
+        <i className={`pos-a hb-radio-gray${selectedProduct === skuId ? ' checked' : ''}`} onClick={() => this.handleChecked(skuId)}></i>
         <div className="p-a-0" onClick={(e) => this.productDetail(e, `/product/detail/${skuId}`, index)}>
           <img className="img-fluid" src={indexImg} alt="" />
         </div>
@@ -444,7 +450,7 @@ class ProductList extends Component {
                   useDocument={false}
                   loader={<div className=""></div>}
                   ref="productList">
-        <ul className={`hb-list ${listType==='block'?'cate-hb-list':null}`}>
+        <ul className={`hb-list ${listType==='block'?'cate-hb-list':''}`}>
           {
             ids ? ids.map((item, index) => {
               return listType==='block'?
@@ -476,15 +482,15 @@ class ProductList extends Component {
         />}
         <div className="cate-nav">
           <div className="cate-filter-nav">
-            <a href="#" className={`btn-tab ${tabFlag==='hot'?"active":null}`} onClick={(e) => this.switchTab(e, 'hot')}>人气</a>
-            <a href="#" className={`btn-tab ${tabFlag==='new'?"active":null}`} onClick={(e) => this.switchTab(e, 'new')}>新品</a>
-            <a href="#" className={`btn-tab pos-r ${tabFlag==='price'?"active":null}`} onClick={(e) => this.switchTab(e, 'price')}>
+            <a href="#" className={`btn-tab ${tabFlag==='hot'?"active":""}`} onClick={(e) => this.switchTab(e, 'hot')}>人气</a>
+            <a href="#" className={`btn-tab ${tabFlag==='new'?"active":""}`} onClick={(e) => this.switchTab(e, 'new')}>新品</a>
+            <a href="#" className={`btn-tab pos-r ${tabFlag==='price'?"active":""}`} onClick={(e) => this.switchTab(e, 'price')}>
               价格
               <span className={`arrow-top pos-a m-l-0-3 ${parrow}`} style={{top: '0.9rem'}}></span>
               <span className={`arrow-bottom pos-a m-l-0-3 ${parrow2}`} style={{bottom: '0.9rem'}}></span>
 
             </a>
-            <a href="#" className={`btn-tab pos-r ${tabFlag==='filter'?"active":null}`} onClick={this.switchFilter}>
+            <a href="#" className={`btn-tab pos-r ${tabFlag==='filter'?"active":""}`} onClick={this.switchFilter}>
               筛选
               {
                 filter ? (<span className="arrow-top pos-a m-l-0-3 arrow-gray" style={{top: '1.1rem'}}></span>) :
@@ -497,13 +503,13 @@ class ProductList extends Component {
             <div className="cate-filter-wrap">
               <div className="row m-b-2">
                 <div className="col-8">
-                  <button className={`btn btn-block ${sectionIndex===0?"active":null}`} onClick={(e) => this.setPriceSection(e, 0)}>1 - 50</button>
+                  <button className={`btn btn-block ${sectionIndex===0?"active":""}`} onClick={(e) => this.setPriceSection(e, 0)}>1 - 50</button>
                 </div>
                 <div className="col-8">
-                  <button className={`btn btn-block ${sectionIndex===1?"active":null}`} onClick={(e) => this.setPriceSection(e, 1)}>5 - 200</button>
+                  <button className={`btn btn-block ${sectionIndex===1?"active":""}`} onClick={(e) => this.setPriceSection(e, 1)}>50 - 200</button>
                 </div>
                 <div className="col-8">
-                  <button className={`btn btn-block ${sectionIndex===2?"active":null}`} onClick={(e) => this.setPriceSection(e, 2)}>200 - 500</button>
+                  <button className={`btn btn-block ${sectionIndex===2?"active":""}`} onClick={(e) => this.setPriceSection(e, 2)}>200 - 500</button>
                 </div>
               </div>
               <div className="row">
@@ -555,6 +561,7 @@ ProductList.propTypes = {
   activeTab: PropTypes.string,
   priceOrder: PropTypes.string,
   selectedProduct: PropTypes.string,
+  listType: PropTypes.string,
   fromType: PropTypes.string,
   categoryId: PropTypes.oneOfType([
     PropTypes.number,

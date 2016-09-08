@@ -5,6 +5,7 @@ import {
   PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAILURE, PRODUCT_LIST_CLEAR,
   SWITCH_TAB, PRICE_ORDER,
   SELECTED_PRODUCT, CLEAR_SELECT_PRODUCT,
+  SAVE_LIST_TYPE, CLEAR_LIST_TYPE,
 } from '../constants/CategoryActionTypes';
 
 
@@ -41,6 +42,17 @@ const category = combineReducers({
       case SELECTED_PRODUCT:
         return action.skuId;
       case CLEAR_SELECT_PRODUCT:
+        return null;
+      default:
+        return state;
+    }
+  },
+  //存储查看方式,列表|方块
+  listType: (state = 'list', action) => {
+    switch (action.type) {
+      case SAVE_LIST_TYPE:
+        return action.t;
+      case CLEAR_LIST_TYPE:
         return null;
       default:
         return state;
