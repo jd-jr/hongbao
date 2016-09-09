@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import ReactSwiper from '../../ui/ReactSwiper';
+import {Link} from 'react-router';
 
 // 商品详情页图片轮播图
 class CategorySwiper extends Component {
@@ -42,7 +43,7 @@ class CategorySwiper extends Component {
                     link ? (
                       <a href={link}><img src={src} title={title} /></a>
                     ) : (
-                      <a href={`/category/subject/${id}`}><img src={src} title={title} /></a>
+                      <Link to={`/category/subject/${id}`}><img src={src} title={title} /></Link>
                     )
                   }
                 </div>

@@ -41,11 +41,12 @@ class CategoryList extends Component {
       );
     }
 
-    const {itemSubjectBanners = [], itemSubjectFloors = []} = subjectList;
+    const {itemSubjectBanners, itemSubjectFloors} = subjectList;
     //处理Banner数据、楼层和主题数据
-    const banners = itemSubjectBanners.map((item, index) => {
+    const banners = itemSubjectBanners ? itemSubjectBanners.map((item, index) => {
       return {id: item.id, src: item.subjectPic, title: item.subjectName, link: item.subjectLink}
-    });
+    }) : [];
+    const floors = itemSubjectFloors ? itemSubjectFloors : [];
 
     return (
       <div>
@@ -58,7 +59,7 @@ class CategoryList extends Component {
             </div>) : null}
           </div>
           <div className="cate-floor-theme">
-            {itemSubjectFloors.map((item, index) => {
+            {floors.length ? floors.map((item, index) => {
               const {floorName, subjectFloors} = item;
               return (
                 <div key={index}>
@@ -77,7 +78,7 @@ class CategoryList extends Component {
                   </ul>
                 </div>
               )
-            })}
+            }) : null}
           </div>
         </article>
       </div>

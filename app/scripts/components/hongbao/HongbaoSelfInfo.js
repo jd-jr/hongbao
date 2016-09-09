@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import {Link} from 'react-router';
-import jdWalletApi from 'jd-wallet-sdk';
+import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../../utils/perfect';
 import callApi from '../../fetch';
