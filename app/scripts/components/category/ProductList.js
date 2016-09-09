@@ -58,7 +58,7 @@ class ProductList extends Component {
   componentDidMount() {
     const {body} = this.state;
     const {categoryActions, fromType, categoryId} = this.props;
-    const {getProductList, getCategoryList, clearSelectProduct} = categoryActions;
+    const {getCategoryList, clearSelectProduct} = categoryActions;
 
     if (fromType === 'category') {
       body.category = +categoryId;
@@ -67,7 +67,7 @@ class ProductList extends Component {
     }
 
     getCategoryList(); //获取分类数据
-    getProductList(body, true); //拉取产品数据
+    this.handleGetProductList(body, true, true);
     clearSelectProduct(); //清理之前选中的产品sku
 
     //更新body
@@ -76,6 +76,14 @@ class ProductList extends Component {
     //添加下拉刷新相关事件
     window.addEventListener('touchstart', this.onTouchStart, false);
     window.addEventListener('scroll', this.onScroll, false);
+  }
+
+  handleGetProductList(body, clear, top) {
+    const {categoryActions} = this.props;
+    const {productList} = this.refs;
+    const {getProductList} = categoryActions;
+    getProductList(body, clear); //拉取产品数据
+    // if (top) findDOMNode(productList).scrollTop = 0;
   }
 
   //切换产品列表展示方式
@@ -104,8 +112,6 @@ class ProductList extends Component {
 
     this.setState({tabFlag}); //更新选中tab
     const {priceOrder, body} = this.state;
-    const {categoryActions} = this.props;
-    const {getProductList} = categoryActions;
 
     switch (tabFlag) {
       case 'hot':
@@ -134,7 +140,7 @@ class ProductList extends Component {
     }
 
     this.setState({body}); //更新body
-    getProductList(body, true);
+    this.handleGetProductList(body, true, true);
   }
   //切换展示筛选下拉
   switchFilter(e) {
@@ -148,8 +154,6 @@ class ProductList extends Component {
     e.preventDefault();
 
     const {body} = this.state;
-    const {categoryActions} = this.props;
-    const {getProductList} = categoryActions;
     let priceSection = [];
 
     switch (sectionIndex) {
@@ -177,7 +181,7 @@ class ProductList extends Component {
       filter: false,
     });
 
-    getProductList(body, true);
+    this.handleGetProductList(body, true, true);
   }
   //重置筛选金额
   resetPriceSection() {
@@ -316,9 +320,7 @@ class ProductList extends Component {
   //加载更多
   loadMore() {
     const {body} = this.state;
-    const {categoryActions} = this.props;
-    const {getProductList} = categoryActions;
-    getProductList(body);
+    this.handleGetProductList(body);
   }
 
   renderProductListItem(item, index) {

@@ -149,18 +149,18 @@ class WishList extends Component {
                     className="hb-textarea f-lg" value={remark} name="remark" onChange={this.handleChange}></textarea>
           <span className="cate-note-num">{this.textMaxLen}/{enterLen}</span>
         </div>
-        <div className="cate-gift-pic">
-          {productPicPreviewList.map((item, index)=> {
-            return (
-              <img key={index} className="cate-pic" src={item}/>
-            );
-          })}
+        {/*<div className="cate-gift-pic">*/}
+          {/*{productPicPreviewList.map((item, index)=> {*/}
+            {/*return (*/}
+              {/*<img key={index} className="cate-pic" src={item}/>*/}
+            {/*);*/}
+          {/*})}*/}
 
-          <FileInput className="cate-pic cate-select-pic" onChange={this.uploadImg}
-                     accept="image/*">
-            <img src="../../images/category/icon-wish-pic.png" alt=""/>
-          </FileInput>
-        </div>
+          {/*<FileInput className="cate-pic cate-select-pic" onChange={this.uploadImg}*/}
+                     {/*accept="image/*">*/}
+            {/*<img src="../../images/category/icon-wish-pic.png" alt=""/>*/}
+          {/*</FileInput>*/}
+        {/*</div>*/}
         <div className="cate-gift-submit">
           <button onClick={this.save}>提交</button>
         </div>
