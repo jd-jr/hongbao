@@ -5,6 +5,7 @@ import {
   PRODUCT_REQUEST, PRODUCT_SUCCESS, PRODUCT_FAILURE, PRODUCT_CLEAR,
   SWITCH_TAB, PRICE_ORDER,
   SELECTED_PRODUCT, CLEAR_SELECT_PRODUCT,
+  SAVE_LIST_TYPE, CLEAR_LIST_TYPE,
 } from '../constants/CategoryActionTypes';
 
 import CategorySchemas from '../models/CategorySchemas';
@@ -168,5 +169,20 @@ export function selectProduct(skuId) {
 export function clearSelectProduct() {
   return {
     type: CLEAR_SELECT_PRODUCT
+  }
+}
+
+
+//存储查看方式,列表|方块
+export function setListType(type) {
+  return {
+    type: SAVE_LIST_TYPE,
+    t: type,
+  }
+}
+//清空查看方式,列表|方块
+export function clearListType() {
+  return {
+    type: CLEAR_LIST_TYPE
   }
 }

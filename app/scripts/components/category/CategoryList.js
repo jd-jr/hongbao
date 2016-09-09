@@ -24,9 +24,6 @@ class CategoryList extends Component {
     getSubjectList(); //获取主题数据,包括"banner位信息、楼层主题信息"
   }
 
-  componentWillUnmount() {
-  }
-
   // 进入某一分类下的推荐商品页
   oneCateProduct(e, url) {
     e.preventDefault();
@@ -37,7 +34,7 @@ class CategoryList extends Component {
   }
 
   render() {
-    const {subjectList, categoryList, categoryActions} = this.props;
+    const {subjectList, categoryList} = this.props;
     if (!subjectList || categoryList.isFetching) {
       return (
         <div className="page-loading">载入中，请稍后 ...</div>
@@ -47,7 +44,7 @@ class CategoryList extends Component {
     const {itemSubjectBanners = [], itemSubjectFloors = []} = subjectList;
     //处理Banner数据、楼层和主题数据
     const banners = itemSubjectBanners.map((item, index) => {
-      return {id: index, src: item.subjectPic, title: item.subjectName}
+      return {id: item.id, src: item.subjectPic, title: item.subjectName, link: item.subjectLink}
     });
 
     return (
@@ -55,9 +52,10 @@ class CategoryList extends Component {
         {<CategorySearch categoryList={categoryList} />}
         <article className="cate-article">
           <div className="cate-banner">
+          {banners.length ? (
             <div className="banner-wrap">
-              {banners? (<CategorySwiper items={banners}/>) : null}
-            </div>
+              <CategorySwiper items={banners}/>
+            </div>) : null}
           </div>
           <div className="cate-floor-theme">
             {itemSubjectFloors.map((item, index) => {
@@ -69,11 +67,11 @@ class CategoryList extends Component {
                   </div>
                   <ul className="row cate-theme">
                     {subjectFloors.map((sub, sindex)=>{
-                      const {subjectPic="../../images/category/hot.jpg"} = sub;
+                      const {subjectPic} = sub;
                       return sub.subjectLink?(
-                        <li key={sindex} className="col-12"><a href={sub.subjectLink}><img src={subjectPic} alt={sub.subjectName} /></a></li>
+                        <li key={sindex} className="col-12"><a href={sub.subjectLink}><img src={subjectPic} title={sub.subjectName} /></a></li>
                       ):(
-                        <li key={sindex} className="col-12" onClick={(e) => this.oneCateProduct(e, `/category/subject/${sub.id}`)}><img src={subjectPic} alt={sub.subjectName} /></li>
+                        <li key={sindex} className="col-12" onClick={(e) => this.oneCateProduct(e, `/category/subject/${sub.id}`)}><img src={subjectPic} title={sub.subjectName} /></li>
                       );
                     })}
                   </ul>

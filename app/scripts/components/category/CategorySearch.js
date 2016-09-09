@@ -14,7 +14,6 @@ class CategorySearch extends Component {
     this.rootUrl = perfect.getLocationRoot() +'images/';
 
     this.showWishList = this.showWishList.bind(this);
-    this.renderNavRight = this.renderNavRight.bind(this);
     this.showNavRight = this.showNavRight.bind(this);
     this.hideNavRight = this.hideNavRight.bind(this);
     this.searchInputFocus = this.searchInputFocus.bind(this);
@@ -31,10 +30,18 @@ class CategorySearch extends Component {
 
   //显示隐藏右侧分类导航栏
   showNavRight() {
-    this.setState({'showNavRight': true});
+    const {$cateNavRight} = this.refs;
+    this.setState({'showNavRight': true}, () => {
+      setTimeout(function () {
+        $cateNavRight.className = 'cate-nav-right cate-right';
+      }, 10);
+    });
   }
   hideNavRight() {
-    this.setState({'showNavRight': false});
+    const {$cateNavRight} = this.refs;
+    this.setState({'showNavRight': false}, () => {
+      $cateNavRight.className = 'cate-nav-right';
+    });
   }
 
   //搜索框聚焦事件
@@ -58,50 +65,13 @@ class CategorySearch extends Component {
     this.context.router.push(url);
   }
 
-  //渲染右侧分类导航栏
-  renderNavRight() {
-    const {showNavRight} = this.state;
-
-    if (!showNavRight) {
-      return null;
-    }
-
+  render() {
+    const {isFocused, showNavRight} = this.state;
     const {categoryList} = this.props;
     const {ids, entity} = categoryList;
-
-    return (
-      <div className="cate-mask">
-        <div className="cate-mask-wrap"
-            onClick={this.hideNavRight}>
-          <ul className="cate-nav-right cate-right">
-            {
-              ids ? ids.map((item, index) => {
-                const cate = entity[item];
-                const {categoryName, categoryIcon="../../images/category/icon-catelist-01.png"} = cate;
-
-                return (
-                  <li className="row" key={index}
-                    onClick={(e) => this.oneCateProduct(e, `/category/category/${cate.id}`)}
-                  >
-                    <div className="col-5 cate-icon">
-                      <img src={categoryIcon} />
-                    </div>
-                    <div className="col-19 text-left cate-name">{categoryName}</div>
-                  </li>
-                )
-              }) : null
-            }
-          </ul>
-        </div>
-      </div>
-    );
-  }
-
-  render() {
-    const {isFocused} = this.state;
     const focusClass = classnames({
       'search-input': true,
-      'col-17': !isFocused,
+      'col-18': !isFocused,
       'col-20': isFocused
     });
     const inputClass = classnames({
@@ -112,36 +82,66 @@ class CategorySearch extends Component {
     return (
       <div>
         <header className="cate-top-fixed">
-          <div className="row header-wrap">
-            <div className={focusClass}>
-              {!isFocused?(<img className="icon-search" src={this.rootUrl + "category/icon-search.png"} />):null}
-              <input type="text" className={inputClass} placeholder="搜索商品名称"
-                     onClick={this.searchInputFocus}
-                     ref="searchInput"
-              />
-              {isFocused?(<img className="icon-search-focus" src={this.rootUrl + "category/icon-search-focus.png"} />):null}
+          {/*<div className="row header-wrap">*/}
+            {/*<div className={focusClass}>*/}
+              {/*{!isFocused?(<img className="icon-search" src={this.rootUrl + "category/icon-search.png"} />):null}*/}
+              {/*<input type="text" className={inputClass} placeholder="搜索商品名称"*/}
+                     {/*onClick={this.searchInputFocus}*/}
+                     {/*ref="searchInput"*/}
+              {/*/>*/}
+              {/*{isFocused?(<img className="icon-search-focus" src={this.rootUrl + "category/icon-search-focus.png"} />):null}*/}
+            {/*</div>*/}
+            {/*{!isFocused ? (<div className="search-icons col-6 text-center">*/}
+                {/*<div className="icon-wishlist fl" onClick={this.showWishList}>*/}
+                  {/*<img src={this.rootUrl + "category/icon-wish.png"} alt="心愿单" />*/}
+                    {/*<div>心愿单</div>*/}
+                {/*</div>*/}
+                {/*<div className="icon-category fr" onClick={this.showNavRight}>*/}
+                  {/*<img src={this.rootUrl + "category/icon-cate.png"} alt="分类" />*/}
+                    {/*<div>分类</div>*/}
+                {/*</div>*/}
+              {/*</div>) : null*/}
+            {/*}*/}
+            {/*{isFocused?(<div*/}
+              {/*className="icon-cancel col-4 text-center"*/}
+              {/*style={{display: "block"}}*/}
+              {/*onClick={this.searchInputBlur}*/}
+            {/*>取消</div>):null}*/}
+          {/*</div>*/}
+          <div className="row header-nav-wrap">
+            <div className="icon-nav-wishlist col-11 text-center" onClick={this.showWishList}>
+              <div><img src={this.rootUrl + "category/icon-wish-white.png"} alt="" />心愿单</div>
             </div>
-            {
-              !isFocused ? (<div className="icon-wishlist col-5 text-center" onClick={this.showWishList}>
-                <div><img src={this.rootUrl + "category/icon-wish.png"} alt="心愿单" /></div>
-                <div>心愿单</div>
-              </div>
-              ) : null
-            }
-            {
-              !isFocused ? (<div className="icon-category col-2 text-center" onClick={this.showNavRight}>
-                <div><img src={this.rootUrl + "category/icon-cate.png"} alt="分类" /></div>
-                <div>分类</div>
-              </div>) : null
-            }
-            {isFocused?(<div
-              className="icon-cancel col-4 text-center"
-              style={{display: "block"}}
-              onClick={this.searchInputBlur}
-            >取消</div>):null}
+            <div className="col-2 text-center"><span className="vline"></span></div>
+            <div className="icon-nav-category col-11 text-center" onClick={this.showNavRight}>
+              <div><img src={this.rootUrl + "category/icon-cate-white.png"} alt="" />分类</div>
+            </div>
           </div>
         </header>
-        {this.renderNavRight()}
+        <div className="cate-mask" style={{display: showNavRight?'block':'none'}}>
+          <div className="cate-mask-wrap"
+               onClick={this.hideNavRight}>
+            <ul className="cate-nav-right" ref="$cateNavRight">
+              {
+                ids ? ids.map((item, index) => {
+                  const cate = entity[item];
+                  const {categoryName, categoryIcon} = cate;
+
+                  return (
+                    <li className="row" key={index}
+                        onClick={(e) => this.oneCateProduct(e, `/category/category/${cate.id}`)}
+                    >
+                      <div className="col-5 cate-icon">
+                        <img src={categoryIcon} />
+                      </div>
+                      <div className="col-19 text-left cate-name">{categoryName}</div>
+                    </li>
+                  )
+                }) : null
+              }
+            </ul>
+          </div>
+        </div>
       </div>
     );
   }

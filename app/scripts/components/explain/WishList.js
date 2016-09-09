@@ -186,12 +186,11 @@ class WishList extends Component {
           <span className="cate-note-num">{this.textMaxLen}/{enterLen}</span>
         </div>
         <div className="cate-gift-pic">
-          {productPicPreviewList.map((item, index)=> {
+          {/*{productPicPreviewList.map((item, index) => {
             return (
               <img key={index} className="cate-pic" src={item}/>
             );
-          })}
-
+          })}*/}
           {/*<FileInput className="cate-pic cate-select-pic" onChange={this.uploadImg}
            accept="image/*">
            <img src="../../images/category/icon-wish-pic.png" alt=""/>

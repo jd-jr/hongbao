@@ -17,7 +17,8 @@ const routeSetting = {
   titles: {
     home: '京东红包',
     initiate: '京东红包',
-    productList: '选择礼物',
+    selectCategory: '选择分类',
+    productList: '选择商品',
     product: '礼物详情',
     productView: '礼物详情',
     authorize: '京东红包',

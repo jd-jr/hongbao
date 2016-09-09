@@ -8,7 +8,7 @@ class CategoryPage extends Component {
   render() {
     const {
       children, location, indexActions, categoryActions, subjectList, categoryList, productPagination,
-      activeTab, priceOrder, fromType, categoryId, selectedProduct, skuId, view, productDetail
+      activeTab, priceOrder, fromType, categoryId, selectedProduct, skuId, view, productDetail, listType,
     } = this.props;
 
     return (
@@ -25,6 +25,7 @@ class CategoryPage extends Component {
           fromType,
           categoryId,
           selectedProduct,
+          listType,
           productDetail: productDetail || {},
           skuId,
           view,
@@ -46,6 +47,7 @@ CategoryPage.propTypes = {
   activeTab: PropTypes.string,
   priceOrder: PropTypes.string,
   selectedProduct: PropTypes.string,
+  listType: PropTypes.string,
   fromType: PropTypes.string,
   categoryId: PropTypes.oneOfType([
     PropTypes.number,
@@ -61,7 +63,7 @@ function mapStateToProps(state, ownProps) {
   const {skuId, view, fromType, categoryId} = ownProps.params;
   const {
     entity: {subjectList, productDetail},
-    category: {productPagination, categoryList, activeTab, priceOrder, selectedProduct},
+    category: {productPagination, categoryList, activeTab, priceOrder, selectedProduct, listType},
   } = state;
 
   let objects = {
@@ -73,6 +75,7 @@ function mapStateToProps(state, ownProps) {
     fromType,
     categoryId,
     selectedProduct,
+    listType,
     productDetail: productDetail || {},
     skuId,
     view,

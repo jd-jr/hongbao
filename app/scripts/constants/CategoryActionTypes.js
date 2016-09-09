@@ -30,3 +30,7 @@ export const PRICE_ORDER = 'PRICE_ORDER';
 export const SELECTED_PRODUCT = 'SELECTED_PRODUCT';
 //清空选中的商品
 export const CLEAR_SELECT_PRODUCT = 'CLEAR_SELECT_PRODUCT';
+//存储查看方式,列表|方块
+export const SAVE_LIST_TYPE = 'SAVE_LIST_TYPE';
+//清空查看方式,列表|方块
+export const CLEAR_LIST_TYPE = 'CLEAR_LIST_TYPE';

@@ -34,11 +34,17 @@ class CategorySwiper extends Component {
       <ReactSwiper swiperOptions={swiperOptions} showPagination swiperClass="">
         {
           items && items.map((item) => {
-            const {src, title, id} = item;
+            const {src, title, id, link} = item;
             return (
               <div className="slider-item swiper-slide" key={id}>
                 <div className="slide-content">
-                  <img className="" src={src} title={title}/>
+                  {
+                    link ? (
+                      <a href={link}><img src={src} title={title} /></a>
+                    ) : (
+                      <a href={`/category/subject/${id}`}><img src={src} title={title} /></a>
+                    )
+                  }
                 </div>
               </div>
             );
