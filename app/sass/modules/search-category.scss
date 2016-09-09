@@ -13,8 +13,8 @@
     height: 50px;
     line-height: 35px;
     padding: 0.571429rem 1.428571rem;
-    background-color: #161616;
-    color: #fff;
+    background-color: #fff;
+    color: #333;
     img {
       margin: 0 5px 3px 0;
     }
@@ -22,7 +22,7 @@
       display: inline-block;
       width: 1px;
       height: 100%;
-      background-color: #fff;
+      background-color: #333;
     }
   }
   .icon-nav-wishlist {
@@ -291,6 +291,7 @@
   align-content: center;
   padding: 0 0.5rem;
   background-color: #fff;
+  border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
   a {
     color: #333;

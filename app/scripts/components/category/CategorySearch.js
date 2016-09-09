@@ -58,10 +58,6 @@ class CategorySearch extends Component {
 
   // 进入某一分类下的推荐商品页
   oneCateProduct(e, url) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.nativeEvent.preventDefault();
-    e.nativeEvent.stopPropagation();
     this.context.router.push(url);
   }
 
@@ -110,11 +106,11 @@ class CategorySearch extends Component {
           {/*</div>*/}
           <div className="row header-nav-wrap">
             <div className="icon-nav-wishlist col-11 text-center" onClick={this.showWishList}>
-              <div><img src={this.rootUrl + "category/icon-wish-white.png"} alt="" />心愿单</div>
+              <div><img src={this.rootUrl + "category/icon-wish.png"} alt="" />心愿单</div>
             </div>
-            <div className="col-2 text-center"><span className="vline"></span></div>
+            <div className="col-2 text-center" style={{padding: '2px 0'}}><span className="vline"></span></div>
             <div className="icon-nav-category col-11 text-center" onClick={this.showNavRight}>
-              <div><img src={this.rootUrl + "category/icon-cate-white.png"} alt="" />分类</div>
+              <div><img src={this.rootUrl + "category/icon-cate.png"} alt="" />分类</div>
             </div>
           </div>
         </header>

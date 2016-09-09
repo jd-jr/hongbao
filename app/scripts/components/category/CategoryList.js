@@ -26,10 +26,6 @@ class CategoryList extends Component {
 
   // 进入某一分类下的推荐商品页
   oneCateProduct(e, url) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.nativeEvent.preventDefault();
-    e.nativeEvent.stopPropagation();
     this.context.router.push(url);
   }
 
