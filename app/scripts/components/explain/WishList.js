@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import callApi from '../../fetch';
 import perfect from '../../utils/perfect';
-import FileInput from '../../ui/FileInput';
+//import FileInput from '../../ui/FileInput';
 import Loading from '../../ui/Loading';
 
 class WishList extends Component {
@@ -10,7 +11,8 @@ class WishList extends Component {
   };
 
   static propTypes = {
-    indexActions: PropTypes.object
+    indexActions: PropTypes.object,
+    setClientInfo: PropTypes.func
   };
 
   constructor(props, context) {
@@ -25,6 +27,7 @@ class WishList extends Component {
     };
 
     this.textMaxLen = 500;
+    this.isLogin = false;
   }
 
   verify() {
@@ -41,11 +44,29 @@ class WishList extends Component {
     return true;
   }
 
-  //保存心愿单
-  save = () => {
+  saveBefore = (e) => {
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+
     if (!this.verify()) {
       return;
     }
+
+    if (this.isLogin) {
+      this.save();
+    } else {
+      const {setClientInfo} = this.props;
+      setClientInfo((status) => {
+        if (status) {
+          this.save();
+          this.isLogin = true;
+        }
+      });
+    }
+  };
+
+  //保存心愿单
+  save() {
     if (this.state.submitStatus) {
       return;
     }
@@ -64,6 +85,7 @@ class WishList extends Component {
       this.setState({
         submitStatus: false
       });
+      this.props.indexActions.setToast('保存成功，感谢您的参与！');
       this.context.router.push('/');
     }, (error) => {
       this.setState({
@@ -109,10 +131,24 @@ class WishList extends Component {
         this.setState({
           productPicPreviewList
         });
-        this.saveImg(result);
+        this.saveImgBefore(result);
       };
     }
   };
+
+  saveImgBefore(imgFiles) {
+    if (this.isLogin) {
+      this.saveImg(imgFiles);
+    } else {
+      const {setClientInfo} = this.props;
+      setClientInfo((status) => {
+        if (status) {
+          this.saveImg(imgFiles);
+          this.isLogin = true;
+        }
+      });
+    }
+  }
 
   saveImg(imgFiles) {
     const thirdAccId = perfect.getThirdAccId();
@@ -124,9 +160,9 @@ class WishList extends Component {
     };
 
     callApi({url: 'uploadWishImg', body, needAuth: true}).then((res) => {
-      if (res.list && res.list.length > 0) {
+      if (res.json.data && res.json.data.length > 0) {
         this.setState({
-          productPicList: res.list
+          productPicList: res.json.data
         });
       }
     }, (error) => {
@@ -156,13 +192,13 @@ class WishList extends Component {
             );
           })}
 
-          <FileInput className="cate-pic cate-select-pic" onChange={this.uploadImg}
-                     accept="image/*">
-            <img src="../../images/category/icon-wish-pic.png" alt=""/>
-          </FileInput>
+          {/*<FileInput className="cate-pic cate-select-pic" onChange={this.uploadImg}
+           accept="image/*">
+           <img src="../../images/category/icon-wish-pic.png" alt=""/>
+           </FileInput>*/}
         </div>
         <div className="cate-gift-submit">
-          <button onClick={this.save}>提交</button>
+          <button onClick={this.saveBefore}>提交</button>
         </div>
         <p className="text-center">提交心愿单就有机会看到您期望的礼物上架哦</p>
       </div>

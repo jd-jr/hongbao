@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 
 class FileInput extends Component {
   static propTypes = {
@@ -20,11 +21,19 @@ class FileInput extends Component {
 
   render() {
     const {className, accept, children, multiple} = this.props;
+    //Android 不支持 multiple
     return (
       <div className={`fileinput-panel ${className}`}>
         {children}
-        <input type="file" className="fileinput-file" accept={accept} multiple={multiple}
-               onChange={this.handleChange}/>
+        {
+          deviceEnv.inIos ?
+            (<input type="file" className="fileinput-file" accept={accept} multiple={multiple}
+                    onChange={this.handleChange}/>)
+            : (deviceEnv.inAndroid ? (<input type="file" className="fileinput-file" accept={accept}
+                                             onChange={this.handleChange}/>) :
+            (<input type="file" className="fileinput-file"
+                    onChange={this.handleChange}/>))
+        }
       </div>
     );
   }
