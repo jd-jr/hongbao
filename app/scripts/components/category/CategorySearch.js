@@ -105,11 +105,10 @@ class CategorySearch extends Component {
             {/*>取消</div>):null}*/}
           {/*</div>*/}
           <div className="row header-nav-wrap">
-            <div className="icon-nav-wishlist col-11 text-center" onClick={this.showWishList}>
+            <div className="icon-nav-wishlist col-12 text-center" onClick={this.showWishList}>
               <div><img src={this.rootUrl + "category/icon-wish.png"} alt="" />心愿单</div>
             </div>
-            <div className="col-2 text-center" style={{padding: '2px 0'}}><span className="vline"></span></div>
-            <div className="icon-nav-category col-11 text-center" onClick={this.showNavRight}>
+            <div className="icon-nav-category col-12 text-center" onClick={this.showNavRight}>
               <div><img src={this.rootUrl + "category/icon-cate.png"} alt="" />分类</div>
             </div>
           </div>
