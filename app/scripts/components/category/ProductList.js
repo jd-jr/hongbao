@@ -185,11 +185,15 @@ class ProductList extends Component {
   }
   //重置筛选金额
   resetPriceSection() {
+    const {body} = this.state;
+
+    assign(body, {
+      lowPrice: null,
+      highPrice: null,
+    });
+
     this.setState({
-      body: {
-        lowPrice: null,
-        highPrice: null,
-      },
+      body,
       lowPrice: '',
       highPrice: '',
       priceSection: [],
