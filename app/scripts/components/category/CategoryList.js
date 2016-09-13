@@ -26,7 +26,12 @@ class CategoryList extends Component {
 
   // 进入某一分类下的推荐商品页
   oneCateProduct(e, url) {
-    this.context.router.push(url);
+    this.context.router.replace({
+      pathname: url,
+      query: {
+        tab: false, //如果有tab参数,且值为false,则不显示"心愿单|分类"导航栏
+      }
+    });
   }
 
   render() {

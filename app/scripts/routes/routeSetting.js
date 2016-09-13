@@ -33,7 +33,8 @@ const routeSetting = {
     logistics: '物流详情',
     protocol: '服务协议',
     help: '帮助',
-    strategy: '红包攻略'
+    strategy: '红包攻略',
+    wishlist: '心愿单',
   },
 
   overflowYHidden: ['detail', 'detailView', 'my', 'productList'],

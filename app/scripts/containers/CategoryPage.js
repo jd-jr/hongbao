@@ -15,6 +15,7 @@ class CategoryPage extends Component {
       <div>
         {children && React.cloneElement(children, {
           key: location.pathname,
+          location,
           indexActions,
           categoryActions,
           subjectList,
