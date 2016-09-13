@@ -14,9 +14,6 @@ class CategoryList extends Component {
     };
   }
 
-  componentWillMount() {
-  }
-
   componentDidMount() {
     const {categoryActions} = this.props;
     const {getSubjectList, getCategoryList} = categoryActions;

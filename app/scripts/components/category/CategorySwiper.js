@@ -43,7 +43,7 @@ class CategorySwiper extends Component {
                     link ? (
                       <a href={link}><img src={src} title={title} /></a>
                     ) : (
-                      <Link to={`/category/subject/${id}`}><img src={src} title={title} /></Link>
+                      <Link to={`/category/subject/${id}?tab=false`}><img src={src} title={title} /></Link>
                     )
                   }
                 </div>

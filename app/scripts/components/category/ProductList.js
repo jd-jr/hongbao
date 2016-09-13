@@ -491,7 +491,7 @@ class ProductList extends Component {
           location={location}
         />}
         <div className={classnames({"cate-nav": true, 'cate-nav-top0': tab==='false'})}>
-          <div className="cate-filter-nav">
+          <div className={classnames({"cate-filter-nav": true, 'cate-filter-nav-bt0': tab==='false'})}>
             <a href="#" className={`btn-tab ${tabFlag==='hot'?"active":""}`} onClick={(e) => this.switchTab(e, 'hot')}>人气</a>
             <a href="#" className={`btn-tab ${tabFlag==='new'?"active":""}`} onClick={(e) => this.switchTab(e, 'new')}>新品</a>
             <a href="#" className={`btn-tab pos-r ${tabFlag==='price'?"active":""}`} onClick={(e) => this.switchTab(e, 'price')}>
