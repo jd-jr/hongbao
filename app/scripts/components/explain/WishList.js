@@ -86,7 +86,7 @@ class WishList extends Component {
         submitStatus: false
       });
       this.props.indexActions.setToast('保存成功，感谢您的参与！');
-      this.context.router.push('/');
+      this.context.router.push('/category');
     }, (error) => {
       this.setState({
         submitStatus: false

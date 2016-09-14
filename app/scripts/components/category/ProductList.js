@@ -185,11 +185,15 @@ class ProductList extends Component {
   }
   //重置筛选金额
   resetPriceSection() {
+    const {body} = this.state;
+
+    assign(body, {
+      lowPrice: null,
+      highPrice: null,
+    });
+
     this.setState({
-      body: {
-        lowPrice: null,
-        highPrice: null,
-      },
+      body,
       lowPrice: '',
       highPrice: '',
       priceSection: [],
@@ -425,11 +429,13 @@ class ProductList extends Component {
 
   renderProduct() {
     const {
-      productPagination
+      productPagination,
+      location,
     } = this.props;
     const {listType} = this.state;
 
     const {ids, entity, lastPage, isFetching} = productPagination;
+    const {tab} = location.query;
 
     if (!ids) {
       return (
@@ -448,7 +454,7 @@ class ProductList extends Component {
       <ScrollLoad loadMore={this.loadMore}
                   hasMore={!lastPage}
                   isLoading={isFetching}
-                  className={classnames({'hb-main-header': true, loading: isFetching})}
+                  className={classnames({'hb-main-header': true, 'hb-main-header-pdt50': tab==='false', loading: isFetching})}
                   useDocument={false}
                   loader={<div className=""></div>}
                   ref="productList">
@@ -466,8 +472,9 @@ class ProductList extends Component {
   }
 
   render() {
-    const {selectedProduct, categoryList} = this.props;
+    const {selectedProduct, categoryList, location} = this.props;
     const {showFoot, listType, filter, priceOrder, tabFlag, sectionIndex, lowPrice, highPrice} = this.state;
+    const {tab} = location.query;
     const btnDisabled = !selectedProduct;
     const iconUrl = listType === 'list' ? 'category/icon-block.png' : 'category/icon-list.png' ;
     const filterClass = classnames({
@@ -481,9 +488,10 @@ class ProductList extends Component {
       <div>
         {<CategorySearch
           categoryList={categoryList}
+          location={location}
         />}
-        <div className="cate-nav">
-          <div className="cate-filter-nav">
+        <div className={classnames({"cate-nav": true, 'cate-nav-top0': tab==='false'})}>
+          <div className={classnames({"cate-filter-nav": true, 'cate-filter-nav-bt0': tab==='false'})}>
             <a href="#" className={`btn-tab ${tabFlag==='hot'?"active":""}`} onClick={(e) => this.switchTab(e, 'hot')}>人气</a>
             <a href="#" className={`btn-tab ${tabFlag==='new'?"active":""}`} onClick={(e) => this.switchTab(e, 'new')}>新品</a>
             <a href="#" className={`btn-tab pos-r ${tabFlag==='price'?"active":""}`} onClick={(e) => this.switchTab(e, 'price')}>
@@ -556,6 +564,7 @@ ProductList.contextTypes = {
 };
 
 ProductList.propTypes = {
+  location: PropTypes.object,
   categoryList: PropTypes.object,
   indexActions: PropTypes.object,
   categoryActions: PropTypes.object,

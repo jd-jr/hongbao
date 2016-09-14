@@ -20,9 +20,6 @@ class CategorySearch extends Component {
     this.searchInputBlur = this.searchInputBlur.bind(this);
   }
 
-  componentDidMount() {
-  }
-
   //显示心愿单
   showWishList() {
     this.context.router.push('/wishlist');
@@ -58,65 +55,26 @@ class CategorySearch extends Component {
 
   // 进入某一分类下的推荐商品页
   oneCateProduct(e, url) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.nativeEvent.preventDefault();
-    e.nativeEvent.stopPropagation();
     this.context.router.push(url);
   }
 
   render() {
-    const {isFocused, showNavRight} = this.state;
-    const {categoryList} = this.props;
+    const {showNavRight} = this.state;
+    const {categoryList, location} = this.props;
     const {ids, entity} = categoryList;
-    const focusClass = classnames({
-      'search-input': true,
-      'col-18': !isFocused,
-      'col-20': isFocused
-    });
-    const inputClass = classnames({
-      'input-search': true,
-      'p-a-0': isFocused
-    });
+    const isShowTab = location && location.query && location.query.tab || true;
 
     return (
       <div>
         <header className="cate-top-fixed">
-          {/*<div className="row header-wrap">*/}
-            {/*<div className={focusClass}>*/}
-              {/*{!isFocused?(<img className="icon-search" src={this.rootUrl + "category/icon-search.png"} />):null}*/}
-              {/*<input type="text" className={inputClass} placeholder="搜索商品名称"*/}
-                     {/*onClick={this.searchInputFocus}*/}
-                     {/*ref="searchInput"*/}
-              {/*/>*/}
-              {/*{isFocused?(<img className="icon-search-focus" src={this.rootUrl + "category/icon-search-focus.png"} />):null}*/}
-            {/*</div>*/}
-            {/*{!isFocused ? (<div className="search-icons col-6 text-center">*/}
-                {/*<div className="icon-wishlist fl" onClick={this.showWishList}>*/}
-                  {/*<img src={this.rootUrl + "category/icon-wish.png"} alt="心愿单" />*/}
-                    {/*<div>心愿单</div>*/}
-                {/*</div>*/}
-                {/*<div className="icon-category fr" onClick={this.showNavRight}>*/}
-                  {/*<img src={this.rootUrl + "category/icon-cate.png"} alt="分类" />*/}
-                    {/*<div>分类</div>*/}
-                {/*</div>*/}
-              {/*</div>) : null*/}
-            {/*}*/}
-            {/*{isFocused?(<div*/}
-              {/*className="icon-cancel col-4 text-center"*/}
-              {/*style={{display: "block"}}*/}
-              {/*onClick={this.searchInputBlur}*/}
-            {/*>取消</div>):null}*/}
-          {/*</div>*/}
-          <div className="row header-nav-wrap">
-            <div className="icon-nav-wishlist col-11 text-center" onClick={this.showWishList}>
-              <div><img src={this.rootUrl + "category/icon-wish-white.png"} alt="" />心愿单</div>
+          {isShowTab !== 'false' ? (<div className="row header-nav-wrap">
+            <div className="icon-nav-wishlist col-12 text-center" onClick={this.showWishList}>
+              <div><img src={this.rootUrl + "category/icon-wish.png"} alt="" />心愿单</div>
             </div>
-            <div className="col-2 text-center"><span className="vline"></span></div>
-            <div className="icon-nav-category col-11 text-center" onClick={this.showNavRight}>
-              <div><img src={this.rootUrl + "category/icon-cate-white.png"} alt="" />分类</div>
+            <div className="icon-nav-category col-12 text-center" onClick={this.showNavRight}>
+              <div><img src={this.rootUrl + "category/icon-cate.png"} alt="" />分类</div>
             </div>
-          </div>
+          </div>) : null}
         </header>
         <div className="cate-mask" style={{display: showNavRight?'block':'none'}}>
           <div className="cate-mask-wrap"
@@ -152,6 +110,7 @@ CategorySearch.contextTypes = {
 };
 
 CategorySearch.propTypes = {
+  location: PropTypes.object,
   categoryActions: PropTypes.object,
   categoryList: PropTypes.object,
 };
