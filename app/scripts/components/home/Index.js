@@ -288,7 +288,7 @@ class Home extends Component {
     }
 
     //设备信息还没有获取到，再重新获取一次，再一次还获取不到，则设为{}
-    if (!this.deviceInfo) {
+    if (!this.deviceInfo && deviceEnv.inJdWallet) {
       walletApi.getFinanceInfo((info) => {
         info = perfect.parseJSON(info) || {};
         this.deviceInfo = info.deviceInfo || {};
