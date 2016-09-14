@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>商品列表</title>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="实物红包">
+  <meta name="description" content="实物红包">
+  <meta name="viewport"
+        content="width=device-width,initial-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="favicon.ico">
+
+  <link rel="stylesheet" href="../../styles/main.css">
+</head>
+<body>
+
+<!--聚焦前-->
+<!--<header class="cate-top-fixed">-->
+<!--<div class="row header-wrap">-->
+<!--<div class="search-input col-17">-->
+<!--<img class="icon-search" src="../../images/category/icon-search.png">-->
+<!--<input type="text" class="input-search" placeholder="搜索商品名称">-->
+<!--</div>-->
+<!--<div class="icon-wishlist col-5 text-center">-->
+<!--<div><img src="../../images/category/icon-wish.png" alt=""></div>-->
+<!--<div>心愿单</div>-->
+<!--</div>-->
+<!--<div class="icon-category col-2 text-center">-->
+<!--<div><img src="../../images/category/icon-cate.png" alt=""></div>-->
+<!--<div>分类</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</header>-->
+<!--聚焦后-->
+<header class="cate-top-fixed">
+  <div class="row header-wrap">
+    <div class="search-input col-20">
+      <!--<img class="icon-search" src="../../images/category/icon-search.png">-->
+      <input type="text" class="input-search" placeholder="搜索商品名称" style="padding: 0">
+      <img class="icon-search-focus" src="../../images/category/icon-search-focus.png">
+    </div>
+    <div class="icon-wishlist col-5 text-center" style="display: none">
+      <div><img src="../../images/category/icon-wish.png" alt=""></div>
+      <div>心愿单</div>
+    </div>
+    <div class="icon-category col-2 text-center" style="display: none">
+      <div><img src="../../images/category/icon-cate.png" alt=""></div>
+      <div>分类</div>
+    </div>
+    <div class="icon-cancel col-4 text-center" style="display: block">取消</div>
+  </div>
+  <div class="clearfix cate-filter-nav">
+      <a href="#" class="active">人气</a>
+      <a href="#">新品</a>
+      <a href="#" class="pos-r">
+        价格
+        <span class="arrow-top pos-a m-l-0-3 arrow-primary" style="top: 0.9rem;"></span>
+        <span class="arrow-bottom pos-a m-l-0-3 arrow-gray" style="bottom: 0.9rem;"></span>
+      </a>
+      <a href="#" class="pos-r">
+        筛选
+        <span class="arrow-bottom pos-a m-l-0-3 arrow-gray" style="bottom: 1.3rem;"></span>
+      </a>
+      <div class="btn-cate-filter">
+        <img src="../../images/category/icon-block.png" alt="">
+      </div>
+  </div>
+  <div class="cate-filter-list active">
+    <div class="cate-filter-wrap">
+      <div class="row m-b-2">
+        <div class="col-8">
+          <button class="btn btn-block">1 - 50</button>
+        </div>
+        <div class="col-8">
+          <button class="btn btn-block">5 - 200</button>
+        </div>
+        <div class="col-8">
+          <button class="btn btn-block">200 - 500</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8">
+          <input type="text" placeholder="最高价">
+        </div>
+        <div class="col-8">
+          <input type="text" placeholder="最低价">
+        </div>
+        <div class="col-8">
+          <button class="btn fl btn-filter-reset">重置</button>
+          <button class="btn fr btn-filter-confirm active">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="hb-main-header cate-main-header">
+  <ul class="hb-list">
+    <li class="row flex-items-middle">
+      <div class="col-3 text-right p-y-1">
+        <i class="hb-radio-gray"></i>
+      </div>
+      <div class="col-4 p-a-0">
+        <img class="img-fluid" src="//m.360buyimg.com/n12/jfs/t2776/209/2734842127/321836/9dc66f0d/577094feNcacb6b31.jpg" alt="">
+      </div>
+      <div class="col-14">
+        <div class="text-truncate">夏普（SHARP）LCD-55DS72A 55英寸 安卓智能无线网络 4K超高清液晶电视</div>
+        <div class="f-sm hb-product-info">
+          <span>4879.00</span><span class="hot">火爆</span><span class="new">新品</span><span class="fashion">流行</span>
+        </div>
+      </div>
+      <div class="col-3 text-center">
+        <span class="arrow-hollow-right"></span>
+      </div>
+    </li>
+    <li class="row flex-items-middle">
+      <div class="col-3 text-right p-y-1">
+        <i class="hb-radio-gray"></i>
+      </div>
+      <div class="col-4 p-a-0">
+        <img class="img-fluid" src="//m.360buyimg.com/n12/jfs/t2776/209/2734842127/321836/9dc66f0d/577094feNcacb6b31.jpg" alt="">
+      </div>
+      <div class="col-14">
+        <div class="text-truncate">夏普（SHARP）LCD-55DS72A 55英寸 安卓智能无线网络 4K超高清液晶电视</div>
+        <div class="f-sm hb-product-info">
+          <span>4879.00</span>
+        </div>
+      </div>
+      <div class="col-3 text-center">
+        <span class="arrow-hollow-right"></span>
+      </div>
+    </li>
+    <li class="row flex-items-middle">
+      <div class="col-3 text-right p-y-1">
+        <i class="hb-radio-gray"></i>
+      </div>
+      <div class="col-4 p-a-0">
+        <img class="img-fluid" src="//m.360buyimg.com/n12/jfs/t2776/209/2734842127/321836/9dc66f0d/577094feNcacb6b31.jpg" alt="">
+      </div>
+      <div class="col-14">
+        <div class="text-truncate">夏普（SHARP）LCD-55DS72A 55英寸 安卓智能无线网络 4K超高清液晶电视</div>
+        <div class="f-sm hb-product-info">
+          <span>4879.00</span>
+        </div>
+      </div>
+      <div class="col-3 text-center">
+        <span class="arrow-hollow-right"></span>
+      </div>
+    </li>
+    <li class="row flex-items-middle">
+      <div class="col-3 text-right p-y-1">
+        <i class="hb-radio-gray"></i>
+      </div>
+      <div class="col-4 p-a-0">
+        <img class="img-fluid" src="//m.360buyimg.com/n12/jfs/t2776/209/2734842127/321836/9dc66f0d/577094feNcacb6b31.jpg" alt="">
+      </div>
+      <div class="col-14">
+        <div class="text-truncate">夏普（SHARP）LCD-55DS72A 55英寸 安卓智能无线网络 4K超高清液晶电视</div>
+        <div class="f-sm hb-product-info">
+          <span>4879.00</span>
+        </div>
+      </div>
+      <div class="col-3 text-center">
+        <span class="arrow-hollow-right"></span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+
+
+</body>
+</html>

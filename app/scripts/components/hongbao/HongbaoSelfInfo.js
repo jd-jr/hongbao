@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import {Link} from 'react-router';
-import jdWalletApi from 'jd-wallet-sdk';
+import walletApi from 'jd-wallet-sdk';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../../utils/perfect';
 import callApi from '../../fetch';
@@ -111,61 +111,10 @@ class HongbaoSelfInfo extends Component {
       e.preventDefault();
       e.nativeEvent.preventDefault();
       e.nativeEvent.stopPropagation();
-      jdWalletApi.openModule({name: 'BALANCE'});
+      walletApi.openModule({name: 'BALANCE'});
     } else {
-      const url = 'user/Classification';
-      const body = {
-        accountType: perfect.getAccountType(),
-        thirdAccId: perfect.getThirdAccId()
-      };
-
-      callApi({url, body}).then((res) => {
-        /**
-         isJdUser 该用户是否有京东账号
-         isCustomerUser 该用户是否有钱包账号
-         encryptData  String  加密报文
-         signData  String  签名
-         signType  String  签名类型
-         postUrl  String  form表单提交路径
-         */
-        const {isCustomerUser, isJdUser, encryptData, signData, signType, postUrl} = res.json.data;
-        if (isJdUser === false) {
-          //需要先联合登录
-          perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
-          return;
-        }
-        if (isCustomerUser === false) {
-          this.createDrawForm({
-            encryptData,
-            signData,
-            signType,
-            postUrl
-          });
-          return;
-        }
-        location.href = 'https://qianbao.jd.com/p/page/download.htm?module=BALANCE';
-      }, (error) => {
-
-      });
+      location.href = 'https://m.jdpay.com/wallet/balance/index.htm?style=non_title';
     }
-  }
-
-  // 创建提现 form 表单
-  createDrawForm({
-    encryptData,
-    signData,
-    signType,
-    postUrl
-  }) {
-    const form = document.createElement('form');
-    form.action = postUrl;
-    form.method = 'post';
-    const html = `<input type="hidden" name="encrypt_data" value="${encryptData}"/>
-                  <input type="hidden" name="sign_data" value="${signData}"/>
-                  <input type="hidden" name="sign_type" value="${signType}"/>`;
-    form.innerHTML = html;
-    this.drawForm = form;
-    form.submit();
   }
 
   //兑奖或修改地址
@@ -294,7 +243,7 @@ class HongbaoSelfInfo extends Component {
               ) : (
                 <button onTouchTap={this.withdraw}
                         style={{paddingLeft:'0.6rem',paddingRight:'0.6rem'}}
-                        className="btn btn-primary btn-sm hb-fillet-1 hb-btn-mid hb-receive-animate">去京东钱包提现
+                        className="btn btn-primary btn-sm hb-fillet-1 hb-btn-mid hb-receive-animate">立即提现
                   <span className="arrow-hollow-right arrow-r-white3"></span>
                 </button>
               )

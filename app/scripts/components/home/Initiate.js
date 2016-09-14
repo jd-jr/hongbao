@@ -147,6 +147,10 @@ class Initiate extends Component {
         location.href = `openApp.jdmobile://virtual?params=${JSON.stringify(shareParms)}`;
       }
     }
+
+    //漏斗埋点
+    perfect.setBuriedPoint('quanbufasonghon-1', {'hbsendbtn1':'true'});
+    perfect.setBuriedPoint('ercifasonghongb', {'hbsendbtn2':'true'});
   }
 
   //微信中关闭提示

@@ -73,7 +73,7 @@ gulp.task('copy:server:prod', () => {
 });
 
 //开发环境
-gulp.task('copy:dev', ['clean'], () => {
+gulp.task('copy:dev', () => {
   const paths = [
     {src: 'app/scripts/config/index.dev.js', dest: 'app/scripts/config/index.js'},
     {src: 'app/scripts/store/configureStore.prod.js', dest: 'app/scripts/store/index.js'},
@@ -85,7 +85,7 @@ gulp.task('copy:dev', ['clean'], () => {
 });
 
 //正式环境,打包使用
-gulp.task('copy:prod', ['clean'], () => {
+gulp.task('copy:prod', () => {
   const paths = [
     {src: 'app/scripts/config/index.prod.js', dest: 'app/scripts/config/index.js'},
     {src: 'app/scripts/store/configureStore.prod.js', dest: 'app/scripts/store/index.js'},
@@ -289,14 +289,31 @@ gulp.task('sass-compress', () => {
 });
 
 // 编译打包，正式环境
-gulp.task('build', ['sass-compress', 'styles', 'copy:prod', 'images'], () => {
+gulp.task('build:code', ['sass-compress', 'styles', 'copy:prod', 'images'], () => {
   gulp.start(['webpack:build']);
 });
 
+gulp.task('build', ['sass-compress', 'styles', 'copy:prod', 'images'], () => {
+  gulp.start(['clean']);
+  //2秒后再编译，确保 clean 先执行完
+  setTimeout(() => {
+    gulp.start('build:code');
+  }, 2000);
+});
+
 // 编译打包，测试环境
-gulp.task('build:dev', ['sass-compress', 'styles', 'copy:dev', 'images'], () => {
+gulp.task('build:dev:code', ['sass-compress', 'styles', 'copy:dev', 'images'], () => {
   gulp.start(['webpack:build']);
 });
+
+gulp.task('build:dev', ['sass-compress', 'styles', 'copy:prod', 'images'], () => {
+  gulp.start(['clean']);
+  //2秒后再编译，确保 clean 先执行完
+  setTimeout(() => {
+    gulp.start('build:dev:code');
+  }, 2000);
+});
+
 
 // Dll
 gulp.task('dll', () => {

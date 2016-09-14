@@ -128,60 +128,8 @@ class ReceiveHongbao extends Component {
       e.nativeEvent.stopPropagation();
       walletApi.openModule({name: 'BALANCE'});
     } else {
-      const url = 'user/Classification';
-      const body = {
-        accountType: perfect.getAccountType(),
-        thirdAccId: perfect.getThirdAccId()
-      };
-
-      callApi({url, body}).then((res) => {
-        /**
-         isJdUser 该用户是否有京东账号
-         isCustomerUser 该用户是否有钱包账号
-         encryptData  String  加密报文
-         signData  String  签名
-         signType  String  签名类型
-         postUrl  String  form表单提交路径
-         */
-        const {isCustomerUser, isJdUser, encryptData, signData, signType, postUrl} = res.json.data;
-        if (isJdUser === false) {
-          //需要先联合登录
-          perfect.unionLogin('https://qianbao.jd.com/p/page/download.htm?module=BALANCE');
-          return;
-        }
-        if (isCustomerUser === false) {
-          this.createDrawForm({
-            encryptData,
-            signData,
-            signType,
-            postUrl
-          });
-          return;
-        }
-        location.href = 'https://qianbao.jd.com/p/page/download.htm?module=BALANCE';
-      }, (error) => {
-
-      });
+      location.href = 'https://m.jdpay.com/wallet/balance/index.htm?style=non_title';
     }
-  }
-
-  // 创建提现 form 表单
-  createDrawForm({
-    encryptData,
-    signData,
-    signType,
-    postUrl
-  }) {
-    const form = document.createElement('form');
-    form.action = postUrl;
-    form.method = 'post';
-    const html = `<input type="hidden" name="encrypt_data" value="${encryptData}"/>
-                  <input type="hidden" name="sign_data" value="${signData}"/>
-                  <input type="hidden" name="sign_type" value="${signType}"/>`;
-    form.innerHTML = html;
-    document.body.appendChild(form);
-    this.drawForm = form;
-    form.submit();
   }
 
   //兑奖
@@ -441,7 +389,7 @@ class ReceiveHongbao extends Component {
                   <button onTouchTap={this.withdraw} className="btn btn-primary btn-sm hb-fillet-1 hb-btn-mid hb-receive-animate">立即提现</button>
                 ) : (
                   <button onTouchTap={this.withdraw}
-                          className="btn btn-primary btn-sm hb-fillet-1 hb-btn-mid hb-receive-animate">去京东钱包提现</button>
+                          className="btn btn-primary btn-sm hb-fillet-1 hb-btn-mid hb-receive-animate">立即提现</button>
                 )
               }
             </div>

@@ -17,7 +17,8 @@ const routeSetting = {
   titles: {
     home: '京东红包',
     initiate: '京东红包',
-    productList: '选择礼物',
+    selectCategory: '选择分类',
+    productList: '选择商品',
     product: '礼物详情',
     productView: '礼物详情',
     authorize: '京东红包',
@@ -32,7 +33,8 @@ const routeSetting = {
     logistics: '物流详情',
     protocol: '服务协议',
     help: '帮助',
-    strategy: '红包攻略'
+    strategy: '红包攻略',
+    wishlist: '心愿单',
   },
 
   overflowYHidden: ['detail', 'detailView', 'my', 'productList'],

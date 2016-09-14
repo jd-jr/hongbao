@@ -26,6 +26,7 @@
 @import "core/components/loading";
 @import "core/components/react-animation";
 @import "core/components/toast";
+@import "core/components/file-input";
 
 //实用工具类样式
 @import "core/utilities/spacing";
@@ -45,4 +46,5 @@
 // 地址列表样式
 @import "modules/address";
 
-
+// 分类搜索样式
+@import "modules/search-category";

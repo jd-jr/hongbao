@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   //跳转到设置客户端信息
-  setClientInfo(callback) {
+  setClientInfo(callback = () => {}) {
     //如果不在京东钱包中打开,直接调用回调函数
     if (!deviceEnv.inJdWallet) {
       return callback(true);

@@ -64,7 +64,7 @@ const perfect = {
     if (process.env.NODE_ENV !== 'production') {
       return origin + '/';
     }
-    const root = pathname.match(/\/[\w\d-_]+\//)[0];
+    const root = pathname.match(/\/[a-zA-Z0-9-_]+\//)[0];
     return origin + root;
   },
 
@@ -73,7 +73,7 @@ const perfect = {
    * @returns {*}
    */
   getLocationContext () {
-    return location.pathname.match(/\/[\w\d-_]+\//)[0];
+    return location.pathname.match(/\/[a-zA-Z0-9-_]+\//)[0];
   },
 
   // 格式化 json 数据
@@ -278,9 +278,14 @@ const perfect = {
   /**
    * 设置腾讯埋点
    */
-  setBuriedPoint(enventId) {
+  setBuriedPoint(enventId, params) {
     if (window.MtaH5) {
-      MtaH5.clickStat(enventId)
+      if (params) {
+        MtaH5.clickStat(enventId);
+      } else {
+        MtaH5.clickStat(enventId, params)
+      }
+
     }
   },
 
@@ -302,6 +307,26 @@ const perfect = {
   isNumber(value, allowStr = true) {
     return (typeof value === 'number' && isFinite(value))
       || (allowStr === false ? false : parseFloat(value) == value);
+  },
+
+  /**
+   * 压缩图片
+   * @param img
+   * @returns {string}
+   */
+  compress(img) {
+    const canvas = document.createElement('canvas'),
+      ctx = canvas.getContext('2d');
+
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    //利用canvas进行绘图
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    //将原来图片的质量压缩到原先的0.2倍。
+    const data = canvas.toDataURL('image/jpeg', 0.2); //data url的形式
+
+    return data;
   }
 };
 

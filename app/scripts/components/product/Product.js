@@ -80,6 +80,9 @@ class Product extends Component {
 
     //埋点
     perfect.setBuriedPoint('hongbao_product_detail_confirm');
+    //漏斗埋点
+    perfect.setBuriedPoint('quanbufasonghon-1', {'hbproduct1':'true'});
+    perfect.setBuriedPoint('ercifasonghongb', {'hbproduct2':'true'});
 
     const {skuName, skuId, price, indexImg, freight} = productDetail;
     let detail = perfect.stringifyJSON({skuName, skuId, price, indexImg, freight});

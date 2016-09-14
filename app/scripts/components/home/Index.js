@@ -149,6 +149,11 @@ class Home extends Component {
       info = perfect.parseJSON(info);
       this.deviceInfo = info.deviceInfo;
     });
+
+    //漏斗埋点
+    perfect.setBuriedPoint('quanbufasonghon-1', {'hbhome1': 'true'});
+    perfect.setBuriedPoint('ercifasonghongb', {'hbhome2':'true'});
+
   }
 
   componentWillUnmount() {
@@ -275,7 +280,7 @@ class Home extends Component {
     }
     //埋点
     perfect.setBuriedPoint('hongbao_home_select_product');
-    this.context.router.push('/product');
+    this.context.router.push('/category');
   }
 
   //提交前校验表单
@@ -441,6 +446,9 @@ class Home extends Component {
 
     //埋点
     perfect.setBuriedPoint('hongbao_home_btn_sponsor');
+    //漏斗埋点
+    perfect.setBuriedPoint('quanbufasonghon-1', {'hbhomebtn1':'true'});
+    perfect.setBuriedPoint('ercifasonghongb', {'hbhomebtn2':'true'});
   }
 
   replaceProduct(e) {
@@ -460,7 +468,7 @@ class Home extends Component {
     });
     //埋点
     perfect.setBuriedPoint('hongbao_home_replace_product');
-    this.context.router.push('/product');
+    this.context.router.push('/category');
   }
 
   // 关闭发送红包
