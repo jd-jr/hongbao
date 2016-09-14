@@ -146,13 +146,13 @@ class Home extends Component {
      }
      */
     walletApi.getFinanceInfo((info) => {
-      info = perfect.parseJSON(info);
+      info = perfect.parseJSON(info) || {};
       this.deviceInfo = info.deviceInfo;
     });
 
     //漏斗埋点
     perfect.setBuriedPoint('quanbufasonghon-1', {'hbhome1': 'true'});
-    perfect.setBuriedPoint('ercifasonghongb', {'hbhome2':'true'});
+    perfect.setBuriedPoint('ercifasonghongb', {'hbhome2': 'true'});
 
   }
 
@@ -326,8 +326,20 @@ class Home extends Component {
   }
 
   payBefore(e) {
-    e.nativeEvent.preventDefault();
-    e.nativeEvent.stopPropagation();
+    if (e) {
+      e.nativeEvent.preventDefault();
+      e.nativeEvent.stopPropagation();
+    }
+
+    //设备信息还没有获取到，再重新获取一次，再一次还获取不到，则设为{}
+    if (!this.deviceInfo && deviceEnv.inJdWallet) {
+      walletApi.getFinanceInfo((info) => {
+        info = perfect.parseJSON(info) || {};
+        this.deviceInfo = info.deviceInfo || {};
+        this.payBefore();
+      });
+      return;
+    }
 
     //设备信息还没有获取到，直接返回，只给一次机会，再一次还获取不到，则设为{}
     if (!this.deviceInfo) {
@@ -447,8 +459,8 @@ class Home extends Component {
     //埋点
     perfect.setBuriedPoint('hongbao_home_btn_sponsor');
     //漏斗埋点
-    perfect.setBuriedPoint('quanbufasonghon-1', {'hbhomebtn1':'true'});
-    perfect.setBuriedPoint('ercifasonghongb', {'hbhomebtn2':'true'});
+    perfect.setBuriedPoint('quanbufasonghon-1', {'hbhomebtn1': 'true'});
+    perfect.setBuriedPoint('ercifasonghongb', {'hbhomebtn2': 'true'});
   }
 
   replaceProduct(e) {
