@@ -1,6 +1,10 @@
 import React from 'react';
 import routeSetting from './routeSetting';
+import {setLocalStorage, getLocalStorage} from '../utils/localStorage';
 const {enterHandler} = routeSetting;
+
+//首页第一次进入
+let homeFirstEnter = !getLocalStorage('guide-home-first-enter');
 
 // 注意嵌套路由应该是相对路径，不能写成据对路径
 export default {
@@ -10,9 +14,13 @@ export default {
       path: '/',
       indexRoute: {
         onEnter: (nextState, replace) => {
-          console.info(a);
-          console.info(b);
-          enterHandler('home');
+          if (homeFirstEnter) {
+            setLocalStorage('guide-home-first-enter', 'true');
+            homeFirstEnter = false;
+            replace('/guide/entry');
+          } else {
+            enterHandler('home');
+          }
         },
         getComponent: (nextState, cb) => {
           return require.ensure([], (require) => {

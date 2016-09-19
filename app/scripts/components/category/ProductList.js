@@ -19,7 +19,7 @@ class ProductList extends Component {
       listType: props.listType, //block产品大图;list产品小图;默认小图
       filter: false, //默认不展示筛选下拉
       tabFlag: 'hot', //tab选中标记,默认为'hot'
-      priceOrder: true, //默认按价格升序排列,false=desc、true=asc
+      priceOrder: null, //默认不排列,  desc 降序  asc 升序
       priceSection: [], //价格区间
       sectionIndex: -1, //默认不选中价格区间,值有:0|1|2
       body: { //默认的搜索字段
@@ -27,7 +27,7 @@ class ProductList extends Component {
         subjectId: null, //主题产品
         salesAmountOrder: 'desc', //人气,默认降序
         beginDateOrder: null, //新品,默认降序
-        priceOrder: null, //价格,默认升序
+        priceOrder: null, //价格,默认不排列
         lowPrice: null, //最低价格
         highPrice: null, //最高价格
       },
@@ -116,7 +116,7 @@ class ProductList extends Component {
     switch (tabFlag) {
       case 'hot':
         assign(body, {
-          salesAmountOrder: "desc",
+          salesAmountOrder: 'desc',
           beginDateOrder: null,
           priceOrder: null,
         });
@@ -124,16 +124,17 @@ class ProductList extends Component {
       case 'new':
         assign(body, {
           salesAmountOrder: null,
-          beginDateOrder: "desc",
+          beginDateOrder: 'desc',
           priceOrder: null,
         });
         break;
       case 'price':
-        this.setState({priceOrder: !priceOrder});
+        const _priceOrder = priceOrder === null || priceOrder === 'asc' ? 'desc' : 'asc';
+        this.setState({priceOrder: _priceOrder});
         assign(body, {
           salesAmountOrder: null,
           beginDateOrder: null,
-          priceOrder: !priceOrder?'asc':'desc',
+          priceOrder: _priceOrder,
         });
         break;
       default:break;
@@ -481,8 +482,9 @@ class ProductList extends Component {
       'cate-filter-list': true,
       'active': filter
     });
-    const parrow = priceOrder?'arrow-primary':'arrow-gray';
-    const parrow2 = priceOrder?'arrow-gray':'arrow-primary';
+
+    const parrow = priceOrder === 'asc' ? 'arrow-primary':'arrow-gray';
+    const parrow2 = priceOrder === 'desc' ?'arrow-primary':'arrow-gray';
 
     return (
       <div>
@@ -500,7 +502,7 @@ class ProductList extends Component {
               <span className={`arrow-bottom pos-a m-l-0-3 ${parrow2}`} style={{bottom: '0.9rem'}}></span>
 
             </a>
-            <a href="#" className={`btn-tab pos-r ${tabFlag==='filter'?"active":""}`} onClick={this.switchFilter}>
+            <a href="#" className={`btn-tab pos-r ${(lowPrice && highPrice) || sectionIndex !== -1 ? "selected":""}`} onClick={this.switchFilter}>
               筛选
               {
                 filter ? (<span className="arrow-top pos-a m-l-0-3 arrow-gray" style={{top: '1.1rem'}}></span>) :
