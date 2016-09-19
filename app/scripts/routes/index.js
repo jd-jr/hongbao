@@ -9,7 +9,11 @@ export default {
     {
       path: '/',
       indexRoute: {
-        onEnter: () => enterHandler('home'),
+        onEnter: (nextState, replace) => {
+          console.info(a);
+          console.info(b);
+          enterHandler('home');
+        },
         getComponent: (nextState, cb) => {
           return require.ensure([], (require) => {
             cb(null, require('../containers/HomePage').default)
@@ -230,6 +234,15 @@ export default {
       getComponent: (nextState, cb) => {
         require.ensure([], (require) => {
           cb(null, require('../components/explain/WishList').default)
+        })
+      }
+    },
+    {
+      path: '/guide/entry',
+      onEnter: () => enterHandler('guideentry'),
+      getComponent: (nextState, cb) => {
+        require.ensure([], (require) => {
+          cb(null, require('../components/explain/GuideEntry').default)
         })
       }
     },
