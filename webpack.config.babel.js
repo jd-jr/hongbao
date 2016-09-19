@@ -6,11 +6,11 @@ import precss from 'precss';
 import autoprefixer from 'autoprefixer';
 
 //线上环境
-/*const ip = 'static.jdpay.com';
- const port = 443; // https 默认端口号为443*/
+const ip = 'static.jdpay.com';
+const port = 443; // https 默认端口号为443
 //测试环境
-const ip = 'hongbao.jdpay.com';
-const port = 8083;
+/*const ip = 'hongbao.jdpay.com';
+const port = 8083;*/
 
 const hotDevServer = 'webpack/hot/dev-server';
 // https://github.com/webpack/webpack-dev-server

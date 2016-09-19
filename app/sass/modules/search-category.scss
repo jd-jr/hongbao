@@ -324,6 +324,9 @@
     color: #d64f48;
     border-bottom-color: #d64f48;
   }
+  a.selected {
+    color: #d64f48;
+  }
   a.btn-cate-filter {
     flex: 0.5;
     width: 10%;
@@ -397,7 +400,8 @@
     box-sizing: border-box;
     border-bottom: none;
     .img-fluid {
-      min-height: 11.357143rem;
+      max-height: 11.357143rem;
+      margin: 0 auto;
     }
   }
   .hb-radio-gray {
