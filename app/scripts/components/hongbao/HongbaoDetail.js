@@ -164,9 +164,9 @@ class HongbaoDetail extends Component {
     }
 
     //必须是从抢红包入口进入
-    if(this.isUnPack){
+    if (this.isUnPack) {
       //漏斗埋点
-      perfect.setBuriedPoint('ercifasonghongb', {'hbreceivedwto2':'true'});
+      perfect.setBuriedPoint('ercifasonghongb', {'hbreceivedwto2': 'true'});
     }
   }
 
@@ -251,7 +251,7 @@ class HongbaoDetail extends Component {
     cashGainedNum, createdDate, finishedDate
   }) {
 
-    const {type} = this.state;
+    const {type} = this.props;
     const info = type === 'sponsor' ? sponsorInfo : participantInfo;
     if (!info) {
       return null;
@@ -403,6 +403,24 @@ class HongbaoDetail extends Component {
       );
     }
 
+    let refundDes = '';
+
+    /**
+     * 1.2 同上，在发红包的用户查看自己发的红包的红包详情页，当现金红包状态是“n/m个”这种时，
+     * 在页面底部显示 “红包24小时内未领取，将自动退款”；
+     * 当现金红包状态是“已过期，红包已退款”或“已抢光 m/m个”时，在页面底部显示 “好友15天内未领取实物，将自动退款” 。
+     */
+    if (type === 'sponsor') {
+      if (redbagStatus === 'PAY_SUCC') {
+        refundDes = '红包24小时内未领取，将自动退款';
+      } else if (redbagStatus === 'RECEIVE_COMPLETE') {
+        refundDes = '好友15天内未领取实物，将自动退款';
+      } else if ((redbagStatus === 'EXPIRED' ||
+        redbagStatus === 'REFUNDED' || redbagStatus === 'REFUNDING') && goodsGainedNum > 0) {
+        refundDes = '好友15天内未领取实物，将自动退款';
+      }
+    }
+
     return (
       <div>
         {initiateCom}
@@ -438,6 +456,9 @@ class HongbaoDetail extends Component {
               </div>
               {this.isAuthorize ? (<HongbaoGainedList {...gainedListProps}/>) : null}
             </section>
+            <p className="text-center f-sm m-t-2 text-muted">
+              <span>{refundDes}</span>
+            </p>
             <p className="text-center hb-logo-gray-pos" style={{paddingBottom: '3.5rem'}}>
               <i className="hb-logo-gray"></i>
             </p>

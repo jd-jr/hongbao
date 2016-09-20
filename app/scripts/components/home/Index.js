@@ -563,10 +563,12 @@ class Home extends Component {
 
     let initiateCom = null;
     if (pathname && pathname.indexOf('/initiate') !== -1) {
-      const {skuName, title, identifier, status, skuIcon} = this.props;
+      const {skuName, title, identifier, status, skuIcon, indexActions, setModalCloseCallback} = this.props;
       const initiateProps = {
         skuName, title, identifier, status, skuIcon,
-        closeHongbao: this.closeHongbao
+        closeHongbao: this.closeHongbao,
+        indexActions,
+        setModalCloseCallback
       };
       initiateCom = (
         <Initiate {...initiateProps}/>
@@ -646,7 +648,7 @@ class Home extends Component {
                   <span>现金金额</span>
                   <div className="pull-right text-right">
                     <input value={cashAmount} onChange={(e) => this.handleChange(e, 'cashAmount')}
-                           className="hb-input text-right" type="tel" placeholder="0.00"
+                           className="hb-input text-right" type="number" placeholder="0.00"
                            style={{width: '100px'}} disabled={cashDisabled}
                            onBlur={(e) => this.handleVerifyCash(e)}/>
                     <span className="pull-right">元</span>
@@ -684,9 +686,6 @@ class Home extends Component {
                 <i className={`hb-radio-gray${checked ? ' checked' : ''}`} onTouchTap={this.handleChecked}></i>
                 <span>同意并接受</span>
                 <Link to="/protocol">《京东钱包京东红包服务协议》</Link>
-              </p>
-              <p className="text-center f-sm m-t-2 text-muted">
-                <span>好友未领取实物，可于15天后申请退款 </span>
               </p>
             </section>
             <p className="text-center hb-logo-gray-pos">

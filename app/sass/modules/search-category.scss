@@ -284,6 +284,7 @@
   background-color: #fff;
   .hb-list {
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 }
 .hb-main-header-pdt50 {

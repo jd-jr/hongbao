@@ -19,7 +19,6 @@ class Initiate extends Component {
     };
 
     this.sponsor = this.sponsor.bind(this);
-    this.onClose = this.onClose.bind(this);
     this.closeShareGuide = this.closeShareGuide.bind(this);
     this.closeHongbao = this.closeHongbao.bind(this);
 
@@ -36,7 +35,7 @@ class Initiate extends Component {
   componentWillMount() {
     const {success} = this.state;
     let {indexActions, setModalCloseCallback} = this.props;
-    if (success) {
+    if (!success) {
       //支付失败的情况
       indexActions.setErrorMessage('支付失败');
       setModalCloseCallback(()=> {

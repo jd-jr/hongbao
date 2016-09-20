@@ -99,6 +99,12 @@ class SponsorHongbao extends Component {
    */
   getStatus({status, giftGainedNum, giftNum}) {
     switch (status) {
+      case 'PAY_SUCC':
+        return (
+          <div>
+            {giftGainedNum}/{giftNum}个
+          </div>
+        );
       case 'RECEIVE_COMPLETE':
         return (
           <div>

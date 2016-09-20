@@ -309,14 +309,14 @@ class HongbaoSelfInfo extends Component {
       const {goodsStatus} = sponsorInfo || {};
       return this.renderSponsorStatus(goodsStatus);
     } else { // 接收者
-      const {giftType, cashAmount, goodsStatus} = participantInfo;
+      const {giftType, cashAmount, goodsStatus} = participantInfo || {};
       if (giftType === 'CASH') {
         return this.cashStatus(cashAmount);
       } else if (giftType === 'GOODS') {
         return this.winningStatus(goodsStatus);
       }
+      return null;
     }
-
   }
 }
 
