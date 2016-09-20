@@ -21,8 +21,9 @@
   <!-- eruda 调试模式-->
   <script>
     (function () {
+      localStorage.setItem('active-eruda', true);
       if (/eruda=true/.test(window.location.href) || localStorage.getItem('active-eruda') === 'true') {
-        var src = '/m-hongbao/eruda.min.js';
+        var src = '/eruda.min.js';
         var script = document.getElementsByTagName('script')[0];
         var js = document.createElement('script');
         js.src = src;

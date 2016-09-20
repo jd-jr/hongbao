@@ -21,6 +21,9 @@ class GuideEntry extends Component {
       }]
     };
     this.bodyH = document.documentElement.clientHeight;
+    this.bodyW = document.documentElement.clientWidth;
+    console.info(this.bodyH);
+    console.info(this.bodyW);
   }
 
   render() {
@@ -36,16 +39,27 @@ class GuideEntry extends Component {
       }
     };
 
+    //当屏幕高宽比大于图片高宽比时，设置 background-size: auto 100%;
+    //否则设置 background-size: `${this.bodyW}px auto`
+    //图片本身高宽比
+    const imgScale = 1206 / 750;
+    //屏幕高宽比
+    const screenScale = this.bodyH / this.bodyW;
+
     return (
       <ReactSwiper swiperOptions={swiperOptions} showPagination swiperClass="hb-guidance-swiper">
         {
           items && items.map((item) => {
             const {src, id} = item;
+            const style = {backgroundImage: `url("${src}")`, height: this.bodyH,};
+            if (screenScale < imgScale) {
+              style.backgroundSize = `${this.bodyW}px auto`;
+            }
             return (
               <div className="slider-item swiper-slide" key={id}>
                 <div className="slide-content">
                   <div className="hb-guidance-img"
-                       style={{backgroundImage: `url("${src}")`, height: this.bodyH}}></div>
+                       style={style}></div>
                 </div>
               </div>
             );
