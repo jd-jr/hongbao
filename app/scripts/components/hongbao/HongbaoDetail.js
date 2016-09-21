@@ -254,12 +254,17 @@ class HongbaoDetail extends Component {
     const {type} = this.props;
     const info = type === 'sponsor' ? sponsorInfo : participantInfo;
     if (!info) {
-      return null;
+      return (
+        <div className="text-muted">
+          {redbagStatus === 'EXPIRED' ? '已过期，' : ''}已领取{goodsGainedNum}个礼物(共{goodsNum}个)，{cashGainedNum}/{cashNum}个现金红包
+        </div>
+      );
     }
     const {cashAmount, cashGainedAmount} = info;
     let momeyText = '';
-    if (type === 'sponsor' && cashAmount && cashGainedAmount) { //发起人
-      momeyText = `(${(cashGainedAmount / 100).toFixed(2)}/${(cashAmount / 100).toFixed(2)})`;
+    if (type === 'sponsor' && cashAmount !== null && cashGainedAmount !== null &&
+      cashAmount !== undefined && cashGainedAmount !== undefined) { //发起人
+      momeyText = `(${(cashGainedAmount / 100).toFixed(2)}/${(cashAmount / 100).toFixed(2)}元)`;
     }
     switch (redbagStatus) {
       case 'OK': //领取中

@@ -139,7 +139,7 @@ class SponsorHongbao extends Component {
       case 'REFUNDED':
         return (
           <div>
-            已退款
+            已退款，礼物未领取
           </div>
         );
       default:
