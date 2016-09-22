@@ -75,43 +75,66 @@
     }
   }
 
-  &help-link {
-    padding: 1.2rem 3.8rem 1.8rem 3.8rem;
-  }
-
-  &help-mask {
-    z-index: 9999;
-    background: rgba(0, 0, 0, 0.8);
-  }
-
-  &help-text {
+  //"关注我"
+  &helpfeedback {
+    pointer-events: none;
+    will-change: transform;
     position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    transform: translateZ(0);
+  }
+  &helpfeedback * {
+    box-sizing: border-box;
+    pointer-events: all;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  &helpfeedback-wrap {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    z-index: 500;
+    background-color: rgba(0,0,0,.8);
+  }
+  &code-close {
+    position: absolute;
     top: 50%;
     left: 50%;
-    z-index: 10000;
-    width: 14rem;
     margin-top: -12rem;
     margin-left: -7rem;
-    > img.hb-help-code {
-      width: 14rem;
-      height: 22.5rem;
-    }
-    > img.hb-help-close {
-      width: 2rem;
-      height: 2rem;
-      margin-top: 4rem;
-      cursor: pointer;
-    }
+    width: 14rem;
   }
-
+  &help-code {
+    width: 14rem;
+    height: 22.5rem;
+  }
+  &help-close {
+    width: 2rem;
+    height: 2rem;
+    margin-top: 4rem;
+    cursor: pointer;
+  }
   &follow-me {
-    position: fixed;
-    z-index: 1000;
+    position: absolute;
+    z-index: 100;
+    width: 4rem;
+    height: 4rem;
     > img {
       width: 4rem;
       height: 4rem;
       cursor: pointer;
     }
+  }
+
+  //"帮助反馈"
+  &help-link {
+    padding: 1.2rem 3.8rem 1.8rem 3.8rem;
   }
 
   &btn-mid {
@@ -307,4 +330,26 @@
   border-top: 1px solid #fff!important;
   border-right: 1px solid #fff!important;
   margin: 0 0 0 .3rem!important;
+}
+
+//我收到的红包状态颜色
+.bg-status-4 {
+  color: #fff;
+  background-color: #f17d15;
+}
+.bg-status-3-5 {
+  color: #fff;
+  background-color: #999999;
+}
+.bg-status-2 {
+  color: #fff;
+  background-color: #39af6f;
+}
+.bg-status-1 {
+  color: #fff;
+  background-color: #d64f48;
+}
+.bg-status-6 {
+  color: #fff;
+  background-color: #00a2e6;
 }
