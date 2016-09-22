@@ -14,3 +14,5 @@ export const REDIRECT_URI = 'http://rmk.jdpay.com:8011/webchat/ahthorize';
 //默认头像
 export const HEAD_PIC = 'http://hongbao.jdpay.com:8083/images/headpic.png';
 
+//版本号
+export const version = '0.3.0';

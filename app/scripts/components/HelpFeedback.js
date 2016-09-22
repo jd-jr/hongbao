@@ -3,6 +3,7 @@ import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import {setSessionStorage, getSessionStorage, removeSessionStorage} from '../utils/sessionStorage';
 import perfect from '../utils/perfect';
 import Draggabilly from 'draggabilly'
+import {version} from '../config';
 
 // 帮助反馈 & 底部关注我
 class HelpFeedback extends Component {
@@ -77,10 +78,10 @@ class HelpFeedback extends Component {
       <div className="hb-helpfeedback">
         <div className="hb-helpfeedback-wrap text-center" style={{display: showCode?'block':'none'}}>
           <div className="hb-code-close">
-            <img className="hb-help-code" src={this.rootUrl + "wallet-hb-code.png"} alt="" />
+            <img className="hb-help-code" src={this.rootUrl + `wallet-hb-code.png?version=${version}`} alt="" />
             <img className="hb-help-close"
-               onTouchTap={this.closeCode}
-               src={this.rootUrl + "close.png"} alt="" />
+                 onTouchTap={this.closeCode}
+                 src={this.rootUrl + "close.png"} alt="" />
           </div>
         </div>
         {showFollowMe && deviceEnv.inWx ?
@@ -88,8 +89,8 @@ class HelpFeedback extends Component {
               href="#"
               ref="btnFollowMe"
               onTouchTap={this.followMe}>
-          <img src={this.rootUrl + "follow-me.png"} alt="" />
-        </a>):null}
+            <img src={this.rootUrl + "follow-me.png"} alt="" />
+          </a>):null}
       </div>
     );
   }
