@@ -3,6 +3,7 @@ import React, {Component, PropTypes} from 'react';
 import deviceEnv from 'jd-wallet-sdk/lib/utils/device-env';
 import perfect from '../utils/perfect';
 import Draggabilly from 'draggabilly'
+import {version} from '../config';
 
 // 帮助反馈 & 底部关注我
 class HelpFeedback extends Component {
@@ -52,7 +53,7 @@ class HelpFeedback extends Component {
       <div>
         <div className="hb-mask hb-help-mask" style={{display: showCode?'block':'none'}}></div>
         <div className="hb-help-text text-center" style={{display: showCode?'block':'none'}}>
-          <img className="hb-help-code" src={this.rootUrl + "wallet-hb-code.png"} alt="" />
+          <img className="hb-help-code" src={this.rootUrl + `wallet-hb-code.png?version=${version}`} alt="" />
           <img className="hb-help-close"
                onTouchTap={this.closeCode}
                src={this.rootUrl + "close.png"} alt="" />
