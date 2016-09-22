@@ -11,6 +11,9 @@ router.post('/redbag/item/list', (req, res, next) => {
 
 //分类信息
 router.all('/redbag/item/category', (req, res, next) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  // res.end(JSON.stringify(data.category));
+  console.log(req.cookies);
   res.send(data.category);
 });
 
