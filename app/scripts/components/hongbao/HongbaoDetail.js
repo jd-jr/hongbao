@@ -10,7 +10,13 @@ import HongbaoSelfInfo from './HongbaoSelfInfo';
 import HongbaoGainedList from './HongbaoGainedList';
 import Initiate from '../home/Initiate';
 import defaultHeadPic from '../../../images/headpic.png';
-import {NICKNAME, SHARE_TITLE_COMMON, SHARE_DESC, SHARE_TITLE_GIFT, SHARE_TITLE_CASH} from '../../constants/common';
+import {
+  NICKNAME,
+  SHARE_TITLE_COMMON,
+  SHARE_DESC,
+  SHARE_TITLE_GIFT,
+  SHARE_TITLE_CASH
+} from '../../constants/common';
 import routeSetting from '../../routes/routeSetting';
 import HelpFeedback from '../HelpFeedback';
 import Ribbons from '../Ribbons';
@@ -251,8 +257,8 @@ class HongbaoDetail extends Component {
     cashGainedNum, createdDate, finishedDate
   }) {
 
-    const {type} = this.props;
-    const info = type === 'sponsor' ? sponsorInfo : participantInfo;
+    const info = sponsorInfo ? sponsorInfo : participantInfo;
+
     if (!info) {
       return (
         <div className="text-muted">
@@ -262,7 +268,7 @@ class HongbaoDetail extends Component {
     }
     const {cashAmount, cashGainedAmount} = info;
     let momeyText = '';
-    if (type === 'sponsor' && cashAmount !== null && cashGainedAmount !== null &&
+    if (sponsorInfo && cashAmount !== null && cashGainedAmount !== null &&
       cashAmount !== undefined && cashGainedAmount !== undefined) { //发起人
       momeyText = `(${(cashGainedAmount / 100).toFixed(2)}/${(cashAmount / 100).toFixed(2)}元)`;
     }
@@ -420,8 +426,7 @@ class HongbaoDetail extends Component {
         refundDes = '红包24小时内未领取，将自动退款';
       } else if (redbagStatus === 'RECEIVE_COMPLETE') {
         refundDes = '好友15天内未领取实物，将自动退款';
-      } else if ((redbagStatus === 'EXPIRED' ||
-        redbagStatus === 'REFUNDED' || redbagStatus === 'REFUNDING') && goodsGainedNum > 0) {
+      } else if (redbagStatus === 'EXPIRED' || redbagStatus === 'REFUNDED' || redbagStatus === 'REFUNDING') {
         refundDes = '好友15天内未领取实物，将自动退款';
       }
     }

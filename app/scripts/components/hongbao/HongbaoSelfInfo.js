@@ -273,24 +273,6 @@ class HongbaoSelfInfo extends Component {
   renderSponsorStatus(goodsStatus) {
     /*eslint-disable indent*/
     switch (goodsStatus) {
-      case 'NOT_GAIN':
-        return (
-          <div>
-            - 未领取 -
-          </div>
-        );
-      case 'WAIT_CONFIRM':
-        return (
-          <div>
-            - 待领取 -
-          </div>
-        );
-      case 'GAINED':
-        return (
-          <div>
-            - 已领取 -
-          </div>
-        );
       case 'REFUNED':
         return (
           <div>

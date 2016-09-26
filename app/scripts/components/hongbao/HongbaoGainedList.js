@@ -98,10 +98,10 @@ class HongbaoGainedList extends Component {
           }
 
           // 抢到实物
-          const title = giftStatus === 'NOT_GAIN' ? '大奖得主' : nickName;
-          const gainedDate = giftStatus === 'NOT_GAIN' ? '等待揭晓' : perfect.formatDate({time: giftGainedDate});
-          headpic = giftStatus === 'NOT_GAIN' ? championNotGain : headpic;
-          const championHeader = giftStatus === 'NOT_GAIN' ? 'hb-champion-header gray' : 'hb-champion-header';
+          const title = giftGainedDate ? nickName : '大奖得主';
+          const gainedDate = giftGainedDate ? perfect.formatDate({time: giftGainedDate}) : '等待揭晓';
+          headpic = giftGainedDate ? headpic : championNotGain;
+          const championHeader = giftGainedDate ? 'hb-champion-header' : 'hb-champion-header gray';
 
           return (
             <li key={giftRecordId}>
