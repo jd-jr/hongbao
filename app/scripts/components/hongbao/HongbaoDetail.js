@@ -263,6 +263,7 @@ class HongbaoDetail extends Component {
       return (
         <div className="text-muted">
           {redbagStatus === 'EXPIRED' ? '已过期，' : ''}已领取{goodsGainedNum}个礼物(共{goodsNum}个)，{cashGainedNum}/{cashNum}个现金红包
+          {redbagStatus === 'RECEIVE_COMPLETE' ? `。${perfect.formatMillisecond(finishedDate - createdDate)}抢光` : ''}
         </div>
       );
     }
