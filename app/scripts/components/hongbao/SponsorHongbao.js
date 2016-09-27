@@ -111,35 +111,12 @@ class SponsorHongbao extends Component {
             已抢光 {giftGainedNum}/{giftNum}个
           </div>
         );
-      case 'RECEIVE_COMPLETE_GOODS_REFUND':
-        return (
-          <div>
-            已抢光 {giftGainedNum}/{giftNum}个 <span className="text-primary">可退款</span>
-          </div>
-        );
-      case 'FORBIDDEN_REFUND':
-        return (
-          <div>
-            {giftGainedNum}/{giftNum}个
-          </div>
-        );
       case 'EXPIRED':
-        return (
-          <div>
-            <span>已过期 </span>
-          </div>
-        );
-      case 'REDBAG_WHOLE_REFUND'://红包可全额退款
-      case 'REDBAG_GOODS_REFOUND'://红包实物可退款
-        return (
-          <div>
-            <span>已过期 </span> <span className="text-primary">可退款</span>
-          </div>
-        );
+      case 'REFUNDING':
       case 'REFUNDED':
         return (
           <div>
-            已退款，礼物未领取
+            <span>已过期，红包已退款</span>
           </div>
         );
       default:
