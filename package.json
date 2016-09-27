@@ -1,14 +1,14 @@
 {
   "name": "hongbao",
-  "description": "实物红包",
-  "version": "0.3.0",
+  "description": "京东红包",
+  "version": "0.4.0",
   "author": "Linder Wang",
   "keywords": [
     "Webpack",
     "React",
     "Redux",
     "Router",
-    "实物",
+    "京东",
     "红包",
     "京东",
     "钱包"
